@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import de.mrjulsen.mcdragonlib.data.Cache;
 import de.mrjulsen.paw.PantographsAndWires;
-import de.mrjulsen.paw.mixin.client.CompiledChunkAccess;
 import de.mrjulsen.paw.mixin.client.RenderChunkAccess;
 import de.mrjulsen.paw.util.CompiledChunkExtension;
 import de.mrjulsen.wires.WireClientNetwork;
@@ -24,6 +23,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
@@ -49,18 +49,32 @@ public class WireRenderer implements ResourceManagerReloadListener {
 
 		RenderType renderType = RenderType.solid();
 		BufferBuilder builder = buffers.builder(renderType);
-		CompiledChunkAccess compiledAccess = (CompiledChunkAccess)renderChunk.compiled.get();
-		if(layers.add(renderType)) {
+		if (layers.add(renderType)) {
 			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);		
 		}
 
-		VertexConsumer vertexConsumer = builder;
-		PoseStack poseStack = new PoseStack();
+		renderConnectionsInternal(builder, region, chunkSection);
+		
+		CompiledChunkExtension ext = (CompiledChunkExtension)renderChunk.compiled.get();
+		ext.setHasWires(true);
+	}
 
-		Collection<WireSegmentRenderDataBatch> connections = WireClientNetwork.connectionsInSection(chunkSection);
+	public static void renderConnectionsInSection(Function<RenderType, VertexConsumer> layers, me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildBuffers buffers, BlockAndTintGetter region, SectionPos section) {
+		if (!WireClientNetwork.hasConnectionsInSection(section)) {
+			return;
+		}
+		RenderType renderType = RenderType.solid();
+		VertexConsumer vertexConsumer = layers.apply(renderType);
+		renderConnectionsInternal(vertexConsumer, region, section);
+	}
+
+	private static void renderConnectionsInternal(VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section) {
+		PoseStack poseStack = new PoseStack();
+		Collection<WireSegmentRenderDataBatch> connections = WireClientNetwork.connectionsInSection(section);
 
 		for (WireSegmentRenderDataBatch connection : connections) {
 			connection.render(vertexConsumer);
+
 			/*
 			for (WireSegmentRenderData segment : connection.getSubWireSegments()) {	
 				Vec3 point = segment.getPoint(0).vertex(VertexCorner.CENTER);
@@ -92,9 +106,6 @@ public class WireRenderer implements ResourceManagerReloadListener {
 			*/
 			//renderCatenary(vertexConsumer, connection.getRelativeStart(), connection.getRelativeEnd());
 		}
-		
-		CompiledChunkExtension ext = (CompiledChunkExtension)renderChunk.compiled.get();
-		ext.setHasWires(true);
 	}
 	
 }
