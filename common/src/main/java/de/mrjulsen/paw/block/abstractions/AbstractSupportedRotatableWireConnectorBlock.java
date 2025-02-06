@@ -9,7 +9,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -75,7 +74,7 @@ public abstract class AbstractSupportedRotatableWireConnectorBlock<T extends Wir
     }
 
     @Override
-    public Vec2 getOffset(BlockGetter level, BlockPos pos, BlockState state) {
+    public Vec2 getOffset(BlockState state) {
         if (state.getValue(ROTATION) < PROPERTY_MAX_ROTATION_INDEX) {
             return new Vec2(0, 0);
         }

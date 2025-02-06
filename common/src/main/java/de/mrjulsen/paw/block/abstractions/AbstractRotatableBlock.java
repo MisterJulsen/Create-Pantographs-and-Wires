@@ -182,8 +182,8 @@ public abstract class AbstractRotatableBlock extends Block implements IRotatable
     }
 
     @Override
-    public Vec2 rotatedPivotPoint(BlockGetter level, BlockPos pos, BlockState state) {
-        return ModMath.rotateY(getRotationPivotPoint(level, pos, state), rotationOfFacingDirection(state)).add(0.5f);
+    public Vec2 rotatedPivotPoint(BlockState state) {
+        return ModMath.rotateY(getRotationPivotPoint(state), rotationOfFacingDirection(state)).add(0.5f);
     }
 
 
@@ -191,9 +191,9 @@ public abstract class AbstractRotatableBlock extends Block implements IRotatable
     private ShapeCacheEntry calcShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         VoxelShape base = getBaseShape(state, level, pos, context);
         float angle = -getRelativeYRotation(state);
-        Vec2 pivot = rotatedPivotPoint(level, pos, state);
+        Vec2 pivot = rotatedPivotPoint(state);
 
-        Vec2 offset = getOffset(level, pos, state);
+        Vec2 offset = getOffset(state);
         List<AABB> aabbs = base.toAabbs();
         List<VoxelShape> shapes = new ArrayList<>();
         Vec2[] finalCorners = new Vec2[0];

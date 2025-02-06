@@ -1,7 +1,5 @@
 package de.mrjulsen.paw.block.abstractions;
 
-import java.util.Optional;
-
 import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
 import de.mrjulsen.paw.block.property.ECantileverConnectionType;
 import de.mrjulsen.paw.blockentity.MultiblockWireConnectorBlockEntity;
@@ -161,10 +159,9 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
         BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
-        Optional<ECantileverConnectionType> connectionType = ECantileverConnectionType.getFirstForState(ctxExt.getPlacedOnState());
 
         state = state
-            .setValue(CONNECTION, connectionType.orElse(ECantileverConnectionType.PX16))
+            .setValue(CONNECTION, ECantileverConnectionType.getFirstForState(ctxExt.getPlacedOnState()).orElse(ECantileverConnectionType.PX16))
         ;
         return state;
     }
@@ -203,7 +200,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     }
 
     @Override
-    public Vec2 getRotationPivotPoint(BlockGetter level, BlockPos pos, BlockState state) {
+    public Vec2 getRotationPivotPoint(BlockState state) {
         return new Vec2(0f, 1f);
     }
 

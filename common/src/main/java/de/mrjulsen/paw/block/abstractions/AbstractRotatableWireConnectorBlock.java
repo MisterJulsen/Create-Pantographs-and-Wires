@@ -40,9 +40,9 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
      */
     protected Vec3 transformWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint, IWireRenderDataCallback func) {
         if (state.getBlock() instanceof IWireConnector && state.getBlock() instanceof IRotatableBlock rot) {
-            Vec2 pivot = rot.getRotationPivotPoint(level, pos, state);
-            Vec2 rotPivot = rot.rotatedPivotPoint(level, pos, state);
-            Vec2 offset = rot.getOffset(level, pos, state);
+            Vec2 pivot = rot.getRotationPivotPoint(state);
+            Vec2 rotPivot = rot.rotatedPivotPoint(state);
+            Vec2 offset = rot.getOffset(state);
             Vec3 result = VecHelper.rotate(func.run(level, pos, state, itemData, firstPoint).subtract(pivot.x, 0, pivot.y), getYRotation(state), Axis.Y)
                 .add(rotPivot.x, 0, rotPivot.y)
                 .add(offset.x, 0, offset.y)

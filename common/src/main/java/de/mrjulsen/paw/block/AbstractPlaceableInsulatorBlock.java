@@ -4,13 +4,10 @@ import java.util.Objects;
 
 import de.mrjulsen.paw.block.abstractions.AbstractRotatableWireConnectorBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractRotatedConnectableBlock;
-import de.mrjulsen.paw.block.abstractions.AbstractRotatedConnectableBlock.OffsetContext;
 import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
 import de.mrjulsen.mcdragonlib.data.MapCache;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,7 +21,7 @@ public abstract class AbstractPlaceableInsulatorBlock extends AbstractRotatableW
     public static final String NBT_TENSION_WIRE_ATTACH_POINT = "TensionWireAttachPoint";
 
     public static final IntegerProperty MULTIPART_SEGMENT = AbstractRotatedConnectableBlock.createMultipartSegmentsProperty();
-    protected final MapCache<Vec2, BlockState, OffsetContext> offsetCache = AbstractRotatedConnectableBlock.createOffsetCache();
+    protected final MapCache<Vec2, BlockState, BlockState> offsetCache = AbstractRotatedConnectableBlock.createOffsetCache();
     
     protected static record TransformationShapeKey(Direction direction, int rotation, BlockState state) {
         @Override
@@ -60,8 +57,8 @@ public abstract class AbstractPlaceableInsulatorBlock extends AbstractRotatableW
     }
     
     @Override
-    public Vec2 getOffset(BlockGetter level, BlockPos pos, BlockState state) {
-        return offsetCache.get(new OffsetContext(level, pos, state), state);
+    public Vec2 getOffset(BlockState state) {
+        return offsetCache.get(state, state);
     }
 
     @Override

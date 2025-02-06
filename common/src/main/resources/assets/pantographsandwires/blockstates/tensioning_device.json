@@ -1,18 +1,82 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "pantographsandwires:block/tensioning_device"
+    "facing=north,connection=16px": {
+      "model": "pantographsandwires:block/tensioning_device_16px"
     },
-    "facing=east": {
-      "model": "pantographsandwires:block/tensioning_device",
+    "facing=east,connection=16px": {
+      "model": "pantographsandwires:block/tensioning_device_16px",
       "y": 90
     },
-    "facing=south": {
-      "model": "pantographsandwires:block/tensioning_device",
+    "facing=south,connection=16px": {
+      "model": "pantographsandwires:block/tensioning_device_16px",
       "y": 180
     },
-    "facing=west": {
-      "model": "pantographsandwires:block/tensioning_device",
+    "facing=west,connection=16px": {
+      "model": "pantographsandwires:block/tensioning_device_16px",
+      "y": 270
+    },
+
+    "facing=north,connection=12px": {
+      "model": "pantographsandwires:block/tensioning_device_12px"
+    },
+    "facing=east,connection=12px": {
+      "model": "pantographsandwires:block/tensioning_device_12px",
+      "y": 90
+    },
+    "facing=south,connection=12px": {
+      "model": "pantographsandwires:block/tensioning_device_12px",
+      "y": 180
+    },
+    "facing=west,connection=12px": {
+      "model": "pantographsandwires:block/tensioning_device_12px",
+      "y": 270
+    },
+
+    "facing=north,connection=8px": {
+      "model": "pantographsandwires:block/tensioning_device_8px"
+    },
+    "facing=east,connection=8px": {
+      "model": "pantographsandwires:block/tensioning_device_8px",
+      "y": 90
+    },
+    "facing=south,connection=8px": {
+      "model": "pantographsandwires:block/tensioning_device_8px",
+      "y": 180
+    },
+    "facing=west,connection=8px": {
+      "model": "pantographsandwires:block/tensioning_device_8px",
+      "y": 270
+    },
+
+    "facing=north,connection=5px": {
+      "model": "pantographsandwires:block/tensioning_device_5px"
+    },
+    "facing=east,connection=5px": {
+      "model": "pantographsandwires:block/tensioning_device_5px",
+      "y": 90
+    },
+    "facing=south,connection=5px": {
+      "model": "pantographsandwires:block/tensioning_device_5px",
+      "y": 180
+    },
+    "facing=west,connection=5px": {
+      "model": "pantographsandwires:block/tensioning_device_5px",
+      "y": 270
+    },
+
+    "facing=north,connection=4px": {
+      "model": "pantographsandwires:block/tensioning_device_4px"
+    },
+    "facing=east,connection=4px": {
+      "model": "pantographsandwires:block/tensioning_device_4px",
+      "y": 90
+    },
+    "facing=south,connection=4px": {
+      "model": "pantographsandwires:block/tensioning_device_4px",
+      "y": 180
+    },
+    "facing=west,connection=4px": {
+      "model": "pantographsandwires:block/tensioning_device_4px",
       "y": 270
     }
   }

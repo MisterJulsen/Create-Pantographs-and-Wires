@@ -33,7 +33,7 @@ public class ConcretePillarBlock extends AbstractSimplePostBlock {
     }
 
     @Override
-    public Vec2 getRotationPivotPoint(BlockGetter level, BlockPos pos, BlockState state) {
+    public Vec2 getRotationPivotPoint(BlockState state) {
         return Vec2.ZERO;
     }
 

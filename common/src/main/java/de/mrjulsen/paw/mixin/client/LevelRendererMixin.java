@@ -33,9 +33,9 @@ public class LevelRendererMixin {
     @Inject(method = "renderHitOutline", at = @At(value = "HEAD"), cancellable = true)
     private void onRenderHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX, double camY, double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (state.getBlock() instanceof IRotatableBlock rot) {
-            Vec2 pivot = rot.rotatedPivotPoint(level, pos, state);
+            Vec2 pivot = rot.rotatedPivotPoint(state);
             poseStack.pushPose();
-            Vec2 offset = rot.getOffset(level, pos, state);
+            Vec2 offset = rot.getOffset(state);
             poseStack.translate((double)pos.getX() - camX, (double)pos.getY() - camY, (double)pos.getZ() - camZ);
             poseStack.translate(pivot.x + offset.x, 0, pivot.y + offset.y);
             poseStack.pushPose();

@@ -12,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,14 +27,12 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
             super(properties);
         }
     }
-    
-    public static final record OffsetContext(BlockGetter level, BlockPos pos, BlockState state) {}
 
     public static final int DEFAULT_SEGMENT = 1;
     public static final IntegerProperty MULTIPART_SEGMENT = createMultipartSegmentsProperty();
     
 
-    private final MapCache<Vec2, BlockState, OffsetContext> offsetCache = createOffsetCache();
+    private final MapCache<Vec2, BlockState, BlockState> offsetCache = createOffsetCache();
     
     public AbstractRotatedConnectableBlock(Properties properties) {
         super(Properties.of().mapColor(MapColor.METAL));
@@ -45,13 +42,13 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
         );
     }
 
-    public static MapCache<Vec2, BlockState, OffsetContext> createOffsetCache() {
+    public static MapCache<Vec2, BlockState, BlockState> createOffsetCache() {
         return new MapCache<>((c) -> {
-            int rawRotationIndex = normalizedPropertyRotationIndex(c.state());
+            int rawRotationIndex = normalizedPropertyRotationIndex(c);
             int rotationIndex = Math.abs(rawRotationIndex) + DEFAULT_SEGMENT;  
-            int currentPart = c.state().getValue(MULTIPART_SEGMENT);
+            int currentPart = c.getValue(MULTIPART_SEGMENT);
             float multiplier = ((1f / (float)rotationIndex) * (MathUtils.clamp(currentPart, DEFAULT_SEGMENT, rotationIndex) - DEFAULT_SEGMENT));
-            return switch (c.state().getValue(FACING)) {
+            return switch (c.getValue(FACING)) {
                 case WEST  -> new Vec2(0, 1).scale(multiplier);
                 case EAST  -> new Vec2(0, -1).scale(multiplier);
                 case SOUTH -> new Vec2(1, 0).scale(multiplier);
@@ -107,8 +104,8 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
     }
 
     @Override
-    public Vec2 getOffset(BlockGetter level, BlockPos pos, BlockState state) {
-        return offsetCache.get(new OffsetContext(level, pos, state), state);
+    public Vec2 getOffset(BlockState state) {
+        return offsetCache.get(state, state);
     }
 
     @Override

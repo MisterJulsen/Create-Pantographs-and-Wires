@@ -9,43 +9,16 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BakedModelExtension<T extends BakedModel> implements BakedModel {
-    
-    private BlockAndTintGetter level;
-    private BlockPos pos;
     
     protected final T originalModel;
 
     public BakedModelExtension(T originalModel) {
         this.originalModel = originalModel;
-    }
-
-    public void setAdditionalData(BlockAndTintGetter level, BlockPos pos) {
-        this.level = level;
-        this.pos = pos;
-    }
-
-    public void clearAdditionalData() {
-        this.level = null;
-        this.pos = null;
-    }
-
-    public boolean hasAdditionalData() {
-        return level != null && pos != null;
-    }
-
-    public BlockAndTintGetter getLevel() {
-        return level;
-    }
-
-    public BlockPos getPos() {
-        return pos;
     }
 
     @Override

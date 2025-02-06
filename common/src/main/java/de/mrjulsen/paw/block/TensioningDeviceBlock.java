@@ -1,9 +1,5 @@
 package de.mrjulsen.paw.block;
 
-import java.util.Objects;
-
-import com.simibubi.create.foundation.utility.VecHelper;
-
 import de.mrjulsen.paw.blockentity.MultiblockWireConnectorBlockEntity;
 import de.mrjulsen.paw.blockentity.IMultiblockBlockEntity;
 import de.mrjulsen.paw.block.abstractions.AbstractSupportedRotatableWireConnectorBlock;
@@ -38,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -50,54 +47,16 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     public static final String NBT_TENSION = "Tension";
 
     public static final BooleanProperty HELPER = BooleanProperty.create("helper");
-
-    private static record TransformationShapeKey(Direction direction, BlockState state) {
-        @Override
-        public final boolean equals(Object other) {
-            if (other instanceof TransformationShapeKey o) {
-                return direction().equals(o.direction());
-            }
-            return false;
-        }
-        @Override
-        public final int hashCode() {
-            return Objects.hash(direction());
-        }
-    }
-
-    private final MapCache<Vec2, OffsetKey, OffsetKey> offsetCache = new MapCache<>(x -> {
-        float scale = ECantileverConnectionType.getFirstForState(x.supportState()).map(a -> {
-            return Const.PIXEL * (float)(a.getIndex() - 16) / 2f;
-        }).orElse(0f);
-        Vec3 v = (switch (x.facing()) {
-            case EAST  -> new Vec3(1, 0, 0);
-            case SOUTH -> new Vec3(0, 0, 1);
-            case WEST  -> new Vec3(-1, 0, 0);
-            default    -> new Vec3(0, 0, -1);
-        }).scale(scale);
-
-        v = VecHelper.rotate(v, getRelativeYRotation(x.state()), Axis.Y);
-        return new Vec2((float)v.x, (float)v.z);
-    }, OffsetKey::hashCode);
-
-    private static record OffsetKey(Direction facing, BlockState state, BlockState supportState) {
-        @Override
-        public final int hashCode() {
-            return 31 * Objects.hash(facing, supportState);
-        }
-        @Override
-        public final boolean equals(Object other) {
-            return other instanceof OffsetKey o && facing == o.facing() && supportState == o.supportState();
-        }
-    }
+    public static final EnumProperty<ECantileverConnectionType> CONNECTION = EnumProperty.create("connection", ECantileverConnectionType.class);
 
     private static final VoxelShape DEFAULT_SHAPE = Block.box(0.5d, 0, -0.25d, 15.5d, 16, 16);
-    private static final MapCache<VoxelShape, TransformationShapeKey, TransformationShapeKey> shapesCache = new MapCache<>((key) -> {
-        VoxelShape baseShape = DEFAULT_SHAPE;        
-        Direction direction = key.direction();
+    private static final MapCache<VoxelShape, BlockState, BlockState> shapesCache = new MapCache<>((state) -> {
+        VoxelShape baseShape = ModMath.moveShape(DEFAULT_SHAPE, new Vec3(0, 0, Const.PIXEL * ((float)(16 - state.getValue(CONNECTION).getIndex()) / 2f)));
+        Direction direction = state.getValue(FACING);        
         VoxelShape shape = ModMath.rotateShape(baseShape, Axis.Y, (int)direction.getOpposite().toYRot());
         return shape;
-    }, TransformationShapeKey::hashCode, ECachingPriority.ALWAYS);
+    }, BlockState::hashCode, ECachingPriority.ALWAYS);
+
 
     public TensioningDeviceBlock(Properties properties) {
         super(properties
@@ -105,13 +64,14 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
         );
         registerDefaultState(this.defaultBlockState()
             .setValue(HELPER, false)
+            .setValue(CONNECTION, ECantileverConnectionType.PX16)
         );
     }
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {        
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(HELPER);
+        pBuilder.add(CONNECTION, HELPER);
     }
 
     @Override
@@ -140,7 +100,10 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
                 return null;
             }
         }
-        return super.getStateForPlacement(context);
+
+        return super.getStateForPlacement(context)
+            .setValue(CONNECTION, ECantileverConnectionType.getFirstForState(ext.getPlacedOnState()).orElse(ECantileverConnectionType.PX16))
+        ;
     }
 
     @Override
@@ -196,18 +159,17 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
 
     @Override
     public VoxelShape getBaseShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        TransformationShapeKey key = new TransformationShapeKey(state.getValue(FACING), state);
-        return shapesCache.get(key, key);
+        return shapesCache.get(state, state);
     }
 
     @Override
     public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
-        return new Vec3(Const.PIXEL * 3.5f - 0.5f, Const.PIXEL * 0.25, Const.PIXEL * 10.25f - 0.5f);
+        return new Vec3(Const.PIXEL * 3.5f - 0.5f, Const.PIXEL * 0.25, Const.PIXEL * 8.25f - 0.5f + (Const.PIXEL * (float)((16 - state.getValue(CONNECTION).getIndex()) / 2f)));
     }
 
     @Override
     public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
-        return new Vec3(Const.PIXEL * 12.5f - 0.5f, Const.PIXEL * 10.25f, Const.PIXEL * 10.25f - 0.5f);
+        return new Vec3(Const.PIXEL * 12.5f - 0.5f, Const.PIXEL * 10.25f, Const.PIXEL * 8.25f - 0.5f + (Const.PIXEL * (float)((16 - state.getValue(CONNECTION).getIndex()) / 2f)));
     }
 
     @Override
@@ -219,30 +181,13 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     }
 
     @Override
-    public Vec2 getRotationPivotPoint(BlockGetter level, BlockPos pos, BlockState state) {
+    public Vec2 getRotationPivotPoint(BlockState state) {
         return new Vec2(0f, 1f);
     }
 
     @Override
     public Vec3 multiblockSize() {
         return new Vec3(1, HEIGHT, 1);
-    }
-
-    @Override
-    protected int shapeHash(BlockGetter level, BlockPos pos, BlockState state) {
-        int hash = super.shapeHash(level, pos, state);
-        BlockPos relativePos = getSupportBlockPos(level, pos, state);
-        BlockState supportState = level.getBlockState(relativePos);
-        OffsetKey key = new OffsetKey(state.getValue(FACING), state, supportState);
-        return Objects.hash(hash, key.hashCode()) * 31;
-    }
-
-    @Override
-    public Vec2 getOffset(BlockGetter level, BlockPos pos, BlockState state) {
-        BlockPos relativePos = getSupportBlockPos(level, pos, state);
-        BlockState supportState = level.getBlockState(relativePos);
-        OffsetKey key = new OffsetKey(state.getValue(FACING), state, supportState);
-        return offsetCache.get(key, key).add(super.getOffset(level, pos, state));
     }
     
     @Override

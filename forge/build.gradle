@@ -15,7 +15,6 @@ loom {
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
         mixinConfig "pantographsandwires.mixins.json"
-        mixinConfig "pantographsandwires-forge.mixins.json"
     }
 }
 

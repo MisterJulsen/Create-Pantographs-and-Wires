@@ -47,12 +47,10 @@ public interface IRotatableBlock {
 
     /**
      * The pivot point, relative to the block center, at which the block is rotated.
-     * @param level The level the block is placed in.
-     * @param pos The position of the block.
      * @param state The blockstate.
      * @return The pivot point vector.
      */
-    default Vec2 getRotationPivotPoint(@Nullable BlockGetter level, @Nullable BlockPos pos, BlockState state) {
+    default Vec2 getRotationPivotPoint(BlockState state) {
         return Vec2.ZERO;
     }
 
@@ -62,13 +60,11 @@ public interface IRotatableBlock {
      * themselves (e.g. through a {@code FACING} direction), the pivot point can be subsequently
      * rotated accordingly. The basis is the original pivot point (from the block center)
      * and not from the block origin.
-     * @param level
-     * @param pos
      * @param state
      * @return The rotated pivot point.
      */
-    default Vec2 rotatedPivotPoint(@Nullable BlockGetter level, @Nullable BlockPos pos, BlockState state) {
-        return getRotationPivotPoint(level, pos, state);
+    default Vec2 rotatedPivotPoint(BlockState state) {
+        return getRotationPivotPoint(state);
     }
 
     /**
@@ -96,12 +92,10 @@ public interface IRotatableBlock {
 
     /**
      * The offset by which the block is moved from its original position. This value is not affected by any rotation transformation.
-     * @param level The level the block is placed in.
-     * @param pos The position of the block.
      * @param state The blockstate.
      * @return The offset vector.
      */
-    default Vec2 getOffset(@Nullable BlockGetter level, @Nullable BlockPos pos, BlockState state) {
+    default Vec2 getOffset(BlockState state) {
         return Vec2.ZERO;
     }
 
