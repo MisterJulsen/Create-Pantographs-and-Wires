@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,8 +27,6 @@ import de.mrjulsen.wires.network.WireConnectionSyncData;
 import de.mrjulsen.wires.network.WiresNetworkSyncData;
 import de.mrjulsen.wires.network.WiresNetworkSyncData.WireSyncDataEntry;
 import de.mrjulsen.wires.WireCollision.WireBlockCollision;
-import de.mrjulsen.mcdragonlib.config.ECachingPriority;
-import de.mrjulsen.mcdragonlib.data.MapCache;
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,47 +65,7 @@ public final class WireNetwork {
     private static final Multimap<SectionPos, WireCollision> collisionBySection = MultimapBuilder.hashKeys().hashSetValues().build();
     private static final Multimap<BlockPos, WireCollision> collisionByBlock = MultimapBuilder.hashKeys().hashSetValues().build();
 
-    private static final MapCache<Collection<WireConnection>, BlockPos, BlockPos> connectionsTroughBlockCache = new MapCache<>((pos) -> {
-        Collection<WireCollision> w = collisionByBlock.get(pos);
-        Collection<WireConnection> connections = new ArrayList<>(w.size());
-        for (WireCollision c : w) {
-            connections.add(connectionsById.get(c.getId()));
-        }
-        return connections;
-    }, BlockPos::hashCode, ECachingPriority.LOW);
-
-    private static final MapCache<Collection<WireConnection>, SectionPos, SectionPos> connectionsTroughSectionCache = new MapCache<>((pos) -> {
-        Collection<WireCollision> w = collisionBySection.get(pos);
-        Collection<WireConnection> connections = new ArrayList<>(w.size());
-        for (WireCollision c : w) {
-            connections.add(connectionsById.get(c.getId()));
-        }
-        return connections;
-    }, SectionPos::hashCode, ECachingPriority.LOW);
-
-    private static final MapCache<Collection<WireConnection>, ChunkPos, ChunkPos> connectionsTroughChunkCache = new MapCache<>((pos) -> {
-        Collection<WireCollision> w = collisionByChunk.get(pos);
-        Collection<WireConnection> connections = new ArrayList<>(w.size());
-        for (WireCollision c : w) {
-            connections.add(connectionsById.get(c.getId()));
-        }
-        return connections;
-    }, ChunkPos::hashCode, ECachingPriority.LOW);
-
-    private static final MapCache<Collection<WireBlockCollision>, BlockPos, BlockPos> collisionsInBlockCache = new MapCache<>((pos) -> {
-        Collection<WireCollision> w = collisionByBlock.get(pos);
-        Collection<WireBlockCollision> connections = new ArrayList<>(w.size());
-        for (WireCollision c : w) {
-            connections.addAll(c.collisionsInBlock(pos));
-        }
-        return connections;
-    }, BlockPos::hashCode, ECachingPriority.LOW);
-
     public static void clearConnectionCaches() {
-        connectionsTroughBlockCache.clearAll();
-        connectionsTroughSectionCache.clearAll();
-        connectionsTroughChunkCache.clearAll();
-        collisionsInBlockCache.clearAll();
     }
 
     public static String debug_text() {
@@ -197,15 +156,27 @@ public final class WireNetwork {
     }
 
     public static Collection<WireConnection> getConnectionsTroughBlock(BlockPos pos) {
-        return connectionsTroughBlockCache.get(pos, pos);
+        Collection<WireConnection> connections = new LinkedList<>();
+        for (WireCollision c : collisionByBlock.get(pos)) {
+            connections.add(connectionsById.get(c.getId()));
+        }
+        return connections;
     }
 
     public static Collection<WireConnection> getConnectionsTroughSection(SectionPos pos) {
-        return connectionsTroughSectionCache.get(pos, pos);
+        Collection<WireConnection> connections = new LinkedList<>();
+        for (WireCollision c : collisionBySection.get(pos)) {
+            connections.add(connectionsById.get(c.getId()));
+        }
+        return connections;
     }
 
     public static Collection<WireConnection> getConnectionsTroughChunk(ChunkPos pos) {
-        return connectionsTroughChunkCache.get(pos, pos);
+        Collection<WireConnection> connections = new LinkedList<>();
+        for (WireCollision c : collisionByChunk.get(pos)) {
+            connections.add(connectionsById.get(c.getId()));
+        }
+        return connections;
     }
 
     public static Collection<WireCollision> getCollisionsTroughBlock(BlockPos pos) {
@@ -221,7 +192,11 @@ public final class WireNetwork {
     }
 
     public static Collection<WireBlockCollision> getCollisionsInBlock(BlockPos pos) {
-        return collisionsInBlockCache.get(pos, pos);
+        Collection<WireBlockCollision> connections = new LinkedList<>();
+        for (WireCollision c : collisionByBlock.get(pos)) {
+            connections.addAll(c.collisionsInBlock(pos));
+        }
+        return connections;
     }
 
     public synchronized static boolean addConnection(Level level, CompoundTag itemData, BlockPos posA, BlockPos posB, IWireConnector connectorA, IWireConnector connectorB, IWireType wireType) {

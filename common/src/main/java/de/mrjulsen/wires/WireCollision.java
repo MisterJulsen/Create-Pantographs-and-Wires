@@ -73,6 +73,10 @@ public class WireCollision {
         return sections;
     }
 
+    public Collection<WireBlockCollision> getAllCollisions() {
+        return blocks.values();
+    }
+
     private Map<BlockPos, WireBlockCollision> traceAlongWire(Vec3[] points, float step, BlockPos origin) {
         if (points.length <= 1) {
             return Map.of();
@@ -162,20 +166,20 @@ public class WireCollision {
 
         public WireBlockCollision(BlockPos pos, Vec3 entryPointA) {
             this.pos = pos;
-            this.entryPointA = new Vec3(bounds(entryPointA.x), bounds(entryPointA.y), bounds(entryPointA.z));
+            this.entryPointA = new Vec3(bounds(entryPointA.x), entryPointA.y, bounds(entryPointA.z));
             this.absA = new Cache<>(() -> this.entryPointA.add(pos.getX(), pos.getY(), pos.getZ()));
             this.absB = new Cache<>(() -> this.entryPointB.add(pos.getX(), pos.getY(), pos.getZ()));
         }
 
         public WireBlockCollision(BlockPos pos, Vec3 entryPointA, Vec3 entryPointB) {
             this(pos, entryPointA);
-            this.entryPointB = new Vec3(bounds(entryPointB.x), bounds(entryPointB.y), bounds(entryPointB.z));
+            this.entryPointB = new Vec3(bounds(entryPointB.x), entryPointB.y, bounds(entryPointB.z));
             this.absA.clear();
             this.absB.clear();
         }
 
         public WireBlockCollision setSecondPoint(Vec3 oEntryPointB) {
-            this.entryPointB = new Vec3(bounds(oEntryPointB.x), bounds(oEntryPointB.y), bounds(oEntryPointB.z));
+            this.entryPointB = new Vec3(bounds(oEntryPointB.x), oEntryPointB.y, bounds(oEntryPointB.z));
             this.absA.clear();
             this.absB.clear();
             return this;

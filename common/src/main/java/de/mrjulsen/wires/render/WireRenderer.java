@@ -3,7 +3,6 @@ package de.mrjulsen.wires.render;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import de.mrjulsen.mcdragonlib.data.Cache;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.mixin.client.RenderChunkAccess;
@@ -53,7 +52,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);		
 		}
 
-		renderConnectionsInternal(builder, region, chunkSection);
+		renderConnectionsInternal(builder, region, chunkSection, new PoseStack());
 		
 		CompiledChunkExtension ext = (CompiledChunkExtension)renderChunk.compiled.get();
 		ext.setHasWires(true);
@@ -65,11 +64,10 @@ public class WireRenderer implements ResourceManagerReloadListener {
 		}
 		RenderType renderType = RenderType.solid();
 		VertexConsumer vertexConsumer = layers.apply(renderType);
-		renderConnectionsInternal(vertexConsumer, region, section);
+		renderConnectionsInternal(vertexConsumer, region, section, new PoseStack());
 	}
 
-	private static void renderConnectionsInternal(VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section) {
-		PoseStack poseStack = new PoseStack();
+	private static void renderConnectionsInternal(VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section, PoseStack poseStack) {
 		Collection<WireSegmentRenderDataBatch> connections = WireClientNetwork.connectionsInSection(section);
 
 		for (WireSegmentRenderDataBatch connection : connections) {
