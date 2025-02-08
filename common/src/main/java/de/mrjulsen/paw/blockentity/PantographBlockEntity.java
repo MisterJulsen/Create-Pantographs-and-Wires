@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -18,6 +19,7 @@ import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.wires.WireNetwork;
 import de.mrjulsen.wires.WireClientNetwork;
 import de.mrjulsen.wires.WireCollision.WireBlockCollision;
+import de.mrjulsen.wires.debug.WireDebugRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,10 +43,11 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
 
     public static final String NBT_EXPANDABLE = "IsExpandable";
     
-    public static final double MAX_HEIGHT = 4;
+    public static final double MAX_HEIGHT = 3.6D;
     public static final double MAX_HEIGHT_PIXELS = MAX_HEIGHT / Const.PIXEL;
     public static final double MIN_HEIGHT_PIXELS = 13D + Const.PIXEL;
     public static final double MIN_HEIGHT = Const.PIXEL * MIN_HEIGHT_PIXELS;
+    public static final double FORWARD_OFFSET = Const.PIXEL * 4;
     public static final double MAX_WIDTH = 2.5D;
     public static final double DELTA_HEIGHT = MAX_HEIGHT - MIN_HEIGHT;
     public static final double DELTA_HEIGHT_PIXELS = MAX_HEIGHT_PIXELS - MIN_HEIGHT_PIXELS;
@@ -54,7 +57,7 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
     public static final double START_ANGLE = Math.toDegrees(Math.acos((ARM_LENGTH_DOUBLE_POW - Math.pow(((0.04) * DELTA_HEIGHT_PIXELS), 2)) / ARM_LENGTH_DOUBLE_POW));
     public static final Vector3d BASE_UP_VECTOR = new Vector3d(0, 1, 0).normalize().mul(MAX_HEIGHT);
     public static final Vector3d BASE_RIGHT_VECTOR = new Vector3d(1, 0, 0).normalize().mul(MAX_WIDTH / 2d);
-    public static final Vector3d BASE_FORWARD_VECTOR = new Vector3d(0, 0, 1).normalize().mul(Const.PIXEL * 4);
+    public static final Vector3d BASE_FORWARD_VECTOR = new Vector3d(0, 0, 1).normalize().mul(FORWARD_OFFSET);
 
     // Client only, unsaved
     private Vector3d currentPos;
@@ -69,8 +72,21 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
     // properties
     private boolean expandable = false;
 
+    // Debug
+    public Vector3f debug_wireCollisionA = new Vector3f();
+    public Vector3f debug_wireCollisionB = new Vector3f();
+    public double debug_hitHeight = 0;
+
     public PantographBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    public Vector3d getCurrentPos() {
+        return currentPos;
+    }
+
+    public Vector3d rotate(Vector3d vec) {
+        return rotationFunc.apply(vec);
     }
 
     public void toggleExpandable() {
@@ -198,7 +214,13 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
         return Math.toDegrees(Math.acos((ARM_LENGTH_DOUBLE_POW - Math.pow(((heightPercentage + 0.04) * DELTA_HEIGHT_PIXELS), 2)) / ARM_LENGTH_DOUBLE_POW));
     }
 
-    private double calculateWireContact(Vector3d worldPosition, Vector3d upVec, Vector3d rightVec) {
+    private double calculateWireContact(Vector3d worldPosition, Vector3d upVec, Vector3d rightVec) {        
+        if (WireDebugRenderer.enabled()) {
+            debug_hitHeight = 0;
+            debug_wireCollisionA = new Vector3f();
+            debug_wireCollisionB = new Vector3f();
+        }
+        
         Vector3d pA = new Vector3d(worldPosition).sub(rightVec);
         Vector3d pB = new Vector3d(worldPosition).add(rightVec);
         Iterator<BlockPos> poses = findIntersectingBlocks(pA, pB, upVec).iterator();
@@ -207,7 +229,7 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
         while (poses.hasNext()) {
             BlockPos pos = poses.next();
             if (WireClientNetwork.hasConnectionsInBlock(pos)) {
-                for (WireBlockCollision c : WireNetwork.getCollisionsInBlock(pos)) {
+                for (WireBlockCollision c : WireClientNetwork.getCollisionsInBlock(pos)) {
                     Vector3d d = checkWireIntersection(
                         new Vector3d(c.absA().x, c.absA().y, c.absA().z),
                         new Vector3d(c.absB().x, c.absB().y, c.absB().z),
@@ -217,10 +239,17 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
                     );
                     if (d != null) {
                         double rY = d.y - worldPosition.y;
-                        Vector3d normalizedUp = new Vector3d(upVec).normalize().mul(rY);
-                        double f = new Vector3d(normalizedUp.x(), 0, normalizedUp.z()).length();
+                        Vector3d scaledUp = new Vector3d(upVec).normalize().mul(rY);
+                        double f = new Vector3d(scaledUp.x(), 0, scaledUp.z()).length();
                         rY = Math.sqrt(Math.pow(f, 2) + Math.pow(rY, 2));
-                        result = Math.min(result, rY);
+                        if (rY < result) {
+                            result = rY;
+                            if (WireDebugRenderer.enabled()) {
+                                debug_hitHeight = rY;
+                                debug_wireCollisionA = new Vector3f((float)c.absA().x, (float)c.absA().y, (float)c.absA().z);
+                                debug_wireCollisionB = new Vector3f((float)c.absB().x, (float)c.absB().y, (float)c.absB().z);
+                            }
+                        }
                         hasWire = true;
                     }
                 }
