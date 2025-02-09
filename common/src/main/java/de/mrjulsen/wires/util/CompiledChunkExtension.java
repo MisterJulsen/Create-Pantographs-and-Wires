@@ -1,4 +1,4 @@
-package de.mrjulsen.paw.util;
+package de.mrjulsen.wires.util;
 
 public interface CompiledChunkExtension {
     boolean hasWires();

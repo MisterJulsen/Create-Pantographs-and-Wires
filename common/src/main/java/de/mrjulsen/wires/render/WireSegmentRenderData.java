@@ -3,12 +3,13 @@ package de.mrjulsen.wires.render;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector3f;
+
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import de.mrjulsen.wires.render.WireRenderPoint.VertexCorner;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.phys.Vec3;
 
 public class WireSegmentRenderData {
     
@@ -43,7 +44,7 @@ public class WireSegmentRenderData {
         WireRenderPoint lastVertices = points.get(0);
         for (int i = 1; i < points.size(); i++) {
             WireRenderPoint vertices = points.get(i);
-            Vec3 vertex;
+            Vector3f vertex;
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_LEFT);
             vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = lastVertices.vertex(VertexCorner.TOP_RIGHT);

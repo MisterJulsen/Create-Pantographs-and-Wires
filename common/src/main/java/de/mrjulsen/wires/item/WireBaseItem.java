@@ -1,10 +1,10 @@
 package de.mrjulsen.wires.item;
 
-import de.mrjulsen.paw.PantographsAndWires;
-import de.mrjulsen.paw.util.Utils;
+import de.mrjulsen.wires.util.Utils;
 import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WireNetwork;
+import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -67,16 +67,16 @@ public class WireBaseItem extends Item {
                     final BlockPos posB = Utils.getNbtBlockPos(compound, NBT_POINT_B);
                     
                     if (Math.sqrt(posA.distSqr(posB)) > getWireType().getMaxLength()) {
-                        player.displayClientMessage(TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".wire.to_far_away", getWireType().getMaxLength()).withStyle(ChatFormatting.RED), true);
+                        player.displayClientMessage(TextUtils.translate("item." + WiresApi.MOD_ID + ".wire.to_far_away", getWireType().getMaxLength()).withStyle(ChatFormatting.RED), true);
                     } else if (!level.isLoaded(posA) || !level.isLoaded(posB)) {
                         // Check if loaded
-                        player.displayClientMessage(TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".wire.connection_not_loaded").withStyle(ChatFormatting.RED), true);
+                        player.displayClientMessage(TextUtils.translate("item." + WiresApi.MOD_ID + ".wire.connection_not_loaded").withStyle(ChatFormatting.RED), true);
                     } else if (!(level.getBlockState(posA).getBlock() instanceof IWireConnector wcA) || !(level.getBlockState(posB).getBlock() instanceof IWireConnector wcB)) {
                         // Check if connectors are still valid
-                        player.displayClientMessage(TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".wire.connector_invalid").withStyle(ChatFormatting.RED), true);
+                        player.displayClientMessage(TextUtils.translate("item." + WiresApi.MOD_ID + ".wire.connector_invalid").withStyle(ChatFormatting.RED), true);
                     } else if (posA.equals(posB)) {
                         // Check if same position
-                        player.displayClientMessage(TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".wire.same_connector").withStyle(ChatFormatting.RED), true);
+                        player.displayClientMessage(TextUtils.translate("item." + WiresApi.MOD_ID + ".wire.same_connector").withStyle(ChatFormatting.RED), true);
                     } else {
                         // Do it...
                         wc.beforeCreateWireConnection(level, pos, state, player, context, compound);
@@ -84,7 +84,7 @@ public class WireBaseItem extends Item {
                             wc.afterCreateWireConnection(level, pos, state, player, context, compound);
                         } else {
                             // Cannot create connection, because it already exists
-                            player.displayClientMessage(TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".wire.connection_already_exists").withStyle(ChatFormatting.RED), true);
+                            player.displayClientMessage(TextUtils.translate("item." + WiresApi.MOD_ID + ".wire.connection_already_exists").withStyle(ChatFormatting.RED), true);
                         }
                     }
                     context.getItemInHand().setTag(new CompoundTag());

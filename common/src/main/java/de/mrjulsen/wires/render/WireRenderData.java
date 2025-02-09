@@ -3,10 +3,11 @@ package de.mrjulsen.wires.render;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joml.Vector3f;
+
 import de.mrjulsen.wires.render.WireRenderPoint.VertexCorner;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.world.phys.Vec3;
 
 public class WireRenderData {
     private final WireRenderPoint[] points;
@@ -29,7 +30,7 @@ public class WireRenderData {
 
     public Map<SectionPos, WireSegmentRenderData> splitInChunkSections(SectionPos startSection) {
         Map<SectionPos, WireSegmentRenderData> result = new HashMap<>();
-        Vec3 v = points[0].vertex(VertexCorner.CENTER);
+        Vector3f v = points[0].vertex(VertexCorner.CENTER);
         SectionPos lastRawSection = SectionPos.of(new BlockPos((int)v.x, (int)v.y, (int)v.z));
         WireRenderPoint lastVertices = points[0].offset(lastRawSection);
         SectionPos lastSection = lastRawSection.offset(startSection.getX(), startSection.getY(), startSection.getZ());

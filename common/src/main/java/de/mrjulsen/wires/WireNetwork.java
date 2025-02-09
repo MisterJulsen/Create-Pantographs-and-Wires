@@ -14,14 +14,15 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.joml.Vector3f;
+
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.io.Files;
 
-import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.config.ModServerConfig;
-import de.mrjulsen.paw.registry.ModNetworkAccessor;
 import de.mrjulsen.wires.block.IWireConnector;
+import de.mrjulsen.wires.network.NetworkManager;
 import de.mrjulsen.wires.network.WireChunkLoadingData;
 import de.mrjulsen.wires.network.WireConnectionSyncData;
 import de.mrjulsen.wires.network.WiresNetworkSyncData;
@@ -43,13 +44,12 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraft.world.phys.Vec3;
 
 public final class WireNetwork {
 
     private WireNetwork() {}
 
-    private static final String FILENAME = PantographsAndWires.MOD_ID + "_wire_network.nbt"; 
+    private static final String FILENAME = WiresApi.MOD_ID + "_wire_network.nbt"; 
     private static final String NBT_CONNECTIONS = "Connections"; 
     
     private static final Multimap<ChunkPos, UUID> playersWatchingChunk = MultimapBuilder.hashKeys().hashSetValues().build();
@@ -113,12 +113,12 @@ public final class WireNetwork {
                 Files.copy(outFile, tempFile);
             }
             NbtIo.writeCompressed(nbt, outFile);
-            PantographsAndWires.LOGGER.debug("Saved wire network data.");
+            WiresApi.LOGGER.debug("Saved wire network data.");
             if (tempFile.exists()) {
                 tempFile.delete();
             }
         } catch (Exception e) {
-            PantographsAndWires.LOGGER.error("Error while saving wire network data.", e);
+            WiresApi.LOGGER.error("Error while saving wire network data.", e);
         } 
     }
 
@@ -134,13 +134,13 @@ public final class WireNetwork {
         try {
             loadInternal(settingsFile);
         } catch (Exception e) {
-            PantographsAndWires.LOGGER.error("Unable to load wire network data.", e);
+            WiresApi.LOGGER.error("Unable to load wire network data.", e);
             if (backupFile.exists()) {
-                PantographsAndWires.LOGGER.warn("Wire Network backup file available, trying to load it...");
+                WiresApi.LOGGER.warn("Wire Network backup file available, trying to load it...");
                 try {
                     loadInternal(backupFile);
                 } catch (Exception e2) {
-                    PantographsAndWires.LOGGER.error("Unable to load backup wire network data.", e2);
+                    WiresApi.LOGGER.error("Unable to load backup wire network data.", e2);
                 }
             }
         }
@@ -237,7 +237,7 @@ public final class WireNetwork {
             
             for (UUID playerId : updatePlayers) {
                 if (level.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer) {
-                    DataAccessor.getFromClient(serverPlayer, netData, ModNetworkAccessor.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
+                    DataAccessor.getFromClient(serverPlayer, netData, NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
                 }
             }
         }
@@ -269,7 +269,7 @@ public final class WireNetwork {
         }
         for (UUID playerId : updatePlayers) {
             if (level.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer) {
-                DataAccessor.getFromClient(serverPlayer, blockConnections.stream().map(x -> x.getId()).toArray(UUID[]::new), ModNetworkAccessor.DELETE_WIRE_CONNECTION, $ -> {});
+                DataAccessor.getFromClient(serverPlayer, blockConnections.stream().map(x -> x.getId()).toArray(UUID[]::new), NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
             }
         }
     }
@@ -315,7 +315,7 @@ public final class WireNetwork {
 
         for (UUID playerId : updatePlayers) {
             if (level.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer) {
-                DataAccessor.getFromClient(serverPlayer, collisionsByBlock.stream().toArray(UUID[]::new), ModNetworkAccessor.DELETE_WIRE_CONNECTION, $ -> {});
+                DataAccessor.getFromClient(serverPlayer, collisionsByBlock.stream().toArray(UUID[]::new), NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
             }
         }
     }
@@ -336,8 +336,8 @@ public final class WireNetwork {
             for (WireConnection connection : connections) {
                 Collection<WireBlockCollision> collisions = connection.getCollisionData().collisionsInBlock(pos);
                 for (WireBlockCollision collision : collisions) {
-                    Vec3 vecA = collision.entryPointA();
-                    Vec3 vecB = collision.entryPointB();
+                    Vector3f vecA = collision.entryPointA();
+                    Vector3f vecB = collision.entryPointB();
                     BlockPos dropPos = pos;
                     if (WireCollision.connectionBlocked(level, pos, newState, vecA, vecB)) {
                         for (Direction d : Direction.values()) {
@@ -360,7 +360,7 @@ public final class WireNetwork {
             
             for (UUID playerId : updatePlayers) {
                 if (level.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer) {
-                    DataAccessor.getFromClient(serverPlayer, connectionsToBreak.keySet().stream().map(x -> x.getId()).toArray(UUID[]::new), ModNetworkAccessor.DELETE_WIRE_CONNECTION, $ -> {});
+                    DataAccessor.getFromClient(serverPlayer, connectionsToBreak.keySet().stream().map(x -> x.getId()).toArray(UUID[]::new), NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
                 }
             }
 		}
@@ -401,7 +401,7 @@ public final class WireNetwork {
                     boolean b = connection.recalcAttachPoints(level, collisionByChunk, collisionBySection, collisionByBlock);
                     syncData.add(new WireSyncDataEntry(connection.getWireConnectionSyncData(), b));
                 }
-                DataAccessor.getFromClient(serverPlayer, new WiresNetworkSyncData(pos, syncData), ModNetworkAccessor.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
+                DataAccessor.getFromClient(serverPlayer, new WiresNetworkSyncData(pos, syncData), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
             }
         }
     }
@@ -414,7 +414,7 @@ public final class WireNetwork {
             if (collisionByChunk.containsKey(pos) && player instanceof ServerPlayer serverPlayer) {
                 Collection<WireConnection> connections = getConnectionsTroughChunk(pos);
                 if (connections.isEmpty()) return;
-                DataAccessor.getFromClient(serverPlayer, new WireChunkLoadingData(pos, connections.stream().map(WireConnection::getId).collect(Collectors.toSet()), false), ModNetworkAccessor.WIRE_CONNECTION_CHUNK_LOADING, $ -> {});
+                DataAccessor.getFromClient(serverPlayer, new WireChunkLoadingData(pos, connections.stream().map(WireConnection::getId).collect(Collectors.toSet()), false), NetworkManager.WIRE_CONNECTION_CHUNK_LOADING, $ -> {});
             }
         }
     }   

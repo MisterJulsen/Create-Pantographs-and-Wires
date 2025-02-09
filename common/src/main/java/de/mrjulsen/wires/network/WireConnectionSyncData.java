@@ -2,14 +2,15 @@ package de.mrjulsen.wires.network;
 
 import java.util.UUID;
 
-import de.mrjulsen.paw.util.Utils;
+import org.joml.Vector3f;
+
 import de.mrjulsen.wires.block.IWireConnector;
+import de.mrjulsen.wires.util.Utils;
 import de.mrjulsen.wires.WireConnection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 
 public class WireConnectionSyncData {
 
@@ -25,8 +26,8 @@ public class WireConnectionSyncData {
     private static final String NBT_ORIGIN_CHUNK_SECTION = "OriginChunkSection";
 
     private final UUID connectionId;
-    private final Vec3 startPos;
-    private final Vec3 endPos;
+    private final Vector3f startPos;
+    private final Vector3f endPos;
     private final BlockPos startBlockPos;
     private final BlockPos endBlockPos;
     private final ResourceLocation wireType;
@@ -35,7 +36,7 @@ public class WireConnectionSyncData {
     private final CompoundTag creationData;
     private final SectionPos originChunkSection;
 
-    public WireConnectionSyncData(UUID connectionId, BlockPos startBlockPos, BlockPos endBlockPos, Vec3 startPos, Vec3 endPos, ResourceLocation wireType,
+    public WireConnectionSyncData(UUID connectionId, BlockPos startBlockPos, BlockPos endBlockPos, Vector3f startPos, Vector3f endPos, ResourceLocation wireType,
             CompoundTag connectorAData, CompoundTag connectorBData, CompoundTag creationData,
             SectionPos originChunkSection) {
         this.connectionId = connectionId;
@@ -55,8 +56,8 @@ public class WireConnectionSyncData {
         nbt.putUUID(NBT_CONNECTION_ID, connectionId);
         Utils.putNbtBlockPos(nbt, NBT_BLOCK_START, startBlockPos);
         Utils.putNbtBlockPos(nbt, NBT_BLOCK_END, endBlockPos);
-        Utils.putNbtVec3(nbt, NBT_START, startPos);
-        Utils.putNbtVec3(nbt, NBT_END, endPos);
+        Utils.putNbtVector3f(nbt, NBT_START, startPos);
+        Utils.putNbtVector3f(nbt, NBT_END, endPos);
         nbt.putString(NBT_WIRE_TYPE, wireType.toString());
         nbt.put(NBT_CONNECTOR_A_DATA, connectorAData);
         nbt.put(NBT_CONNECTOR_B_DATA, connectorBData);
@@ -70,9 +71,9 @@ public class WireConnectionSyncData {
             nbt.getUUID(NBT_CONNECTION_ID),
             Utils.getNbtBlockPos(nbt, NBT_BLOCK_START), 
             Utils.getNbtBlockPos(nbt, NBT_BLOCK_END), 
-            Utils.getNbtVec3(nbt, NBT_START), 
-            Utils.getNbtVec3(nbt, NBT_END), 
-            new ResourceLocation(nbt.getString(NBT_WIRE_TYPE)), 
+            Utils.getNbtVector3f(nbt, NBT_START), 
+            Utils.getNbtVector3f(nbt, NBT_END), 
+            Utils.resLoc(nbt.getString(NBT_WIRE_TYPE)), 
             nbt.getCompound(NBT_CONNECTOR_A_DATA), 
             nbt.getCompound(NBT_CONNECTOR_B_DATA),
             nbt.getCompound(NBT_CREATION_DATA),
@@ -99,11 +100,11 @@ public class WireConnectionSyncData {
         return connectionId;
     }
 
-    public Vec3 getStartPos() {
+    public Vector3f getStartPos() {
         return startPos;
     }
 
-    public Vec3 getEndPos() {
+    public Vector3f getEndPos() {
         return endPos;
     }
 
@@ -135,12 +136,12 @@ public class WireConnectionSyncData {
         return originChunkSection;
     }
 
-    public Vec3 getWireAttachPointA() {
-        return Utils.getNbtVec3(getConnectorAData(), IWireConnector.NBT_WIRE_ATTACH_POINT);
+    public Vector3f getWireAttachPointA() {
+        return Utils.getNbtVector3f(getConnectorAData(), IWireConnector.NBT_WIRE_ATTACH_POINT);
     }
 
-    public Vec3 getWireAttachPointB() {
-        return Utils.getNbtVec3(getConnectorBData(), IWireConnector.NBT_WIRE_ATTACH_POINT);
+    public Vector3f getWireAttachPointB() {
+        return Utils.getNbtVector3f(getConnectorBData(), IWireConnector.NBT_WIRE_ATTACH_POINT);
     }
     
 }

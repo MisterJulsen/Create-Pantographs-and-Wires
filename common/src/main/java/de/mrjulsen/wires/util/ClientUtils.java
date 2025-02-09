@@ -1,4 +1,4 @@
-package de.mrjulsen.wires.client;
+package de.mrjulsen.wires.util;
 
 import net.minecraft.client.Minecraft;
 

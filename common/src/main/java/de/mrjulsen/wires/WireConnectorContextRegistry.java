@@ -5,18 +5,19 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+import de.mrjulsen.wires.util.Utils;
 import net.minecraft.resources.ResourceLocation;
 
 public class WireConnectorContextRegistry {
     private static final Map<ResourceLocation, IWireType> registeredTypes = new HashMap<>();
 
     public static IWireType register(String modid, String name, Function<ResourceLocation, IWireType> type) {
-        ResourceLocation location = new ResourceLocation(modid, name);
+        ResourceLocation location = Utils.resLoc(modid, name);
         if (registeredTypes.containsKey(location)) {
             throw new IllegalArgumentException("A wire with ID '" + location.toString() + "' is already registered.");
         }
         IWireType wire = type.apply(location);
-        registeredTypes.put(new ResourceLocation(name), wire);
+        registeredTypes.put(Utils.resLoc(name), wire);
         return wire;
     }
 

@@ -1,19 +1,22 @@
 package de.mrjulsen.paw.item;
 
+import org.joml.Vector3f;
+
 import de.mrjulsen.paw.block.AbstractPlaceableInsulatorBlock;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.network.WireConnectionSyncData;
+import de.mrjulsen.wires.SegmentControl;
 import de.mrjulsen.wires.Wire;
 import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireBuilder;
 import de.mrjulsen.wires.WireCreationContext;
+import de.mrjulsen.wires.SegmentControl.Config;
 import de.mrjulsen.wires.WireBuilder.CableType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.phys.Vec3;
 
 public class PowerWireType extends AbstractWireType {
 
@@ -41,13 +44,13 @@ public class PowerWireType extends AbstractWireType {
 
 	@Override
 	public WireBatch buildWire(WireCreationContext context, BlockAndTintGetter level, WireConnectionSyncData data) {
-		Vec3 start = data.getStartPos();
-		Vec3 end = data.getEndPos();
-		Vec3 wireAttachPointA = data.getWireAttachPointA();
-		Vec3 wireAttachPointB = data.getWireAttachPointB();
+		Vector3f start = data.getStartPos();
+		Vector3f end = data.getEndPos();
+		Vector3f wireAttachPointA = data.getWireAttachPointA();
+		Vector3f wireAttachPointB = data.getWireAttachPointB();
 	
-		float length = (float)Math.abs(end.subtract(start).length());
-		Wire wire = WireBuilder.createWire(context, start.add(wireAttachPointA), end.add(wireAttachPointB), CableType.HANGING, THICKNESS, HANG_FAC * length, WireBuilder.SEGMENTS_AUTO);
+		float length = (float)Math.abs(new Vector3f(end).sub(start).length());
+		Wire wire = WireBuilder.createWire(context, new Vector3f(start).add(wireAttachPointA), new Vector3f(end).add(wireAttachPointB), CableType.HANGING, THICKNESS, HANG_FAC * length, SegmentControl.create(Config.auto(), Config.fixed(1)));
 		WireBatch batch = WireBatch.of(wire);
 		return batch;
 	}

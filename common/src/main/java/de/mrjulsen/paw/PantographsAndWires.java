@@ -15,6 +15,7 @@ import de.mrjulsen.paw.registry.ModCreativeModeTab;
 import de.mrjulsen.paw.registry.ModItems;
 import de.mrjulsen.paw.registry.ModNetworkAccessor;
 import de.mrjulsen.paw.registry.ModWireRegistry;
+import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.mcdragonlib.net.NetworkManagerBase;
 import dev.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
@@ -45,6 +46,7 @@ public final class PantographsAndWires {
 
     public static void init() {
         GeckoLib.initialize();
+        WiresApi.init();
 
         ModNetworkAccessor.init();
         ModWireRegistry.init();

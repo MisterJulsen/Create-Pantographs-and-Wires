@@ -4,10 +4,11 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.mrjulsen.mcdragonlib.data.Cache;
-import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.mixin.client.RenderChunkAccess;
-import de.mrjulsen.paw.util.CompiledChunkExtension;
 import de.mrjulsen.wires.WireClientNetwork;
+import de.mrjulsen.wires.WiresApi;
+import de.mrjulsen.wires.util.CompiledChunkExtension;
+import de.mrjulsen.wires.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
@@ -15,7 +16,6 @@ import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -31,7 +31,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 	public static final Cache<TextureAtlasSprite> WIRE_TEXTURE = new Cache<>(
 		() -> Minecraft.getInstance().getModelManager()
 			.getAtlas(InventoryMenu.BLOCK_ATLAS)
-			.getSprite(new ResourceLocation(PantographsAndWires.MOD_ID, "block/wire"))
+			.getSprite(Utils.resLoc(WiresApi.MOD_ID, "block/wire"))
 	);
 
 	@Override

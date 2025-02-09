@@ -2,30 +2,31 @@ package de.mrjulsen.wires.render;
 
 import java.util.Map;
 
+import org.joml.Vector3f;
+
 import net.minecraft.core.SectionPos;
-import net.minecraft.world.phys.Vec3;
 
 public class WireRenderPoint {
-    private final Map<VertexCorner, Vec3> vertices;
+    private final Map<VertexCorner, Vector3f> vertices;
 
-    public WireRenderPoint(Map<VertexCorner, Vec3> data) {
+    public WireRenderPoint(Map<VertexCorner, Vector3f> data) {
         this.vertices = data;
     }
 
-    public Vec3 vertex(VertexCorner corner) {
+    public Vector3f vertex(VertexCorner corner) {
         return vertices.get(corner);
     }
 
 	public static enum VertexCorner { CENTER, TOP_RIGHT, BOTTOM_RIGHT, TOP_LEFT, BOTTOM_LEFT; }
 
     public WireRenderPoint offset(SectionPos rawSection) {
-        Vec3 sub = new Vec3(rawSection.x() * SectionPos.SECTION_SIZE, rawSection.y() * SectionPos.SECTION_SIZE, rawSection.z() * SectionPos.SECTION_SIZE);
+        Vector3f sub = new Vector3f(rawSection.x() * SectionPos.SECTION_SIZE, rawSection.y() * SectionPos.SECTION_SIZE, rawSection.z() * SectionPos.SECTION_SIZE);
         return new WireRenderPoint(Map.of(
-            VertexCorner.CENTER, vertex(VertexCorner.CENTER).subtract(sub),
-            VertexCorner.TOP_RIGHT, vertex(VertexCorner.TOP_RIGHT).subtract(sub),
-            VertexCorner.BOTTOM_RIGHT, vertex(VertexCorner.BOTTOM_RIGHT).subtract(sub),
-            VertexCorner.TOP_LEFT, vertex(VertexCorner.TOP_LEFT).subtract(sub),
-            VertexCorner.BOTTOM_LEFT, vertex(VertexCorner.BOTTOM_LEFT).subtract(sub)
+            VertexCorner.CENTER, new Vector3f(vertex(VertexCorner.CENTER)).sub(sub),
+            VertexCorner.TOP_RIGHT, new Vector3f(vertex(VertexCorner.TOP_RIGHT)).sub(sub),
+            VertexCorner.BOTTOM_RIGHT, new Vector3f(vertex(VertexCorner.BOTTOM_RIGHT)).sub(sub),
+            VertexCorner.TOP_LEFT, new Vector3f(vertex(VertexCorner.TOP_LEFT)).sub(sub),
+            VertexCorner.BOTTOM_LEFT, new Vector3f(vertex(VertexCorner.BOTTOM_LEFT)).sub(sub)
         ));
     }
 

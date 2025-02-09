@@ -1,6 +1,5 @@
 package de.mrjulsen.wires.block;
 
-import de.mrjulsen.paw.blockentity.IBlockEntityExtension;
 import de.mrjulsen.wires.WireNetwork;
 import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
 import net.minecraft.core.BlockPos;

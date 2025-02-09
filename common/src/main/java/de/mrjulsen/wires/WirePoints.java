@@ -1,5 +1,5 @@
 package de.mrjulsen.wires;
 
-import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
-public record WirePoints(Vec3[] vertices) { }
+public record WirePoints(Vector3f[] vertices) { }
