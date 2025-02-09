@@ -2,11 +2,13 @@ package de.mrjulsen.wires;
 
 import java.util.Map;
 
+import de.mrjulsen.wires.client.ClientUtils;
 import de.mrjulsen.wires.render.WireRenderData;
 import de.mrjulsen.wires.render.WireRenderPoint;
 import de.mrjulsen.wires.render.WireRenderPoint.VertexCorner;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import de.mrjulsen.mcdragonlib.util.MathUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,17 +18,10 @@ public final class WireBuilder {
 
 	public static enum CableType { HANGING, TENSION, TIGHT; }
 	
-	public static int calcSegmentsCount(float arcLength, float distance, float radius) {
-		float multiplier = 1;
-		switch (Minecraft.getInstance().options.graphicsMode().get()) {
-			case FAST:
-				multiplier = 0.5f;
-				break;
-			case FABULOUS:
-				multiplier = 2f;
-				break;
-			default:
-				break;
+	public static int calcSegmentsCount(float arcLength, float distance, float radius, boolean rendering) {
+		float multiplier = 1;		
+		if (rendering && Platform.getEnvironment() == Env.CLIENT) {
+			multiplier = ClientUtils.getMultiplierByGraphicsMode();
 		}
 		return Math.max(1, (int)(Math.max(Math.ceil(arcLength * 16 / radius), distance) * multiplier));
 	}
@@ -60,7 +55,7 @@ public final class WireBuilder {
 			Vec2 center = circumcenter(p1, p2, p3);
 			float radius = radius(center, p1);
 			float arcLength = arcLength(center, p1, p3, radius);
-			maxSegments = (segmentsCount > 0 ? segmentsCount : calcSegmentsCount(arcLength, length, radius)) + 1;
+			maxSegments = (segmentsCount > 0 ? segmentsCount : calcSegmentsCount(arcLength, length, radius, true)) + 1;
 			points = type == CableType.HANGING ? equallyDistributedPointsOnArc(center, p1, p3, radius, maxSegments) : equallyDistributedPointsOnX(center, p1, p3, radius, maxSegments);
 		}
 
@@ -127,7 +122,7 @@ public final class WireBuilder {
 			Vec2 center = circumcenter(p1, p2, p3);
 			float radius = radius(center, p1);
 			float arcLength = arcLength(center, p1, p3, radius);
-			maxSegments = (segmentsCount > 0 ? segmentsCount : calcSegmentsCount(arcLength, length, radius)) + 1;
+			maxSegments = (segmentsCount > 0 ? segmentsCount : calcSegmentsCount(arcLength, length, radius, false)) + 1;
 			points = type == CableType.HANGING ? equallyDistributedPointsOnArc(center, p1, p3, radius, maxSegments) : equallyDistributedPointsOnX(center, p1, p3, radius, maxSegments);
 		}
 
