@@ -5,6 +5,7 @@ import de.mrjulsen.paw.compat.sodium.IncompatabilityScreen;
 import de.mrjulsen.paw.compat.sodium.SodiumCompatEvent;
 import de.mrjulsen.wires.item.WireBaseItem;
 import de.mrjulsen.wires.render.WireRenderer;
+import de.mrjulsen.wires.util.ClientUtils;
 import de.mrjulsen.wires.WireClientNetwork;
 import de.mrjulsen.wires.WireNetwork;
 import dev.architectury.event.CompoundEventResult;
@@ -32,8 +33,8 @@ public final class ModClientEvents {
             if (!PantographsAndWires.useAdvancedLogging()) {
                 return;
             }
-            lines.add(WireNetwork.debug_text());
-            lines.add(WireClientNetwork.debug_text());
+            lines.add(WireNetwork.get(ClientUtils.level()).debug_text());
+            lines.add(WireClientNetwork.get(ClientUtils.level()).debug_text());
         });
 
         ClientLifecycleEvent.CLIENT_STARTED.register((mc) -> {        

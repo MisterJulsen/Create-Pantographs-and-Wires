@@ -3,6 +3,7 @@ package de.mrjulsen.wires.network;
 import java.util.UUID;
 
 import de.mrjulsen.wires.network.WiresNetworkSyncData.WireSyncDataEntry;
+import de.mrjulsen.wires.util.ClientUtils;
 import de.mrjulsen.wires.WireClientNetwork;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessorType;
@@ -22,7 +23,7 @@ public final class NetworkManager {
             return WiresNetworkSyncData.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
         }, (player, in, temp, nbt, iteration) -> {
             for (WireSyncDataEntry syncData : in.syncData()) {
-                WireClientNetwork.createClientConnection(in.pos(), syncData);
+                WireClientNetwork.get(ClientUtils.level()).createClientConnection(in.pos(), syncData);
             }
             return false;
         }
@@ -39,7 +40,7 @@ public final class NetworkManager {
         }, (nbt) -> {
             return nbt.getList(DataAccessorType.DEFAULT_NBT_DATA, Tag.TAG_STRING).stream().map(x -> UUID.fromString(((StringTag)x).getAsString())).toArray(UUID[]::new);
         }, (player, in, temp, nbt, iteration) -> {
-            WireClientNetwork.removeClientConnections(in);
+            WireClientNetwork.get(ClientUtils.level()).removeClientConnections(in);
             return false;
         }
     ));
@@ -50,7 +51,7 @@ public final class NetworkManager {
         }, (nbt) -> {
             return WireChunkLoadingData.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
         }, (player, in, temp, nbt, iteration) -> {
-            WireClientNetwork.onClientChunkLoading(in);
+            WireClientNetwork.get(ClientUtils.level()).onClientChunkLoading(in);
             return false;
         }
     ));    

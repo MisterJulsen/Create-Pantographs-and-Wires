@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.mrjulsen.wires.WireClientNetwork;
+import de.mrjulsen.wires.util.ClientUtils;
 import me.jellysquid.mods.sodium.client.render.chunk.RenderSectionManager;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -23,6 +24,6 @@ public class RenderSectionManagerMixin {
 
     @Redirect(method = "onSectionAdded", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/LevelChunkSection;hasOnlyAir()Z", remap = true), remap = false)
     public boolean emptyCheck(LevelChunkSection section) {
-        return section.hasOnlyAir() && !WireClientNetwork.hasConnectionsInSection(this.section);
+        return section.hasOnlyAir() && !WireClientNetwork.get(ClientUtils.level()).hasConnectionsInSection(this.section);
     }
 }

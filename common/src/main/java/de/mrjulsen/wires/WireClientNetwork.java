@@ -17,24 +17,29 @@ import de.mrjulsen.wires.WireCollision.WireBlockCollision;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 
-public final class WireClientNetwork {
+public final class WireClientNetwork implements IWireNetwork {
 
-    private WireClientNetwork() {}
-    
-    private static final Multimap<ChunkPos, WireCollision> collisionByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
-    private static final Multimap<SectionPos, WireCollision> collisionBySection = MultimapBuilder.hashKeys().hashSetValues().build();
-    private static final Multimap<BlockPos, WireCollision> collisionByBlock = MultimapBuilder.hashKeys().hashSetValues().build();
-    
-    private static final Multimap<UUID, WireSegmentRenderDataBatch> renderDataById = MultimapBuilder.hashKeys().hashSetValues().build();
-    private static final Multimap<ChunkPos, WireSegmentRenderDataBatch> renderDataByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
-    private static final Multimap<SectionPos, WireSegmentRenderDataBatch> renderDataBySection = MultimapBuilder.hashKeys().hashSetValues().build();
+    private static ResourceLocation dimension;
+    private static WireClientNetwork currentNetwork;
+    private final Level level;
 
-    public static void clearConnectionCaches() {
+    protected WireClientNetwork(Level level) {
+        this.level = level;
     }
+    
+    private final Multimap<ChunkPos, WireCollision> collisionByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<SectionPos, WireCollision> collisionBySection = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<BlockPos, WireCollision> collisionByBlock = MultimapBuilder.hashKeys().hashSetValues().build();
+    
+    private final Multimap<UUID, WireSegmentRenderDataBatch> renderDataById = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<ChunkPos, WireSegmentRenderDataBatch> renderDataByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<SectionPos, WireSegmentRenderDataBatch> renderDataBySection = MultimapBuilder.hashKeys().hashSetValues().build();
 
-    public static String debug_text() {
+    public String debug_text() {
         return String.format("Wires[C]: Col: [%s,%s,%s], R: [%s,%s,%s]",
             collisionByChunk.size(),
             collisionBySection.size(),
@@ -46,29 +51,39 @@ public final class WireClientNetwork {
         );
     }
 
-    public static void clear() {
-        collisionByBlock.clear();
-        collisionByChunk.clear();
-        collisionBySection.clear();
-        renderDataById.clear();
-        renderDataByChunk.clear();
-        renderDataBySection.clear();
-        clearConnectionCaches();
+    @Override
+    public Level level() {
+        return level;
     }
 
-    public static Collection<WireCollision> getCollisionsTroughBlock(BlockPos pos) {
+    public static void clear() {        
+        dimension = null;
+        currentNetwork = null;
+    }
+    
+    public static WireClientNetwork get(Level level) {
+        if (dimension != level.dimensionTypeId().location() || currentNetwork == null) {
+            dimension = level.dimensionTypeId().location();
+            return currentNetwork = new WireClientNetwork(level);
+        }
+        return currentNetwork;
+    }
+
+
+
+    public Collection<WireCollision> getCollisionsTroughBlock(BlockPos pos) {
         return collisionByBlock.get(pos);
     }
 
-    public static Collection<WireCollision> getCollisionsTroughSection(SectionPos pos) {
+    public Collection<WireCollision> getCollisionsTroughSection(SectionPos pos) {
         return collisionBySection.get(pos);
     }
 
-    public static Collection<WireCollision> getCollisionsTroughChunk(ChunkPos pos) {
+    public Collection<WireCollision> getCollisionsTroughChunk(ChunkPos pos) {
         return collisionByChunk.get(pos);
     }
 
-    public static Collection<WireBlockCollision> getCollisionsInBlock(BlockPos pos) {
+    public Collection<WireBlockCollision> getCollisionsInBlock(BlockPos pos) {
         Collection<WireBlockCollision> connections = new LinkedList<>();
         for (WireCollision c : collisionByBlock.get(pos)) {
             connections.addAll(c.collisionsInBlock(pos));
@@ -76,22 +91,22 @@ public final class WireClientNetwork {
         return connections;
     }
 
-    public synchronized static boolean hasConnectionsInSection(SectionPos section) {
+    public synchronized boolean hasConnectionsInSection(SectionPos section) {
         return renderDataBySection.containsKey(section);
     }
 
-    public synchronized static boolean hasConnectionsInBlock(BlockPos pos) {
+    public synchronized boolean hasConnectionsInBlock(BlockPos pos) {
         return collisionByBlock.containsKey(pos);
     }
 
-    public synchronized static Collection<WireSegmentRenderDataBatch> connectionsInSection(SectionPos section) {
+    public synchronized Collection<WireSegmentRenderDataBatch> connectionsInSection(SectionPos section) {
         if (!hasConnectionsInSection(section)) {
             return List.of();
         }
         return renderDataBySection.get(section);
     }
 
-    public static void createClientConnection(@Nullable ChunkPos chunk, WireSyncDataEntry in) {
+    public void createClientConnection(@Nullable ChunkPos chunk, WireSyncDataEntry in) {
         if (in.forceUpdate()) {
             removeClientConnection(in.data().getConnectionId());
         } else if (renderDataById.containsKey(in.data().getConnectionId())) {
@@ -115,20 +130,19 @@ public final class WireClientNetwork {
         });
 
         new WireCollision(collisionByChunk, collisionBySection, collisionByBlock, in.data().getConnectionId(), in.data().getStartBlockPos(), batch.getCollisions());
-        clearConnectionCaches();
 
         for (SectionPos section : sectionsIn) {
             setSectionDirty(section);
         }
     }
 
-    public static void removeClientConnections(UUID[] connectionIds) {
+    public void removeClientConnections(UUID[] connectionIds) {
         for (UUID id : connectionIds) {
             removeClientConnection(id);
         }
     }
 
-    public static void removeClientConnection(UUID connectionId) {
+    public void removeClientConnection(UUID connectionId) {
         if (!renderDataById.containsKey(connectionId)) {
             return;
         }
@@ -139,7 +153,6 @@ public final class WireClientNetwork {
         collisionByBlock.values().removeIf(x -> x.getId().equals(connectionId));
         collisionByChunk.values().removeIf(x -> x.getId().equals(connectionId));
         collisionBySection.values().removeIf(x -> x.getId().equals(connectionId));
-        clearConnectionCaches();
         
         for (WireSegmentRenderDataBatch batch : renderdata) {
             SectionPos section = batch.getSection();
@@ -147,7 +160,7 @@ public final class WireClientNetwork {
         }
     }
 
-    public static void onClientChunkLoading(WireChunkLoadingData in) {
+    public void onClientChunkLoading(WireChunkLoadingData in) {
         synchronized (renderDataByChunk) {
             Set<UUID> emptyConnections = new HashSet<>();
             for (WireSegmentRenderDataBatch renderdata : renderDataByChunk.get(in.pos())) {
@@ -156,7 +169,6 @@ public final class WireClientNetwork {
                     emptyConnections.add(renderdata.getId());
                 }
             }
-            clearConnectionCaches();
 
             for (UUID id : emptyConnections) {                
                 removeClientConnection(id);
@@ -164,7 +176,7 @@ public final class WireClientNetwork {
         }
     }
 
-    private static void setSectionDirty(SectionPos pos) {
+    private void setSectionDirty(SectionPos pos) {
         Minecraft.getInstance().execute(() -> {            
             Minecraft.getInstance().levelRenderer.setSectionDirty(pos.getX(), pos.getY(), pos.getZ());
         });

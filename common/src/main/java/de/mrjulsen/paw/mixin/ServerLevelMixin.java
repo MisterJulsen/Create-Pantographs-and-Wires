@@ -16,6 +16,7 @@ public class ServerLevelMixin {
     
 	@Inject(method = "sendBlockUpdated", at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
 	public void wireBlockCallback(BlockPos pos, BlockState oldState, BlockState newState, int flags, CallbackInfo ci) {
-		WireNetwork.notifyBlockUpdate((Level)(Object)this, pos, newState, flags);
+		Level level = (Level)(Object)this;
+		WireNetwork.get(level).notifyBlockUpdate(level, pos, newState, flags);
 	}
 }

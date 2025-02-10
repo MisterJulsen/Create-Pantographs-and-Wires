@@ -16,6 +16,7 @@ import de.mrjulsen.wires.WireCollision;
 import de.mrjulsen.wires.WireCollision.WireBlockCollision;
 import de.mrjulsen.wires.WireConnection;
 import de.mrjulsen.wires.WireNetwork;
+import de.mrjulsen.wires.util.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -50,13 +51,13 @@ public class WireDebugRenderer {
         for (int a = -2; a <= 2; a++) {
             for (int b = -2; b <= 2; b++) {
                 ChunkPos relPos = new ChunkPos(chunkPos.x + a, chunkPos.z + b);
-                for (WireConnection connection : WireNetwork.getConnectionsTroughChunk(relPos)) {
+                for (WireConnection connection : WireNetwork.get(ClientUtils.level()).getConnectionsTroughChunk(relPos)) {
                     if (connection == null) continue;
                     for (WireBlockCollision c : connection.getCollisionData().getAllCollisions()) {
                         renderDebugLine(poseStack, buffer, new Vector3f((float)c.absA().x(), (float)c.absA().y() + 0.01f, (float)c.absA().z()), new Vector3f((float)c.absB().x(), (float)c.absB().y() + 0.01f, (float)c.absB().z()), 1f, 0f, 0f, 1f);
                     }
                 }
-                for (WireCollision collision : WireClientNetwork.getCollisionsTroughChunk(relPos)) {
+                for (WireCollision collision : WireClientNetwork.get(ClientUtils.level()).getCollisionsTroughChunk(relPos)) {
                     for (WireBlockCollision c : collision.getAllCollisions()) {
                         renderDebugLine(poseStack, buffer, new Vector3f((float)c.absA().x(), (float)c.absA().y(), (float)c.absA().z()), new Vector3f((float)c.absB().x(), (float)c.absB().y(), (float)c.absB().z()), 0f, 0f, 1f, 1f);
                     }

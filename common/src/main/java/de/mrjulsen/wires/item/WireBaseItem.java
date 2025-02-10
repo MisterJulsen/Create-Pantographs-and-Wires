@@ -80,7 +80,7 @@ public class WireBaseItem extends Item {
                     } else {
                         // Do it...
                         wc.beforeCreateWireConnection(level, pos, state, player, context, compound);
-                        if (WireNetwork.addConnection(level, compound, posA, posB, wcA, wcB, getWireType())) {
+                        if (WireNetwork.get(level).addConnection(level, compound, posA, posB, wcA, wcB, getWireType())) {
                             wc.afterCreateWireConnection(level, pos, state, player, context, compound);
                         } else {
                             // Cannot create connection, because it already exists

@@ -228,8 +228,8 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
         boolean hasWire = false;
         while (poses.hasNext()) {
             BlockPos pos = poses.next();
-            if (WireClientNetwork.hasConnectionsInBlock(pos)) {
-                for (WireBlockCollision c : WireClientNetwork.getCollisionsInBlock(pos)) {
+            if (WireClientNetwork.get(level).hasConnectionsInBlock(pos)) {
+                for (WireBlockCollision c : WireClientNetwork.get(level).getCollisionsInBlock(pos)) {
                     Vector3d d = checkWireIntersection(
                         new Vector3d(c.absA().x, c.absA().y, c.absA().z),
                         new Vector3d(c.absB().x, c.absB().y, c.absB().z),
@@ -264,8 +264,8 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
         Iterator<BlockPos> poses = findIntersectingBlocks(pA, pB, upVec).iterator();
         while (poses.hasNext()) {
             BlockPos pos = poses.next();
-            if (WireClientNetwork.hasConnectionsInBlock(pos)) {
-                for (WireBlockCollision c : WireNetwork.getCollisionsInBlock(pos)) {
+            if (WireClientNetwork.get(level).hasConnectionsInBlock(pos)) {
+                for (WireBlockCollision c : WireNetwork.get(level).getCollisionsInBlock(pos)) {
                     Vector3d d = checkWireIntersection(
                         new Vector3d(c.absA().x, c.absA().y, c.absA().z),
                         new Vector3d(c.absB().x, c.absB().y, c.absB().z),

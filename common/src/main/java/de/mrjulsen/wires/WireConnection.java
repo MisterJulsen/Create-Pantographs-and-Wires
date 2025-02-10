@@ -18,7 +18,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 
 public class WireConnection {
 
@@ -84,17 +83,17 @@ public class WireConnection {
         return Optional.empty();        
     }
 
-    public boolean recalcAttachPoints(Level level, Multimap<ChunkPos, WireCollision> chunkMap, Multimap<SectionPos, WireCollision> sectionMap, Multimap<BlockPos, WireCollision> blockMap) {
+    public boolean recalcAttachPoints(WireNetwork network, Multimap<ChunkPos, WireCollision> chunkMap, Multimap<SectionPos, WireCollision> sectionMap, Multimap<BlockPos, WireCollision> blockMap) {
         boolean hasChanged = false;
-        if (level.isLoaded(getPointA()) && level.getBlockState(getPointA()).getBlock() instanceof IWireConnector c) {
-            CompoundTag connectorData = c.wireRenderData(level, getPointA(), level.getBlockState(getPointA()), getCreationDataContext(), true);
+        if (network.level().isLoaded(getPointA()) && network.level().getBlockState(getPointA()).getBlock() instanceof IWireConnector c) {
+            CompoundTag connectorData = c.wireRenderData(network.level(), getPointA(), network.level().getBlockState(getPointA()), getCreationDataContext(), true);
             if (!connectionANbt.equals(connectorData)) {
                 this.connectionANbt = connectorData;
                 hasChanged = true;
             }
         }
-        if (level.isLoaded(getPointB()) && level.getBlockState(getPointB()).getBlock() instanceof IWireConnector c) {
-            CompoundTag connectorData = c.wireRenderData(level, getPointB(), level.getBlockState(getPointB()), getCreationDataContext(), false);
+        if (network.level().isLoaded(getPointB()) && network.level().getBlockState(getPointB()).getBlock() instanceof IWireConnector c) {
+            CompoundTag connectorData = c.wireRenderData(network.level(), getPointB(), network.level().getBlockState(getPointB()), getCreationDataContext(), false);
             if (!connectionBNbt.equals(connectorData)) {
                 this.connectionBNbt = connectorData;
                 hasChanged = true;
@@ -102,7 +101,7 @@ public class WireConnection {
         }
         if (!hasChanged) return false;
         WireConnectionSyncData sync = WireConnectionSyncData.of(this);
-        WireCollision collision = new WireCollision(chunkMap, sectionMap, blockMap, this.getId(), getPointA(), getWireType().buildWire(WireCreationContext.COLLISION, level, sync).getCollisions());
+        WireCollision collision = new WireCollision(chunkMap, sectionMap, blockMap, this.getId(), getPointA(), getWireType().buildWire(WireCreationContext.COLLISION, network.level(), sync).getCollisions());
         setCollisionData(collision);
         setWireConnectionSyncData(sync);
         WiresApi.LOGGER.warn("A wire was misaligned! Data has been corrected. ID: {}, PointA: {}, PointB: {}", id, pointA, pointB);

@@ -2,6 +2,7 @@ package de.mrjulsen.paw.compat.sodium;
 
 import de.mrjulsen.wires.WireClientNetwork;
 import de.mrjulsen.wires.render.WireRenderer;
+import de.mrjulsen.wires.util.ClientUtils;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 
@@ -10,7 +11,7 @@ public class SodiumCompatEvent {
 
     public static void init() {
         SodiumCompatEvent.CHUNK_MESHING_EVENT.register(c -> {
-            if (WireClientNetwork.hasConnectionsInSection(c.sectionOrigin())) {
+            if (WireClientNetwork.get(ClientUtils.level()).hasConnectionsInSection(c.sectionOrigin())) {
                 WireRenderer.renderConnectionsInSection(c.vertexConsumerProvider(), c.sodiumBuildBuffers(), c.blockRenderView(), c.sectionOrigin());
             }
         });

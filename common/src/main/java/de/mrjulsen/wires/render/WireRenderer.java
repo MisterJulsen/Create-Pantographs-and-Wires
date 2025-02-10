@@ -7,6 +7,7 @@ import de.mrjulsen.mcdragonlib.data.Cache;
 import de.mrjulsen.paw.mixin.client.RenderChunkAccess;
 import de.mrjulsen.wires.WireClientNetwork;
 import de.mrjulsen.wires.WiresApi;
+import de.mrjulsen.wires.util.ClientUtils;
 import de.mrjulsen.wires.util.CompiledChunkExtension;
 import de.mrjulsen.wires.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -42,7 +43,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 	public static void renderConnectionsInSection(Set<RenderType> layers, ChunkBufferBuilderPack buffers, BlockAndTintGetter region, RenderChunk renderChunk) {
 		BlockPos chunkOrigin = renderChunk.getOrigin();
 		SectionPos chunkSection = SectionPos.of(chunkOrigin);
-		if (!WireClientNetwork.hasConnectionsInSection(chunkSection)) {
+		if (!WireClientNetwork.get(ClientUtils.level()).hasConnectionsInSection(chunkSection)) {
 			return;
 		}
 
@@ -59,7 +60,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 	}
 
 	public static void renderConnectionsInSection(Function<RenderType, VertexConsumer> layers, me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildBuffers buffers, BlockAndTintGetter region, SectionPos section) {
-		if (!WireClientNetwork.hasConnectionsInSection(section)) {
+		if (!WireClientNetwork.get(ClientUtils.level()).hasConnectionsInSection(section)) {
 			return;
 		}
 		RenderType renderType = RenderType.solid();
@@ -68,7 +69,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 	}
 
 	private static void renderConnectionsInternal(VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section, PoseStack poseStack) {
-		Collection<WireSegmentRenderDataBatch> connections = WireClientNetwork.connectionsInSection(section);
+		Collection<WireSegmentRenderDataBatch> connections = WireClientNetwork.get(ClientUtils.level()).connectionsInSection(section);
 
 		for (WireSegmentRenderDataBatch connection : connections) {
 			connection.render(vertexConsumer);

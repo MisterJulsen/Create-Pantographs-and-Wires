@@ -55,7 +55,6 @@ public class WireCollision {
                 this.blocks.put(pos.getKey(), pos.getValue());
             }
         }
-        WireNetwork.clearConnectionCaches();
     }
 
     public UUID getId() {

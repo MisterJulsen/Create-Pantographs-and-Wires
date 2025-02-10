@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import de.mrjulsen.wires.WireClientNetwork;
+import de.mrjulsen.wires.util.ClientUtils;
 import me.jellysquid.mods.sodium.client.world.WorldSlice;
 import me.jellysquid.mods.sodium.client.world.cloned.ChunkRenderContext;
 import me.jellysquid.mods.sodium.client.world.cloned.ClonedChunkSectionCache;
@@ -26,6 +27,6 @@ public class WorldSliceMixin {
 
     @Redirect(method = "prepare", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/LevelChunkSection;hasOnlyAir()Z", remap = true), remap = false)
     private static boolean emptyCheck(LevelChunkSection chunk) {
-        return chunk.hasOnlyAir() && !WireClientNetwork.hasConnectionsInSection(section);
+        return chunk.hasOnlyAir() && !WireClientNetwork.get(ClientUtils.level()).hasConnectionsInSection(section);
     }
 }

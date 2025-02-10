@@ -33,7 +33,7 @@ public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBloc
 	public void setRemoved() {
 		super.setRemoved();
         if (!wasUnloaded() && !level.isClientSide) {            
-            WireNetwork.removeConnector(getLevel(), getBlockPos());
+            WireNetwork.get(level).removeConnector(getLevel(), getBlockPos());
         }
         wasUnloaded = false;
 	} 

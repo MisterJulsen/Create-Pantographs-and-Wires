@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 public abstract class AbstractBlockStateMixin {
 	@Inject(method = "entityInside", at = @At(value = "HEAD"))
 	public void onBlockCollision(Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
-		WireNetwork.checkEntityCollision(level, pos, entity);
+		WireNetwork.get(level).checkEntityCollision(level, pos, entity);
 	}
 }
 

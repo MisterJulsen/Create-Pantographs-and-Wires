@@ -19,10 +19,10 @@ public class ChunkLoadingEvents {
 
 
     public static void onChunkWatch(Level level, ChunkPos pos, Player player) {
-		  WireNetwork.onChunkLoad(level, pos, player);
+		  WireNetwork.get(level).onChunkLoad(level, pos, player);
     }
 
     public static void onChunkUnWatch(Level level, ChunkPos pos, Player player) {
-		  WireNetwork.onChunkUnload(level, pos, player);
+		  WireNetwork.get(level).onChunkUnload(level, pos, player);
     }
 }
