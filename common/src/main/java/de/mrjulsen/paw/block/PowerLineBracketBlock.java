@@ -84,8 +84,8 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock {
         Map.entry(new ShapeKey(EPostType.WALL, EConnectionType.AT_POST), Shapes.or(Block.box(4, 0, 12, 12, 3, 20), Block.box(6.5, 0, 0, 9.5, 3, 12))),
 
         Map.entry(new ShapeKey(EPostType.LATTICE, EConnectionType.ON_POST), Block.box(2, 0, 2, 14, 3, 14)),
-        Map.entry(new ShapeKey(EPostType.LATTICE, EConnectionType.ON_POST_EXTENSION), Shapes.or(Block.box(2, 0, 3, 14, 3, 18), Block.box(6.5, 0, 0, 9.5, 3, 3))),
-        Map.entry(new ShapeKey(EPostType.LATTICE, EConnectionType.AT_POST), Shapes.or(Block.box(2, 0, 3, 14, 3, 18), Block.box(6.5, 0, 0, 9.5, 3, 3)))
+        Map.entry(new ShapeKey(EPostType.LATTICE, EConnectionType.ON_POST_EXTENSION), Shapes.or(Block.box(2, 0, 5, 14, 3, 18), Block.box(6.5, 0, 0, 9.5, 3, 5))),
+        Map.entry(new ShapeKey(EPostType.LATTICE, EConnectionType.AT_POST), Shapes.or(Block.box(2, 0, 5, 14, 3, 18), Block.box(6.5, 0, 0, 9.5, 3, 5)))
     );
     private static final MapCache<VoxelShape, TransformationShapeKey, TransformationShapeKey> shapesCache = new MapCache<>((key) -> {
         VoxelShape baseShape = key.shapeKey().postType() == EPostType.NONE || key.shapeKey().connectionType() == EConnectionType.NONE ? DEFAULT_SHAPE : BASE_SHAPES.get(key.shapeKey());        
