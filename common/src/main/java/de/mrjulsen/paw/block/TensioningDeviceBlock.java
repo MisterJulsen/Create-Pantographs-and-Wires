@@ -59,9 +59,7 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
 
 
     public TensioningDeviceBlock(Properties properties) {
-        super(properties
-            .offsetType(OffsetType.XYZ)
-        );
+        super(properties);
         registerDefaultState(this.defaultBlockState()
             .setValue(HELPER, false)
             .setValue(CONNECTION, ECantileverConnectionType.PX16)
