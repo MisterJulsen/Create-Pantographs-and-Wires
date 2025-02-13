@@ -1,6 +1,5 @@
 {
   "type": "create:compacting",
-  "heatRequirement": "superheated",
   "ingredients": [
     {
       "tag": "c:coal_coke_dust"
