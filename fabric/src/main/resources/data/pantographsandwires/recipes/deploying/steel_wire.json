@@ -1,0 +1,17 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    {
+      "tag": "c:iron_plates"
+    },
+    {
+      "tag": "c:shears"
+    }
+  ],
+  "results": [
+    {
+      "item": "pantographsandwires:steel_wire",
+      "count": 2
+    }
+  ]
+}

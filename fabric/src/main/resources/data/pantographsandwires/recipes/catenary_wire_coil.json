@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "item": "pantographsandwires:catenary_wire"
+      },
+      "B": {
+        "item": "pantographsandwires:empty_wire_coil"
+      }
+    },
+    "pattern": [
+      " A ",
+      "ABA",
+      " A "
+    ],
+    "result": {
+      "count": 8,
+      "item": "pantographsandwires:catenary_wire_coil"
+    }
+  }

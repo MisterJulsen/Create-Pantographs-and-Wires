@@ -52,7 +52,7 @@ public class InsulatorBlock extends AbstractPlaceableInsulatorBlock {
     private final MapCache<VoxelShape, TransformationShapeKeyExtension, TransformationShapeKeyExtension> shapesCache;
 
     public InsulatorBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL)
+        super(properties.mapColor(MapColor.METAL)
             .noOcclusion()
         );
         this.shapesCache = new MapCache<>((key) -> {

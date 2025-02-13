@@ -16,7 +16,7 @@ public class HBeamMastBlock extends AbstractSimplePostBlock {
     private static final VoxelShape SHAPE = Block.box(5, 0, 5, 11, 16, 11);
 
     public HBeamMastBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL));
+        super(properties.mapColor(MapColor.METAL));
     }
 
     @Override

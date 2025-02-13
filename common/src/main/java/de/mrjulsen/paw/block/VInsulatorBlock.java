@@ -23,7 +23,7 @@ public class VInsulatorBlock extends AbstractPlaceableHangingInsulatorBlock {
     private final MapCache<VoxelShape, TransformationShapeKey, TransformationShapeKey> shapesCache;
 
     public VInsulatorBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL)
+        super(properties.mapColor(MapColor.METAL)
             .noOcclusion()
         );
         this.shapesCache = new MapCache<>((key) -> {

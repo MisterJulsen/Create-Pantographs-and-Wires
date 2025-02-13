@@ -29,7 +29,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     public static final DirectionProperty DIRECTION = BlockStateProperties.VERTICAL_DIRECTION;
     
     public CantileverBracketVerticalBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL));
+        super(properties.mapColor(MapColor.METAL));
 
         this.registerDefaultState(defaultBlockState()
             .setValue(DIRECTION, Direction.DOWN)

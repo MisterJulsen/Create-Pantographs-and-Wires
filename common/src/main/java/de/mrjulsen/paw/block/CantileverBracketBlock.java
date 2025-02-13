@@ -24,7 +24,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock {
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
     
     public CantileverBracketBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL));
+        super(properties.mapColor(MapColor.METAL));
 
         this.registerDefaultState(defaultBlockState()
             .setValue(DOWN, false)

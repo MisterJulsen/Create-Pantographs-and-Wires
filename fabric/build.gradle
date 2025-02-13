@@ -37,6 +37,8 @@ dependencies {
     modImplementation(include("com.eliotlash.mclib:mclib:20"))
     modImplementation("maven.modrinth:sodium:mc1.20.1-0.5.11")
     modImplementation("maven.modrinth:indium:1.0.34+mc1.20.1")
+    modCompileOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric-api:${rootProject.jei_version}")
+    modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric:${rootProject.jei_version}")
     
     modImplementation("com.simibubi.create:create-fabric-${rootProject.minecraft_version}:${rootProject.create_fabric_version}")
 

@@ -46,6 +46,9 @@ dependencies {
 
     modImplementation(include("software.bernie.geckolib:geckolib-forge-${rootProject.geckolib_minecraft_version}:${rootProject.geckolib_forge_version}"))
     modImplementation(include(forgeRuntimeLibrary("com.eliotlash.mclib:mclib:20")))
+    
+    modCompileOnly("mezz.jei:jei-${rootProject.minecraft_version}-forge-api:${rootProject.jei_version}")
+    modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-forge:${rootProject.jei_version}")
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')

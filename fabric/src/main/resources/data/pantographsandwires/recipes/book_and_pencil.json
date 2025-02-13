@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "minecraft:book"
+      },
+      {
+        "item": "pantographsandwires:pencil"
+      }
+    ],
+    "result": {
+      "item": "minecraft:writable_book",
+      "count": 1
+    }
+  }

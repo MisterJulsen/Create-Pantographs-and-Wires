@@ -1,0 +1,37 @@
+{
+  "type": "create:mechanical_crafting",
+  "pattern": [
+    "GGG",
+    "RMR",
+    " B ",
+    "ISI",
+    "N N"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:ingots/graphite"
+    },
+    "R": {
+      "tag": "forge:rods/iron"
+    },
+    "B": {
+      "item": "pantographsandwires:iron_rod_bundle"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "S": {
+      "item": "pantographsandwires:iron_spring"
+    },
+    "N": {
+      "item": "pantographsandwires:insulator_brown"
+    },
+    "M": {
+      "tag": "forge:nuggets/iron"
+    }
+  },
+  "result": {
+    "item": "pantographsandwires:pantograph"
+  },
+  "acceptMirrored": true
+}

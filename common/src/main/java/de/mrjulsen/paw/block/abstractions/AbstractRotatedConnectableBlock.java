@@ -35,7 +35,7 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
     private final MapCache<Vec2, BlockState, BlockState> offsetCache = createOffsetCache();
     
     public AbstractRotatedConnectableBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL));
+        super(properties.mapColor(MapColor.METAL));
 
         this.registerDefaultState(defaultBlockState()
             .setValue(MULTIPART_SEGMENT, DEFAULT_SEGMENT)

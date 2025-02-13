@@ -1,0 +1,17 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    {
+      "tag": "c:copper_plates"
+    },
+    {
+      "tag": "c:shears"
+    }
+  ],
+  "results": [
+    {
+      "item": "pantographsandwires:copper_wire",
+      "count": 2
+    }
+  ]
+}

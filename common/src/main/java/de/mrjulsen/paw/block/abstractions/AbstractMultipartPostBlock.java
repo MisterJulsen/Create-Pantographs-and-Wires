@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec2;
 
 public abstract class AbstractMultipartPostBlock extends AbstractSimplePostBlock {
@@ -19,7 +18,7 @@ public abstract class AbstractMultipartPostBlock extends AbstractSimplePostBlock
     public static final EnumProperty<EPostPart> PART = EnumProperty.create("part", EPostPart.class);
 
     public AbstractMultipartPostBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL));
+        super(properties);
 
         this.registerDefaultState(defaultBlockState()
             .setValue(PART, EPostPart.IN_BETWEEN)

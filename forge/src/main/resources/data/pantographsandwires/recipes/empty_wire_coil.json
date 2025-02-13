@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "tag": "minecraft:planks"
+      },
+      "B": {
+        "tag": "forge:rods/wooden"
+      }
+    },
+    "pattern": [
+      "A",
+      "B",
+      "A"
+    ],
+    "result": {
+      "count": 4,
+      "item": "pantographsandwires:empty_wire_coil"
+    }
+  }

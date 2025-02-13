@@ -12,7 +12,7 @@ import net.minecraft.world.level.material.MapColor;
 public class CantileverBracketPostConnectionBlock extends CantileverBracketBaseBlock {
         
     public CantileverBracketPostConnectionBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL));
+        super(properties.mapColor(MapColor.METAL));
 
         this.registerDefaultState(defaultBlockState()
         );

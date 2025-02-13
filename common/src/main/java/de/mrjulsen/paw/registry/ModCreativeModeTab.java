@@ -20,7 +20,7 @@ public class ModCreativeModeTab {
                 () -> new ItemStack(ModItems.MOD_ICON.get()) // Icon
         )
     );
-
+    
     public static void setup() {
         CREATIVE_MODE_TABS.register();
     }

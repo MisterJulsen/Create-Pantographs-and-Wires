@@ -18,4 +18,5 @@ dependencies {
     modImplementation("com.eliotlash.mclib:mclib:20")
     modImplementation("maven.modrinth:sodium:mc1.20.1-0.5.11")
     modImplementation("maven.modrinth:indium:1.0.34+mc1.20.1")
+    modCompileOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric-api:${rootProject.jei_version}")
 }

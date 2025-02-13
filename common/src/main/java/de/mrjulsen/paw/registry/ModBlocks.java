@@ -37,6 +37,7 @@ import de.mrjulsen.paw.blockentity.PantographInteractionBehaviour;
 import de.mrjulsen.paw.blockentity.PantographMovementBehaviour;
 import de.mrjulsen.paw.client.model.RotatedBlockModel;
 import de.mrjulsen.paw.item.CantileverBlockItem;
+import de.mrjulsen.paw.item.FuelBlockItem;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
@@ -60,14 +61,14 @@ public class ModBlocks {
 	public static final TagKey<Block> TAG_TENSIONING_DEVICE_CONNECTABLE = create("tensioning_device_connectable");
 
 	public static final BlockEntry<PantographBlock> PANTOGRAPH = PantographsAndWires.REGISTRATE.block("pantograph", PantographBlock::new)
-		.initialProperties(() -> Blocks.IRON_BLOCK)
+		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(AllMovementBehaviours.movementBehaviour(new PantographMovementBehaviour()))
 		.onRegister(AllInteractionBehaviours.interactionBehaviour(new PantographInteractionBehaviour()))
 		.register();
 
 	public static final BlockEntry<LatticeMastBlock> LATTICE_MAST = PantographsAndWires.REGISTRATE.block("lattice_mast", LatticeMastBlock::new)
-		.initialProperties(() -> Blocks.IRON_BLOCK)
+		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
@@ -76,7 +77,7 @@ public class ModBlocks {
 		.register();
 
 	public static final BlockEntry<FlatLatticeMastBlock> FLAT_LATTICE_MAST = PantographsAndWires.REGISTRATE.block("flat_lattice_mast", FlatLatticeMastBlock::new)
-		.initialProperties(() -> Blocks.IRON_BLOCK)
+		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
@@ -85,7 +86,7 @@ public class ModBlocks {
 		.register();
 
 	public static final BlockEntry<FlatLatticeMastBlock> FLAT_LATTICE_MAST_DIAGONAL = PantographsAndWires.REGISTRATE.block("flat_lattice_mast_diagonal", FlatLatticeMastBlock::new)
-		.initialProperties(() -> Blocks.IRON_BLOCK)
+		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
@@ -103,7 +104,7 @@ public class ModBlocks {
 		.register();
 
 	public static final BlockEntry<ConcretePillarBlock> CONCRETE_POST = PantographsAndWires.REGISTRATE.block("concrete_post", p -> new ConcretePillarBlock(p, false))
-		.initialProperties(SharedProperties::softMetal)
+		.initialProperties(() -> Blocks.SMOOTH_STONE)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
@@ -112,7 +113,7 @@ public class ModBlocks {
 		.register();
 
 	public static final BlockEntry<ConcretePillarBlock> CONCRETE_PILLAR = PantographsAndWires.REGISTRATE.block("concrete_pillar", p -> new ConcretePillarBlock(p, true))
-		.initialProperties(SharedProperties::softMetal)
+		.initialProperties(() -> Blocks.SMOOTH_STONE)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
@@ -123,7 +124,7 @@ public class ModBlocks {
 
 
 	public static final BlockEntry<TensioningDeviceBlock> TENSIONING_DEVICE = PantographsAndWires.REGISTRATE.block("tensioning_device", TensioningDeviceBlock::new)
-		.initialProperties(SharedProperties::softMetal)
+		.initialProperties(() -> Blocks.SMOOTH_STONE)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
@@ -214,6 +215,23 @@ public class ModBlocks {
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
+		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+		.build()
+		.register();
+
+	public static final BlockEntry<Block> GRAPHITE_BLOCK = PantographsAndWires.REGISTRATE.block("graphite_block", Block::new)
+		.initialProperties(SharedProperties::softMetal)
+		.transform(TagGen.pickaxeOnly())
+		.item()
+		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+		.build()
+		.register();
+
+	public static final BlockEntry<Block> COAL_COKE_BLOCK = PantographsAndWires.REGISTRATE.block("coal_coke_block", Block::new)
+		.initialProperties(() -> Blocks.DEEPSLATE)
+		.transform(TagGen.pickaxeOnly())
+		.item(FuelBlockItem::new)
+		.onRegister((item) -> item.setBurnTime(32000))
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
 		.register();

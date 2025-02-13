@@ -19,7 +19,7 @@ public class ConcretePillarBlock extends AbstractSimplePostBlock {
     private final boolean thick;    
 
     public ConcretePillarBlock(Properties properties, boolean thick) {
-        super(Properties.of().mapColor(MapColor.METAL));
+        super(properties.mapColor(MapColor.METAL));
         this.thick = thick;
     }
 

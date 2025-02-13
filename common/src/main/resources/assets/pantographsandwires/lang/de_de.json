@@ -25,8 +25,11 @@
     "block.pantographsandwires.cantilever_bracket_vertical": "Hängejoch",
     "block.pantographsandwires.cantilever_bracket_at_post": "Rohrauslegerachse (Mastverbindung)",
     "block.pantographsandwires.power_line_bracket": "Bahnstromleitungshalterung",
+    "block.pantographsandwires.graphite_block": "Graphitblock",
+    "block.pantographsandwires.coal_coke_block": "Kokskohleblock",
 
     "item.pantographsandwires.cantilever": "Ausleger",
+    "item.pantographsandwires.cantilever_incomplete": "Unvollständiger Ausleger",
     "item.pantographsandwires.catenary_wire": "Kettenfahrleitung",
     "item.pantographsandwires.power_wire": "Bahnenergieleitung",
     "item.pantographsandwires.wire.connection_not_loaded": "Einer der Verbindungspunkte ist nicht geladen.",
@@ -34,6 +37,21 @@
     "item.pantographsandwires.wire.same_connector": "Kann nicht mit dem selben Verbindungspunkt verbunden werden.",
     "item.pantographsandwires.wire.connection_already_exists": "Diese Verbindung existiert bereits.",
     "item.pantographsandwires.wire.to_far_away": "Zu weit vom anderen Verbindungspunkt entfernt. Max. %s Blöcke.",
+    
+    "item.pantographsandwires.iron_rod": "Eisenstab",
+    "item.pantographsandwires.iron_rod_bundle": "Eisenstab Bündel",
+    "item.pantographsandwires.iron_strip": "Eisenstreifen",
+    "item.pantographsandwires.coal_coke": "Kokskohle",
+    "item.pantographsandwires.crushed_coal_coke": "Zerkleinerte Kokskohle",
+    "item.pantographsandwires.graphite_ingot": "Graphit",
+    "item.pantographsandwires.pencil": "Bleistift",
+    "item.pantographsandwires.copper_wire": "Kupferdraht",
+    "item.pantographsandwires.steel_wire": "Stahlseil",
+    "item.pantographsandwires.catenary_wire_coil": "Kettenfahrleitungsspule",
+    "item.pantographsandwires.copper_wire_coil": "Kupferdrahtspule",
+    "item.pantographsandwires.empty_wire_coil": "Leere Drahtspule",
+    "item.pantographsandwires.iron_spring": "Eisenfeder",
+    
     
     "gui.pantographsandwires.cantilever_settings.title": "Ausleger konfigurieren",
     "gui.pantographsandwires.cantilever_settings.size": "Größe",

@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnectorBlockEntity> extends AbstractRotatableBlock implements IBE<T>, IWireConnector {
 
     public AbstractRotatableWireConnectorBlock(Properties properties) {
-        super(Properties.of().mapColor(MapColor.METAL)
+        super(properties.mapColor(MapColor.METAL)
         .noOcclusion());
     }
 

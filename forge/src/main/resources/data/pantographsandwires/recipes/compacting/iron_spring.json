@@ -1,0 +1,22 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "tag": "forge:rods/iron"
+    },
+    {
+      "tag": "forge:rods/iron"
+    },
+    {
+      "tag": "forge:rods/iron"
+    },
+    {
+      "tag": "forge:rods/iron"
+    }
+  ],
+  "results": [
+    {
+      "item": "pantographsandwires:iron_spring"
+    }
+  ]
+}

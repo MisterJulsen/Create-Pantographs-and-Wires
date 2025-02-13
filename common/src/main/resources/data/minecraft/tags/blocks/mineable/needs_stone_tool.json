@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "values": [
+        "pantographsandwires:concrete_pillar",
+        "pantographsandwires:concrete_post",
+        "pantographsandwires:coal_coke_block"
+    ]
+}

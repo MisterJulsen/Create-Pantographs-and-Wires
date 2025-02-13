@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "item": "create:andesite_alloy"
+      },
+      "B": {
+        "tag": "c:green_glass"
+      }
+    },
+    "pattern": [
+      "ABA"
+    ],
+    "result": {
+      "count": 2,
+      "item": "pantographsandwires:insulator_green"
+    }
+  }

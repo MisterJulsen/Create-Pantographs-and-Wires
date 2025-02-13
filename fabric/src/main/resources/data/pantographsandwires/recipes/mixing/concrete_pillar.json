@@ -1,0 +1,27 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "tag": "c:sand"
+    },
+    {
+      "tag": "c:gravel"
+    },
+    {
+      "tag": "c:sand"
+    },
+    {
+      "tag": "c:gravel"
+    },
+    {
+      "amount": 500,
+      "fluidTag": "minecraft:water"
+    }
+  ],
+  "results": [
+    {
+      "item": "pantographsandwires:concrete_pillar",
+      "count": 2
+    }
+  ]
+}

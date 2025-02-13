@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CantileverModelGen")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e16c654d707cd1c67b1f238b2edae686caed5d5c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+834155d540033c534335f54a871e36d8262f5d62")]
 [assembly: System.Reflection.AssemblyProductAttribute("CantileverModelGen")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CantileverModelGen")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

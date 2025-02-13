@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "tag": "c:copper_wires"
+      }
+    },
+    "pattern": [
+      "AAA",
+      " A ",
+      "AAA"
+    ],
+    "result": {
+      "count": 3,
+      "item": "pantographsandwires:catenary_wire"
+    }
+  }
