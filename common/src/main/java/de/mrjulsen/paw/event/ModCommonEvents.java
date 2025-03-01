@@ -12,14 +12,6 @@ public final class ModCommonEvents {
             level.getDataStorage().computeIfAbsent((nbt) -> WireNetwork.load(level, nbt), () -> WireNetwork.create(level), WireNetwork.getFileId(level.dimensionTypeId()));
         });
 
-        LifecycleEvent.SERVER_LEVEL_SAVE.register((server) -> {
-            /*
-            if (!server.isClientSide) {
-                WireNetwork.save(server.getServer());
-            }
-                */
-        });
-
         LifecycleEvent.SERVER_STOPPED.register((server) -> {
             WireNetwork.clear();
         });

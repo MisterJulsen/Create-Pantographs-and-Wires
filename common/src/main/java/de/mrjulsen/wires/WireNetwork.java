@@ -97,7 +97,10 @@ public final class WireNetwork extends SavedData implements IWireNetwork {
     }
     
     public static WireNetwork get(Level level) {
-        return NETWORKS.computeIfAbsent(level.dimensionTypeId().location(), x -> new WireNetwork(level));
+        if (!NETWORKS.containsKey(level.dimensionTypeId().location())) {
+            return new WireNetwork(level);
+        }
+        return NETWORKS.get(level.dimensionTypeId().location());
     }
 
     public static WireNetwork create(ServerLevel level) {
