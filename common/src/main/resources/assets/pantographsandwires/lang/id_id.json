@@ -1,0 +1,50 @@
+{
+    "itemGroup.pantographsandwires.tab": "Create: Pantographs & Wires",
+    
+    "gui.pantographsandwires.sodium_error.title": "Create: Pantographs & Wires",
+    "gui.pantographsandwires.sodium_error.subtitle": "Sodium terpasang, tetapi Indium tidak!",
+    "gui.pantographsandwires.sodium_error.description": "Mod ini tidak akan berfungsi jika Sodium dipasang tanpa Indium. Beberapa blok tidak akan termuat dan kabel-kabel akan menyebabkan crash yang membuat game tidak dapat dimainkan. Silakan pasang Indium dan mulai ulang game.",
+    
+    "block.pantographsandwires.pantograph": "Pantograf",
+    "block.pantographsandwires.tensioning_device": "Perangkat Penegang",
+    "block.pantographsandwires.lattice_mast": "Tiang Kisi",
+    "block.pantographsandwires.flat_lattice_mast": "Tiang Kisi Datar",
+    "block.pantographsandwires.flat_lattice_mast_diagonal": "Tiang Kisi Datar (diagonal)",
+    "block.pantographsandwires.concrete_pillar": "Pilar Beton",
+    "block.pantographsandwires.concrete_post": "Tiang Beton",
+    "block.pantographsandwires.h_beam_mast": "Tiang H-Beam",
+    "block.pantographsandwires.insulator_brown": "Isolator Coklat",
+    "block.pantographsandwires.insulator_green": "Isolator Hijau",
+    "block.pantographsandwires.v_insulator_brown": "Isolator Coklat bentuk V",
+    "block.pantographsandwires.v_insulator_green": "Isolator Hijau bentuk V",
+    "block.pantographsandwires.u_insulator_brown": "Isolator Coklat bentuk U",
+    "block.pantographsandwires.u_insulator_green": "Isolator Hijau bentuk U",
+    "block.pantographsandwires.cantilever_3_green": "Kantilever Hijau",
+    "block.pantographsandwires.cantilever_3_brown": "Kantilever Coklat",
+    "block.pantographsandwires.cantilever_bracket": "Braket Kantilever",
+    "block.pantographsandwires.cantilever_bracket_vertical": "Braket Kantilever (Ekstensi vertikal)",
+    "block.pantographsandwires.cantilever_bracket_at_post": "Cantilever Bracket (Hubungan tiang)",
+    "block.pantographsandwires.power_line_bracket": "Braket Saluran Listrik",
+
+    "item.pantographsandwires.cantilever": "Kantilever",
+    "item.pantographsandwires.catenary_wire": "Kawat Catenary",
+    "item.pantographsandwires.power_wire": "Kawat Listrik",
+    "item.pantographsandwires.wire.connection_not_loaded": "Salah satu konektor tidak termuat.",
+    "item.pantographsandwires.wire.connector_invalid": "Salah satu konektor tidak sah.",
+    "item.pantographsandwires.wire.same_connector": "Tidak bisa menghubung ke konektor yang sama.",
+    "item.pantographsandwires.wire.connection_already_exists": "Hubungan ini sudah ada.",
+    "item.pantographsandwires.wire.to_far_away": "Terlalu jauh dari titik hubungan sebelumnya. Maks. %s blok.",
+    
+    "gui.pantographsandwires.cantilever_settings.title": "Pengaturan Kantilever",
+    "gui.pantographsandwires.cantilever_settings.size": "Ukuran",
+    
+    "enum.pantographsandwires.cantilever_registration_arm": "Lengan Registrasi",
+    "enum.pantographsandwires.cantilever_registration_arm.center": "Tengah",
+    "enum.pantographsandwires.cantilever_registration_arm.inner": "Dalam",
+    "enum.pantographsandwires.cantilever_registration_arm.outer": "Luar",
+
+    "enum.pantographsandwires.insulator_placement": "Penempatan Isolator",
+    "enum.pantographsandwires.insulator_placement.none": "Tidak ada",
+    "enum.pantographsandwires.insulator_placement.back": "Belakang",
+    "enum.pantographsandwires.insulator_placement.front": "Depan"
+}
