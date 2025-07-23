@@ -1,6 +1,7 @@
 package de.mrjulsen.wires;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class WireCollision {
         blockMap.values().removeIf(x -> x.getId().equals(connectionId));
 
         this.connectionId = connectionId;
+
         for (WirePoints p : points) {
             Vector3f[] vec = p.vertices();
             Map<BlockPos, WireBlockCollision> positions = traceAlongWire(vec, (float)(WiresApi.PIXEL * ModServerConfig.WIRE_COLLISION_TRACER_STEP_SIZE.get()), origin);
@@ -62,19 +64,19 @@ public class WireCollision {
     }
 
     public Set<BlockPos> blocksIn() {
-        return blocks.keySet();
+        return Collections.unmodifiableSet(blocks.keySet());
     }
 
     public Collection<WireBlockCollision> collisionsInBlock(BlockPos pos) {
-        return blocks.get(pos);
+        return Collections.unmodifiableCollection(blocks.get(pos));
     }
 
     public Set<SectionPos> sectionsIn() {
-        return sections;
+        return Collections.unmodifiableSet(sections);
     }
 
     public Collection<WireBlockCollision> getAllCollisions() {
-        return blocks.values();
+        return Collections.unmodifiableCollection(blocks.values());
     }
 
     private Map<BlockPos, WireBlockCollision> traceAlongWire(Vector3f[] points, float step, BlockPos origin) {
@@ -108,6 +110,7 @@ public class WireCollision {
                         final Vector3f fLastPoint = lastPoint;
                         final Vector3f fCurrentPoint = currentPoint;
                         blocks.computeIfAbsent(fLastPos, x -> new WireBlockCollision(
+                            getId(),
                             fLastPos,
                             new Vector3f(fLastPoint).sub(fLastPos.getX(), fLastPos.getY(), fLastPos.getZ())
                         )).setSecondPoint(new Vector3f(fCurrentPoint).sub(fLastPos.getX(), fLastPos.getY(), fLastPos.getZ()));
@@ -125,6 +128,7 @@ public class WireCollision {
             final Vector3f fLastPoint = lastPoint;
             final Vector3f fCurrentPoint = currentPoint;
             blocks.computeIfAbsent(fLastPos, x -> new WireBlockCollision(
+                getId(),
                 fLastPos,
                 new Vector3f(fLastPoint).sub(fLastPos.getX(), fLastPos.getY(), fLastPos.getZ())
             )).setSecondPoint(new Vector3f(fCurrentPoint).sub(fLastPos.getX(), fLastPos.getY(), fLastPos.getZ()));
@@ -157,6 +161,7 @@ public class WireCollision {
     }
 
     public static class WireBlockCollision {
+        private final UUID id;
         private final BlockPos pos;
         private final Vector3f entryPointA;
         private Vector3f entryPointB;
@@ -164,18 +169,23 @@ public class WireCollision {
         private final Cache<Vector3f> absA;
         private final Cache<Vector3f> absB;
 
-        public WireBlockCollision(BlockPos pos, Vector3f entryPointA) {
+        public WireBlockCollision(UUID id, BlockPos pos, Vector3f entryPointA) {
+            this.id = id;
             this.pos = pos;
             this.entryPointA = new Vector3f(bounds(entryPointA.x), entryPointA.y, bounds(entryPointA.z));
             this.absA = new Cache<>(() -> new Vector3f(this.entryPointA).add(pos.getX(), pos.getY(), pos.getZ()));
             this.absB = new Cache<>(() -> new Vector3f(this.entryPointB).add(pos.getX(), pos.getY(), pos.getZ()));
         }
 
-        public WireBlockCollision(BlockPos pos, Vector3f entryPointA, Vector3f entryPointB) {
-            this(pos, entryPointA);
+        public WireBlockCollision(UUID id, BlockPos pos, Vector3f entryPointA, Vector3f entryPointB) {
+            this(id, pos, entryPointA);
             this.entryPointB = new Vector3f(bounds(entryPointB.x), entryPointB.y, bounds(entryPointB.z));
             this.absA.clear();
             this.absB.clear();
+        }
+
+        public UUID getId() {
+            return id;
         }
 
         public WireBlockCollision setSecondPoint(Vector3f oEntryPointB) {

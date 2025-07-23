@@ -47,6 +47,7 @@ public class WireDebugRenderer {
         
         MultiBufferSource.BufferSource mbs = Minecraft.getInstance().renderBuffers().bufferSource();
 		VertexConsumer buffer = mbs.getBuffer(RenderType.lines());
+
         
         for (int a = -2; a <= 2; a++) {
             for (int b = -2; b <= 2; b++) {
@@ -67,7 +68,7 @@ public class WireDebugRenderer {
 
         while (!highlightedWires.isEmpty()) {
             Pair<Vector3f, Vector3f> p = highlightedWires.pollFirst();
-            renderDebugLine(poseStack, buffer, new Vector3f(p.getFirst()).sub(0, 0.01f, 0), new Vector3f(p.getSecond()).sub(0, 0.01f, 0), 0f, 1f, 0f, 1f);
+            renderDebugLine(poseStack, buffer, new Vector3f(p.get()).sub(0, 0.01f, 0), new Vector3f(p.getSecond()).sub(0, 0.01f, 0), 0f, 1f, 0f, 1f);
         }
 
         poseStack.popPose();

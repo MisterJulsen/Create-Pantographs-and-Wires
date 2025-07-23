@@ -43,6 +43,10 @@ public enum ECantileverConnectionType implements StringRepresentable {
         return Arrays.stream(values()).filter(x -> x.getIndex() == index).findFirst().orElse(PX16);
     }
 
+    public static ECantileverConnectionType getByName(String name) {
+        return Arrays.stream(values()).filter(x -> x.getSerializedName().equals(name)).findFirst().orElse(PX16);
+    }
+
     @Override
     public String getSerializedName() {
         return name;

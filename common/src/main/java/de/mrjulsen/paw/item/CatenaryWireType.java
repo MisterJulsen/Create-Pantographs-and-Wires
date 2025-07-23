@@ -24,7 +24,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 public class CatenaryWireType extends AbstractWireType {
 
 	private static final float HANG_FAC = 0.025f;
-	private static final float THICKNESS = 0.5f / 16f;
+	private static final float THICKNESS = 0.75f / 16f;
 
 	public CatenaryWireType(ResourceLocation location) {
 		super(location);

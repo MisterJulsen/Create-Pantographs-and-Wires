@@ -3,6 +3,7 @@ package de.mrjulsen.wires;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -166,6 +167,10 @@ public final class WireNetwork extends SavedData implements IWireNetwork {
         return level;
     }
 
+    public Collection<WireConnection> getConnectionsFromBlock(BlockPos pos) {
+        return Collections.unmodifiableCollection(connectionsByBlock.get(pos));
+    }
+
     public Collection<WireConnection> getConnectionsTroughBlock(BlockPos pos) {
         Collection<WireConnection> connections = new LinkedList<>();
         for (WireCollision c : collisionByBlock.get(pos)) {
@@ -191,15 +196,15 @@ public final class WireNetwork extends SavedData implements IWireNetwork {
     }
 
     public Collection<WireCollision> getCollisionsTroughBlock(BlockPos pos) {
-        return collisionByBlock.get(pos);
+        return Collections.unmodifiableCollection(collisionByBlock.get(pos));
     }
 
     public Collection<WireCollision> getCollisionsTroughSection(SectionPos pos) {
-        return collisionBySection.get(pos);
+        return Collections.unmodifiableCollection(collisionBySection.get(pos));
     }
 
     public Collection<WireCollision> getCollisionsTroughChunk(ChunkPos pos) {
-        return collisionByChunk.get(pos);
+        return Collections.unmodifiableCollection(collisionByChunk.get(pos));
     }
 
     public Collection<WireBlockCollision> getCollisionsInBlock(BlockPos pos) {
@@ -210,9 +215,9 @@ public final class WireNetwork extends SavedData implements IWireNetwork {
         return connections;
     }
 
-    public synchronized boolean addConnection(Level level, CompoundTag itemData, BlockPos posA, BlockPos posB, IWireConnector connectorA, IWireConnector connectorB, IWireType wireType) {
-        CompoundTag connectionANbt = connectorA.wireRenderData(level, posA, level.getBlockState(posA), itemData, true);
-        CompoundTag connectionBNbt = connectorB.wireRenderData(level, posB, level.getBlockState(posB), itemData, false);
+    public synchronized boolean addConnection(Level level, CompoundTag itemData, BlockPos posA, BlockPos posB, IWireConnector connectorA, IWireConnector connectorB, IWireType wireType, int index) {
+        CompoundTag connectionANbt = connectorA.wireRenderData(level, posA, level.getBlockState(posA), itemData, index * 2);
+        CompoundTag connectionBNbt = connectorB.wireRenderData(level, posB, level.getBlockState(posB), itemData, index * 2 + 1);
 
         WireConnection wireConnection = createWireConnection(posA, posB, wireType, connectionANbt, connectionBNbt, itemData);
 
@@ -326,6 +331,19 @@ public final class WireNetwork extends SavedData implements IWireNetwork {
         for (UUID playerId : updatePlayers) {
             if (level.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer) {
                 DataAccessor.getFromClient(serverPlayer, collisionsByBlock.stream().toArray(UUID[]::new), NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
+            }
+        }
+
+        setDirty();
+    }
+
+    public synchronized void removeConnection(Level level, UUID id) {    
+
+        Set<UUID> updatePlayers = removeWireConnection(id);
+
+        for (UUID playerId : updatePlayers) {
+            if (level.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer) {
+                DataAccessor.getFromClient(serverPlayer, new UUID[] { id }, NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
             }
         }
 

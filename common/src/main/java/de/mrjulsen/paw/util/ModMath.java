@@ -1,7 +1,14 @@
 package de.mrjulsen.paw.util;
 
+import org.joml.Vector3f;
+import org.joml.Vector3i;
+
+import com.simibubi.create.foundation.utility.VecHelper;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
@@ -10,6 +17,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ModMath {
+
+	public static final Vector3f CENTER_OF_ORIGIN = new Vector3f(0.5f, 0.5f, 0.5f);
+
     public static Vec2 rotateY(Vec2 vec, double deg) {
 		if (deg == 0)
 			return vec;
@@ -197,4 +207,43 @@ public class ModMath {
     public static int checkPointPosition(Vec2 pointA, Vec2 pointB, Vec2 pointP) {
         return (int)Math.signum((pointB.x - pointA.x) * (pointP.y - pointA.y) - (pointB.y - pointA.y) * (pointP.x - pointA.x));
     }
+    
+    public static Vector3f rotate(Vector3f vec, Vector3f rotationVec) {
+		return rotate(vec, rotationVec.x, rotationVec.y, rotationVec.z);
+	}
+
+	public static Vector3f rotate(Vector3f vec, double xRot, double yRot, double zRot) {
+		return rotate(rotate(rotate(vec, xRot, Axis.X), yRot, Axis.Y), zRot, Axis.Z);
+	}
+
+	public static Vector3f rotateCentered(Vector3f vec, double deg, Axis axis) {
+		Vector3f shift = getCenterOf(new Vector3i());
+		return rotate(new Vector3f(vec).sub(shift), deg, axis).add(shift);
+	}
+
+	public static Vector3f rotate(Vector3f vec, double deg, Axis axis) {
+		if (deg == 0)
+			return vec;
+
+		float angle = (float) (deg / 180f * Math.PI);
+		float sin = Mth.sin(angle);
+		float cos = Mth.cos(angle);
+		float x = vec.x;
+		float y = vec.y;
+		float z = vec.z;
+
+		if (axis == Axis.X)
+			return new Vector3f(x, y * cos - z * sin, z * cos + y * sin);
+		if (axis == Axis.Y)
+			return new Vector3f(x * cos + z * sin, y, z * cos - x * sin);
+		if (axis == Axis.Z)
+			return new Vector3f(x * cos - y * sin, y * cos + x * sin, z);
+		return vec;
+	}
+
+	public static Vector3f getCenterOf(Vector3i pos) {
+		if (pos.equals(new Vector3i()))
+			return CENTER_OF_ORIGIN;
+		return new Vector3f(pos).add(.5f, .5f, .5f);
+	}
 }

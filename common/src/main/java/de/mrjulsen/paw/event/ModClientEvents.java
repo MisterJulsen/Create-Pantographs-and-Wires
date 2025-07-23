@@ -1,8 +1,14 @@
 package de.mrjulsen.paw.event;
 
+import java.util.function.Supplier;
+
+import de.mrjulsen.mcdragonlib.client.model.CustomBlockModelRegistry;
 import de.mrjulsen.paw.PantographsAndWires;
+import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
+import de.mrjulsen.paw.block.model.CantileverModel;
 import de.mrjulsen.paw.compat.sodium.IncompatabilityScreen;
 import de.mrjulsen.paw.compat.sodium.SodiumCompatEvent;
+import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.wires.item.WireBaseItem;
 import de.mrjulsen.wires.render.WireRenderer;
 import de.mrjulsen.wires.util.ClientUtils;
@@ -28,6 +34,10 @@ public final class ModClientEvents {
     private ModClientEvents() {}
 
     public static void init() {
+
+        for (Supplier<? extends AbstractCantileverBlock> cantilever : ModBlocks.getCantilevers()) {
+            CustomBlockModelRegistry.registerForBlock(() -> cantilever.get(), CantileverModel::new, null);
+        }
 
         ClientGuiEvent.DEBUG_TEXT_LEFT.register((lines) -> {
             if (!PantographsAndWires.useAdvancedLogging()) {

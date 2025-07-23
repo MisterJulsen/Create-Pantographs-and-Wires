@@ -1,16 +1,34 @@
 package de.mrjulsen.paw.block;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import javax.annotation.Nullable;
 
+import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.property.EInsulatorType;
+import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
+import de.mrjulsen.paw.blockentity.CantileverBlockEntity.CantileverData;
 import de.mrjulsen.paw.item.CantileverBlockItem;
+import de.mrjulsen.paw.item.CatenaryWireItem;
 import de.mrjulsen.paw.registry.ModBlocks;
-import de.mrjulsen.paw.registry.ModBlocks.CantileverKey;
+import de.mrjulsen.wires.WireConnection;
+import de.mrjulsen.wires.WireNetwork;
+import de.mrjulsen.wires.item.WireBaseItem;
+import de.mrjulsen.wires.network.WireConnectionSyncData;
+import de.mrjulsen.wires.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,12 +36,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class CantileverBlock extends AbstractCantileverBlock {
 
-    private final byte size;
     private final EInsulatorType insulatorType;
 
-    public CantileverBlock(Properties properties, byte size, EInsulatorType insulatorType) {
-        super(properties);
-        this.size = size;
+    public CantileverBlock(Properties properties, EInsulatorType insulatorType) {
+        super(properties
+            .noCollission()
+        );
         this.insulatorType = insulatorType;
     }
 
@@ -32,48 +50,101 @@ public class CantileverBlock extends AbstractCantileverBlock {
         return new ItemStack(ModBlocks.CANTILEVER_ITEMS.get(insulatorType));
     }
 
-    public byte getSize() {
-        return size;
-    }
-
     public EInsulatorType getInsulatorType() {
         return insulatorType;
     }
 
     @Override
-    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
-        return switch (state.getValue(REGISTRATION_ARM)) {
-            case OUTER -> new Vec3(0, -(int)(size / 3), 0.75f - size);
-            case INNER -> new Vec3(0, -(int)(size / 3), 1.25f - size);
-            default -> new Vec3(0, -(int)(size / 3), 1 - size);
-        };
+    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+        if (level.getBlockEntity(pos) instanceof CantileverBlockEntity be) {
+            int idx = 0;
+            if (itemData.contains(WireBaseItem.NBT_POINTS)) {
+                CompoundTag point = (CompoundTag)itemData.getList(WireBaseItem.NBT_POINTS, Tag.TAG_COMPOUND).get(index);
+                idx = point.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
+            } else if (itemData.contains(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1))) {
+                idx = itemData.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1));
+            }
+
+            CantileverData data = be.getCantileverData()[idx];
+            float size = data.width();
+            float height = data.catenaryHeight();
+            float xOffset = data.z();
+            return switch (be.getRegistrationArmType()) {
+                case OUTER -> new Vec3(xOffset - 0.5f, -height, 0.25f - size);
+                case INNER -> new Vec3(xOffset - 0.5f, -height, 0.75f - size);
+                default ->    new Vec3(xOffset - 0.5f, -height, 0.5f - size);
+            };
+        }
+        return Vec3.ZERO;
     }
 
     @Override
-    public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
-        return switch (state.getValue(REGISTRATION_ARM)) {
-            case OUTER -> new Vec3(0, 1f / 16f * 11f, 1f - size);
-            case INNER -> new Vec3(0, 1f / 16f * 11f, 1f - size);
-            default -> new Vec3(0, 1f / 16f * 11f, 1f - size);
-        };
+    public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+        if (level.getBlockEntity(pos) instanceof CantileverBlockEntity be) {
+            int idx = 0;
+            if (itemData.contains(WireBaseItem.NBT_POINTS)) {
+                CompoundTag point = (CompoundTag)itemData.getList(WireBaseItem.NBT_POINTS, Tag.TAG_COMPOUND).get(index);
+                idx = point.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
+            } else if (itemData.contains(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1))) {
+                idx = itemData.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1));
+            }
+
+            CantileverData data = be.getCantileverData()[idx];
+            float size = data.width();
+            float height = DragonLib.PIXEL * 11f + data.frontYOffset();
+            float xOffset = data.z();
+            return switch (be.getRegistrationArmType()) {
+                case OUTER -> new Vec3(xOffset - 0.5f, height, 0.5f - size);
+                case INNER -> new Vec3(xOffset - 0.5f, height, 0.5f - size);
+                default ->    new Vec3(xOffset - 0.5f, height, 0.5f - size);
+            };
+        }
+        return Vec3.ZERO;
+        
+    }
+
+    @Override
+    public boolean onAttachWireTo(Level level, BlockPos pos, BlockState state, Player player, Optional<UseOnContext> hit, CompoundTag pointData, int index) {
+        WireNetwork network = WireNetwork.get(level);
+        if (!(level.getBlockEntity(pos) instanceof CantileverBlockEntity be)) {
+            return false;
+        }
+
+        int[] connectionsCount = new int[be.getCantileversCount()];
+        Arrays.fill(connectionsCount, 0);
+        for (WireConnection connection : network.getConnectionsFromBlock(pos)) {
+            WireConnectionSyncData sync = connection.getWireConnectionSyncData();
+            ListTag list = sync.getCreationData().getList(CatenaryWireItem.NBT_POINTS, Tag.TAG_COMPOUND);
+            list.forEach(x -> {
+                CompoundTag tag = (CompoundTag)x;
+                BlockPos p = Utils.getNbtBlockPos(tag, CatenaryWireItem.NBT_POS);
+                if (p.equals(pos)) {
+                    int idx = tag.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
+                    connectionsCount[idx] = connectionsCount[idx] + 1;
+                }
+            });
+        }
+        int cantileverIndex = pointData.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
+        boolean b = connectionsCount[cantileverIndex] < 2;
+        if (!b) {
+            player.displayClientMessage(TextUtils.translate("block." + PantographsAndWires.MOD_ID + ".cantilever.too_many_connections").withStyle(ChatFormatting.RED), true);
+        }
+        return b;
     }
 
     @Override
     public Vec3 multiblockSize() {
         return new Vec3(1, 1, 1);
     }
-
     
 	@SuppressWarnings("deprecation")
     public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
-        // make double cantilever
 		return !useContext.isSecondaryUseActive() && useContext.getItemInHand().getItem() instanceof CantileverBlockItem ? true : super.canBeReplaced(state, useContext);
 	}
 
 	@Nullable
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-        // make double cantilever
-		BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
-		return blockstate.getBlock() instanceof CantileverBlock ? copyProperties(blockstate, ModBlocks.getDoubleCantilever(new CantileverKey(getSize(), getInsulatorType())).getDefaultState()) : super.getStateForPlacement(context);
+        BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
+        return blockstate.is(this) ? blockstate : super.getStateForPlacement(context);
 	}
 }

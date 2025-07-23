@@ -1,20 +1,20 @@
 package de.mrjulsen.paw.block.abstractions;
 
-import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
-import de.mrjulsen.paw.block.property.ECantileverConnectionType;
-import de.mrjulsen.paw.blockentity.MultiblockWireConnectorBlockEntity;
+import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.client.gui.widgets.IIconEnum;
 import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.util.Utils;
+
+import java.util.Arrays;
+
 import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -22,35 +22,62 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class AbstractCantileverBlock extends AbstractSupportedRotatableWireConnectorBlock<MultiblockWireConnectorBlockEntity> implements ICatenaryWireConnector, IMultiblock {
+public abstract class AbstractCantileverBlock extends AbstractSupportedRotatableWireConnectorBlock<CantileverBlockEntity> implements ICatenaryWireConnector, IMultiblock {
 
-    public static final byte MIN_SIZE = 3;
-    public static final byte MAX_SIZE = 7;
+    public static final float MIN_WIDTH = 1.5f;
+    public static final float MAX_WIDTH = 6.5f;
+    public static final float MIN_HEIGHT = 0f;
+    public static final float MAX_HEIGHT = 3f;
+
+    public static float getMaxHeight(float height) {
+        return Math.max(1, Math.min(MAX_HEIGHT, height - 0.5f));
+    }
+
+    public static float getMinHeight(float height) {
+        return Math.max(MIN_HEIGHT, Math.min(height - 0.5f, 1));
+    }
+    
+    public static float getMaxWidth(float height) {
+        return Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, height + 3.5f));
+    }
+
+    public static float getMinWidth(float height) {
+        return MIN_WIDTH;
+    }
 
     public static enum ECantileverRegistrationArmType implements StringRepresentable, IIconEnum, ITranslatableEnum {
-        CENTER("center", ModGuiIcons.CANTILEVER_CENTER),
-        INNER("inner", ModGuiIcons.CANTILEVER_INNER),
-        OUTER("outer", ModGuiIcons.CANTILEVER_OUTER);
+        CENTER("center", ModGuiIcons.CANTILEVER_CENTER, 0, 0),
+        INNER("inner", ModGuiIcons.CANTILEVER_INNER, -0.25f, 1),
+        OUTER("outer", ModGuiIcons.CANTILEVER_OUTER, 0.25f, 0);
 
         final String name;
         final ModGuiIcons icon;
+        final float offset;
+        final float registrationArmExtend;
 
-        ECantileverRegistrationArmType(String name, ModGuiIcons icon) {
+        ECantileverRegistrationArmType(String name, ModGuiIcons icon, float offset, float registrationArmExtend) {
             this.name = name;
             this.icon = icon;
+            this.offset = offset;
+            this.registrationArmExtend = registrationArmExtend;
+        }
+
+        public static ECantileverRegistrationArmType getByName(String name) {
+            return Arrays.stream(values()).filter(x -> x.getSerializedName().equals(name)).findFirst().orElse(CENTER);
         }
 
         @Override
         public ModGuiIcons getIcon() {
             return icon;
+        }
+
+        public float getOffset() {
+            return offset;
         }
 
         @Override
@@ -71,23 +98,41 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         public static ECantileverRegistrationArmType def() {
             return CENTER;
         }
+
+        public ECantileverRegistrationArmType opposite() {
+            return switch (this) {
+                case INNER -> OUTER;
+                case OUTER -> INNER;
+                default -> this;
+            };
+        }
     }
 
     public static enum ECantileverInsulatorsPlacement implements StringRepresentable, IIconEnum, ITranslatableEnum {
-        BACK("back", ModGuiIcons.CANTILEVER_INSULATOR_BACK),
-        FRONT("front", ModGuiIcons.CANTILEVER_INSULATOR_FRONT);
+        BACK("back", ModGuiIcons.CANTILEVER_INSULATOR_BACK, 0),
+        FRONT("front", ModGuiIcons.CANTILEVER_INSULATOR_FRONT, 0.8f);
 
         final String name;
         final ModGuiIcons icon;
+        final float offsetFac;
 
-        ECantileverInsulatorsPlacement(String name, ModGuiIcons icon) {
+        ECantileverInsulatorsPlacement(String name, ModGuiIcons icon, float offsetFac) {
             this.name = name;
             this.icon = icon;
+            this.offsetFac = offsetFac;
+        }
+
+        public static ECantileverInsulatorsPlacement getByName(String name) {
+            return Arrays.stream(values()).filter(x -> x.getSerializedName().equals(name)).findFirst().orElse(BACK);
         }
 
         @Override
         public ModGuiIcons getIcon() {
             return icon;
+        }
+
+        public float getPlacementOffsetFac() {
+            return offsetFac;
         }
 
         @Override
@@ -110,60 +155,15 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         }
     }
 
-    public static final EnumProperty<ECantileverConnectionType> CONNECTION = EnumProperty.create("connection", ECantileverConnectionType.class);
-    public static final EnumProperty<ECantileverRegistrationArmType> REGISTRATION_ARM = EnumProperty.create("registration_arm", ECantileverRegistrationArmType.class);
-    public static final EnumProperty<ECantileverInsulatorsPlacement> INSULATORS_PLACEMENT = EnumProperty.create("insulator_placement", ECantileverInsulatorsPlacement.class);
-
     public AbstractCantileverBlock(Properties properties) {
         super(properties.mapColor(MapColor.METAL)
             .noOcclusion()
         );
-
-        this.registerDefaultState(this.defaultBlockState()
-            .setValue(CONNECTION, ECantileverConnectionType.PX16)
-            .setValue(REGISTRATION_ARM, ECantileverRegistrationArmType.def())
-            .setValue(INSULATORS_PLACEMENT, ECantileverInsulatorsPlacement.def())
-        );
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {        
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(CONNECTION, REGISTRATION_ARM, INSULATORS_PLACEMENT);
-    }
-
-    @Override
-    public Class<MultiblockWireConnectorBlockEntity> getBlockEntityClass() {
-        return MultiblockWireConnectorBlockEntity.class;
-    }
-
-    public BlockState copyProperties(BlockState src, BlockState target) {        
-        if (!(src.getBlock() instanceof AbstractCantileverBlock) || !(target.getBlock() instanceof AbstractCantileverBlock)) {
-            throw new IllegalArgumentException("One of the given blockstates is no AbstractCantileverBlock. src: " + src + ", target: " + target);
-        }
-
-        for (Property<?> property : src.getBlock().getStateDefinition().getProperties()) {
-            if (!target.hasProperty(property))
-				continue;
-
-			target = copyPropertyOf(src, target, property);
-        }
-        return target;
-    }
-
-	protected static <T extends Comparable<T>> BlockState copyPropertyOf(BlockState sourceState, BlockState targetState, Property<T> property) {
-        return (BlockState)targetState.setValue(property, sourceState.getValue(property));
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState state = super.getStateForPlacement(context);
-        BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
-
-        state = state
-            .setValue(CONNECTION, ECantileverConnectionType.getFirstForState(ctxExt.getPlacedOnState()).orElse(ECantileverConnectionType.PX16))
-        ;
-        return state;
+    public Class<CantileverBlockEntity> getBlockEntityClass() {
+        return CantileverBlockEntity.class;
     }
 
     @Override
@@ -181,11 +181,18 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     @Override
     public VoxelShape getBaseShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         double stretch = 16d * ((1d / Math.cos(Math.abs(Math.toRadians(getRelativeYRotation(state))))) - 1d);
+        double a = 8 - 2;
+        double b = 8 + 2;
+        //if (level.getBlockEntity(pos) instanceof CantileverBlockEntity be) {
+        //    double w = ((1.0f / be.getCantileversCount()) * 2) * (be.getCantileversCount() - 1) * 16;
+        //    a -= w / 2;
+        //    b += w / 2;
+        //}
         return switch (state.getValue(FACING)) {
-            case SOUTH -> Block.box(6d, 0, 0, 10d, 16d, 16d + stretch);
-            case WEST  -> Block.box(-stretch, 0, 6d, 16d, 16d, 10d);
-            case EAST  -> Block.box(0, 0, 6d, 16d + stretch, 16d, 10d);
-            default    -> Block.box(6d, 0, -stretch, 10d, 16d, 16d);
+            case SOUTH -> Block.box(a, 0, 0, b, 16d, 16d + stretch);
+            case WEST  -> Block.box(-stretch, 0, a, 16d, 16d, b);
+            case EAST  -> Block.box(0, 0, a, 16d + stretch, 16d, b);
+            default    -> Block.box(a, 0, -stretch, b, 16d, 16d);
         };
     }
 
@@ -195,7 +202,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     }
 
     @Override
-    public BlockEntityType<? extends MultiblockWireConnectorBlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends CantileverBlockEntity> getBlockEntityType() {
        return ModBlockEntities.CANTILEVER_BLOCK_ENTITY.get();
     }
 
@@ -205,9 +212,9 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     }
 
     @Override
-    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
-        CompoundTag nbt = super.wireRenderData(level, pos, state, itemData, firstPoint);
-        Utils.putNbtVec3(nbt, NBT_TENSION_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, firstPoint, this::tensionWireAttachPoint));
+    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+        CompoundTag nbt = super.wireRenderData(level, pos, state, itemData, index);
+        Utils.putNbtVec3(nbt, NBT_TENSION_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, index, this::tensionWireAttachPoint));
         return nbt;
     }
 }

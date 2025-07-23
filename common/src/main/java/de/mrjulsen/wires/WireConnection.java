@@ -86,14 +86,14 @@ public class WireConnection {
     public boolean recalcAttachPoints(WireNetwork network, Multimap<ChunkPos, WireCollision> chunkMap, Multimap<SectionPos, WireCollision> sectionMap, Multimap<BlockPos, WireCollision> blockMap) {
         boolean hasChanged = false;
         if (network.level().isLoaded(getPointA()) && network.level().getBlockState(getPointA()).getBlock() instanceof IWireConnector c) {
-            CompoundTag connectorData = c.wireRenderData(network.level(), getPointA(), network.level().getBlockState(getPointA()), getCreationDataContext(), true);
+            CompoundTag connectorData = c.wireRenderData(network.level(), getPointA(), network.level().getBlockState(getPointA()), getCreationDataContext(), 0);
             if (!connectionANbt.equals(connectorData)) {
                 this.connectionANbt = connectorData;
                 hasChanged = true;
             }
         }
         if (network.level().isLoaded(getPointB()) && network.level().getBlockState(getPointB()).getBlock() instanceof IWireConnector c) {
-            CompoundTag connectorData = c.wireRenderData(network.level(), getPointB(), network.level().getBlockState(getPointB()), getCreationDataContext(), false);
+            CompoundTag connectorData = c.wireRenderData(network.level(), getPointB(), network.level().getBlockState(getPointB()), getCreationDataContext(), 1);
             if (!connectionBNbt.equals(connectorData)) {
                 this.connectionBNbt = connectorData;
                 hasChanged = true;

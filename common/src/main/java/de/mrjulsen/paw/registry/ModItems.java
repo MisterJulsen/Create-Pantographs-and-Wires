@@ -4,6 +4,8 @@ import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import de.mrjulsen.paw.PantographsAndWires;
+import de.mrjulsen.paw.item.CatenaryWireItem;
+import de.mrjulsen.paw.item.CutterItem;
 import de.mrjulsen.paw.item.FuelItem;
 import de.mrjulsen.paw.item.PantographItem;
 import de.mrjulsen.wires.item.WireBaseItem;
@@ -11,7 +13,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
 public class ModItems {
-    public static final ItemEntry<WireBaseItem> CATENARY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("catenary_wire_coil", p -> new WireBaseItem(p, ModWireRegistry.CATENARY_WIRE))
+    public static final ItemEntry<CatenaryWireItem> CATENARY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("catenary_wire_coil", p -> new CatenaryWireItem(p, ModWireRegistry.CATENARY_WIRE))
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
 
@@ -70,6 +72,10 @@ public class ModItems {
         .register();
 
     public static final ItemEntry<Item> EMPTY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("empty_wire_coil", Item::new)
+        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
+        .register();
+
+    public static final ItemEntry<CutterItem> TEST_CUTTER = PantographsAndWires.REGISTRATE.item("cutter_itemmmmmm", CutterItem::new)
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
 

@@ -11,15 +11,19 @@ public final class ModNetworkAccessor {
 
     public static void init() {}
     
-    public static record CantileverSettingsData(byte size, ECantileverRegistrationArmType cantileverType, ECantileverInsulatorsPlacement insulatorPlacement) {}
+    public static record CantileverSettingsData(float width, float height, float catenaryHeight, ECantileverRegistrationArmType cantileverType, ECantileverInsulatorsPlacement insulatorPlacement) {}
     public static final DataAccessorType<CantileverSettingsData, Void, Void> UPDATE_CANTILEVER_SETTINGS = DataAccessorType.register(new ResourceLocation(PantographsAndWires.MOD_ID, "update_cantilever_settings"), DataAccessorType.Builder.createEmptyResponse(
         (in, nbt) -> {
-            nbt.putByte("Size", in.size());
+            nbt.putFloat("Width", in.width());
+            nbt.putFloat("Height", in.height());
+            nbt.putFloat("CatenaryHeight", in.catenaryHeight());
             nbt.putInt("Type", in.cantileverType().ordinal());
             nbt.putInt("InsulatorPlacement", in.insulatorPlacement().ordinal());
         }, (nbt) -> {
             return new CantileverSettingsData(
-                nbt.getByte("Size"),
+                nbt.getFloat("Width"),
+                nbt.getFloat("Height"),
+                nbt.getFloat("CatenaryHeight"),
                 ECantileverRegistrationArmType.values()[nbt.getInt("Type")],
                 ECantileverInsulatorsPlacement.values()[nbt.getInt("InsulatorPlacement")]
             );

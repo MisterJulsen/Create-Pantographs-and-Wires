@@ -24,7 +24,7 @@ public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBloc
     }
 
     @Override
-    public void onLoad() {
+    public void onBlockEntityLoad() {
         super.onLoad();
         wasUnloaded = false;
     }
