@@ -1,8 +1,8 @@
 {
     "replace": false,
     "values": [
-        "pantographsandwires:lattice_mast",
-        "pantographsandwires:concrete_pillar",
+        "#pantographsandwires:lattice_masts",
+        "#pantographsandwires:concrete_pillars",
         "#minecraft:walls",
         "create:metal_girder"
     ]

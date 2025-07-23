@@ -6,7 +6,7 @@
 	"emissive_ambient": false,
 	"model": "pantographsandwires:models/block/power_line_bracket/top/power_line_bracket_on_lattice2.obj",
 	"textures": {
-		"particle": "pantographsandwires:block/treated_metal"
+		"particle": "pantographsandwires:block/metal"
 	},
 	"add": [
 	  {

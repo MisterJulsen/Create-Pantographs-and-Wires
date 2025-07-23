@@ -20,7 +20,8 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
 
     public AbstractRotatableWireConnectorBlock(Properties properties) {
         super(properties.mapColor(MapColor.METAL)
-        .noOcclusion());
+            .noOcclusion()
+        );
     }
 
     @Override
@@ -38,12 +39,12 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
      * @param func The function for the raw attach point calculation
      * @return The transformed vector of the given function
      */
-    protected Vec3 transformWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint, IWireRenderDataCallback func) {
+    protected Vec3 transformWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index, IWireRenderDataCallback func) {
         if (state.getBlock() instanceof IWireConnector && state.getBlock() instanceof IRotatableBlock rot) {
             Vec2 pivot = rot.getRotationPivotPoint(state);
             Vec2 rotPivot = rot.rotatedPivotPoint(state);
             Vec2 offset = rot.getOffset(state);
-            Vec3 result = VecHelper.rotate(func.run(level, pos, state, itemData, firstPoint).subtract(pivot.x, 0, pivot.y), getYRotation(state), Axis.Y)
+            Vec3 result = VecHelper.rotate(func.run(level, pos, state, itemData, index).subtract(pivot.x, 0, pivot.y), getYRotation(state), Axis.Y)
                 .add(rotPivot.x, 0, rotPivot.y)
                 .add(offset.x, 0, offset.y)
             ;
@@ -53,9 +54,9 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
     }
 
     @Override
-    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
+    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
         CompoundTag nbt = new CompoundTag();
-        Utils.putNbtVec3(nbt, IWireConnector.NBT_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, firstPoint, this::defaultWireAttachPoint));
+        Utils.putNbtVec3(nbt, IWireConnector.NBT_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, index, this::defaultWireAttachPoint));
         return nbt;
     }
     
@@ -68,11 +69,11 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
      * @param firstPoint Whether this is the first or second connector block
      * @return The relative coordinates from the block's center.
      */
-    protected abstract Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint);
+    protected abstract Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index);
     
     @FunctionalInterface
     protected static interface IWireRenderDataCallback {
-        Vec3 run(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint);
+        Vec3 run(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index);
     }
 }
 

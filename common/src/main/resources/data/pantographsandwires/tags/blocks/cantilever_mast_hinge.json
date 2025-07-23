@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+        "#pantographsandwires:concrete_pillars",
+        "#pantographsandwires:h_beam_masts",
+        "#minecraft:walls",
+        "create:metal_girder"
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "replace": false,
+    "values": [
+        "pantographsandwires:cantilever_bracket_vertical",
+        "pantographsandwires:cantilever_bracket_vertical_exposed",
+        "pantographsandwires:cantilever_bracket_vertical_weathered",
+        "pantographsandwires:cantilever_bracket_vertical_oxidized",
+        "pantographsandwires:cantilever_bracket_vertical_treated"
+    ]
+}

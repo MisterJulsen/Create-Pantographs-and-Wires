@@ -41,7 +41,7 @@ public class VInsulatorBlock extends AbstractPlaceableHangingInsulatorBlock {
     }
 
     @Override
-    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
+    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
         return new Vec3(0, Const.PIXEL * 2.5f, 0);
     }
 }

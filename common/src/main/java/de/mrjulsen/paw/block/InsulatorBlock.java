@@ -130,7 +130,7 @@ public class InsulatorBlock extends AbstractPlaceableInsulatorBlock {
     }
 
     @Override
-    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
+    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
         return state.getValue(HALF) == Half.TOP ? new Vec3(0, Const.PIXEL * 10f, 0) : new Vec3(0, Const.PIXEL * 3f, 0);
     }
 }

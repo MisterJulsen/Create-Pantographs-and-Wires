@@ -27,7 +27,11 @@
     "LevelMixin",
     "BlockStateBaseMixin",
     "BlockPlaceContextMixin",
-    "ServerLevelMixin"
+    "ServerLevelMixin",
+
+    "datafixer.ChunkSerializerMixin",
+    "datafixer.DataFixTypesMixin",
+    "datafixer.IOWorkerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

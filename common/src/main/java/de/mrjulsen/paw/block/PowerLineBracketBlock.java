@@ -2,10 +2,12 @@ package de.mrjulsen.paw.block;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import de.mrjulsen.paw.block.abstractions.AbstractRotatedConnectableBlock;
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable;
 import de.mrjulsen.paw.block.abstractions.IRotatableBlock;
+import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable.EPostType;
 import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
 import de.mrjulsen.paw.data.BlockModificationData;
@@ -15,6 +17,8 @@ import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -33,7 +37,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock {
+public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock implements IWeatheringBlock<PowerLineBracketBlock> {
 
     public static enum EConnectionType implements StringRepresentable {
         NONE("none"),
@@ -102,10 +106,17 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock {
     public static final EnumProperty<EPostType> POST_TYPE = EnumProperty.create("post_type", EPostType.class);
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     
-    public PowerLineBracketBlock(Properties properties) {
+    private final WeatherState weatherState;
+    private final Supplier<PowerLineBracketBlock> nextOxidationState;
+
+    
+    public PowerLineBracketBlock(Properties properties, WeatherState weatherState, Supplier<PowerLineBracketBlock> nextOxidationState) {
         super(properties
             .noOcclusion()
         );
+
+        this.weatherState = weatherState;
+        this.nextOxidationState = nextOxidationState;
 
         this.registerDefaultState(this.defaultBlockState()
             .setValue(POST_TYPE, EPostType.NONE)
@@ -206,5 +217,21 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock {
         return super.onPlaceOnOtherRotatedBlock(currentModification, context, clickedState, clickedBlockPos);
     }
 
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        this.onRandomTick(state, level, pos, random);
+    }
 
+    public boolean isRandomlyTicking(BlockState state) {
+        return getNext(state.getBlock()).isPresent();
+    }
+
+    @Override
+    public WeatherState getAge() {
+        return weatherState;
+    }
+
+    @Override
+    public Supplier<PowerLineBracketBlock> getNextState() {
+        return nextOxidationState;
+    }
 }

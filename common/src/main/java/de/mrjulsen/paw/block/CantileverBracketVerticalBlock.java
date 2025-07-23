@@ -1,12 +1,17 @@
 package de.mrjulsen.paw.block;
 
+import java.util.function.Supplier;
+
 import de.mrjulsen.paw.block.abstractions.AbstractRotatableBlock;
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable;
+import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
 import de.mrjulsen.paw.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -22,14 +27,20 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class CantileverBracketVerticalBlock extends AbstractRotatableBlock implements IHorizontalExtensionConnectable {
+public class CantileverBracketVerticalBlock extends AbstractRotatableBlock implements IHorizontalExtensionConnectable, IWeatheringBlock<CantileverBracketVerticalBlock> {
 
     private static final VoxelShape SHAPE = Block.box(6, 0, 6, 10, 16, 10);
 
     public static final DirectionProperty DIRECTION = BlockStateProperties.VERTICAL_DIRECTION;
     
-    public CantileverBracketVerticalBlock(Properties properties) {
+    private final WeatherState weatherState;
+    private final Supplier<CantileverBracketVerticalBlock> nextOxidationState;
+
+    public CantileverBracketVerticalBlock(Properties properties, WeatherState weatherState, Supplier<CantileverBracketVerticalBlock> nextOxidationState) {
         super(properties.mapColor(MapColor.METAL));
+
+        this.weatherState = weatherState;
+        this.nextOxidationState = nextOxidationState;
 
         this.registerDefaultState(defaultBlockState()
             .setValue(DIRECTION, Direction.DOWN)
@@ -38,7 +49,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(weatherState).get());
     }
     
     @Override
@@ -102,5 +113,23 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     @Override
     public EPostType postConnectionType(LevelReader level, BlockState state, BlockPos pos, BlockState extensionState, BlockPos extensionPos) {
         return EPostType.FENCE;
+    }
+
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        this.onRandomTick(state, level, pos, random);
+    }
+
+    public boolean isRandomlyTicking(BlockState state) {
+        return getNext(state.getBlock()).isPresent();
+    }
+
+    @Override
+    public WeatherState getAge() {
+        return weatherState;
+    }
+
+    @Override
+    public Supplier<CantileverBracketVerticalBlock> getNextState() {
+        return nextOxidationState;
     }
 }

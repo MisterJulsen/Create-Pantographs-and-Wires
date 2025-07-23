@@ -1,0 +1,10 @@
+{
+    "replace": false,
+    "values": [
+        "pantographsandwires:h_beam_mast",
+        "pantographsandwires:h_beam_mast_exposed",
+        "pantographsandwires:h_beam_mast_weathered",
+        "pantographsandwires:h_beam_mast_oxidized",
+        "pantographsandwires:h_beam_mast_treated"
+    ]
+}

@@ -1,6 +1,7 @@
 package de.mrjulsen.paw.fabric;
 
 import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
+import com.mojang.datafixers.DataFixerBuilder;
 
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.config.ModClientConfig;

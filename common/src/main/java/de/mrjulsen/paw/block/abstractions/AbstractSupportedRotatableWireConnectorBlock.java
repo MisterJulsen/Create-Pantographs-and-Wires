@@ -1,7 +1,6 @@
 package de.mrjulsen.paw.block.abstractions;
 
 import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
-import de.mrjulsen.paw.blockentity.MultiblockWireConnectorBlockEntity;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +16,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 
-public abstract class AbstractSupportedRotatableWireConnectorBlock<T extends WireConnectorBlockEntity> extends AbstractRotatableWireConnectorBlock<MultiblockWireConnectorBlockEntity> {
+public abstract class AbstractSupportedRotatableWireConnectorBlock<T extends WireConnectorBlockEntity> extends AbstractRotatableWireConnectorBlock<T> {
 
     public AbstractSupportedRotatableWireConnectorBlock(Properties properties) {
         super(properties);

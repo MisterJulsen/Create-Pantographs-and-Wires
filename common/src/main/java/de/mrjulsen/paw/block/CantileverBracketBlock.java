@@ -1,5 +1,7 @@
 package de.mrjulsen.paw.block;
 
+import java.util.function.Supplier;
+
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable;
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable.EPostType;
 import de.mrjulsen.paw.registry.ModBlocks;
@@ -18,13 +20,13 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class CantileverBracketBlock extends CantileverBracketBaseBlock {
+public class CantileverBracketBlock extends CantileverBracketBaseBlock<CantileverBracketBlock> {
     
     public static final BooleanProperty UP = BooleanProperty.create("up");
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
     
-    public CantileverBracketBlock(Properties properties) {
-        super(properties.mapColor(MapColor.METAL));
+    public CantileverBracketBlock(Properties properties, WeatherState weatherState, Supplier<CantileverBracketBlock> nextOxidationState) {
+        super(properties.mapColor(MapColor.METAL), weatherState, nextOxidationState);
 
         this.registerDefaultState(defaultBlockState()
             .setValue(DOWN, false)
@@ -34,7 +36,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock {
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(weatherState).get());
     }
 
     @Override
@@ -64,7 +66,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock {
         boolean supportIsPost = supportState.getBlock() instanceof IHorizontalExtensionConnectable conn && conn.postConnectionType(context.getLevel(), supportState, supportPos, state, context.getClickedPos()) == EPostType.LATTICE && context.getClickedFace().getAxis() != Axis.Y;
         
         if (supportIsPost) {
-            state = ModBlocks.CANTILEVER_BRACKET_AT_POST.getDefaultState()
+            state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(weatherState).getDefaultState()
                 .setValue(FACING, context.getClickedFace())
                 .setValue(ROTATION, supportState.getValue(ROTATION))
                 .setValue(MULTIPART_SEGMENT, maxSegments(supportState))
@@ -86,7 +88,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock {
             int segment = state.getValue(MULTIPART_SEGMENT);
             
             if (supportIsPost && supportState.getValue(ROTATION) == rotation) {
-                state = ModBlocks.CANTILEVER_BRACKET_AT_POST.getDefaultState()
+                state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(weatherState).getDefaultState()
                     .setValue(FACING, facing)
                     .setValue(ROTATION, rotation)
                     .setValue(MULTIPART_SEGMENT, segment)

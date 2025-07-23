@@ -1,5 +1,7 @@
 package de.mrjulsen.paw.block;
 
+import java.util.function.Supplier;
+
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable;
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable.EPostType;
 import de.mrjulsen.paw.registry.ModBlocks;
@@ -9,10 +11,10 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
-public class CantileverBracketPostConnectionBlock extends CantileverBracketBaseBlock {
+public class CantileverBracketPostConnectionBlock extends CantileverBracketBaseBlock<CantileverBracketPostConnectionBlock> {
         
-    public CantileverBracketPostConnectionBlock(Properties properties) {
-        super(properties.mapColor(MapColor.METAL));
+    public CantileverBracketPostConnectionBlock(Properties properties, WeatherState weatherState, Supplier<CantileverBracketPostConnectionBlock> nextOxidationState) {
+        super(properties.mapColor(MapColor.METAL), weatherState, nextOxidationState);
 
         this.registerDefaultState(defaultBlockState()
         );
@@ -26,7 +28,7 @@ public class CantileverBracketPostConnectionBlock extends CantileverBracketBaseB
             boolean supportIsPost = supportState.getBlock() instanceof IHorizontalExtensionConnectable conn && conn.postConnectionType(level, supportState, supportPos, state, currentPos) == EPostType.LATTICE;
             
             if (!supportIsPost) {
-                state = ModBlocks.CANTILEVER_BRACKET.getDefaultState()
+                state = ModBlocks.CANTILEVER_BRACKET.get(weatherState).getDefaultState()
                     .setValue(FACING, state.getValue(FACING))
                     .setValue(ROTATION, state.getValue(ROTATION))
                     .setValue(MULTIPART_SEGMENT, state.getValue(MULTIPART_SEGMENT))

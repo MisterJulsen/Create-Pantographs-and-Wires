@@ -1,8 +1,8 @@
 {
 	"credit": "Created by MrJulsen with Blockbench",
 	"textures": {
-		"0": "pantographsandwires:block/treated_metal",
-		"particle": "pantographsandwires:block/treated_metal"
+		"0": "pantographsandwires:block/metal",
+		"particle": "pantographsandwires:block/metal"
 	},
 	"elements": [
 		{

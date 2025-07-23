@@ -1,6 +1,7 @@
 package de.mrjulsen.paw.block;
 
 import de.mrjulsen.paw.blockentity.MultiblockWireConnectorBlockEntity;
+import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.blockentity.IMultiblockBlockEntity;
 import de.mrjulsen.paw.block.abstractions.AbstractSupportedRotatableWireConnectorBlock;
 import de.mrjulsen.paw.block.abstractions.ICatenaryWireConnector;
@@ -40,7 +41,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnectorBlock<MultiblockWireConnectorBlockEntity> implements ICatenaryWireConnector, IMultiblock {
+public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnectorBlock<CantileverBlockEntity> implements ICatenaryWireConnector, IMultiblock {
 
     public static final int HEIGHT = 7;
 
@@ -161,19 +162,19 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     }
 
     @Override
-    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
+    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
         return new Vec3(Const.PIXEL * 3.5f - 0.5f, Const.PIXEL * 0.25, Const.PIXEL * 8.25f - 0.5f + (Const.PIXEL * (float)((16 - state.getValue(CONNECTION).getIndex()) / 2f)));
     }
 
     @Override
-    public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
+    public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
         return new Vec3(Const.PIXEL * 12.5f - 0.5f, Const.PIXEL * 10.25f, Const.PIXEL * 8.25f - 0.5f + (Const.PIXEL * (float)((16 - state.getValue(CONNECTION).getIndex()) / 2f)));
     }
 
     @Override
-    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, boolean firstPoint) {
-        CompoundTag nbt = super.wireRenderData(level, pos, state, itemData, firstPoint);
-        Utils.putNbtVec3(nbt, NBT_TENSION_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, firstPoint, this::tensionWireAttachPoint));
+    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+        CompoundTag nbt = super.wireRenderData(level, pos, state, itemData, index);
+        Utils.putNbtVec3(nbt, NBT_TENSION_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, index, this::tensionWireAttachPoint));
         nbt.putBoolean(NBT_TENSION, true);
         return nbt;
     }
@@ -194,12 +195,12 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     }
 
     @Override
-    public Class<MultiblockWireConnectorBlockEntity> getBlockEntityClass() {
-        return MultiblockWireConnectorBlockEntity.class;
+    public Class<CantileverBlockEntity> getBlockEntityClass() {
+        return CantileverBlockEntity.class;
     }
 
     @Override
-    public BlockEntityType<? extends MultiblockWireConnectorBlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends CantileverBlockEntity> getBlockEntityType() {
         return ModBlockEntities.CANTILEVER_BLOCK_ENTITY.get();
     }
 }

@@ -14,6 +14,7 @@ public class ModServerConfig {
     public static final ForgeConfigSpec.ConfigValue<Double> WIRE_COLLISION_TRACER_STEP_SIZE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> BLOCKS_BREAK_WIRES;
     public static final ForgeConfigSpec.ConfigValue<Boolean> WIRE_ENTITY_DAMAGE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> USE_OXIDATION;
 
     static {
         BUILDER.push(PantographsAndWires.MOD_ID + "_common_config");
@@ -29,6 +30,9 @@ public class ModServerConfig {
 
         WIRE_COLLISION_TRACER_STEP_SIZE = BUILDER.comment(new String[] {"[in Block Pixels]", "Which step size is used in the collision calculation of the cables. Lower values increase precision but require more computing power. Higher values are inaccurate but require less more performance.", WARN, "Default: 1"})
             .defineInRange("wires.calculation.collision_tracer_step_size", 1, 0.1, 4);
+
+        USE_OXIDATION = BUILDER.comment(new String[] { "When activated, metal blocks oxidize and concrete blocks erode slowly, similar to copper.", "Default: ON" })
+            .define("gameplay.oxidation", true);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

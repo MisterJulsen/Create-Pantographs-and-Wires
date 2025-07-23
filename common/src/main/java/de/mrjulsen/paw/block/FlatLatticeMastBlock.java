@@ -1,13 +1,17 @@
 package de.mrjulsen.paw.block;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import de.mrjulsen.paw.block.abstractions.AbstractMultipartPostBlock;
+import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.property.EPostPart;
 import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
@@ -18,12 +22,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class FlatLatticeMastBlock extends AbstractMultipartPostBlock {
+public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements IWeatheringBlock<FlatLatticeMastBlock> {
 
     protected static final VoxelShape SHAPE_Z = Block.box(6, 0, 4, 10, 16, 12);
     protected static final VoxelShape SHAPE_X = Block.box(4, 0, 6, 12, 16, 10);
     protected static final VoxelShape SHAPE_FOUNDATION_Z = Block.box(4, -4, 2, 12, 4, 14);
     protected static final VoxelShape SHAPE_FOUNDATION_X = Block.box(2, -4, 4, 14, 4, 12);
+
+    private final WeatherState weatherState;
+    private final Supplier<FlatLatticeMastBlock> nextOxidationState;
 
     protected static record ShapeKey(Direction direction, boolean isFoundation) {
         @Override
@@ -48,10 +55,13 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock {
         return shape;
     }, ShapeKey::hashCode);
     
-    public FlatLatticeMastBlock(Properties properties) {
+    public FlatLatticeMastBlock(Properties properties, WeatherState weatherState, Supplier<FlatLatticeMastBlock> nextOxidationState) {
         super(properties
             .mapColor(MapColor.METAL)
         );
+
+        this.weatherState = weatherState;
+        this.nextOxidationState = nextOxidationState;
     }
 
     @Override
@@ -68,5 +78,23 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock {
     @Override
     public boolean canCantileverConnect(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction direction) {
         return direction.getAxis() == state.getValue(FACING).getAxis();
+    }
+
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        this.onRandomTick(state, level, pos, random);
+    }
+
+    public boolean isRandomlyTicking(BlockState state) {
+        return getNext(state.getBlock()).isPresent();
+    }
+
+    @Override
+    public WeatherState getAge() {
+        return weatherState;
+    }
+
+    @Override
+    public Supplier<FlatLatticeMastBlock> getNextState() {
+        return nextOxidationState;
     }
 }

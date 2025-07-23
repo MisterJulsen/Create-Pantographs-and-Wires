@@ -39,11 +39,11 @@ public abstract class AbstractMultipartPostBlock extends AbstractSimplePostBlock
         BlockState aboveState = level.getBlockState(clickPos.above());
         BlockState belowState = level.getBlockState(clickPos.below());
 
-        if (aboveState.is(this) && belowState.is(this)) {
+        if (aboveState.getBlock().getClass().equals(this.getClass()) && belowState.getBlock().getClass().equals(this.getClass())) {
             state = state
                 .setValue(PART, EPostPart.IN_BETWEEN)
             ;
-        } else if (belowState.is(this)) {
+        } else if (belowState.getBlock().getClass().equals(this.getClass())) {
             state = state
                 .setValue(PART, EPostPart.TOP)
             ;
@@ -61,11 +61,11 @@ public abstract class AbstractMultipartPostBlock extends AbstractSimplePostBlock
             BlockState aboveState = level.getBlockState(currentPos.above());
             BlockState belowState = level.getBlockState(currentPos.below());
 
-            if (aboveState.is(this) && belowState.is(this)) {
+            if (aboveState.getBlock().getClass().equals(this.getClass()) && belowState.getBlock().getClass().equals(this.getClass())) {
                 state = state
                     .setValue(PART, EPostPart.IN_BETWEEN)
                 ;
-            } else if (belowState.is(this)) {
+            } else if (belowState.getBlock().getClass().equals(this.getClass())) {
                 state = state
                     .setValue(PART, EPostPart.TOP)
                 ;
