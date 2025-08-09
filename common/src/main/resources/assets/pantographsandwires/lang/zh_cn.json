@@ -2,7 +2,7 @@
     "itemGroup.pantographsandwires.tab": "机械动力:受电弓&接触网",
     
     "gui.pantographsandwires.sodium_error.title": "机械动力:受电弓&接触网",
-    "gui.pantographsandwires.sodium_error.subtitle": "依赖模组提示：已安装Sodium，但是未安装Indium！",
+    "gui.pantographsandwires.sodium_error.subtitle": "依赖模组提示：已安装 Sodium，但是未安装 Indium！",
     "gui.pantographsandwires.sodium_error.description": "此模组在只安装了 Sodium 的情况下无法运行。部分方块未加载且使用线缆会导致崩溃！请安装 Indium 后再进行游戏！",
     
     "block.pantographsandwires.pantograph": "单臂受电弓",
