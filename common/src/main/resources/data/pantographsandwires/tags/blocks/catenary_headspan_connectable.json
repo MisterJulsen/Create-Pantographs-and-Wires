@@ -1,0 +1,7 @@
+{
+    "replace": false,
+    "values": [
+        "#pantographsandwires:lattice_masts",
+        "create:metal_girder"
+    ]
+}
