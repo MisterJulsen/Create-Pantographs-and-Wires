@@ -33,7 +33,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import de.mrjulsen.paw.PantographsAndWires;
-import de.mrjulsen.paw.config.ModCommonConfig;
 
 public class ModDataFixers {
     private static final BiFunction<Integer, Schema, Schema> SAME = Schema::new;
