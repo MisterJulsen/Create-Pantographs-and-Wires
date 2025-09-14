@@ -3,12 +3,13 @@ package de.mrjulsen.paw.block.abstractions;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.utility.VecHelper;
 
-import de.mrjulsen.paw.util.Utils;
 import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
+import de.mrjulsen.wires.graph.data.provider.BasicConnectorDataProvider;
+import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
+import de.mrjulsen.wires.item.WireBaseItem.CustomData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,7 +40,7 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
      * @param func The function for the raw attach point calculation
      * @return The transformed vector of the given function
      */
-    protected Vec3 transformWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index, IWireRenderDataCallback func) {
+    protected Vec3 transformWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index, IWireRenderDataCallback func) {
         if (state.getBlock() instanceof IWireConnector && state.getBlock() instanceof IRotatableBlock rot) {
             Vec2 pivot = rot.getRotationPivotPoint(state);
             Vec2 rotPivot = rot.rotatedPivotPoint(state);
@@ -54,10 +55,8 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
     }
 
     @Override
-    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
-        CompoundTag nbt = new CompoundTag();
-        Utils.putNbtVec3(nbt, IWireConnector.NBT_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, index, this::defaultWireAttachPoint));
-        return nbt;
+    public ConnectorDataProvider getConnectorData(Level level, BlockPos pos, CustomData customData, int connectionPointIndex) {
+        return new BasicConnectorDataProvider(transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::defaultWireAttachPoint).toVector3f());
     }
     
     /**
@@ -69,11 +68,11 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
      * @param firstPoint Whether this is the first or second connector block
      * @return The relative coordinates from the block's center.
      */
-    protected abstract Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index);
+    protected abstract Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index);
     
     @FunctionalInterface
     protected static interface IWireRenderDataCallback {
-        Vec3 run(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index);
+        Vec3 run(Level level, BlockPos pos, BlockState state, CustomData itemData, int index);
     }
 }
 

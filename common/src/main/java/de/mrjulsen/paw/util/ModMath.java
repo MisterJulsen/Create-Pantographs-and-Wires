@@ -3,12 +3,8 @@ package de.mrjulsen.paw.util;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import com.simibubi.create.foundation.utility.VecHelper;
-
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
@@ -246,4 +242,31 @@ public class ModMath {
 			return CENTER_OF_ORIGIN;
 		return new Vector3f(pos).add(.5f, .5f, .5f);
 	}
+
+
+    public static Vector3f centerOf(Vector3f... points) {
+        if (points == null || points.length == 0) {
+            return null;
+        }
+
+        Vector3f sum = new Vector3f(0, 0, 0);
+
+        for (Vector3f v : points) {
+            sum.add(v);
+        }
+
+        sum.div(points.length);
+
+        return sum;
+    }
+
+    public static double snap(double x, double a) {
+        if (a <= 0) throw new IllegalArgumentException("a must be > 0");
+        return Math.floor(x / a) * a;
+    }
+
+    public static double snapNearest(double x, double a) {
+        if (a <= 0) throw new IllegalArgumentException("a must be > 0");
+        return Math.round(x / a) * a;
+    }
 }

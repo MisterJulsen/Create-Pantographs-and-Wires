@@ -16,7 +16,9 @@
     "client.LevelRendererMixin",
     "client.RenderRegionCacheMixin",
     "client.ParticleEngineMixin",
-    "client.MultiPlayerGameModeMixin"
+    "client.MultiPlayerGameModeMixin",
+    "client.MinecraftMixin",
+    "client.GameRendererMixin"
   ],
   "mixins": [
     "AbstractBlockStateMixin",
@@ -28,6 +30,7 @@
     "BlockStateBaseMixin",
     "BlockPlaceContextMixin",
     "ServerLevelMixin",
+    "HitResultTypesMixin",
 
     "datafixer.ChunkSerializerMixin",
     "datafixer.DataFixTypesMixin",

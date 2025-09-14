@@ -6,8 +6,13 @@ import de.mrjulsen.paw.client.gui.widgets.IIconEnum;
 import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.util.Utils;
+import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
+import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
+import de.mrjulsen.wires.item.WireBaseItem.CustomData;
 
 import java.util.Arrays;
+
+import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
 import net.minecraft.core.BlockPos;
@@ -27,7 +32,7 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class AbstractCantileverBlock extends AbstractSupportedRotatableWireConnectorBlock<CantileverBlockEntity> implements ICatenaryWireConnector, IMultiblock {
+public abstract class AbstractCantileverBlock extends AbstractSupportedRotatableWireConnectorBlock<CantileverBlockEntity> implements ICatenaryWireConnector {
 
     public static final float MIN_WIDTH = 1.5f;
     public static final float MAX_WIDTH = 6.5f;
@@ -212,9 +217,9 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     }
 
     @Override
-    public CompoundTag wireRenderData(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
-        CompoundTag nbt = super.wireRenderData(level, pos, state, itemData, index);
-        Utils.putNbtVec3(nbt, NBT_TENSION_WIRE_ATTACH_POINT, transformWireAttachPoint(level, pos, state, itemData, index, this::tensionWireAttachPoint));
-        return nbt;
+    public ConnectorDataProvider getConnectorData(Level level, BlockPos pos, CustomData customData, int connectionPointIndex) {
+        Vector3f contactAttachPoint = transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::defaultWireAttachPoint).toVector3f();
+        Vector3f tensionattachPoint = transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::tensionWireAttachPoint).toVector3f();
+        return new CantileverConnectorDataProvider(contactAttachPoint, tensionattachPoint);
     }
 }

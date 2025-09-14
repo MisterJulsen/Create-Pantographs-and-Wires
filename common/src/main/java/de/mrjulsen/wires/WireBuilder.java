@@ -15,7 +15,7 @@ public final class WireBuilder {
 
     public enum CableType { HANGING, TENSION, TIGHT; }
 
-    public static Wire createWire(WireCreationContext context, Vector3f start, Vector3f end, CableType type, float thickness, float hangFac, SegmentControl segControl) {
+    public static Wire createWire(String name, WireCreationContext context, Vector3f start, Vector3f end, CableType type, float thickness, float hangFac, SegmentControl segControl) {
         WireRenderData renderData = null;
         if (context.renderingRequired()) {
             renderData = createWireRenderData(start, end, type, thickness, hangFac, segControl);
@@ -24,7 +24,7 @@ public final class WireBuilder {
         if (context.collisionRequired()) {
             collisionData = createWirePoints(start, end, type, hangFac, segControl);
         }
-        return new Wire(collisionData, renderData);
+        return new Wire(name, collisionData, renderData);
     }
 
     public static WireRenderData createWireRenderData(Vector3f start, Vector3f end, CableType type, float thickness, float hangFac, SegmentControl segControl) {
@@ -162,23 +162,27 @@ public final class WireBuilder {
         return points.toArray(new Vector3f[0]);
     }
 
-    private static Vector3f[] generateCustomPathArc(Vector3f start, Vector3f end, float hangFac, SegmentControl segControl) {
-        Vector3f diff = new Vector3f(end).sub(start);
-        float linearLength = diff.length();
-        Vector2f p1 = new Vector2f(0, 0);
-        Vector2f p2 = new Vector2f(linearLength / 2f, diff.y / 2f - Math.min(hangFac, linearLength / 2f));
-        Vector2f p3 = new Vector2f(linearLength, diff.y);
-        Vector2f center = SegmentControl.circumcenter(p1, p2, p3);
-        float rad = SegmentControl.radius(center, p1);
+// In WireBuilder.java
+private static Vector3f[] generateCustomPathArc(Vector3f start, Vector3f end, float hangFac, SegmentControl segControl) {
+    boolean useArc = segControl.getMainUseArc();
+    Vector3f diff = new Vector3f(end).sub(start);
+    float linearLength = diff.length();
+    Vector2f p1 = new Vector2f(0, 0);
+    Vector2f p3 = new Vector2f(linearLength, diff.y);
+    Vector2f p2 = new Vector2f(linearLength / 2f, diff.y / 2f - Math.min(hangFac, linearLength / 2f));
+    Vector2f center = SegmentControl.circumcenter(p1, p2, p3);
+    float rad = SegmentControl.radius(center, p1);
+    float startAngle = (float) Math.atan2(p1.y - center.y, p1.x - center.x);
+    float endAngle = (float) Math.atan2(p3.y - center.y, p3.x - center.x);
+    if (endAngle < startAngle) {
+        endAngle += 2 * (float) Math.PI;
+    }
+
+    float[] custom = segControl.getMainCustomLengths();
+    List<Float> segmentLengths = new ArrayList<>();
+    
+    if (useArc) {
         float totalArcLength = SegmentControl.arcLength(center, p1, p3, rad);
-        float startAngle = (float) Math.atan2(p1.y - center.y, p1.x - center.x);
-        float endAngle = (float) Math.atan2(p3.y - center.y, p3.x - center.x);
-        if (endAngle < startAngle) {
-            endAngle += 2 * (float) Math.PI;
-        }
-        float theta = endAngle - startAngle;
-        float[] custom = segControl.getMainCustomLengths();
-        List<Float> segmentLengths = new ArrayList<>();
         float cum = 0f;
         for (float len : custom) {
             if (cum >= totalArcLength) break;
@@ -187,8 +191,7 @@ public final class WireBuilder {
                 float subLen = len / n;
                 for (int i = 0; i < n; i++) {
                     if (cum + subLen > totalArcLength) {
-                        subLen = totalArcLength - cum;
-                        segmentLengths.add(subLen);
+                        segmentLengths.add(totalArcLength - cum);
                         cum = totalArcLength;
                         break;
                     } else {
@@ -198,8 +201,7 @@ public final class WireBuilder {
                 }
             } else {
                 if (cum + len > totalArcLength) {
-                    float truncated = totalArcLength - cum;
-                    segmentLengths.add(truncated);
+                    segmentLengths.add(totalArcLength - cum);
                     cum = totalArcLength;
                     break;
                 } else {
@@ -208,7 +210,6 @@ public final class WireBuilder {
                 }
             }
         }
-        // If the custom array does not cover the entire arc, add a fill segment.
         if (cum < totalArcLength) {
             float remaining = totalArcLength - cum;
             if (segControl.getMainMode() == SegmentControl.SegmentationMode.CUSTOM_MAX && remaining > segControl.getMainMaxLength()) {
@@ -221,23 +222,102 @@ public final class WireBuilder {
                 segmentLengths.add(remaining);
             }
         }
+        
         List<Vector3f> points = new ArrayList<>();
         points.add(new Vector3f(start));
-        float cumulative = 0f;
+        float cumulativeArcLength = 0f;
         Vector3f direction = new Vector3f(end).sub(start).normalize();
+        
         for (float segLen : segmentLengths) {
-            cumulative += segLen;
-            float fraction = cumulative / totalArcLength;
-            float angle = startAngle + fraction * theta;
+            cumulativeArcLength += segLen;
+            float fraction = cumulativeArcLength / totalArcLength;
+            float angle = startAngle + fraction * (endAngle - startAngle);
             float x2d = center.x + rad * (float) Math.cos(angle);
             float y2d = center.y + rad * (float) Math.sin(angle);
             Vector2f arcPoint = new Vector2f(x2d, y2d);
             Vector3f projected = projectPointOnVectorPlane(direction, arcPoint);
-            Vector3f point = new Vector3f(start).add(projected);
-            points.add(point);
+            points.add(new Vector3f(start).add(projected));
+        }
+        return points.toArray(new Vector3f[0]);
+
+    } else {
+        float totalHorizontalLength = p3.x - p1.x;
+        float cum = 0f;
+        for (float len : custom) {
+            if (cum >= totalHorizontalLength) break;
+            if (segControl.getMainMode() == SegmentControl.SegmentationMode.CUSTOM_MAX && len > segControl.getMainMaxLength()) {
+                int n = (int) Math.ceil(len / segControl.getMainMaxLength());
+                float subLen = len / n;
+                for (int i = 0; i < n; i++) {
+                    if (cum + subLen > totalHorizontalLength) {
+                        segmentLengths.add(totalHorizontalLength - cum);
+                        cum = totalHorizontalLength;
+                        break;
+                    } else {
+                        segmentLengths.add(subLen);
+                        cum += subLen;
+                    }
+                }
+            } else {
+                if (cum + len > totalHorizontalLength) {
+                    segmentLengths.add(totalHorizontalLength - cum);
+                    cum = totalHorizontalLength;
+                    break;
+                } else {
+                    segmentLengths.add(len);
+                    cum += len;
+                }
+            }
+        }
+        if (cum < totalHorizontalLength) {
+            float remaining = totalHorizontalLength - cum;
+            if (segControl.getMainMode() == SegmentControl.SegmentationMode.CUSTOM_MAX && remaining > segControl.getMainMaxLength()) {
+                int n = (int) Math.ceil(remaining / segControl.getMainMaxLength());
+                float subLen = remaining / n;
+                for (int i = 0; i < n; i++) {
+                    segmentLengths.add(subLen);
+                }
+            } else {
+                segmentLengths.add(remaining);
+            }
+        }
+
+        List<Vector3f> points = new ArrayList<>();
+        points.add(new Vector3f(start));
+        float cumulativeHorizontalLength = 0f;
+        Vector3f direction = new Vector3f(end).sub(start).normalize();
+
+        for (float segLen : segmentLengths) {
+            cumulativeHorizontalLength += segLen;
+            float x2d = p1.x + cumulativeHorizontalLength;
+            
+            float dx = x2d - center.x;
+            float dySquared = rad * rad - dx * dx;
+            float y2d;
+            if (dySquared >= 0) {
+                float dy = (float) Math.sqrt(dySquared);
+                float candidateY1 = center.y + dy;
+                float candidateY2 = center.y - dy;
+                float angle1 = (float) Math.atan2(candidateY1 - center.y, x2d - center.x);
+                float angle2 = (float) Math.atan2(candidateY2 - center.y, x2d - center.x);
+                if (endAngle < startAngle) endAngle += 2 * Math.PI;
+                
+                if (angle1 >= startAngle && angle1 <= endAngle) {
+                    y2d = candidateY1;
+                } else {
+                    y2d = candidateY2;
+                }
+            } else {
+                y2d = center.y;
+            }
+            
+            Vector2f arcPoint = new Vector2f(x2d, y2d);
+            Vector3f projected = projectPointOnVectorPlane(direction, arcPoint);
+            points.add(new Vector3f(start).add(projected));
         }
         return points.toArray(new Vector3f[0]);
     }
+}
 
     private static Vector3f calculateTangent(Vector3f[] path, int i) {
         if (i == 0 && path.length > 1) {
@@ -247,7 +327,7 @@ public final class WireBuilder {
         } else if (path.length > 2) {
             return new Vector3f(path[i + 1]).sub(path[i - 1]).normalize();
         }
-        return new Vector3f(0, 1, 0); // Fallback
+        return new Vector3f(0, 1, 0);
     }
 
     private static WireRenderPoint calcVertices(Vector3f start, Vector3f direction, float thickness, Vector3f customCenter) {

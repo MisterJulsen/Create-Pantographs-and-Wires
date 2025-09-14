@@ -1,17 +1,40 @@
 package de.mrjulsen.wires.block;
 
-import de.mrjulsen.wires.WireNetwork;
+import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.wires.util.NodeId;
+
+import java.util.Optional;
+
+import org.joml.Vector3f;
+
 import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBlockEntityExtension {
 
+    private static final String NBT_NODE_ID = "NodeId";
+
     private boolean wasUnloaded = false;
+    private NodeId nodeId;
 
     public WireConnectorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+    
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (nodeId != null) tag.put(NBT_NODE_ID, nodeId.toNbt());
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains(NBT_NODE_ID)) this.nodeId = NodeId.fromNbt(tag.getCompound(NBT_NODE_ID));
     }
 
     public boolean wasUnloaded() {
@@ -32,9 +55,20 @@ public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBloc
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
-        if (!wasUnloaded() && !level.isClientSide) {            
-            WireNetwork.get(level).removeConnector(getLevel(), getBlockPos());
+        if (!wasUnloaded() && !level.isClientSide) {
+            if (nodeId != null) {
+                WireGraphManager.get(level, nodeId.graphId()).removeNode(nodeId.id(), new Vector3f(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()), Optional.empty());
+            }
         }
         wasUnloaded = false;
 	} 
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(NodeId id) {
+        this.nodeId = id;
+        notifyUpdate();
+    }
 }

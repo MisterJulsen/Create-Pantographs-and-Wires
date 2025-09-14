@@ -25,12 +25,14 @@ public final class SegmentControl {
         private final int fixedCount;
         private final float maxLength;
         private final float[] customLengths;
+        private final boolean useArc;
 
-        private Config(SegmentationMode mode, int fixedCount, float maxLength, float[] customLengths) {
+        private Config(SegmentationMode mode, int fixedCount, float maxLength, float[] customLengths, boolean useArc) {
             this.mode = mode;
             this.fixedCount = fixedCount;
             this.maxLength = maxLength;
             this.customLengths = customLengths;
+            this.useArc = useArc;
         }
 
         /**
@@ -46,7 +48,7 @@ public final class SegmentControl {
          * @return a Config instance with automatic segmentation (AUTO)
          */
         public static Config auto() {
-            return new Config(SegmentationMode.AUTO, 0, 0f, null);
+            return new Config(SegmentationMode.AUTO, 0, 0f, null, false);
         }
 
         /**
@@ -55,7 +57,7 @@ public final class SegmentControl {
          * @return a Config instance with fixed segmentation (FIXED)
          */
         public static Config fixed(int fixedCount) {
-            return new Config(SegmentationMode.FIXED, fixedCount, 0f, null);
+            return new Config(SegmentationMode.FIXED, fixedCount, 0f, null, false);
         }
 
         /**
@@ -64,7 +66,7 @@ public final class SegmentControl {
          * @return a Config instance with maximum length segmentation (MAX_LENGTH)
          */
         public static Config maxLength(float maxLength) {
-            return new Config(SegmentationMode.MAX_LENGTH, 0, maxLength, null);
+            return new Config(SegmentationMode.MAX_LENGTH, 0, maxLength, null, false);
         }
 
         /**
@@ -74,8 +76,8 @@ public final class SegmentControl {
          * If the sum is less than the cable length, an extra segment is added.
          * @return a Config instance with custom segmentation (CUSTOM)
          */
-        public static Config custom(float[] customLengths) {
-            return new Config(SegmentationMode.CUSTOM, 0, 0f, customLengths);
+        public static Config custom(float[] customLengths, boolean useArc) {
+            return new Config(SegmentationMode.CUSTOM, 0, 0f, customLengths, useArc);
         }
 
         /**
@@ -87,8 +89,8 @@ public final class SegmentControl {
          * @param maxLength the maximum allowed length for each segment. 
          * @return a Config instance with custom segmentation and maximum length constraints (CUSTOM_MAX)
          */
-        public static Config customMax(float[] customLengths, float maxLength) {
-            return new Config(SegmentationMode.CUSTOM_MAX, 0, maxLength, customLengths);
+        public static Config customMax(float[] customLengths, float maxLength, boolean useArc) {
+            return new Config(SegmentationMode.CUSTOM_MAX, 0, maxLength, customLengths, useArc);
         }
 
         public SegmentationMode getMode() {
@@ -105,6 +107,10 @@ public final class SegmentControl {
 
         public float[] getCustomLengths() {
             return customLengths;
+        }
+
+        public boolean useArc() {
+            return useArc;
         }
     }
 
@@ -165,8 +171,8 @@ public final class SegmentControl {
      * @param customLengths an array of floats for the length of each wire segment. The amount of values in the array is the amount of segments for the wire.
      * @return the SegmentControl instance
      */
-    public static SegmentControl custom(float[] customLengths) {
-        return new SegmentControl(Config.custom(customLengths), Config.single());
+    public static SegmentControl custom(float[] customLengths, boolean useArc) {
+        return new SegmentControl(Config.custom(customLengths, useArc), Config.single());
     }
 
     /**
@@ -180,8 +186,8 @@ public final class SegmentControl {
      * @param maxLength the maximum allowed length for each segment
      * @return the SegmentControl instance
      */
-    public static SegmentControl customMax(float[] customLengths, float maxLength) {
-        return new SegmentControl(Config.customMax(customLengths, maxLength), Config.single());
+    public static SegmentControl customMax(float[] customLengths, float maxLength, boolean useArc) {
+        return new SegmentControl(Config.customMax(customLengths, maxLength, useArc), Config.single());
     }
 
     /**
@@ -384,5 +390,9 @@ public final class SegmentControl {
 
     float getMainMaxLength() {
         return mainConfig.maxLength;
+    }
+
+    boolean getMainUseArc() {
+        return mainConfig.useArc;
     }
 }

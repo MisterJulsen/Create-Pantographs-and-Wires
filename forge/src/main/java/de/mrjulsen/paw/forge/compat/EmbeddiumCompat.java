@@ -2,9 +2,10 @@ package de.mrjulsen.paw.forge.compat;
 
 import org.embeddedt.embeddium.api.ChunkMeshEvent;
 
+import de.mrjulsen.wires.graph.WireGraphClient;
+import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.render.WireRenderer;
 import de.mrjulsen.wires.util.ClientUtils;
-import de.mrjulsen.wires.WireClientNetwork;
 
 public class EmbeddiumCompat {
     
@@ -13,10 +14,14 @@ public class EmbeddiumCompat {
     }
 	
     static void meshAppendEvent(ChunkMeshEvent event) {
-        if (WireClientNetwork.get(ClientUtils.level()).hasConnectionsInSection(event.getSectionOrigin())) {
-			event.addMeshAppender(c -> {
-                WireRenderer.renderConnectionsInSection(c.vertexConsumerProvider(), c.sodiumBuildBuffers(), c.blockRenderView(), c.sectionOrigin());
-            });
+        for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
+            if (graph.hasConnectionsInSection(event.getSectionOrigin())) {
+                event.addMeshAppender(c -> {
+                    WireRenderer.renderConnectionsInSection(c.vertexConsumerProvider(), c.sodiumBuildBuffers(), c.blockRenderView(), c.sectionOrigin());
+                });
+                break;
+            }            
         }
+        
     }
 }

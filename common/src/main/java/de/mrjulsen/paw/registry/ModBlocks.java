@@ -1,12 +1,10 @@
 package de.mrjulsen.paw.registry;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -42,7 +40,6 @@ import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock.WeatherState;
 import de.mrjulsen.paw.block.model.OxidizedBlockModel;
-import de.mrjulsen.paw.block.property.ECantileverConnectionType;
 import de.mrjulsen.paw.block.property.EInsulatorType;
 import de.mrjulsen.paw.blockentity.PantographInteractionBehaviour;
 import de.mrjulsen.paw.blockentity.PantographMovementBehaviour;
@@ -98,6 +95,8 @@ public class ModBlocks {
 	public static final TagKey<Block> TAG_CANTILEVER_CONNECTABLE_8PX = createTag("cantilever_connectable_8px");
 	public static final TagKey<Block> TAG_CANTILEVER_CONNECTABLE_5PX = createTag("cantilever_connectable_5px");
 	public static final TagKey<Block> TAG_CANTILEVER_CONNECTABLE_4PX = createTag("cantilever_connectable_4px");
+	
+	public static final TagKey<Block> TAG_CATENARY_HEADSPAN_CONNECTABLE = createTag("catenary_headspan_connectable");
 
 	public static final BlockEntry<PantographBlock> PANTOGRAPH = PantographsAndWires.REGISTRATE.block("pantograph", PantographBlock::new)
 		.initialProperties(SharedProperties::softMetal)
@@ -182,9 +181,6 @@ public class ModBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 	);
-
-// overhead line gantry
-// overhead cross span
 
 
 		

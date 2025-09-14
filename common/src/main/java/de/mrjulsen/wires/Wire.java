@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import de.mrjulsen.wires.render.WireRenderData;
 
-public record Wire(@Nullable WirePoints collisionData, @Nullable WireRenderData renderData) {
+public record Wire(String name, @Nullable WirePoints collisionData, @Nullable WireRenderData renderData) {
     public Optional<WirePoints> getCollisionData() {
         return Optional.ofNullable(collisionData());
     }

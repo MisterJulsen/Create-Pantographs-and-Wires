@@ -35,7 +35,7 @@ public class RaycastUtils {
                 if (checkedBlocks.add(pos)) {
                     Optional<RaycastHitResult> hit = collisionProvider.tryHit(level, pos, new Vector3f(start), new Vector3f(normal));
                     if (hit.isPresent()) {
-                        if (closestHit == null || hit.get().distance() < closestHit.distance()) {
+                        if (closestHit == null || hit.get().getDistance() < closestHit.getDistance()) {
                             closestHit = hit.get();
                         }
                     }

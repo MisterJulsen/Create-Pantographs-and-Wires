@@ -2,23 +2,35 @@ package de.mrjulsen.wires.item;
 
 import de.mrjulsen.wires.util.Utils;
 import de.mrjulsen.wires.block.IWireConnector;
+import de.mrjulsen.wires.block.WireConnectorBlockEntity;
+import de.mrjulsen.wires.graph.WireGraph;
+import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
+import de.mrjulsen.wires.graph.data.node.NodeData;
+import de.mrjulsen.wires.graph.registry.NodeDataRegistry;
+import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
 import de.mrjulsen.wires.IWireType;
-import de.mrjulsen.wires.WireNetwork;
 import de.mrjulsen.wires.WiresApi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.mutable.MutableInt;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.paw.data.WireHitResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -26,18 +38,77 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Basic item class for a specific {@code IWireType} with basic functionality.
  */
-public class WireBaseItem extends Item {
+public class WireBaseItem extends Item implements IWireInteractableItem {
     
     private record ConnectionPointData(BlockPos pos, IWireConnector connector) {}
 
-    public static final String NBT_POINTS = "StoredPoints";
+    public static enum EWireConnectorType {
+        CONNECTOR(0, "connector"),
+        BLOCK(1, "block"),
+        WIRE(2, "wire");
+
+        private final int id;
+        private final String name;
+
+        private EWireConnectorType(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static EWireConnectorType getById(int id) {
+            return Arrays.stream(values()).filter(x -> x.getId() == id).findFirst().orElse(BLOCK);
+        }
+    }    
+
+    public static record CustomData(CompoundTag nbt) {
+        public CompoundTag getCustomDataForPoint(int index) {
+            if (nbt().contains(NBT_POINTS)) {
+                CompoundTag pointsNbt = nbt().getCompound(NBT_POINTS);
+                return pointsNbt.contains(String.valueOf(index)) ? pointsNbt.getCompound(String.valueOf(index)) : new CompoundTag();
+            }
+            return new CompoundTag();
+        }
+
+        public CompoundTag getCommonData() {
+            if (nbt().contains(NBT_CUSTOM_DATA)) {
+                return nbt().getCompound(NBT_CUSTOM_DATA);
+            }
+            return new CompoundTag();
+        }
+
+        public boolean hasPoint(int index) {
+            if (nbt().contains(NBT_POINTS)) {
+                CompoundTag pointsNbt = nbt().getCompound(NBT_POINTS);
+                return pointsNbt.contains(String.valueOf(index));
+            }
+            return false;
+        }
+    }
+
+    public static final String NBT_POINTS = "CustomPointData";
+    public static final String NBT_CONNECTOR_TYPE = "ConnectorType";
     public static final String NBT_POS = "Pos";
+    public static final String NBT_WIRE_ID = "WireId";
+    public static final String NBT_CUSTOM_DATA = "CustomData";
+    public static final String NBT_TOTAL_POINTS_COUNT = "PointsCount";
 
     private final IWireType wireType;
 
@@ -60,22 +131,222 @@ public class WireBaseItem extends Item {
     }
     
     @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        BlockState state = level.getBlockState(pos);
-        Player player = context.getPlayer();
-        return placeWire(level, pos, state, player, context.getItemInHand(), Optional.of(context), null);
+    public InteractionResult useOn(UseOnContext context) {        
+        return placeWire(
+            context.getLevel(),
+            context.getPlayer(),
+            context.getHand(),
+            new BlockHitResult(
+                context.getClickLocation(),
+                context.getClickedFace(),
+                context.getClickedPos(),
+                context.isInside()),
+            EWireConnectorType.BLOCK,
+            null
+        );
     }
 
-    public InteractionResult placeWire(Level level, BlockPos pos, BlockState state, Player player, ItemStack stack, Optional<UseOnContext> context, Consumer<CompoundTag> addMetadata) {   
-        if (state.getBlock() instanceof IWireConnector wc && getWireType().isValidConnector(level, pos, wc) && wc.canConnectWire(level, pos, state)) {
+    @Override
+    public InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
+        return placeWire(level, player, hand, hit, EWireConnectorType.WIRE, null);
+    }
+
+    public int getRequiredPoints() {
+        return 2;
+    }
+
+    protected boolean addNewPoint(Level level, Player player, InteractionHand hand, HitResult hit, EWireConnectorType type, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        WireGraph graph = WireGraphManager.get(level, getWireType().getGraphId(itemData));
+        NodeData data = createNodeData(level, player, hand, hit, type);
+        if (data == null) {
+            return false;
+        }
+
+        // Additional checks
+        checks: {
+            String translationKey = "";
+            
+            if (!points.isEmpty()) {
+                NodeData previousNode = NodeDataRegistry.INSTANCE.load(points.get(points.size() - 1));
+                if (previousNode.toWorldPos(graph).distance(data.toWorldPos(graph)) > getWireType().getMaxLength()) {
+                    translationKey = "item." + WiresApi.MOD_ID + ".wire.to_far_away";
+                } else if (previousNode.equals(data)) {
+                    translationKey = "item." + WiresApi.MOD_ID + ".wire.same_connector";
+                }
+            }
+            if (!data.validate(graph, itemData, points.size())) {
+                translationKey = "item." + WiresApi.MOD_ID + ".wire.connector_invalid";
+            } else {
+                break checks;
+            } 
+            player.displayClientMessage(TextUtils.translate(translationKey, getWireType().getMaxLength()).withStyle(ChatFormatting.RED), true);
+            clear(stack);
+            return false;
+        }
+
+        CompoundTag nodeMeta = new CompoundTag();
+        DLUtils.doIfNotNull(metadata, x -> x.accept(customDataNbt, nodeMeta));
+
+        CompoundTag nodeData = data.getRegistryType().wrap(data);
+        nodeData.put(NBT_CUSTOM_DATA, nodeMeta);
+        points.add(nodeData);
+        return true;
+    }
+
+    protected boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        return points.size() >= getRequiredPoints();
+    }
+
+    
+    protected boolean createWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        WireGraph graph = WireGraphManager.get(level, getWireType().getGraphId(itemData));
+        List<NodeData> deserializedData = new ArrayList<>(points.size());
+        CompoundTag pointsMeta = new CompoundTag();
+
+        for (int i = 0; i < points.size(); i++) {
+            CompoundTag nodeNbt = points.get(i);
+            pointsMeta.put(String.valueOf(i), nodeNbt.getCompound(NBT_CUSTOM_DATA));
+            deserializedData.add(NodeDataRegistry.INSTANCE.load(nodeNbt));
+        }
+
+        CompoundTag metaCollection = new CompoundTag();
+        if (!customDataNbt.isEmpty()) metaCollection.put(NBT_CUSTOM_DATA, customDataNbt);
+        if (!pointsMeta.isEmpty()) metaCollection.put(NBT_POINTS, pointsMeta);
+        metaCollection.putInt(NBT_TOTAL_POINTS_COUNT, points.size());
+
+        MutableInt idx = new MutableInt();
+        graph.createEdge(getWireType(), new CustomData(metaCollection), deserializedData.get(0), deserializedData.get(1), idx);
+        clear(stack);
+        return true;
+    }
+
+    public InteractionResult placeWire(Level level, Player player, InteractionHand hand, HitResult hit, EWireConnectorType type, BiConsumer<CompoundTag, CompoundTag> metadata) { 
+        if (level.isClientSide()) {
+            return InteractionResult.PASS;
+        }
+        ItemStack stack = player.getItemInHand(hand);
+        if (!(stack.getItem() instanceof WireBaseItem)) {
+            return InteractionResult.FAIL;
+        }
+
+        // --- Decode Item data ---
+        CompoundTag itemData = stack.getOrCreateTag();
+        CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
+        List<CompoundTag> points = new ArrayList<>();        
+        if (itemData.contains(NBT_POINTS)) {
+            points.addAll(itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList());
+        }
+
+        // --- Set data ---
+        if (!addNewPoint(level, player, hand, hit, type, metadata, stack, itemData, customDataNbt, points)) {
+            return InteractionResult.FAIL;
+        }
+
+        // --- Save data ---
+        ListTag pointsList = new ListTag();
+        for (CompoundTag p : points) {
+            pointsList.add(p);
+        }
+        itemData.put(NBT_POINTS, pointsList);
+        itemData.put(NBT_CUSTOM_DATA, customDataNbt);
+        stack.setTag(itemData);
+
+        // --- Create wire ---
+        if (canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
+            createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
+        }
+        
+        return InteractionResult.SUCCESS;
+    }
+
+    protected void clear(ItemStack stack) {
+        stack.setTag(new CompoundTag());
+    }
+
+    protected NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit, EWireConnectorType type) {
+        if (hit instanceof BlockHitResult blockHit) {
+            if (level.getBlockEntity(blockHit.getBlockPos()) instanceof WireConnectorBlockEntity) {
+                return new BlockConnectorNodeData(blockHit.getBlockPos());
+            }
+            BlockPos pos = blockHit.getBlockPos();
+            BlockState state = level.getBlockState(blockHit.getBlockPos());
+            VoxelShape shape = state.getVisualShape(level, blockHit.getBlockPos(), CollisionContext.empty());
+            return clipFromSide(shape, pos, blockHit.getDirection()).map(x -> {
+                return new GenericBlockNodeData(blockHit.getBlockPos(), x.getLocation().toVector3f());
+            }).orElse(null);
+        }
+        return null;
+    }
+
+    public static Optional<BlockHitResult> clipFromSide(VoxelShape shape, BlockPos pos, Direction dir) {
+        if (shape.isEmpty()) {
+            return Optional.empty();
+        }
+
+        AABB bounds = shape.bounds();
+        double minX = 0.5;
+        double minY = 0.5;
+        double minZ = 0.5;
+        double maxX = 0.5;
+        double maxY = 0.5;
+        double maxZ = 0.5;
+
+        switch (dir) {
+            case DOWN  -> {
+                minY = bounds.maxY;
+                maxY = bounds.minY;
+            }
+            case UP    -> {
+                minY = bounds.minY;
+                maxY = bounds.maxY;
+            }
+            case NORTH -> {
+                minZ = bounds.maxZ;
+                maxZ = bounds.minZ;
+            }
+            case SOUTH -> {
+                minZ = bounds.minZ;
+                maxZ = bounds.maxZ;
+            }
+            case WEST  -> {
+                minX = bounds.maxX;
+                maxX = bounds.minX;
+            }
+            case EAST  -> {
+                minX = bounds.minX;
+                maxX = bounds.maxX;
+            }
+        }
+
+        Vec3 block = new Vec3(pos.getX(), pos.getY(), pos.getZ());
+        Vec3 start = new Vec3(
+                maxX + dir.getStepX() * 0.001,
+                maxY + dir.getStepY() * 0.001,
+                maxZ + dir.getStepZ() * 0.001
+        ).add(block);
+        Vec3 end = new Vec3(
+                minX - dir.getStepX() * 0.001,
+                minY - dir.getStepY() * 0.001,
+                minZ - dir.getStepZ() * 0.001
+        ).add(block);
+        return Optional.ofNullable(shape.clip(start, end, pos));
+    }
+
+
+
+    
+    
+
+
+    public InteractionResult placeWire24525(Level level, BlockPos pos, BlockState state, Player player, ItemStack stack, Optional<UseOnContext> context, Consumer<CompoundTag> addMetadata) {   
+        if (state.getBlock() instanceof IWireConnector wc && wc.canConnectWire(level, pos, state)) {
             if (!level.isClientSide) {
                 CompoundTag compound = getTag(stack);
                 List<CompoundTag> points = new ArrayList<>(compound.getList(NBT_POINTS, Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList());
 
                 CompoundTag pointNbt = new CompoundTag();
                 Utils.putNbtBlockPos(pointNbt, NBT_POS, pos);
+                pointNbt.putInt(NBT_CONNECTOR_TYPE, EWireConnectorType.CONNECTOR.getId());
                 DLUtils.doIfNotNull(addMetadata, x -> x.accept(pointNbt));
                 points.add(pointNbt);
                 if (!wc.onAttachWireTo(level, pos, state, player, context, pointNbt, points.size())) {                    
@@ -125,7 +396,7 @@ public class WireBaseItem extends Item {
                             if (!wc.beforeCreateWireConnection(level, pos, state, player, context, compound, k)) {
                                 break;
                             }
-                            if (WireNetwork.get(level).addConnection(level, compound, pointA.pos(), pointB.pos(), pointA.connector(), pointB.connector(), getWireType(), 0)) {
+                            if (true) {
                                 if (!wc.afterCreateWireConnection(level, pos, state, player, context, compound, k)) {
                                     break;
                                 }

@@ -15,11 +15,13 @@ import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
 
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.util.Const;
-import de.mrjulsen.wires.WireNetwork;
-import de.mrjulsen.wires.WireClientNetwork;
-import de.mrjulsen.wires.WireCollision.WireBlockCollision;
+import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.debug.WireDebugRenderer;
+import de.mrjulsen.wires.graph.WireGraphClient;
+import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.wires.graph.NewWireCollision.WireBlockCollision;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -226,32 +228,31 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
         Iterator<BlockPos> poses = findIntersectingBlocks(pA, pB, upVec).iterator();
         double result = MAX_HEIGHT;
         boolean hasWire = false;
+        WireGraphClient net = WireGraphManager.getClient(level, WiresApi.PAW_CATENARY_WIRES);
         while (poses.hasNext()) {
             BlockPos pos = poses.next();
-            if (WireClientNetwork.get(level).hasConnectionsInBlock(pos)) {
-                for (WireBlockCollision c : WireClientNetwork.get(level).getCollisionsInBlock(pos)) {
-                    Vector3d d = checkWireIntersection(
-                        new Vector3d(c.absA().x, c.absA().y, c.absA().z),
-                        new Vector3d(c.absB().x, c.absB().y, c.absB().z),
-                        pA,
-                        pB,
-                        upVec
-                    );
-                    if (d != null) {
-                        double rY = d.y - worldPosition.y;
-                        Vector3d scaledUp = new Vector3d(upVec).normalize().mul(rY);
-                        double f = new Vector3d(scaledUp.x(), 0, scaledUp.z()).length();
-                        rY = Math.sqrt(Math.pow(f, 2) + Math.pow(rY, 2));
-                        if (rY < result) {
-                            result = rY;
-                            if (WireDebugRenderer.enabled()) {
-                                debug_hitHeight = rY;
-                                debug_wireCollisionA = new Vector3f((float)c.absA().x, (float)c.absA().y, (float)c.absA().z);
-                                debug_wireCollisionB = new Vector3f((float)c.absB().x, (float)c.absB().y, (float)c.absB().z);
-                            }
+            for (WireBlockCollision c : net.getCollisionsInBlock(pos).stream().flatMap(x -> x.collisionsInBlock(pos).stream()).toList()) {
+                Vector3d d = checkWireIntersection(
+                    new Vector3d(c.getAbsoluteInVector().x, c.getAbsoluteInVector().y, c.getAbsoluteInVector().z),
+                    new Vector3d(c.getAbsoluteOutVector().x, c.getAbsoluteOutVector().y, c.getAbsoluteOutVector().z),
+                    pA,
+                    pB,
+                    upVec
+                );
+                if (d != null) {
+                    double rY = d.y - worldPosition.y;
+                    Vector3d scaledUp = new Vector3d(upVec).normalize().mul(rY);
+                    double f = new Vector3d(scaledUp.x(), 0, scaledUp.z()).length();
+                    rY = Math.sqrt(Math.pow(f, 2) + Math.pow(rY, 2));
+                    if (rY < result) {
+                        result = rY;
+                        if (WireDebugRenderer.enabled()) {
+                            debug_hitHeight = rY;
+                            debug_wireCollisionA = new Vector3f((float)c.getAbsoluteInVector().x, (float)c.getAbsoluteInVector().y, (float)c.getAbsoluteInVector().z);
+                            debug_wireCollisionB = new Vector3f((float)c.getAbsoluteOutVector().x, (float)c.getAbsoluteOutVector().y, (float)c.getAbsoluteOutVector().z);
                         }
-                        hasWire = true;
                     }
+                    hasWire = true;
                 }
             }
         }
@@ -262,20 +263,19 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
         Vector3d pA = new Vector3d(worldPosition).sub(rightVec);
         Vector3d pB = new Vector3d(worldPosition).add(rightVec);
         Iterator<BlockPos> poses = findIntersectingBlocks(pA, pB, upVec).iterator();
+        WireGraphClient net = WireGraphManager.getClient(level, WiresApi.PAW_CATENARY_WIRES);
         while (poses.hasNext()) {
             BlockPos pos = poses.next();
-            if (WireClientNetwork.get(level).hasConnectionsInBlock(pos)) {
-                for (WireBlockCollision c : WireNetwork.get(level).getCollisionsInBlock(pos)) {
-                    Vector3d d = checkWireIntersection(
-                        new Vector3d(c.absA().x, c.absA().y, c.absA().z),
-                        new Vector3d(c.absB().x, c.absB().y, c.absB().z),
-                        pA,
-                        pB,
-                        upVec
-                    );
-                    if (d != null) {
-                        return slope(new Vector3d(c.absA().x, c.absA().y, c.absA().z), new Vector3d(c.absB().x, c.absB().y, c.absB().z));
-                    }
+            for (WireBlockCollision c : net.getCollisionsInBlock(pos).stream().flatMap(x -> x.collisionsInBlock(pos).stream()).toList()) {
+                Vector3d d = checkWireIntersection(
+                    new Vector3d(c.getAbsoluteInVector().x, c.getAbsoluteInVector().y, c.getAbsoluteInVector().z),
+                    new Vector3d(c.getAbsoluteOutVector().x, c.getAbsoluteOutVector().y, c.getAbsoluteOutVector().z),
+                    pA,
+                    pB,
+                    upVec
+                );
+                if (d != null) {
+                    return slope(new Vector3d(c.getAbsoluteInVector().x, c.getAbsoluteInVector().y, c.getAbsoluteInVector().z), new Vector3d(c.getAbsoluteOutVector().x, c.getAbsoluteOutVector().y, c.getAbsoluteOutVector().z));
                 }
             }
         }        

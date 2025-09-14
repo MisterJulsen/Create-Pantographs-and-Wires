@@ -1,13 +1,17 @@
 package de.mrjulsen.wires;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
+import com.google.common.collect.ImmutableMap;
+
 import de.mrjulsen.mcdragonlib.data.Cache;
+import de.mrjulsen.wires.decoration.WireDecorationData;
 import de.mrjulsen.wires.render.WireRenderData;
 import de.mrjulsen.wires.render.WireSegmentRenderData;
 import de.mrjulsen.wires.render.WireSegmentRenderDataBatch;
@@ -15,27 +19,27 @@ import net.minecraft.core.SectionPos;
 
 /** A collection of several individual wires combined to one cable connection. */
 public class WireBatch {
-    private final Set<Wire> subWires = new HashSet<>();
+    private final Map<String, Wire> subWires = new HashMap<>();
 
-    private final Cache<Set<WirePoints>> collisionCache = new Cache<>(() -> {
-        Set<WirePoints> points = new HashSet<>(subWires.size());
-        for (Wire wire : subWires) {
-            if (!wire.getCollisionData().isPresent()) {
+    private final Cache<ImmutableMap<String, WirePoints>> collisionCache = new Cache<>(() -> {
+        ImmutableMap.Builder<String, WirePoints> points = ImmutableMap.builder();
+        for (Map.Entry<String, Wire> wire : subWires.entrySet()) {
+            if (!wire.getValue().getCollisionData().isPresent()) {
                 continue;
             }
-            points.add(wire.collisionData());
+            points.put(wire.getKey(), wire.getValue().collisionData());
         }
-        return points;
+        return points.build();
     });
-    private final Cache<Set<WireRenderData>> renderCache = new Cache<>(() -> {
-        Set<WireRenderData> points = new HashSet<>(subWires.size());
-        for (Wire wire : subWires) {
-            if (!wire.getRenderData().isPresent()) {
+    private final Cache<ImmutableMap<String, WireRenderData>> renderCache = new Cache<>(() -> {
+        ImmutableMap.Builder<String, WireRenderData> points = ImmutableMap.builder();
+        for (Map.Entry<String, Wire> wire : subWires.entrySet()) {
+            if (!wire.getValue().getRenderData().isPresent()) {
                 continue;
             }
-            points.add(wire.renderData());
+            points.put(wire.getKey(), wire.getValue().renderData());
         }
-        return points;
+        return points.build();
     });
 
     /**
@@ -43,7 +47,7 @@ public class WireBatch {
      * @param mainWire The first wire
      */
     public WireBatch(Wire mainWire) {
-        this.subWires.add(mainWire);        
+        this.subWires.put(mainWire.name(), mainWire);
     }
 
     /**
@@ -66,33 +70,48 @@ public class WireBatch {
      * Add additional wire to this collection.
      * @param subWire The new wire
      */
-    public void addSubWire(Wire subWire) {
-        this.subWires.add(subWire);
+    public Wire addSubWire(Wire subWire) {
+        this.subWires.put(subWire.name(), subWire);
+        return subWire;
     }
 
     public int count() {
         return subWires.size();
     }
 
-    public Set<Wire> getWires() {
-        return subWires;
+    public boolean isEmpty() {
+        return count() <= 0;
     }
 
-    public Set<WirePoints> getCollisions() {
+    public Map<String, Wire> getWires() {
+        return Collections.unmodifiableMap(subWires);
+    }
+
+    public ImmutableMap<String, WirePoints> getCollisions() {
         return collisionCache.get();
     }
 
-    public Set<WireRenderData> getRenderData() {
+    public ImmutableMap<String, WireRenderData> getRenderData() {
         return renderCache.get();
     }
 
-    public Map<SectionPos, WireSegmentRenderDataBatch> splitRenderDataInChunkSections(UUID id, SectionPos origin) {
+    public Map<SectionPos, WireSegmentRenderDataBatch> splitRenderDataInChunkSections(UUID id, Collection<WireDecorationData> decorations) {
         Map<SectionPos, WireSegmentRenderDataBatch> result = new HashMap<>();
+
+        // Cache
+        Map<String, TreeMap<Float, WireDecorationData>> decorationsMapped = new HashMap<>();
+        for (WireDecorationData deco : decorations) {
+            decorationsMapped.computeIfAbsent(deco.getWireName(), name -> new TreeMap<>()).put(deco.getPos(), deco);
+        }
         
-        for (Wire wire : subWires) {
+        for (Map.Entry<String, Wire> wireData : subWires.entrySet()) {
+            Wire wire = wireData.getValue();
+            String wireName = wireData.getKey();
+            TreeMap<Float, WireDecorationData> wireDecor = decorationsMapped.get(wireName);
+
             Optional<WireRenderData> data = wire.getRenderData();
             if (!data.isPresent()) continue;
-            Map<SectionPos, WireSegmentRenderData> segments = data.get().splitInChunkSections(origin);
+            Map<SectionPos, WireSegmentRenderData> segments = data.get().splitInChunkSections(wireDecor);
             for (Map.Entry<SectionPos, WireSegmentRenderData> segment : segments.entrySet()) {
                 result.computeIfAbsent(segment.getKey(), x -> new WireSegmentRenderDataBatch(id, segment.getKey())).addSegment(segment.getValue());
             }

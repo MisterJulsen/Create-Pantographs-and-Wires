@@ -8,11 +8,22 @@ import de.mrjulsen.paw.block.CantileverBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity.CantileverShapeData;
+import de.mrjulsen.paw.data.WireHitResult;
+import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.paw.util.collision.LineShape;
 import de.mrjulsen.paw.util.collision.RaycastHitResult;
 import de.mrjulsen.paw.util.collision.RaycastUtils;
 import de.mrjulsen.wires.IWireType;
+import de.mrjulsen.wires.WiresApi;
+import de.mrjulsen.wires.block.WireConnectorBlockEntity;
+import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
+import de.mrjulsen.wires.graph.data.node.NodeData;
+import de.mrjulsen.wires.graph.data.node.CatenaryHeadspanConnectionNodeData;
+import de.mrjulsen.wires.graph.data.node.CatenaryWireConnectorNodeData;
 import de.mrjulsen.wires.item.WireBaseItem;
+import de.mrjulsen.wires.util.EdgeId;
+import de.mrjulsen.wires.util.GraphId;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -20,6 +31,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class CatenaryWireItem extends WireBaseItem {
 
@@ -45,7 +59,7 @@ public class CatenaryWireItem extends WireBaseItem {
             player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(10)),
             level,
             AbstractCantileverBlock.MAX_WIDTH,
-            DragonLib.PIXEL * 2,
+            DragonLib.PIXEL,
             (lvl, pos, rayOrigin, rayDirection) -> {
                 
                 if (!(lvl.getBlockState(pos).getBlock() instanceof CantileverBlock && lvl.getBlockEntity(pos) instanceof CantileverBlockEntity be)) 
@@ -63,7 +77,7 @@ public class CatenaryWireItem extends WireBaseItem {
                         Optional<Vector3f> oHit = shape.intersects(rayOrigin, rayDirection);
                         if (oHit.isPresent()) {
                             Vector3f hit = oHit.get();
-                            return Optional.of(new RaycastHitResult(hit, pos, new Vector3f(hit).sub(rayOrigin).length(), k));
+                            return Optional.of(new RaycastHitResult(new Vec3(hit), pos, new Vector3f(hit).sub(rayOrigin).length(), k));
                         }
                     }
                 }
@@ -73,11 +87,35 @@ public class CatenaryWireItem extends WireBaseItem {
         );
 
         result.ifPresent(x -> {
-            placeWire(level, x.blockPos(), level.getBlockState(x.blockPos()), player, player.getItemInHand(usedHand), Optional.empty(), (metaNbt) -> {
-                metaNbt.putInt(NBT_CANTILEVER_INDEX, (Integer)x.metadata());
+            placeWire(level, player, usedHand, x, EWireConnectorType.BLOCK, (metaNbt, pointMeta) -> {
+                pointMeta.putInt(NBT_CANTILEVER_INDEX, (Integer)x.getHitData());
             });
         });
 
         return InteractionResultHolder.success(player.getItemInHand(usedHand));
+    }
+
+    @Override
+    public InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
+        return placeWire(level, player, hand, hit, EWireConnectorType.WIRE, (a, b) -> {});
+    }
+    
+
+    @Override
+    protected NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit, EWireConnectorType type) {
+        if (hit instanceof WireHitResult h && CatenaryHeadspanWireType.canConnectCatenary(h.getWireId())) {
+            return new CatenaryHeadspanConnectionNodeData(h.getWireId());
+        }
+
+        BlockPos pos = null;
+        if (hit instanceof BlockHitResult h) {
+            pos = h.getBlockPos();
+        } else if (hit instanceof RaycastHitResult h) {
+            pos = h.getBlockPos();
+        }
+        if (pos != null && level.getBlockEntity(pos) instanceof WireConnectorBlockEntity && level.getBlockState(pos).getBlock() instanceof AbstractCantileverBlock) {
+            return new BlockConnectorNodeData(pos);
+        }
+        return null;
     }
 }

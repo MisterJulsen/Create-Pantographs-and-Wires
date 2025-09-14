@@ -10,12 +10,12 @@ import net.minecraft.resources.ResourceLocation;
 public class WireTypeRegistry {
     private static final Map<ResourceLocation, IWireType> registeredTypes = new HashMap<>();
 
-    public static IWireType register(String modid, String name, Function<ResourceLocation, IWireType> type) {
+    public static <T extends IWireType> T register(String modid, String name, Function<ResourceLocation, T> type) {
         ResourceLocation location = new ResourceLocation(modid, name);
         if (registeredTypes.containsKey(location)) {
             throw new IllegalArgumentException("A wire with ID '" + location.toString() + "' is already registered.");
         }
-        IWireType wire = type.apply(location);
+        T wire = type.apply(location);
         registeredTypes.put(location, wire);
         return wire;
     }

@@ -1,15 +1,19 @@
 package de.mrjulsen.wires.network;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.block.IWireConnector;
+import de.mrjulsen.wires.decoration.WireDecorationData;
 import de.mrjulsen.wires.util.Utils;
 import de.mrjulsen.wires.WireConnection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 public class WireConnectionSyncData {
@@ -23,6 +27,7 @@ public class WireConnectionSyncData {
     private static final String NBT_CONNECTOR_A_DATA = "ConnectorA";
     private static final String NBT_CONNECTOR_B_DATA = "ConnectorB";
     private static final String NBT_CREATION_DATA = "CreationData";
+    private static final String NBT_DECORATIONS = "Decorations";
     private static final String NBT_ORIGIN_CHUNK_SECTION = "OriginChunkSection";
 
     private final UUID connectionId;
@@ -33,12 +38,13 @@ public class WireConnectionSyncData {
     private final ResourceLocation wireType;
     private final CompoundTag connectorAData;
     private final CompoundTag connectorBData;
-    private final CompoundTag creationData;
+    private final CompoundTag customData;
     private final SectionPos originChunkSection;
+    private final Collection<WireDecorationData> decorations;
 
     public WireConnectionSyncData(UUID connectionId, BlockPos startBlockPos, BlockPos endBlockPos, Vector3f startPos, Vector3f endPos, ResourceLocation wireType,
-            CompoundTag connectorAData, CompoundTag connectorBData, CompoundTag creationData,
-            SectionPos originChunkSection) {
+            CompoundTag connectorAData, CompoundTag connectorBData, CompoundTag customData,
+            SectionPos originChunkSection, Collection<WireDecorationData> decorations) {
         this.connectionId = connectionId;
         this.startBlockPos = startBlockPos;
         this.endBlockPos = endBlockPos;
@@ -47,8 +53,9 @@ public class WireConnectionSyncData {
         this.wireType = wireType;
         this.connectorAData = connectorAData;
         this.connectorBData = connectorBData;
-        this.creationData = creationData;
+        this.customData = customData;
         this.originChunkSection = originChunkSection;
+        this.decorations = decorations;
     }
 
     public CompoundTag toNbt() {
@@ -61,8 +68,13 @@ public class WireConnectionSyncData {
         nbt.putString(NBT_WIRE_TYPE, wireType.toString());
         nbt.put(NBT_CONNECTOR_A_DATA, connectorAData);
         nbt.put(NBT_CONNECTOR_B_DATA, connectorBData);
-        nbt.put(NBT_CREATION_DATA, creationData);
+        nbt.put(NBT_CREATION_DATA, customData);
         Utils.putNbtSectionPos(nbt, NBT_ORIGIN_CHUNK_SECTION, originChunkSection);
+        ListTag decoList = new ListTag();
+        for (WireDecorationData deco : decorations) {
+            decoList.add(deco.toNbt());
+        }
+        nbt.put(NBT_DECORATIONS, decoList);
         return nbt;
     }
 
@@ -77,7 +89,8 @@ public class WireConnectionSyncData {
             nbt.getCompound(NBT_CONNECTOR_A_DATA), 
             nbt.getCompound(NBT_CONNECTOR_B_DATA),
             nbt.getCompound(NBT_CREATION_DATA),
-            Utils.getNbtSectionPos(nbt, NBT_ORIGIN_CHUNK_SECTION)
+            Utils.getNbtSectionPos(nbt, NBT_ORIGIN_CHUNK_SECTION),
+            nbt.getList(NBT_DECORATIONS, Tag.TAG_COMPOUND).stream().map(x -> WireDecorationData.fromNbt((CompoundTag)x)).toList()
         );
     }
 
@@ -91,8 +104,9 @@ public class WireConnectionSyncData {
             wireConnection.getWireType().getRegistryId(),
             wireConnection.getConnectionANbt(),
             wireConnection.getConnectionBNbt(),
-            wireConnection.getCreationDataContext(),
-            wireConnection.originChunkSection()
+            wireConnection.getCustomData(),
+            wireConnection.originChunkSection(),
+            wireConnection.getDecorations()
         );
     }
 
@@ -128,12 +142,16 @@ public class WireConnectionSyncData {
         return connectorBData;
     }
 
-    public CompoundTag getCreationData() {
-        return creationData;
+    public CompoundTag getCustomData() {
+        return customData;
     }
 
     public SectionPos getOriginChunkSection() {
         return originChunkSection;
+    }
+
+    public Collection<WireDecorationData> getDecorations() {
+        return decorations;
     }
 
     public Vector3f getWireAttachPointA() {

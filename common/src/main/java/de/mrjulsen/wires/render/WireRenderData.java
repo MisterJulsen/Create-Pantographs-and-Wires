@@ -1,10 +1,12 @@
 package de.mrjulsen.wires.render;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.joml.Vector3f;
 
+import de.mrjulsen.wires.decoration.WireDecorationData;
 import de.mrjulsen.wires.render.WireRenderPoint.VertexCorner;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -28,33 +30,38 @@ public class WireRenderData {
         return points.length;
     }
 
-    public Map<SectionPos, WireSegmentRenderData> splitInChunkSections(SectionPos startSection) {
-        Map<SectionPos, WireSegmentRenderData> result = new HashMap<>();
+    public Map<SectionPos, WireSegmentRenderData> splitInChunkSections(TreeMap<Float, WireDecorationData> decorations) {
+        Map<SectionPos, WireSegmentRenderData> result = new LinkedHashMap<>();
         Vector3f v = points[0].vertex(VertexCorner.CENTER);
-        SectionPos lastRawSection = SectionPos.of(new BlockPos((int)v.x, (int)v.y, (int)v.z));
-        WireRenderPoint lastVertices = points[0].offset(lastRawSection);
-        SectionPos lastSection = lastRawSection.offset(startSection.getX(), startSection.getY(), startSection.getZ());
+
+        SectionPos lastSection = SectionPos.of(new BlockPos((int)v.x, (int)v.y, (int)v.z));
+        WireRenderPoint lastVertices = points[0].offset(lastSection);
         result.computeIfAbsent(lastSection, x -> new WireSegmentRenderData()).add(lastVertices);
 
         for (int i = 1; i < points.length; i++) {
             v = points[i].vertex(VertexCorner.CENTER);
-            SectionPos rawSection = SectionPos.of(new BlockPos((int)v.x, (int)v.y, (int)v.z));
-            SectionPos section = rawSection.offset(startSection.getX(), startSection.getY(), startSection.getZ());
-            WireRenderPoint vertices = points[i].offset(rawSection);
-            if (lastSection.equals(section) || i < points.length - 1) {                
-                result.computeIfAbsent(section, x -> new WireSegmentRenderData()).add(vertices);
-            }
+            SectionPos section = SectionPos.of(new BlockPos((int)v.x, (int)v.y, (int)v.z));
+            WireRenderPoint vertices = points[i].offset(section);
+
             if (!lastSection.equals(section)) {
-                result.computeIfAbsent(lastSection, x -> new WireSegmentRenderData()).add(points[i].offset(lastRawSection));
+                result.computeIfAbsent(lastSection, x -> new WireSegmentRenderData()).add(points[i].offset(lastSection));
+                result.computeIfAbsent(section, x -> new WireSegmentRenderData()).add(vertices);
+            } else {
+                result.computeIfAbsent(section, x -> new WireSegmentRenderData()).add(vertices);
             }
 
             lastVertices = vertices;
             lastSection = section;
-            lastRawSection = rawSection;
+        }
+
+        float length = 0;
+        for (WireSegmentRenderData segment : result.values()) {
+            length += segment.finish(decorations, length);
         }
 
         return result;
     }
+
 
 
 }

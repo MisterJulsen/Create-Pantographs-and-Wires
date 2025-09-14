@@ -16,8 +16,9 @@ import de.mrjulsen.paw.item.CantileverBlockItem;
 import de.mrjulsen.paw.item.CatenaryWireItem;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.wires.WireConnection;
-import de.mrjulsen.wires.WireNetwork;
-import de.mrjulsen.wires.item.WireBaseItem;
+import de.mrjulsen.wires.graph.WireGraph;
+import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.wires.item.WireBaseItem.CustomData;
 import de.mrjulsen.wires.network.WireConnectionSyncData;
 import de.mrjulsen.wires.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -55,14 +56,11 @@ public class CantileverBlock extends AbstractCantileverBlock {
     }
 
     @Override
-    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData customData, int index) {
         if (level.getBlockEntity(pos) instanceof CantileverBlockEntity be) {
             int idx = 0;
-            if (itemData.contains(WireBaseItem.NBT_POINTS)) {
-                CompoundTag point = (CompoundTag)itemData.getList(WireBaseItem.NBT_POINTS, Tag.TAG_COMPOUND).get(index);
-                idx = point.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
-            } else if (itemData.contains(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1))) {
-                idx = itemData.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1));
+            if (customData.hasPoint(index)) {
+                idx = customData.getCustomDataForPoint(index).getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
             }
 
             CantileverData data = be.getCantileverData()[idx];
@@ -79,14 +77,11 @@ public class CantileverBlock extends AbstractCantileverBlock {
     }
 
     @Override
-    public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+    public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData customData, int index) {
         if (level.getBlockEntity(pos) instanceof CantileverBlockEntity be) {
             int idx = 0;
-            if (itemData.contains(WireBaseItem.NBT_POINTS)) {
-                CompoundTag point = (CompoundTag)itemData.getList(WireBaseItem.NBT_POINTS, Tag.TAG_COMPOUND).get(index);
-                idx = point.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
-            } else if (itemData.contains(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1))) {
-                idx = itemData.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX + (index + 1));
+            if (customData.hasPoint(index)) {
+                idx = customData.getCustomDataForPoint(index).getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
             }
 
             CantileverData data = be.getCantileverData()[idx];
@@ -105,16 +100,17 @@ public class CantileverBlock extends AbstractCantileverBlock {
 
     @Override
     public boolean onAttachWireTo(Level level, BlockPos pos, BlockState state, Player player, Optional<UseOnContext> hit, CompoundTag pointData, int index) {
-        WireNetwork network = WireNetwork.get(level);
+        /*
+        WireGraph network = WireGraphManager.get(level, PantographsAndWires.WIRE_NET);
         if (!(level.getBlockEntity(pos) instanceof CantileverBlockEntity be)) {
             return false;
         }
 
         int[] connectionsCount = new int[be.getCantileversCount()];
         Arrays.fill(connectionsCount, 0);
-        for (WireConnection connection : network.getConnectionsFromBlock(pos)) {
+        for (WireConnection connection : network.getConnectionsByBlock(pos)) {
             WireConnectionSyncData sync = connection.getWireConnectionSyncData();
-            ListTag list = sync.getCreationData().getList(CatenaryWireItem.NBT_POINTS, Tag.TAG_COMPOUND);
+            ListTag list = sync.getCustomData().getList(CatenaryWireItem.NBT_POINTS, Tag.TAG_COMPOUND);
             list.forEach(x -> {
                 CompoundTag tag = (CompoundTag)x;
                 BlockPos p = Utils.getNbtBlockPos(tag, CatenaryWireItem.NBT_POS);
@@ -130,11 +126,8 @@ public class CantileverBlock extends AbstractCantileverBlock {
             player.displayClientMessage(TextUtils.translate("block." + PantographsAndWires.MOD_ID + ".cantilever.too_many_connections").withStyle(ChatFormatting.RED), true);
         }
         return b;
-    }
-
-    @Override
-    public Vec3 multiblockSize() {
-        return new Vec3(1, 1, 1);
+        */
+        return true;
     }
     
 	@SuppressWarnings("deprecation")

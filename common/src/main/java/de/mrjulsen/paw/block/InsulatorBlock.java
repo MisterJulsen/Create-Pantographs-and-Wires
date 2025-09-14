@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.paw.util.ModMath;
+import de.mrjulsen.wires.item.WireBaseItem.CustomData;
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
 import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;
@@ -130,7 +131,7 @@ public class InsulatorBlock extends AbstractPlaceableInsulatorBlock {
     }
 
     @Override
-    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index) {
         return state.getValue(HALF) == Half.TOP ? new Vec3(0, Const.PIXEL * 10f, 0) : new Vec3(0, Const.PIXEL * 3f, 0);
     }
 }

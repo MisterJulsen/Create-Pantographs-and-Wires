@@ -30,6 +30,8 @@ public final class PantographsAndWires {
     public static final String SHORT_MOD_ID = "paw";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    //public static final ResourceLocation WIRE_NET = new ResourceLocation(PantographsAndWires.MOD_ID, "trains");
+
     public static final int DATA_FIXER_VERSION = 1;
     
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
@@ -43,11 +45,10 @@ public final class PantographsAndWires {
     
     private static NetworkManagerBase cmrNet;
 
-    
-
     public static void load() {}
 
     public static void init() {
+
         GeckoLib.initialize();
         WiresApi.init();
 

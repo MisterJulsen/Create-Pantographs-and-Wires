@@ -2,45 +2,49 @@ package de.mrjulsen.wires.network;
 
 import java.util.UUID;
 
-import de.mrjulsen.wires.network.WiresNetworkSyncData.WireSyncDataEntry;
 import de.mrjulsen.wires.util.ClientUtils;
-import de.mrjulsen.wires.WireClientNetwork;
 import de.mrjulsen.wires.WiresApi;
+import de.mrjulsen.wires.graph.WireEdge;
+import de.mrjulsen.wires.graph.WireGraphClient;
+import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.wires.graph.WireNode;
+import de.mrjulsen.wires.item.IWireInteractableItem;
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessorType;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 
 public final class NetworkManager {
 
     public static void init() {}
 
-    public static final DataAccessorType<WiresNetworkSyncData, Void, Void> WIRE_CONNECTOR_DATA_TRANSFER = DataAccessorType.register(new ResourceLocation(WiresApi.MOD_ID, "wire_connection_data_transfer"), DataAccessorType.Builder.createEmptyResponse(
+    public static final DataAccessorType<WiresSyncData.Wrapper, Void, Void> WIRE_CONNECTOR_DATA_TRANSFER = DataAccessorType.register(new ResourceLocation(WiresApi.MOD_ID, "wire_connection_data_transfer"), DataAccessorType.Builder.createEmptyResponse(
         (in, nbt) -> { 
             nbt.put(DataAccessorType.DEFAULT_NBT_DATA, in.toNbt());
         }, (nbt) -> {
-            return WiresNetworkSyncData.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
+            return WiresSyncData.Wrapper.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
         }, (player, in, temp, nbt, iteration) -> {
-            for (WireSyncDataEntry syncData : in.syncData()) {
-                WireClientNetwork.get(ClientUtils.level()).createClientConnection(in.pos(), syncData);
+            WiresSyncData data = in.unwrap(player.level());
+            WireGraphClient graph = WireGraphManager.getClient(player.level(), data.id());
+            for (WireNode node : data.nodes()) {
+                graph.addNode(node);
+            }
+            for (WireEdge edge : data.edges()) {
+                graph.addEdge(edge);
             }
             return false;
         }
     ));
     
-    public static final DataAccessorType<UUID[], Void, Void> DELETE_WIRE_CONNECTION = DataAccessorType.register(new ResourceLocation(WiresApi.MOD_ID, "delete_wire_conection"), DataAccessorType.Builder.createEmptyResponse(
+    public static final DataAccessorType<DeleteWireSyncData, Void, Void> DELETE_WIRE_CONNECTION = DataAccessorType.register(new ResourceLocation(WiresApi.MOD_ID, "delete_wire_conection"), DataAccessorType.Builder.createEmptyResponse(
         (in, nbt) -> {
-            ListTag list = new ListTag();
-            for (int i = 0; i < in.length; i++) {
-                UUID id = in[i];
-                list.add(StringTag.valueOf(id.toString()));
-            }
-            nbt.put(DataAccessorType.DEFAULT_NBT_DATA, list);
+            nbt.put(DataAccessorType.DEFAULT_NBT_DATA, in.toNbt());
         }, (nbt) -> {
-            return nbt.getList(DataAccessorType.DEFAULT_NBT_DATA, Tag.TAG_STRING).stream().map(x -> UUID.fromString(((StringTag)x).getAsString())).toArray(UUID[]::new);
+            return DeleteWireSyncData.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
         }, (player, in, temp, nbt, iteration) -> {
-            WireClientNetwork.get(ClientUtils.level()).removeClientConnections(in);
+            WireGraphClient graph = WireGraphManager.getClient(player.level(), in.id());
+            for (UUID id : in.wireEdgeIds()) {
+                graph.removeEdge(id);
+            }
             return false;
         }
     ));
@@ -51,8 +55,29 @@ public final class NetworkManager {
         }, (nbt) -> {
             return WireChunkLoadingData.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
         }, (player, in, temp, nbt, iteration) -> {
-            WireClientNetwork.get(ClientUtils.level()).onClientChunkLoading(in);
+            WireGraphManager.getClient(ClientUtils.level(), in.id()).onClientChunkLoading(in);
             return false;
         }
-    ));    
+    ));
+    
+    public static final DataAccessorType<WireInteractionData, Void, Void> WIRE_INTERACTION = DataAccessorType.register(new ResourceLocation(WiresApi.MOD_ID, "wire_interaction"), DataAccessorType.Builder.createEmptyResponse(
+        (in, nbt) -> {
+            nbt.put(DataAccessorType.DEFAULT_NBT_DATA, in.toNbt());
+        }, (nbt) -> {
+            return WireInteractionData.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA)).orElse(null);
+        }, (player, in, temp, nbt, iteration) -> {
+            if (in == null)
+                return false;            
+                
+            InteractionResult interactionresult = null;
+            if (player.getItemInHand(in.hand()).getItem() instanceof IWireInteractableItem i) {
+                interactionresult = i.interactWithWire(player.level(), player, in.hand(), in.hit());
+            }
+            if (interactionresult == null || !interactionresult.consumesAction()) {
+                interactionresult = in.hit().getWireId().type().use(player.level(), player, in.hand(), in.hit());
+            }
+            
+            return false;
+        }
+    ));
 }

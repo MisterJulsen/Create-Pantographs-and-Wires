@@ -3,15 +3,9 @@ package de.mrjulsen.paw.block.model;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.joml.Vector3f;
-
-import com.mojang.math.Axis;
-
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
-import de.mrjulsen.mcdragonlib.client.model.mesh.AbstractModel;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
-import de.mrjulsen.paw.block.abstractions.IRotatableBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock.WeatherState;
 import net.minecraft.client.Minecraft;
@@ -22,7 +16,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class OxidizedBlockModel extends AbstractModel {
+public class OxidizedBlockModel extends AbstractRotatableBlockModel {
 
     private final Set<ResourceLocation> oxidizingTextures;
 
@@ -31,7 +25,7 @@ public class OxidizedBlockModel extends AbstractModel {
     }
 
     @Override
-    protected Mesh getMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context) {
+    protected Mesh getBaseMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context) {
         Mesh mesh = BasicMesh.fromBakedModel(state, originalModel, random);
         if (state.getBlock() instanceof IWeatheringBlock block) {
             WeatherState ws = (WeatherState)block.getAge();
@@ -50,11 +44,6 @@ public class OxidizedBlockModel extends AbstractModel {
                 }
             });
         }
-
-        if (state.getBlock() instanceof IRotatableBlock rot) {
-            mesh.rotate(Axis.YP.rotationDegrees(rot.getRelativeYRotation(state)), new Vector3f(0.5f));
-        }
         return mesh;
-    }
-    
+    }    
 }

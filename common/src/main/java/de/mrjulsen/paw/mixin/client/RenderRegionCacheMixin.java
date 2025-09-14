@@ -5,7 +5,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import de.mrjulsen.wires.WireClientNetwork;
+import de.mrjulsen.wires.graph.WireGraphClient;
+import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.util.ClientUtils;
 import net.minecraft.client.renderer.chunk.RenderRegionCache;
 import net.minecraft.client.renderer.chunk.RenderRegionCache.ChunkInfo;
@@ -22,8 +23,11 @@ public class RenderRegionCacheMixin {
     private static void isEmpty(BlockPos start, BlockPos end, int sectionX, int sectionZ, ChunkInfo[][] chunkInfos, CallbackInfoReturnable<Boolean> cir) {
         int sectionY = SectionPos.blockToSectionCoord(start.getY());
         SectionPos pos = SectionPos.of(sectionX + 1, sectionY + 1, sectionZ + 1);
-        if (WireClientNetwork.get(ClientUtils.level()).hasConnectionsInSection(pos)) {
-            cir.setReturnValue(false);
+        for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
+            if (graph.hasConnectionsInSection(pos)) {
+                cir.setReturnValue(false);
+                break;
+            }
         }
     }
 }

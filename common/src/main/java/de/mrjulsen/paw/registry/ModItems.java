@@ -5,10 +5,10 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.item.CatenaryWireItem;
-import de.mrjulsen.paw.item.CutterItem;
+import de.mrjulsen.paw.item.FeederWireItem;
 import de.mrjulsen.paw.item.FuelItem;
+import de.mrjulsen.paw.item.CatenaryHeadspanWireItem;
 import de.mrjulsen.paw.item.PantographItem;
-import de.mrjulsen.wires.item.WireBaseItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
@@ -17,7 +17,11 @@ public class ModItems {
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
 
-    public static final ItemEntry<WireBaseItem> COPPER_WIRE_COIL = PantographsAndWires.REGISTRATE.item("copper_wire_coil", p -> new WireBaseItem(p, ModWireRegistry.ENERGY_WIRE))
+    public static final ItemEntry<FeederWireItem> COPPER_WIRE_COIL = PantographsAndWires.REGISTRATE.item("copper_wire_coil", p -> new FeederWireItem(p, ModWireRegistry.ENERGY_WIRE))
+        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
+        .register();
+
+    public static final ItemEntry<CatenaryHeadspanWireItem> CATENARY_HEADSPAN_WIRE = PantographsAndWires.REGISTRATE.item("catenary_headspan", p -> new CatenaryHeadspanWireItem(p, ModWireRegistry.CATENARY_HEADSPAN))
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
 
@@ -74,11 +78,6 @@ public class ModItems {
     public static final ItemEntry<Item> EMPTY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("empty_wire_coil", Item::new)
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
-
-    public static final ItemEntry<CutterItem> TEST_CUTTER = PantographsAndWires.REGISTRATE.item("cutter_itemmmmmm", CutterItem::new)
-        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
-        .register();
-
 
     public static final ItemEntry<PantographItem> MOD_ICON = PantographsAndWires.REGISTRATE.item("mod_icon", p -> PantographItem.create(ModBlocks.PANTOGRAPH.get(), p, true))
         .removeTab(CreativeModeTabs.SEARCH)

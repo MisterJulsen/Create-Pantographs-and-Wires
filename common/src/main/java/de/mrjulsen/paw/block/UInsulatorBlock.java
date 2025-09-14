@@ -2,12 +2,12 @@ package de.mrjulsen.paw.block;
 
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.paw.util.ModMath;
+import de.mrjulsen.wires.item.WireBaseItem.CustomData;
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
 import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -41,7 +41,7 @@ public class UInsulatorBlock extends AbstractPlaceableHangingInsulatorBlock {
     }
 
     @Override
-    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CompoundTag itemData, int index) {
+    public Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index) {
         return new Vec3(0, Const.PIXEL * 2f, 0);
     }
 }

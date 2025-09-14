@@ -2,7 +2,6 @@ package de.mrjulsen.paw.block.model;
 
 import java.util.Optional;
 import org.joml.Quaternionf;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import com.mojang.math.Axis;
@@ -28,7 +27,6 @@ import de.mrjulsen.mcdragonlib.client.model.mesh.Face;
 import de.mrjulsen.mcdragonlib.client.model.mesh.FaceVertex;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Vertex;
-import de.mrjulsen.mcdragonlib.util.Color;
 import de.mrjulsen.mcdragonlib.util.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -52,7 +50,9 @@ public class CantileverModel extends AbstractModel {
         float catenaryHeight = context.has(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) ? context.get(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) : 1;
         ECantileverMastConnection mastConnection = context.has(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) ? context.get(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) : ECantileverMastConnection.NONE;
 
-        CantileverData[] subCantilevers = context.has(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) ? context.get(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) : new CantileverData[] { CantileverData.EMPTY };
+        CantileverData[] subCantilevers = context.has(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) ? context.get(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) : new CantileverData[] {
+            new CantileverData(0, CantileverBlockEntity.Y_POS, 0, width, height, 0, registrationArmType, catenaryHeight, 0)
+        };
 
         BasicMesh mesh = new BasicMesh();
         float steadyArmOffset = registrationArmType.getOffset();
