@@ -16,7 +16,7 @@ import com.google.common.collect.Multimap;
 
 import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.decoration.WireDecorationData;
-import de.mrjulsen.wires.decoration.WireDecorationElement;
+import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.network.WireConnectionSyncData;
 import de.mrjulsen.wires.util.Utils;
@@ -110,7 +110,7 @@ public class WireConnection {
     }
     
 
-    public boolean addDecoration(Vector3f pos, String wireName, WireDecorationElement<?> element) {
+    public boolean addDecoration(Vector3f pos, String wireName, IWireDecoration<?> element) {
         float d = collisionRef.worldPosToWirePos(wireName, pos);
         if (decorations.containsKey(wireName)) {
             TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
@@ -270,7 +270,5 @@ public class WireConnection {
                 decoration.getDecoration().onBreak(level, collisionRef.wirePosToWorldPos(decoration.getWireName(), decoration.getPos()), player);
             }
         }
-        
-        wireType.onBreak(level, breakPosition, player);
     }
 }

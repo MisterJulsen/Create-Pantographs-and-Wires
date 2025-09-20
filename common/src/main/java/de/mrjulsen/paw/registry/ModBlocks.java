@@ -33,6 +33,7 @@ import de.mrjulsen.paw.block.InsulatorBlock;
 import de.mrjulsen.paw.block.LatticeMastBlock;
 import de.mrjulsen.paw.block.PantographBlock;
 import de.mrjulsen.paw.block.PowerLineBracketBlock;
+import de.mrjulsen.paw.block.RegistrationArmBlock;
 import de.mrjulsen.paw.block.TensioningDeviceBlock;
 import de.mrjulsen.paw.block.UInsulatorBlock;
 import de.mrjulsen.paw.block.VInsulatorBlock;
@@ -104,7 +105,7 @@ public class ModBlocks {
 		.onRegister(AllMovementBehaviours.movementBehaviour(new PantographMovementBehaviour()))
 		.onRegister(AllInteractionBehaviours.interactionBehaviour(new PantographInteractionBehaviour()))
 		.register();
-
+		
 	public static final ImmutableMap<WeatherState, BlockEntry<LatticeMastBlock>> LATTICE_MAST = registerOxidizingBlock("lattice_mast", LatticeMastBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
@@ -154,6 +155,9 @@ public class ModBlocks {
 	);
 
 
+
+	public static final BlockEntry<RegistrationArmBlock> REGISTRATION_ARM = PantographsAndWires.REGISTRATE.block("registration_arm", RegistrationArmBlock::new)
+		.register();
 
 	public static final BlockEntry<TensioningDeviceBlock> TENSIONING_DEVICE = PantographsAndWires.REGISTRATE.block("tensioning_device", TensioningDeviceBlock::new)
 		.initialProperties(() -> Blocks.SMOOTH_STONE)

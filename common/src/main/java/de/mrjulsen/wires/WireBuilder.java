@@ -24,7 +24,7 @@ public final class WireBuilder {
         if (context.collisionRequired()) {
             collisionData = createWirePoints(start, end, type, hangFac, segControl);
         }
-        return new Wire(name, collisionData, renderData);
+        return new Wire(name, new Vector3f(end).add(start).div(2), collisionData, renderData);
     }
 
     public static WireRenderData createWireRenderData(Vector3f start, Vector3f end, CableType type, float thickness, float hangFac, SegmentControl segControl) {

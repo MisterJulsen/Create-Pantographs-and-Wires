@@ -11,8 +11,7 @@ import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.data.accessor.BlockConnectorNodeAccessor;
 import de.mrjulsen.wires.graph.data.accessor.GenericBlockNodeAccessor;
-import de.mrjulsen.wires.graph.data.accessor.LatticeMastNodeAccessor;
-import de.mrjulsen.wires.graph.data.accessor.CatenaryHeadspanConnectionNodeAccessor;
+import de.mrjulsen.wires.graph.data.accessor.GenericWireNodeAccessor;
 import de.mrjulsen.wires.graph.data.accessor.WireConnectorNodeAccessor;
 import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
 import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
@@ -35,17 +34,18 @@ public class WiresApi {
     public static final float PIXEL = DragonLib.PIXEL;
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final DLRegistry<ConnectorDataProvider> CONNECTOR_DATA_TYPES = new DLRegistry<>();
+    public static final DLRegistry<ConnectorDataProvider> CONNECTOR_DATA_PROVIDER_REGISTRY = new DLRegistry<>();
+    public static final NodeDataRegistry NODE_DATA_REGISTRY = new NodeDataRegistry();
     
-    public static final NodeDataRegistryObject<GenericBlockNodeData, GenericBlockNodeAccessor> GENERIC_BLOCK = NodeDataRegistry.INSTANCE.register(new ResourceLocation(WiresApi.MOD_ID, "generic_block"), GenericBlockNodeData::new, GenericBlockNodeAccessor::new);
-    public static final NodeDataRegistryObject<BlockConnectorNodeData, BlockConnectorNodeAccessor> BLOCK_CONNECTOR = NodeDataRegistry.INSTANCE.register(new ResourceLocation(WiresApi.MOD_ID, "block_connector"), BlockConnectorNodeData::new, BlockConnectorNodeAccessor::new);
-    public static final NodeDataRegistryObject<CatenaryWireConnectorNodeData, WireConnectorNodeAccessor> WIRE_CONNECTOR = NodeDataRegistry.INSTANCE.register(new ResourceLocation(WiresApi.MOD_ID, "wire_connector"), CatenaryWireConnectorNodeData::new, WireConnectorNodeAccessor::new);
-    public static final NodeDataRegistryObject<LatticeMastNodeData, LatticeMastNodeAccessor> LATTICE_MAST = NodeDataRegistry.INSTANCE.register(new ResourceLocation(PantographsAndWires.MOD_ID, "lattice_mast"), LatticeMastNodeData::new, LatticeMastNodeAccessor::new);
-    public static final NodeDataRegistryObject<CatenaryHeadspanConnectionNodeData, CatenaryHeadspanConnectionNodeAccessor> CATENARY_HEADSPAN = NodeDataRegistry.INSTANCE.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanConnectionNodeData::new, CatenaryHeadspanConnectionNodeAccessor::new);
+    public static final NodeDataRegistryObject<GenericBlockNodeData, GenericBlockNodeAccessor<GenericBlockNodeData>> GENERIC_BLOCK = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "generic_block"), GenericBlockNodeData::new, GenericBlockNodeAccessor::new);
+    public static final NodeDataRegistryObject<BlockConnectorNodeData, BlockConnectorNodeAccessor> BLOCK_CONNECTOR = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "block_connector"), BlockConnectorNodeData::new, BlockConnectorNodeAccessor::new);
+    public static final NodeDataRegistryObject<CatenaryWireConnectorNodeData, WireConnectorNodeAccessor> WIRE_CONNECTOR = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "wire_connector"), CatenaryWireConnectorNodeData::new, WireConnectorNodeAccessor::new);
+    public static final NodeDataRegistryObject<LatticeMastNodeData, GenericBlockNodeAccessor<LatticeMastNodeData>> LATTICE_MAST = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "lattice_mast"), LatticeMastNodeData::new, GenericBlockNodeAccessor::new);
+    public static final NodeDataRegistryObject<CatenaryHeadspanConnectionNodeData, GenericWireNodeAccessor<CatenaryHeadspanConnectionNodeData>> CATENARY_HEADSPAN = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanConnectionNodeData::new, GenericWireNodeAccessor::new);
 
-    public static final DLRegistryObject<BasicConnectorDataProvider.Empty> EMPTY_WIRE_CONNECTOR = CONNECTOR_DATA_TYPES.register(new ResourceLocation(WiresApi.MOD_ID, "empty_wire_connector"), ConnectorDataProvider.Empty::new);
-    public static final DLRegistryObject<BasicConnectorDataProvider> BASIC_WIRE_CONNECTOR = CONNECTOR_DATA_TYPES.register(new ResourceLocation(PantographsAndWires.MOD_ID, "basic_wire_connector"), () -> new BasicConnectorDataProvider(null));
-    public static final DLRegistryObject<CantileverConnectorDataProvider> CANTILEVER_WIRE_CONNECTOR = CONNECTOR_DATA_TYPES.register(new ResourceLocation(PantographsAndWires.MOD_ID, "cantilever_wire_connector"), () -> new CantileverConnectorDataProvider(null, null));
+    public static final DLRegistryObject<BasicConnectorDataProvider.Empty> EMPTY_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "empty_wire_connector"), ConnectorDataProvider.Empty::new);
+    public static final DLRegistryObject<BasicConnectorDataProvider> BASIC_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "basic_wire_connector"), () -> new BasicConnectorDataProvider(null));
+    public static final DLRegistryObject<CantileverConnectorDataProvider> CANTILEVER_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "cantilever_wire_connector"), () -> new CantileverConnectorDataProvider(null, null));
 
     public static final GraphId PAW_CATENARY_WIRES = WireGraphManager.register("paw_catenary", WireGraph::new, WireGraphClient::new);
 

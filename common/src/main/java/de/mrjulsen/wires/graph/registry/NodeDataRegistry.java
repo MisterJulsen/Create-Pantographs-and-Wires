@@ -1,5 +1,7 @@
 package de.mrjulsen.wires.graph.registry;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -10,9 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 public final class NodeDataRegistry {
-    private NodeDataRegistry() {}
-
-    public static final NodeDataRegistry INSTANCE = new NodeDataRegistry();
+    public NodeDataRegistry() {}
 
     private final Map<ResourceLocation, NodeDataRegistryObject<? extends NodeData, ? extends NodeAccessor<?>>> TYPES = new HashMap<>();
 
@@ -28,6 +28,10 @@ public final class NodeDataRegistry {
 
     public NodeData load(CompoundTag tag) {
         return NodeDataRegistryObject.load(tag, this::get);
+    }
+
+    public Collection<NodeDataRegistryObject<? extends NodeData, ? extends NodeAccessor<?>>> getRegisteredTypes() {
+        return Collections.unmodifiableCollection(TYPES.values());
     }
 
 }

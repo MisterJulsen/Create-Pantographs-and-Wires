@@ -1,0 +1,6 @@
+# Made in Blockbench 4.12.6
+newmtl m_d633d070-d959-fc11-e95b-9ef9713e0b69
+map_Kd pantographsandwires:block/metal
+newmtl m_f8855fa2-3e52-b964-8605-64e0c2a03cb9
+map_Kd pantographsandwires:block/anvil
+newmtl none

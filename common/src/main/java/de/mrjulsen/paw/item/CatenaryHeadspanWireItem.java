@@ -9,10 +9,10 @@ import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.IWireType;
+import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.data.node.LatticeMastNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.data.node.CatenaryWireConnectorNodeData;
-import de.mrjulsen.wires.graph.registry.NodeDataRegistry;
 import de.mrjulsen.wires.item.WireBaseItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -76,14 +76,14 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
                 return InteractionResult.FAIL;
             }
         } else if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) || !customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
-            NodeData previousNode = NodeDataRegistry.INSTANCE.load(points.get(points.size() - 1));
+            NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
             if (previousNode instanceof LatticeMastNodeData n) {                
                 if (hit instanceof BlockHitResult h && level.getBlockState(h.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
                     if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT)) {                        
-                        float d = h.getBlockPos().getY() - n.getPos().getY();
+                        float d = h.getBlockPos().getY() - n.getBlockPos().getY();
                         customDataNbt.putFloat(NBT_UPPER_WIRE_HEIGHT, d);
                     } else if (!customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {                        
-                        float d = h.getBlockPos().getY() - n.getPos().getY();
+                        float d = h.getBlockPos().getY() - n.getBlockPos().getY();
                         customDataNbt.putFloat(NBT_TOP_WIRE_HEIGHT, d);
                     }
                 }

@@ -17,7 +17,7 @@ import de.mrjulsen.wires.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
-public class GenericBlockNodeData extends NodeData {
+public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
 
     private static final String NBT_POS = "Pos";
     private static final String NBT_ATTACH_POINT = "AttachPoint";
@@ -31,7 +31,8 @@ public class GenericBlockNodeData extends NodeData {
         this.attachPoint = attachPoint;
     }
 
-    public BlockPos getPos() {
+    @Override
+    public BlockPos getBlockPos() {        
         return pos;
     }
 
@@ -70,7 +71,7 @@ public class GenericBlockNodeData extends NodeData {
 
     @Override
     public Vector3f toWorldPos(WireGraph graph) {
-        return new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ()).add(getAttachPoint());
+        return new Vector3f(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()).add(getAttachPoint());
     }
 
     @Override
@@ -81,7 +82,7 @@ public class GenericBlockNodeData extends NodeData {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof GenericBlockNodeData o) {
-            return getPos().equals(o.getPos()) && getAttachPoint().distance(o.getAttachPoint()) > DragonLib.PIXEL * 4;
+            return getBlockPos().equals(o.getBlockPos()) && getAttachPoint().distance(o.getAttachPoint()) > DragonLib.PIXEL * 4;
         }
         return false;
     }

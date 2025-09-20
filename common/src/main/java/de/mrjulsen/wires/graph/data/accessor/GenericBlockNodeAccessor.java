@@ -8,10 +8,11 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
 import de.mrjulsen.wires.graph.WireNode;
-import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
+import de.mrjulsen.wires.graph.data.node.INodeDataBlock;
+import de.mrjulsen.wires.graph.data.node.NodeData;
 import net.minecraft.core.BlockPos;
 
-public class GenericBlockNodeAccessor extends NodeAccessor<GenericBlockNodeData> {
+public class GenericBlockNodeAccessor<T extends NodeData & INodeDataBlock> extends NodeAccessor<T> {
 
     private final Multimap<BlockPos, WireNode> nodes = MultimapBuilder.hashKeys().arrayListValues().build();
 
@@ -19,7 +20,7 @@ public class GenericBlockNodeAccessor extends NodeAccessor<GenericBlockNodeData>
 
     @Override
     public void put(WireNode node) {
-        this.nodes.put(getNodeData(node).getPos(), node);
+        this.nodes.put(getNodeData(node).getBlockPos(), node);
     }
 
     @Override

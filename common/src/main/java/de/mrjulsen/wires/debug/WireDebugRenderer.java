@@ -18,6 +18,7 @@ import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.WireNode;
+import de.mrjulsen.wires.graph.WireGraphClient.DebugWireData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -71,6 +72,13 @@ public class WireDebugRenderer {
                     TextUtils.text("Node Type[B]: " + edge.getWireConnectionData().connectorB().getRegistryType().id()).withStyle(ChatFormatting.AQUA),
                     TextUtils.text("Wire Type: " + edge.getType().getRegistryId())
                 ));
+
+                for (DebugWireData wireData : graph.debug_getWireDataForEdge(edge.getId())) {
+                    renderNameTag(poseStack, mbs, LightTexture.FULL_BRIGHT, wireData.centerPos(), 0, List.of(
+                        TextUtils.text(wireData.name()).withStyle(ChatFormatting.GOLD)
+                    ));
+                }
+
             }
 
             VertexConsumer buffer = mbs.getBuffer(RenderType.lines());        

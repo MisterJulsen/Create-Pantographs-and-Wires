@@ -31,12 +31,12 @@ public final class WireGraphManager {
     private static final Map<ResourceLocation /* dimension */, Map<GraphId, WireGraphClient>> clientGraphs = new ConcurrentHashMap<>();
 
 
-    public static GraphId register(String name, GraphFactory factory, GraphClientFactory clientFactory) {
+    public static GraphId register(String name, GraphFactory commonFactory, GraphClientFactory clientFactory) {
         GraphId id = new GraphId(name);
         if (graphFactories.containsKey(id) || graphClientFactories.containsKey(id)) {
             throw new IllegalStateException("A wire graph with the ID '" + id + "' is already registered!");
         }
-        graphFactories.put(id, factory);
+        graphFactories.put(id, commonFactory);
         graphClientFactories.put(id, clientFactory);
         return id;
     }

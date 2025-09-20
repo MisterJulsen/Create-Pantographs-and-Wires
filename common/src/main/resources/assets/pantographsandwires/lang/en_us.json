@@ -103,5 +103,11 @@
     "item.wiresapi.wire.connector_invalid": "One of the connectors is invalid.",
     "item.wiresapi.wire.same_connector": "Cannot connect to the same connector.",
     "item.wiresapi.wire.connection_already_exists": "This connection does already exist.",
-    "item.wiresapi.wire.to_far_away": "Too far away from previous connection point. Max. %s blocks."
+    "item.wiresapi.wire.to_far_away": "Too far away from previous connection point. Max. %s blocks.",
+    
+    "item.pantographsandwires.wire.not_enough_insulators": "You don't have enough insulators in your stack. Required: %s",
+    "item.pantographsandwires.wire.invalid_decoration_position": "No components can be attached to this position.",
+    "item.pantographsandwires.wire.one_invalid_decoration_position": "One of the %s positions is not suitable for attaching components.",
+    "item.pantographsandwires.wire.dropper_has_registration_arm": "This dropper already has a registration arm attached to it.",
+    "item.pantographsandwires.catenary_headspan.invalid_dropper_position": "No dropper wire can be created at this location."
 }

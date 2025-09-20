@@ -11,9 +11,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.joml.Vector3f;
+
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
+import de.mrjulsen.wires.Wire;
 import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireCreationContext;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
@@ -29,11 +32,13 @@ import net.minecraft.world.level.Level;
 
 public class WireGraphClient implements IWireGraph {
 
+    public static record DebugWireData(String name, Vector3f centerPos) {}
+
     private final GraphId id;
     private final Level level;
     private final Map<UUID, WireNode> nodes = new HashMap<>();
     private final Map<UUID, WireEdge> edges = new HashMap<>();
-    
+
     
     private final Map<ResourceLocation, NodeAccessor<?>> nodesByType = new ConcurrentHashMap<>();
 
@@ -49,6 +54,9 @@ public class WireGraphClient implements IWireGraph {
     final Multimap<UUID, WireSegmentRenderDataBatch> renderDataById = MultimapBuilder.hashKeys().hashSetValues().build();
     final Multimap<ChunkPos, WireSegmentRenderDataBatch> renderDataByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
     final Multimap<SectionPos, WireSegmentRenderDataBatch> renderDataBySection = MultimapBuilder.hashKeys().hashSetValues().build();
+
+    // Debug
+    private final Multimap<UUID, DebugWireData> debugWireDataByEdge = MultimapBuilder.hashKeys().linkedListValues().build();
 
     public WireGraphClient(GraphId id, Level level) {
         this.id = id;
@@ -67,6 +75,7 @@ public class WireGraphClient implements IWireGraph {
 
             new DLStatistics.Stat(edgesGroup, "Edges", edges.size()),
             new DLStatistics.Stat(edgesGroup, "Edges (by node)", edgesByNode.size()),
+            new DLStatistics.Stat(edgesGroup, "Debug Wire Data", debugWireDataByEdge.size()),
 
             new DLStatistics.Stat(collisionsGroup, "Collision", collisionById.size()),
             new DLStatistics.Stat(collisionsGroup, "Collision (by block)", collisionByBlock.size()),
@@ -75,7 +84,7 @@ public class WireGraphClient implements IWireGraph {
 
             new DLStatistics.Stat(renderingGroup, "Rendering", renderDataById.size()),
             new DLStatistics.Stat(renderingGroup, "Rendering (by section)", renderDataBySection.size()),
-            new DLStatistics.Stat(renderingGroup, "Rendering (by chunk)", renderDataByChunk.size())
+            new DLStatistics.Stat(renderingGroup, "Rendering (by chunk)", renderDataByChunk.size())            
         ));
     }
 
@@ -145,7 +154,7 @@ public class WireGraphClient implements IWireGraph {
     }
 
     public synchronized WireEdge addEdge(WireEdge edge) {
-        WireBatch batch = edge.getType().buildWire(WireCreationContext.BOTH, getLevel(), edge.getWireConnectionData(), getNode(edge.getNodeAId()), getNode(edge.getNodeBId()));
+        WireBatch batch = edge.getType().buildWire(WireCreationContext.BOTH, getLevel(), edge.getWireConnectionData(), edge, getNode(edge.getNodeAId()), getNode(edge.getNodeBId()));
         if (batch == null) {
             return edge;
         }
@@ -158,6 +167,10 @@ public class WireGraphClient implements IWireGraph {
         this.edgesByNode.put(nodeB, edge);
         nodeA.addConnection(edge.getId());
         nodeB.addConnection(edge.getId());
+        
+        for (Map.Entry<String, Wire> wire : batch.getWires().entrySet()) {
+            this.debugWireDataByEdge.put(edge.getId(), new DebugWireData(wire.getKey(), wire.getValue().pos()));
+        }
 
         // Collisions
         NewWireCollision collision = new NewWireCollision(this, edge.getId(), batch.getCollisions());
@@ -197,7 +210,8 @@ public class WireGraphClient implements IWireGraph {
         }
 
         WireEdge edge = edges.remove(id);
-        edgesByNode.values().removeIf(x -> x == edge);
+        edgesByNode.values().remove(edge);
+        debugWireDataByEdge.removeAll(id);
 
         if (checkForEmptyNodes) {
             if (!getNode(edge.getNodeAId()).removeConnection(id)) {
@@ -242,6 +256,11 @@ public class WireGraphClient implements IWireGraph {
                 removeEdge(id);
             }
         }
+    }
+
+
+    public Collection<DebugWireData> debug_getWireDataForEdge(UUID edgeId) {
+        return debugWireDataByEdge.containsKey(edgeId) ? Collections.unmodifiableCollection(debugWireDataByEdge.get(edgeId)) : List.of();
     }
 
     

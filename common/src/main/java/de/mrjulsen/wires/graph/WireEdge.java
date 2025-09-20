@@ -15,8 +15,12 @@ import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WireTypeRegistry;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.decoration.WireDecorationData;
-import de.mrjulsen.wires.decoration.WireDecorationElement;
+import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
+import de.mrjulsen.wires.graph.data.accessor.GenericWireNodeAccessor;
+import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
+import de.mrjulsen.wires.graph.data.node.NodeData;
+import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -95,25 +99,45 @@ public class WireEdge {
         return Optional.empty();
     }
 
-    public boolean addDecoration(Vector3f pos, String wireName, WireDecorationElement<?> element) {
+    public boolean addDecoration(Vector3f pos, String wireName, IWireDecoration<?> element) {
         if (!(getGraph() instanceof WireGraph graph)) {
             return false;
         }
 
         float d = graph.getCollisionById(id).map(x -> x.worldPosToWirePos(wireName, pos)).orElse(0F);
-        if (decorations.containsKey(wireName)) {
-            TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
-            Map.Entry<Float, WireDecorationData> lower = map.lowerEntry(d);
-            Map.Entry<Float, WireDecorationData> upper = map.ceilingEntry(d);
-            if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius() > d - element.getRadius()) ||
-                (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius() < d + element.getRadius())) {
-                    return false;
-            }
+        return addDecoration(d, wireName, element);
+    }
+
+    public boolean addDecoration(float posOnWire, String wireName, IWireDecoration<?> element) {
+        if (!(getGraph() instanceof WireGraph graph)) {
+            return false;
         }
-        WireDecorationData decoration = new WireDecorationData(wireName, d, element);
+
+        if (!canPlaceDecoration(posOnWire, wireName, element)) {
+            //return false;
+        }
+        
+        WireDecorationData decoration = new WireDecorationData(wireName, posOnWire, element);
         addDecoration(decoration);
         graph.sendEdgeToClient(this);
         return true;
+    }
+
+    public boolean canPlaceDecoration(float posOnWire, String wireName, IWireDecoration<?> element) {
+        return !isOccupied(posOnWire, wireName, element.getRadius());
+    }
+    
+    public boolean isOccupied(float posOnWire, String wireName, float radius) {
+        if (decorations.containsKey(wireName)) {
+            TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
+            Map.Entry<Float, WireDecorationData> lower = map.lowerEntry(posOnWire);
+            Map.Entry<Float, WireDecorationData> upper = map.ceilingEntry(posOnWire);
+            if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius() > posOnWire - radius) ||
+                (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius() < posOnWire + radius)) {
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void addDecoration(WireDecorationData decoration) {
@@ -181,9 +205,20 @@ public class WireEdge {
                     decoration.getDecoration().onBreak(level, graph.getCollisionById(id).map(x -> x.wirePosToWorldPos(decoration.getWireName(), decoration.getPos())).orElse(new Vector3f()), player);
                 }
             }
+
+            for (NodeDataRegistryObject<? extends NodeData, ? extends NodeAccessor<? extends NodeData>> type : WiresApi.NODE_DATA_REGISTRY.getRegisteredTypes()) {
+                Optional<? extends NodeAccessor<?>> accessor = type.getAccessor(graph);
+                if (accessor.isPresent() && accessor.get() instanceof GenericWireNodeAccessor a) {
+                    Collection<WireNode> nodes = new ArrayList<>(a.get(id));
+                    for (WireNode node : nodes) {
+                        graph.removeNode(node.getId(), breakPosition, player);
+                    }
+                }
+            }
         }
         
-        wireType.onBreak(level, breakPosition, player);
+        wireType.onBreak(level, breakPosition, player, getGraph(), this);
+        
     }
 
     public Vector3f getCenterPos() {

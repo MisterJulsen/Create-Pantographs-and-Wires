@@ -11,8 +11,8 @@ import java.util.UUID;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.WiresApi;
+import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.node.NodeData;
-import de.mrjulsen.wires.graph.registry.NodeDataRegistry;
 import de.mrjulsen.wires.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -60,7 +60,7 @@ public class WireNode {
     public static WireNode fromNbt(IWireGraph graph, CompoundTag nbt) {
         try {
             List<UUID> connections = nbt.getList(NBT_CONNECTIONS, Tag.TAG_INT_ARRAY).stream().map(x -> NbtUtils.loadUUID(x)).toList();
-            WireNode node = new WireNode(graph, NodeDataRegistry.INSTANCE.load(nbt.getCompound(NBT_DATA)), nbt.getUUID(NBT_ID)); // TODO
+            WireNode node = new WireNode(graph, WiresApi.NODE_DATA_REGISTRY.load(nbt.getCompound(NBT_DATA)), nbt.getUUID(NBT_ID)); // TODO
             node.pos = Utils.getNbtVector3f(nbt, NBT_POS);
             node.connectedWires.addAll(connections);
             return node;

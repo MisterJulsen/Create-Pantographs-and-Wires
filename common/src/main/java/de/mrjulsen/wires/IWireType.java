@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.data.WireHitResult;
+import de.mrjulsen.wires.graph.IWireGraph;
+import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
@@ -30,7 +32,7 @@ public interface IWireType {
      * @param level The level the wire is in.
      * @return A collection of all wires that should be used in this connection.
      */
-    WireBatch buildWire(WireCreationContext context, BlockAndTintGetter level, WireConnectionData customData, WireNode nodeA, WireNode nodeB);
+    WireBatch buildWire(WireCreationContext context, BlockAndTintGetter level, WireConnectionData customData, WireEdge edge, WireNode nodeA, WireNode nodeB);
     
     /**
      * The maximum length of the wire between two connectors.
@@ -70,7 +72,7 @@ public interface IWireType {
      * @param breakPosition The position where this wire was broken.
      * @param player The player who is responsible for the destruction.
      */
-    void onBreak(Level level, Vector3f breakPosition, Optional<Player> player);
+    void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge);
 
     /**
      * Called when another wire attempts to connect to this wire. This method then generates the appropriate {@link NodeData} for this wire type.

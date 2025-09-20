@@ -1,0 +1,11 @@
+{
+	"loader": "pantographsandwires:multipart_obj",
+	"automatic_culling": true,
+	"shade_quads": true,
+	"flip_v": true,
+	"emissive_ambient": false,
+	"model": "pantographsandwires:models/block/registration_arm_above.obj",
+	"textures": {
+		"particle": "pantographsandwires:block/metal"
+	}
+}

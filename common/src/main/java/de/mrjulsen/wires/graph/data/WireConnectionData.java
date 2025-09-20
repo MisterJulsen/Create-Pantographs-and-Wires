@@ -25,8 +25,8 @@ public record WireConnectionData(CustomData customData, ConnectorDataProvider co
     public static WireConnectionData fromNbt(CompoundTag nbt) {
         return new WireConnectionData(
             new CustomData(nbt.getCompound(NBT_ITEM_DATA)),
-            WiresApi.CONNECTOR_DATA_TYPES.load(nbt.getCompound(NBT_CONNECTOR_A)), 
-            WiresApi.CONNECTOR_DATA_TYPES.load(nbt.getCompound(NBT_CONNECTOR_B))
+            WiresApi.CONNECTOR_DATA_PROVIDER_REGISTRY.load(nbt.getCompound(NBT_CONNECTOR_A)), 
+            WiresApi.CONNECTOR_DATA_PROVIDER_REGISTRY.load(nbt.getCompound(NBT_CONNECTOR_B))
         );
     }
 }

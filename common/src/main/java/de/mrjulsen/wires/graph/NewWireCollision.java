@@ -132,6 +132,10 @@ public class NewWireCollision {
         return lengthCache.get(wireName, wireName);
     }
 
+    public boolean hasWire(String wireName) {
+        return this.points.containsKey(wireName);
+    }
+
     /**
      * @param wireName The name of the wire.
      * @return All points that define the wire.

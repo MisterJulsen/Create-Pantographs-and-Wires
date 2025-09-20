@@ -1,5 +1,6 @@
 package de.mrjulsen.paw.util;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -203,6 +204,25 @@ public class ModMath {
     public static int checkPointPosition(Vec2 pointA, Vec2 pointB, Vec2 pointP) {
         return (int)Math.signum((pointB.x - pointA.x) * (pointP.y - pointA.y) - (pointB.y - pointA.y) * (pointP.x - pointA.x));
     }
+
+    public static Vector3f rotateToDirection(Vector3f v, Vector3f dir) {
+        Vector3f direction = new Vector3f(dir).normalize();
+        Vector3f xAxis = new Vector3f(1, 0, 0);
+        if (xAxis.equals(direction, 1e-6f)) {
+            return new Vector3f(v);
+        }
+
+        if (xAxis.equals(new Vector3f(direction).negate(), 1e-6f)) {
+            Quaternionf q180 = new Quaternionf().fromAxisAngleRad(0, 0, 1, (float)Math.PI);
+            return q180.transform(new Vector3f(v));
+        }
+
+        Vector3f axis = xAxis.cross(direction, new Vector3f()).normalize();
+        float angle = (float)Math.acos(xAxis.dot(direction));
+        Quaternionf rotation = new Quaternionf().fromAxisAngleRad(axis, angle);
+        return rotation.transform(new Vector3f(v));
+    }
+
     
     public static Vector3f rotate(Vector3f vec, Vector3f rotationVec) {
 		return rotate(vec, rotationVec.x, rotationVec.y, rotationVec.z);

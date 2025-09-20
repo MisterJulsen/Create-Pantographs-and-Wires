@@ -9,10 +9,24 @@ import de.mrjulsen.paw.item.FeederWireItem;
 import de.mrjulsen.paw.item.FuelItem;
 import de.mrjulsen.paw.item.CatenaryHeadspanWireItem;
 import de.mrjulsen.paw.item.PantographItem;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
 public class ModItems {
+    
+	private static TagKey<Item> createTag(String name) {
+		return TagKey.create(Registries.ITEM, new ResourceLocation(PantographsAndWires.MOD_ID, name));
+	}
+
+    
+	public static final TagKey<Item> TAG_CANTILEVERS = createTag("cantilevers");
+	public static final TagKey<Item> TAG_INSULATORS = createTag("insulators");
+	public static final TagKey<Item> TAG_WRENCH = TagKey.create(Registries.ITEM, new ResourceLocation("forge:tools/wrench"));
+
+
     public static final ItemEntry<CatenaryWireItem> CATENARY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("catenary_wire_coil", p -> new CatenaryWireItem(p, ModWireRegistry.CATENARY_WIRE))
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();

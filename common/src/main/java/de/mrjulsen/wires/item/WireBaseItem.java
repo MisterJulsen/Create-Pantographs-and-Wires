@@ -167,7 +167,7 @@ public class WireBaseItem extends Item implements IWireInteractableItem {
             String translationKey = "";
             
             if (!points.isEmpty()) {
-                NodeData previousNode = NodeDataRegistry.INSTANCE.load(points.get(points.size() - 1));
+                NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
                 if (previousNode.toWorldPos(graph).distance(data.toWorldPos(graph)) > getWireType().getMaxLength()) {
                     translationKey = "item." + WiresApi.MOD_ID + ".wire.to_far_away";
                 } else if (previousNode.equals(data)) {
@@ -206,7 +206,7 @@ public class WireBaseItem extends Item implements IWireInteractableItem {
         for (int i = 0; i < points.size(); i++) {
             CompoundTag nodeNbt = points.get(i);
             pointsMeta.put(String.valueOf(i), nodeNbt.getCompound(NBT_CUSTOM_DATA));
-            deserializedData.add(NodeDataRegistry.INSTANCE.load(nodeNbt));
+            deserializedData.add(WiresApi.NODE_DATA_REGISTRY.load(nodeNbt));
         }
 
         CompoundTag metaCollection = new CompoundTag();

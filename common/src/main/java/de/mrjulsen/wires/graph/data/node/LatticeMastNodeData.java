@@ -16,7 +16,7 @@ import de.mrjulsen.wires.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
-public class LatticeMastNodeData extends NodeData {
+public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
 
     private static final String NBT_POS = "Pos";
     private BlockPos pos;
@@ -26,8 +26,9 @@ public class LatticeMastNodeData extends NodeData {
     public LatticeMastNodeData(BlockPos pos) {
         this.pos = pos;
     }
-
-    public BlockPos getPos() {
+    
+    @Override
+    public BlockPos getBlockPos() {
         return pos;
     }
     
@@ -51,7 +52,7 @@ public class LatticeMastNodeData extends NodeData {
     @Override
     public WireNode getOrCreateNode(WireGraph graph) {
         if (graph.getLevel().isLoaded(pos) && graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
-            return graph.createNode(this, getPos().getCenter().toVector3f());
+            return graph.createNode(this, getBlockPos().getCenter().toVector3f());
         }
         return null;
     }
@@ -63,7 +64,7 @@ public class LatticeMastNodeData extends NodeData {
 
     @Override
     public Vector3f toWorldPos(WireGraph graph) {
-        return new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ());
+        return new Vector3f(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
     }
 
     @Override
@@ -74,7 +75,7 @@ public class LatticeMastNodeData extends NodeData {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof LatticeMastNodeData o) {
-            return getPos().equals(o.getPos());
+            return getBlockPos().equals(o.getBlockPos());
         }
         return false;
     }

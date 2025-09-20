@@ -13,6 +13,7 @@ import de.mrjulsen.paw.registry.ModItems;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.util.GraphId;
 import de.mrjulsen.wires.util.Utils;
+import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphManager;
@@ -62,7 +63,7 @@ public class CatenaryWireType extends AbstractWireType {
 	}
 
 	@Override
-	public void onBreak(Level level, Vector3f breakPosition, Optional<Player> player) {
+	public void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {
 		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator())) {
 			ItemEntity itementity = new ItemEntity(level, breakPosition.x(), breakPosition.y(), breakPosition.z(), ModItems.CATENARY_WIRE_COIL.asStack());
             itementity.setDefaultPickUpDelay();
@@ -96,7 +97,7 @@ public class CatenaryWireType extends AbstractWireType {
 	}
 	
 	@Override
-	public WireBatch buildWire(WireCreationContext context, BlockAndTintGetter level, WireConnectionData customData, WireNode nodeA, WireNode nodeB) {
+	public WireBatch buildWire(WireCreationContext context, BlockAndTintGetter level, WireConnectionData customData, WireEdge edge, WireNode nodeA, WireNode nodeB) {
 		CantileverConnectorDataProvider dataA = customData.connectorA().getAsTypeIfMatching(CantileverConnectorDataProvider.class).orElse(null);
 		CantileverConnectorDataProvider dataB = customData.connectorB().getAsTypeIfMatching(CantileverConnectorDataProvider.class).orElse(null);
 		if (dataA == null || dataB == null) {
@@ -138,9 +139,8 @@ public class CatenaryWireType extends AbstractWireType {
 			if (player.getItemInHand(hand).is(Items.SHEARS)) {
 				network.removeEdge(hitResult.getWireId().id(), hitResult.getLocation().toVector3f(), Optional.of(player));
 			} else if (player.getItemInHand(hand).getItem() != Items.AIR && player.getItemInHand(hand).getItem() instanceof BlockItem) {
-				InsulatorWireDecoration element = ModWireRegistry.BROWN_INSULATOR_DECORATION.get();
 				ItemStack stack = player.getItemInHand(hand);
-				element.setItem(stack.copyWithCount(1));
+				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(1));
 				if (a.addDecoration(hitResult.getLocation().toVector3f(), "tension", element)) {
 					stack.shrink(1);
 				}

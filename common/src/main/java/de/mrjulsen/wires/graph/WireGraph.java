@@ -285,7 +285,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     }
 
     public synchronized void setEdge(WireEdge edge) {
-        WireBatch batch = edge.getType().buildWire(WireCreationContext.COLLISION, getLevel(), edge.getWireConnectionData(), getNode(edge.getNodeAId()), getNode(edge.getNodeBId()));
+        WireBatch batch = edge.getType().buildWire(WireCreationContext.COLLISION, getLevel(), edge.getWireConnectionData(), edge, getNode(edge.getNodeAId()), getNode(edge.getNodeBId()));
         if (batch == null) {
             return;
         }
