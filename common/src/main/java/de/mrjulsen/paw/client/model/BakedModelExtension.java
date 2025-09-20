@@ -22,8 +22,7 @@ public class BakedModelExtension<T extends BakedModel> implements BakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand)
-    {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return originalModel.getQuads(state, side, rand);
     }
 

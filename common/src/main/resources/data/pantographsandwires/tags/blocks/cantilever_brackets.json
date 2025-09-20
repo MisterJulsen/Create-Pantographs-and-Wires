@@ -5,12 +5,12 @@
         "pantographsandwires:cantilever_bracket_exposed",
         "pantographsandwires:cantilever_bracket_weathered",
         "pantographsandwires:cantilever_bracket_oxidized",
-        "pantographsandwires:cantilever_bracket_treated",
+        "pantographsandwires:cantilever_bracket_Galvanized",
         "pantographsandwires:cantilever_bracket_at_post",
         "pantographsandwires:cantilever_bracket_at_post_exposed",
         "pantographsandwires:cantilever_bracket_at_post_weathered",
         "pantographsandwires:cantilever_bracket_at_post_oxidized",
-        "pantographsandwires:cantilever_bracket_at_post_treated",
+        "pantographsandwires:cantilever_bracket_at_post_Galvanized",
         "#pantographsandwires:vertical_cantilever_brackets"
     ]
 }

@@ -15,7 +15,7 @@ public interface IWeatheringBlock<T extends Block & IWeatheringBlock<T>> extends
         EXPOSED("exposed", true),
         WEATHERED("weathered", true),
         OXIDIZED("oxidized", true),
-        TREATED("treated", false);
+        GALVANIZED("galvanized", false);
 
         final String name;
         final boolean canOxidize;

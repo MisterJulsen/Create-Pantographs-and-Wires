@@ -310,7 +310,7 @@ public class ModBlocks {
 	private static interface IOxidizingBlockFactory<T extends Block & IWeatheringBlock<T>> {
 		T create(Properties properties, WeatherState state, Supplier<T> oxidationStates);
 	}
-	private static <T extends Block & IWeatheringBlock<T>> ImmutableMap<WeatherState, BlockEntry<T>> registerOxidizingBlock(String name, IOxidizingBlockFactory<T> factory, Set<ResourceLocation> oxidizingTextures, boolean addTreatedState, UnaryOperator<BlockBuilder<T, CreateRegistrate>> builder) {
+	private static <T extends Block & IWeatheringBlock<T>> ImmutableMap<WeatherState, BlockEntry<T>> registerOxidizingBlock(String name, IOxidizingBlockFactory<T> factory, Set<ResourceLocation> oxidizingTextures, boolean addGalvanizedState, UnaryOperator<BlockBuilder<T, CreateRegistrate>> builder) {
 		AtomicReference<BlockEntry<T>> previous = new AtomicReference<>(null);
 		Map<WeatherState, BlockEntry<T>> variants = new HashMap<>(WeatherState.values().length);
 		for (int i = WeatherState.oxidationStates().length - 1; i >= 0; i--) {
@@ -326,8 +326,8 @@ public class ModBlocks {
 			previous.set(block);
 		}
 
-		if (addTreatedState) {
-			final WeatherState s = WeatherState.TREATED;
+		if (addGalvanizedState) {
+			final WeatherState s = WeatherState.GALVANIZED;
 			BlockEntry<T> block = builder.apply(PantographsAndWires.REGISTRATE.block(name + (!s.getname().isBlank() ? "_" + s.getname() : ""), p -> factory.create(p, s, null)))
 				.register()
 			;
