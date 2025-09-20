@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-public abstract class WireDecorationRenderer<T extends WireDecorationElement<T>> {
+public abstract class WireDecorationRenderer<T extends IWireDecoration<T>> {
 
     protected final T decoration;
 
@@ -13,5 +13,5 @@ public abstract class WireDecorationRenderer<T extends WireDecorationElement<T>>
         this.decoration = decoratin;
     }
 
-    public abstract void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f direction);
+    public abstract void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f direction, int light);
 }

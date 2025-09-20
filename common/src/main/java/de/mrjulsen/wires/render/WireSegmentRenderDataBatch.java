@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.core.SectionPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 public class WireSegmentRenderDataBatch {
 
@@ -44,9 +45,9 @@ public class WireSegmentRenderDataBatch {
         this.unloaded = unloaded;
     }
 
-    public void render(VertexConsumer vertexConsumer) {
+    public void render(BlockAndTintGetter level, VertexConsumer vertexConsumer) {
         for (WireSegmentRenderData segment : segments) {
-            segment.render(vertexConsumer, 0xFF252525);
+            segment.render(level, section, vertexConsumer, 0xFF252525);
         }
     }
 }

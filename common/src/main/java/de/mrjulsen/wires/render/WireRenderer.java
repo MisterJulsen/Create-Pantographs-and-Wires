@@ -63,7 +63,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 				((RenderChunkAccess) renderChunk).invokeBeginLayer(builder);
 			}
 			for (WireSegmentRenderDataBatch connection : connections) {
-				connection.render(builder);
+				connection.render(region, builder);
 			}
 		}
 	}
@@ -80,7 +80,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 
 	private static void renderConnectionsInternal(WireGraphClient graph, VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section, PoseStack poseStack) {
 		for (WireSegmentRenderDataBatch connection : graph.connectionsInSection(section)) {
-			connection.render(vertexConsumer);
+			connection.render(region, vertexConsumer);
 		}
 	}
 }

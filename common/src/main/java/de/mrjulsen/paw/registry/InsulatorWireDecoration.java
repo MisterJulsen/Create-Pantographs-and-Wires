@@ -78,24 +78,26 @@ public class InsulatorWireDecoration extends WireDecorationElement<InsulatorWire
 			@Override
 			protected Mesh getMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context) {
 				Mesh mesh = BasicMesh.fromBlock(((BlockItem)decoration.stack.getItem()).getBlock().defaultBlockState(), RandomSource.create());
-                mesh.getFaces().forEach(x -> x.setRenderType(RenderType.cutout()));
+                mesh.getFaces().forEach(x -> {
+                    x.setRenderType(RenderType.cutout());
+                });
 				mesh.centerTo(new Vector3f(0));
 				mesh.rotate(Axis.XP.rotationDegrees(90), new Vector3f(0));
-
 				return mesh;
 			}
 		});
+
 
         public Renderer(InsulatorWireDecoration decoratin) {
             super(decoratin);
         }
 
         @Override
-        public void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f direction) {
+        public void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f directio, int light) {
             if (!(decoration.stack.getItem() instanceof BlockItem)) {
                 return;
             }
-            model.get().render(poseStack.last(), consumer, ((BlockItem)decoration.stack.getItem()).getBlock().defaultBlockState(), ModelContext.EMPTY);
+            model.get().render(poseStack.last(), consumer, ModelType.BLOCK, ((BlockItem)decoration.stack.getItem()).getBlock().defaultBlockState(), ModelContext.EMPTY, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
         }
         
     }

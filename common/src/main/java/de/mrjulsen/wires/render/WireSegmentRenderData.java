@@ -14,8 +14,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.mrjulsen.wires.decoration.WireDecorationData;
 import de.mrjulsen.wires.decoration.WireDecorationRenderData;
 import de.mrjulsen.wires.render.WireRenderPoint.VertexCorner;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 public class WireSegmentRenderData {
     
@@ -69,7 +72,7 @@ public class WireSegmentRenderData {
         return points.size();
     }
 
-    public void render(VertexConsumer vertexConsumer, int color) {
+    public void render(BlockAndTintGetter level, SectionPos origin, VertexConsumer vertexConsumer, int color) {
         if (points.size() < 2) {
             return;
         }
@@ -78,55 +81,58 @@ public class WireSegmentRenderData {
         float v0 = WireRenderer.WIRE_TEXTURE.get().getV0();
         float u1 = WireRenderer.WIRE_TEXTURE.get().getU1();
         float v1 = WireRenderer.WIRE_TEXTURE.get().getV1();
+        BlockPos originPos = origin.origin();
 
         WireRenderPoint lastVertices = points.get(0);
         for (int i = 1; i < points.size(); i++) {
             WireRenderPoint vertices = points.get(i);
+            Vector3f center = vertices.vertex(VertexCorner.CENTER);
+            int light = getLight(originPos.offset((int)center.x(), (int)center.y(), (int)center.z()), level);
             
             Vector3f vertex;
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = lastVertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             
             vertex = vertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = vertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
 
             // Opposite side
             vertex = lastVertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             
             vertex = vertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = vertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
 
 
             
             vertex = lastVertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             
             vertex = vertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = vertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             
             // Opposite side
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = lastVertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             
             vertex = vertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v1).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = vertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(LightTexture.FULL_BRIGHT).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
+            vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u1, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
 
             lastVertices = vertices;
         }
@@ -137,11 +143,20 @@ public class WireSegmentRenderData {
             poseStack.translate(deco.worldPos().x(), deco.worldPos().y(), deco.worldPos().z());
             poseStack.pushPose();
             poseStack.mulPose(getYawPitchQuaternion(deco.direction()));
-            deco.data().getDecoration().getRenderer().render(poseStack, vertexConsumer, deco.worldPos(), deco.direction());
+            BlockPos decoPos = originPos.offset((int)deco.worldPos().x(), (int)deco.worldPos().y(), (int)deco.worldPos().z());
+            deco.data().getDecoration().getRenderer().render(poseStack, vertexConsumer, deco.worldPos(), deco.direction(), getLight(decoPos, level));
             poseStack.popPose();
             poseStack.popPose();
         }
     }
+
+    private static int getLight(BlockPos pos, BlockAndTintGetter level) {
+		try {
+            return LevelRenderer.getLightColor(level, pos);
+        } catch (Exception e) {
+            return 0;
+        }
+	}
 
     
 
