@@ -1,6 +1,7 @@
 package de.mrjulsen.paw.block;
 
 import de.mrjulsen.paw.blockentity.MultiblockWireConnectorBlockEntity;
+import de.mrjulsen.paw.item.CatenaryWireType;
 import de.mrjulsen.paw.blockentity.IMultiblockBlockEntity;
 import de.mrjulsen.paw.block.abstractions.AbstractSupportedRotatableWireConnectorBlock;
 import de.mrjulsen.paw.block.abstractions.ICatenaryWireConnector;
@@ -23,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +50,6 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
 
     public static final int HEIGHT = 7;
 
-    public static final String NBT_TENSION = "Tension";
 
     public static final BooleanProperty HELPER = BooleanProperty.create("helper");
     public static final EnumProperty<ECantileverConnectionType> CONNECTION = EnumProperty.create("connection", ECantileverConnectionType.class);
@@ -177,6 +178,9 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     public ConnectorDataProvider getConnectorData(Level level, BlockPos pos, CustomData customData, int connectionPointIndex) {
         Vector3f contactAttachPoint = transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::defaultWireAttachPoint).toVector3f();
         Vector3f tensionattachPoint = transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::tensionWireAttachPoint).toVector3f();
+        CompoundTag customNbt = customData.getCommonData();
+        customNbt.putBoolean(CatenaryWireType.NBT_SUPER_TIGHTENED, true);
+        customData.setCommonData(customNbt);
         return new CantileverConnectorDataProvider(contactAttachPoint, tensionattachPoint);
     }
 

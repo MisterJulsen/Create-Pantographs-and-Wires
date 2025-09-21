@@ -179,7 +179,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
         List<Float> xPool = new ArrayList<>(getCantileversCount());
         List<Float> yPool = new ArrayList<>(getCantileversCount());
-        for (float i = 0, x = -0.25f, y = 0.5f; i < getCantileversCount(); i++, x += 0.25f, y -= 0.5f) {
+        for (float i = 0, x = -0.5f, y = 0.5f; i < getCantileversCount(); i++, x += 0.5f, y -= 0.5f) {
             xPool.add(x);
             yPool.add(y);
         }
@@ -216,7 +216,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
                 }
             }
 
-            dataArray[i] = new CantileverData(DragonLib.PIXEL * ((16f - getPostConnectionOffset()) / 2f), Y_POS, z, lw, getHeight(), dY, lRegisterArm, lCatenaryHeight, spacing);
+            dataArray[i] = new CantileverData(DragonLib.PIXEL * ((16f - getPostConnectionOffset()) / 2), Y_POS, z, lw, getHeight(), dY, lRegisterArm, lCatenaryHeight, spacing);
             z += spacing;
         }
         return dataArray;

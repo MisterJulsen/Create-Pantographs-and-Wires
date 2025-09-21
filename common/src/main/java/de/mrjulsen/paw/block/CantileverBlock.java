@@ -57,8 +57,12 @@ public class CantileverBlock extends AbstractCantileverBlock {
             float height = data.catenaryHeight();
             float xOffset = data.z();
             return switch (be.getRegistrationArmType()) {
-                case OUTER -> new Vec3(xOffset - 0.5f, -height, 0.25f - size);
-                case INNER -> new Vec3(xOffset - 0.5f, -height, 0.75f - size);
+                //case OUTER -> new Vec3(xOffset - 0.5f, -height, 0.25f - size);
+                //case INNER -> new Vec3(xOffset - 0.5f, -height, 0.75f - size);
+                //default ->    new Vec3(xOffset - 0.5f, -height, 0.5f - size);
+                
+                case OUTER -> new Vec3(xOffset - 0.5f, -height, 0f - size);
+                case INNER -> new Vec3(xOffset - 0.5f, -height, 1f - size);
                 default ->    new Vec3(xOffset - 0.5f, -height, 0.5f - size);
             };
         }
