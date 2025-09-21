@@ -1,10 +1,8 @@
-# Made in Blockbench 4.12.2
-newmtl m_f7851222-8054-f863-926b-da88e82953c8
+# Made in Blockbench 4.12.6
+newmtl m_088595f0-5f7f-a7e1-d64c-dd888bb6a03b
 map_Kd pantographsandwires:block/metal_galvanized
 newmtl m_60d53881-7fb5-aeab-3339-d547c13ae66e
 map_Kd pantographsandwires:block/metal
-newmtl m_464c2f47-e26f-96fa-5cfe-124de8b24413
-map_Kd pantographsandwires:block/anvil
 newmtl m_b2aad99c-9c7f-4210-ed77-894bc87f8803
 map_Kd pantographsandwires:block/tensioning_device
 newmtl none
