@@ -11,7 +11,12 @@ import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.paw.util.ModMath;
+import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
+import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+
+import org.joml.Vector3f;
+
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
 import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;
@@ -167,6 +172,12 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     @Override
     public Vec3 tensionWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index) {
         return new Vec3(Const.PIXEL * 12.5f - 0.5f, Const.PIXEL * 10.25f, Const.PIXEL * 8.25f - 0.5f + (Const.PIXEL * (float)((16 - state.getValue(CONNECTION).getIndex()) / 2f)));
+    }
+    @Override
+    public ConnectorDataProvider getConnectorData(Level level, BlockPos pos, CustomData customData, int connectionPointIndex) {
+        Vector3f contactAttachPoint = transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::defaultWireAttachPoint).toVector3f();
+        Vector3f tensionattachPoint = transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::tensionWireAttachPoint).toVector3f();
+        return new CantileverConnectorDataProvider(contactAttachPoint, tensionattachPoint);
     }
 
     @Override

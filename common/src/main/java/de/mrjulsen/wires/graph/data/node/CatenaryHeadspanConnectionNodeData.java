@@ -1,6 +1,5 @@
 package de.mrjulsen.wires.graph.data.node;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,6 +114,10 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
         boolean b = edge.getWireConnectionData().customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_UPPER_WIRE_HEIGHT) > 1.5f;
         
         Optional<RegistrationArmWireDecoration> registrationArm = CatenaryHeadspanWireType.getRegistrationArmForDropper(edge, dropperIdOpt.get());
+        if (!registrationArm.isPresent()) {
+            return Optional.empty();
+        }
+
         Vector3f headspanDirection = new Vector3f(tensionWirePoints.vertices()[tensionWirePoints.vertices().length - 1]).sub(tensionWirePoints.vertices()[0]).normalize();
         Vector3f offset = new Vector3f(registrationArm.map(x -> (x.getVariant() == State.NORMAL_CENTERED || x.getVariant() == State.ABOVE_CENTERED) ? 0 : (x.isMirrored() ? 0.25f : -0.25f)).orElse(0f), 0, 0);
         Vector3f offsetVec = ModMath.rotateToDirection(offset, headspanDirection);

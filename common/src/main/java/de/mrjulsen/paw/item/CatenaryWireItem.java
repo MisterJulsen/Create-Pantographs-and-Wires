@@ -41,14 +41,20 @@ public class CatenaryWireItem extends WireBaseItem {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        return use(context.getLevel(), context.getPlayer(), context.getHand()).getResult();
+        if (!context.getLevel().isClientSide) {
+            InteractionResult result = use(context.getLevel(), context.getPlayer(), context.getHand()).getResult();
+            if (result == InteractionResult.FAIL) {
+                return super.useOn(context);
+            }
+        }
+        return InteractionResult.CONSUME;
     }
     
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        
-        if (level.isClientSide)
-            return InteractionResultHolder.fail(player.getItemInHand(usedHand));
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {        
+        if (level.isClientSide) {
+            return InteractionResultHolder.consume(player.getItemInHand(usedHand));
+        }
 
         Optional<RaycastHitResult> result = RaycastUtils.rayTrace(
             player.getEyePosition().toVector3f(),
@@ -56,8 +62,7 @@ public class CatenaryWireItem extends WireBaseItem {
             level,
             AbstractCantileverBlock.MAX_WIDTH,
             DragonLib.PIXEL,
-            (lvl, pos, rayOrigin, rayDirection) -> {
-                
+            (lvl, pos, rayOrigin, rayDirection) -> {                
                 if (!(lvl.getBlockState(pos).getBlock() instanceof CantileverBlock && lvl.getBlockEntity(pos) instanceof CantileverBlockEntity be)) 
                     return Optional.empty();
 
@@ -88,7 +93,7 @@ public class CatenaryWireItem extends WireBaseItem {
             });
         });
 
-        return InteractionResultHolder.success(player.getItemInHand(usedHand));
+        return result.isPresent() ? InteractionResultHolder.success(player.getItemInHand(usedHand)) : InteractionResultHolder.fail(player.getItemInHand(usedHand));
     }
 
     @Override

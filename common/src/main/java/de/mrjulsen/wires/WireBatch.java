@@ -42,6 +42,9 @@ public class WireBatch {
         return points.build();
     });
 
+    
+    private WireBatch() {}
+
     /**
      * Create a new collection of wires with initial values.
      * @param mainWire The first wire
@@ -57,7 +60,7 @@ public class WireBatch {
      */
     public static WireBatch of(Wire... wires) {
         if (wires.length <= 0) {
-            throw new IllegalArgumentException("At least one wire must be provided!");
+            return new WireBatch();
         }
         WireBatch batch = new WireBatch(wires[0]);
         for (int i = 1; i < wires.length; i++) {
@@ -96,6 +99,10 @@ public class WireBatch {
     }
 
     public Map<SectionPos, WireSegmentRenderDataBatch> splitRenderDataInChunkSections(UUID id, Collection<WireDecorationData> decorations) {
+        if (isEmpty()) {
+            return Map.of();
+        }
+
         Map<SectionPos, WireSegmentRenderDataBatch> result = new HashMap<>();
 
         // Cache

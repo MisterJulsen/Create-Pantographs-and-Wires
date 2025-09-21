@@ -9,6 +9,7 @@ import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.item.IWireInteractableItem;
+import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessorType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
@@ -68,14 +69,18 @@ public final class NetworkManager {
         }, (player, in, temp, nbt, iteration) -> {
             if (in == null)
                 return false;            
-                
-            InteractionResult interactionresult = null;
-            if (player.getItemInHand(in.hand()).getItem() instanceof IWireInteractableItem i) {
-                interactionresult = i.interactWithWire(player.level(), player, in.hand(), in.hit());
-            }
-            if (interactionresult == null || !interactionresult.consumesAction()) {
-                interactionresult = in.hit().getWireId().type().use(player.level(), player, in.hand(), in.hit());
-            }
+
+            DragonLib.getCurrentServer().ifPresent(x -> {
+                x.execute(() -> {
+                    InteractionResult interactionresult = null;
+                    if (player.getItemInHand(in.hand()).getItem() instanceof IWireInteractableItem i) {
+                        interactionresult = i.interactWithWire(player.level(), player, in.hand(), in.hit());
+                    }
+                    if (interactionresult == null || !interactionresult.consumesAction()) {
+                        interactionresult = in.hit().getWireId().type().use(player.level(), player, in.hand(), in.hit());
+                    }
+                });
+            });
             
             return false;
         }

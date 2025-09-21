@@ -109,10 +109,10 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
 
         @Override
         public void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f directio, int light) {
-            if (!(decoration.stack.getItem() instanceof BlockItem)) {
+            if (!(decoration.stack.getItem() instanceof BlockItem blockitem)) {
                 return;
             }
-            model.get().render(poseStack.last(), consumer, ModelType.BLOCK, ((BlockItem)decoration.stack.getItem()).getBlock().defaultBlockState(), ModelContext.EMPTY, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+            model.get().render(poseStack.last(), consumer, ModelType.BLOCK, blockitem.getBlock().defaultBlockState(), ModelContext.EMPTY, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
         }
         
     }
