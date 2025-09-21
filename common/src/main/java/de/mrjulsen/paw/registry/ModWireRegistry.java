@@ -20,7 +20,7 @@ public class ModWireRegistry {
     public static final CatenaryHeadspanWireType CATENARY_HEADSPAN = WireTypeRegistry.register(PantographsAndWires.MOD_ID, "catenary_headspan", CatenaryHeadspanWireType::new);
 
     public static final DLRegistry<IWireDecoration<?>> DECORATION_REGISTRY = new DLRegistry<>();
-    public static final DLRegistryObject<InsulatorWireDecoration> BROWN_INSULATOR_DECORATION = DECORATION_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "insulator_decoration"), InsulatorWireDecoration::new);
+    public static final DLRegistryObject<InsulatorWireDecoration> INSULATOR_DECORATION = DECORATION_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "insulator_decoration"), InsulatorWireDecoration::new);
     public static final DLRegistryObject<RegistrationArmWireDecoration> CATENARY_HEADSPAN_REGISTRATION_ARM = DECORATION_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan_registration_arm"), RegistrationArmWireDecoration::new);
 
     public static void init() {}

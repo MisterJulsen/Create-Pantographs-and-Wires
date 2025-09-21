@@ -15,12 +15,9 @@ import de.mrjulsen.mcdragonlib.client.model.mesh.AbstractModel;
 import de.mrjulsen.mcdragonlib.client.model.mesh.AbstractModel.ModelType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
-import de.mrjulsen.mcdragonlib.data.Cache;
-import de.mrjulsen.mcdragonlib.data.DataCache;
 import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.decoration.WireDecorationRenderer;
 import de.mrjulsen.wires.graph.registry.DLRegistryObject;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -52,7 +49,7 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
 
     @Override
     public DLRegistryObject<IWireDecoration<?>> getRegistryType() {
-        return (DLRegistryObject<IWireDecoration<?>>)(Object)ModWireRegistry.BROWN_INSULATOR_DECORATION;
+        return (DLRegistryObject<IWireDecoration<?>>)(Object)ModWireRegistry.INSULATOR_DECORATION;
     }
 
     @Override

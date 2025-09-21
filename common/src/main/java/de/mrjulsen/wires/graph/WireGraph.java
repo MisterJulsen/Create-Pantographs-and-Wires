@@ -340,8 +340,8 @@ public class WireGraph extends SavedData implements IWireGraph {
             DataAccessor.getFromClient(serverPlayer, new DeleteWireSyncData(getId(), List.of(id)), NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
         }
 
+        this.edges.get(id).onRemove(level, removePosition, player);
         WireEdge edge = removeEdgeInternal(id);
-        edge.onRemove(level, removePosition, player);
         
         if (!getNode(edge.getNodeAId()).removeConnection(id)) {
             removeNode(edge.getNodeAId(), new Vector3f(), Optional.empty());
