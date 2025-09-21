@@ -108,7 +108,9 @@
     "item.pantographsandwires.wire.not_enough_insulators": "You don't have enough insulators in your stack. Required: %s",
     "item.pantographsandwires.wire.invalid_decoration_position": "No components can be attached to this position.",
     "item.pantographsandwires.wire.one_invalid_decoration_position": "One of the %s positions is not suitable for attaching components.",
-    "item.pantographsandwires.wire.dropper_has_registration_arm": "This dropper already has a registration arm attached to it.",
+    
+    "item.pantographsandwires.catenary_headspan.dropper_has_registration_arm": "This dropper already has a registration arm attached to it.",
+    "item.pantographsandwires.catenary_headspan.dropper_exists": "A dropper already exists at this position.",
     "item.pantographsandwires.catenary_headspan.invalid_dropper_position": "No dropper wire can be created at this location.",
     "item.pantographsandwires.catenary_headspan.small_height_difference": "The height difference is too small. Range: %sm - %sm",
     "item.pantographsandwires.catenary_headspan.large_height_difference": "The height difference is too large. Range: %sm - %sm"

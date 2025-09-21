@@ -99,6 +99,10 @@
     "item.pantographsandwires.wire.not_enough_insulators": "Nicht genügend Isolatoren im Stapel. Benötigt: %s",
     "item.pantographsandwires.wire.invalid_decoration_position": "An dieser Position können keine Bauteile angebracht werden.",
     "item.pantographsandwires.wire.one_invalid_decoration_position": "Einer der %s Positionen ist nicht geeignet, um dort Bauteile anzubringen.",
-    "item.pantographsandwires.wire.dropper_has_registration_arm": "An diesen Hänger wurde bereits ein Seitenhalter angebracht.",
-    "item.pantographsandwires.catenary_headspan.invalid_dropper_position": "An dieser Stelle kann kein Hänger platziert werden."
+
+    "item.pantographsandwires.catenary_headspan.dropper_has_registration_arm": "An diesen Hänger wurde bereits ein Seitenhalter angebracht.",
+    "item.pantographsandwires.catenary_headspan.invalid_dropper_position": "An dieser Stelle kann kein Hänger platziert werden.",
+    "item.pantographsandwires.catenary_headspan.dropper_exists": "An dieser Position gibt es bereits einen Hänger.",
+    "item.pantographsandwires.catenary_headspan.small_height_difference": "Der Höhenunterschied ist zu klein. Gültiger Bereich: %sm - %sm",
+    "item.pantographsandwires.catenary_headspan.large_height_difference": "Der Höhenunterschied ist zu groß. Gültiger Bereich: %sm - %sm"
 }

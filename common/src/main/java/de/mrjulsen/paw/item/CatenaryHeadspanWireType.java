@@ -2,13 +2,12 @@ package de.mrjulsen.paw.item;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.joml.Vector3f;
 
 import com.eliotlash.mclib.utils.MathUtils;
@@ -64,8 +63,9 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 	private static final String KEY_NOT_ENOUGH_INSULATORS = "item." + PantographsAndWires.MOD_ID + ".wire.not_enough_insulators";
 	private static final String KEY_INVALID_DECORATION_POSITION = "item." + PantographsAndWires.MOD_ID + ".wire.invalid_decoration_position";
 	private static final String KEY_ONE_INVALID_DECORATION_POSITION = "item." + PantographsAndWires.MOD_ID + ".wire.one_invalid_decoration_position";
-	private static final String KEY_DROPPER_HAS_REGISTRATION_ARM = "item." + PantographsAndWires.MOD_ID + ".wire.dropper_has_registration_arm";
+	private static final String KEY_DROPPER_HAS_REGISTRATION_ARM = "item." + PantographsAndWires.MOD_ID + ".catenary_headspan.dropper_has_registration_arm";
 	private static final String KEY_INVALID_DROPPER_LOCATION = "item." + PantographsAndWires.MOD_ID + ".catenary_headspan.invalid_dropper_position";
+	private static final String KEY_DROPPER_EXISTS = "item." + PantographsAndWires.MOD_ID + ".catenary_headspan.dropper_exists";
 
 	public static final String WIRE_UPPER_TENSION = "upper_tension_wire";
 	public static final String WIRE_LOWER_TENSION = "lower_tension_wire";
@@ -77,6 +77,7 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 	public static final String NBT_DROPPERS = "Droppers";
 
 	private static final float THICKNESS = 0.75f / 16f;
+	private static final float DECORATION_GRID_SIZE = 0.5f;
 
 	public CatenaryHeadspanWireType(ResourceLocation location) {
 		super(location);
@@ -244,23 +245,44 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 			// --- CREATE DROPPERS ---
 			} else if (player.getItemInHand(hand).is(ModItems.TAG_WRENCH)) {
 				if (edge != null) {
-					CompoundTag nbt = edge.getWireConnectionData().customData().getCommonData();
-					Map<UUID, Dropper> points = nbt.getList(NBT_DROPPERS, Tag.TAG_COMPOUND).stream().map(x -> Dropper.fromNbt((CompoundTag)x)).collect(Collectors.toMap(x -> x.id(), Function.identity()));
+					Optional<NewWireCollision> collisionOpt = hitResult.getCollision(level);
+					if (!collisionOpt.isPresent()) {
+						return InteractionResult.FAIL;
+					}
 
-					float pos = (float)ModMath.snapNearest(hitResult.getPosOnWire(), 0.5f);
+					NewWireCollision collision = collisionOpt.get();
+					float pos = (float)ModMath.snapNearest(hitResult.getPosOnWire(), DECORATION_GRID_SIZE);
+					float posPercentage = MathUtils.clamp(1F / collision.length(hitResult.getWireId().name()) * pos, 0F, 1F);
+
+					CompoundTag nbt = edge.getWireConnectionData().customData().getCommonData();
+					Map<UUID, Dropper> pointsById = new HashMap<>();
+					TreeSet<Float> pointsByLocation = new TreeSet<>();
+					for (Tag tag : nbt.getList(NBT_DROPPERS, Tag.TAG_COMPOUND)) {
+						Dropper dropper = Dropper.fromNbt((CompoundTag)tag);
+						pointsById.put(dropper.id(), dropper);
+						pointsByLocation.add(collision.length(WIRE_LOWER_TENSION) * dropper.pos());
+					}
+
 					if (edge.isOccupied(pos, WIRE_LOWER_TENSION, DragonLib.PIXEL / 2) || edge.isOccupied(pos, WIRE_UPPER_TENSION, DragonLib.PIXEL / 2)) {
 						player.displayClientMessage(TextUtils.translate(KEY_INVALID_DROPPER_LOCATION).withStyle(ChatFormatting.RED), true);
+						return InteractionResult.FAIL;
+					}
+					
+					Float ceil = pointsByLocation.ceiling(pos);
+					Float floor = pointsByLocation.floor(pos);
+					if ((ceil != null && Math.abs(ceil - pos) < DECORATION_GRID_SIZE / 2) || (floor != null && Math.abs(pos - floor) < DECORATION_GRID_SIZE / 2)) {
+						player.displayClientMessage(TextUtils.translate(KEY_DROPPER_EXISTS).withStyle(ChatFormatting.RED), true);
 						return InteractionResult.FAIL;
 					}
 
 					UUID dropperId;
 					do {
 						dropperId = UUID.randomUUID();
-					} while (points.containsKey(dropperId));
+					} while (pointsById.containsKey(dropperId));
 
-					points.put(dropperId, new Dropper(dropperId, hitResult.getCollision(level).map(x -> MathUtils.clamp(1F / x.length(hitResult.getWireId().name()) * pos, 0F, 1F)).orElse(0F)));
+					pointsById.put(dropperId, new Dropper(dropperId, posPercentage));
 					ListTag li = new ListTag();
-					for (Dropper f : points.values()) {
+					for (Dropper f : pointsById.values()) {
 						li.add(f.toNbt());
 					}
 					nbt.put(NBT_DROPPERS, li);
