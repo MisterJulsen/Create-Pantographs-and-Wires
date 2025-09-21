@@ -10,7 +10,6 @@ import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.registry.InsulatorWireDecoration;
 import de.mrjulsen.paw.registry.ModItems;
-import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.util.GraphId;
 import de.mrjulsen.wires.util.Utils;
 import de.mrjulsen.wires.graph.IWireGraph;

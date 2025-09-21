@@ -20,6 +20,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.joml.Vector3f;
+
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.data.WireHitResult;
@@ -423,7 +425,7 @@ public class WireBaseItem extends Item implements IWireInteractableItem {
         return nbt;
     }
 
-    private CompoundTag getTag(ItemStack stack) {
+    protected final CompoundTag getTag(ItemStack stack) {
         CompoundTag nbt = stack.getOrCreateTag();
         if (!nbt.contains(NBT_POINTS)) nbt.put(NBT_POINTS, new ListTag());
         return nbt;
@@ -440,21 +442,26 @@ public class WireBaseItem extends Item implements IWireInteractableItem {
             return null;
         }
         
-        ListTag list = getTag(stack).getList(NBT_POINTS, Tag.TAG_COMPOUND);
-        if (list.size() <= 0) {
+        CompoundTag itemData = getTag(stack);
+        ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
+        WireGraph graph = WireGraphManager.get(player.level(), getWireType().getGraphId(itemData));
+        if (graph == null || list.isEmpty()) {
             return null;
         }
-        BlockPos pos = list.stream().map(x -> (CompoundTag)x).findFirst().map(x -> Utils.getNbtBlockPos(x, NBT_POS)).orElse(BlockPos.ZERO);
+
+        CompoundTag lastPointData = (CompoundTag)list.get(list.size() - 1);
+        NodeData node = WiresApi.NODE_DATA_REGISTRY.load(lastPointData);
+        Vector3f pos = node.toWorldPos(graph);
 
         int maxLength = getWireType().getMaxLength();
         int distance;
-        if (hit instanceof BlockHitResult r) {            
-            distance = (int)Math.sqrt(r.getBlockPos().distSqr(pos));
+        if (hit instanceof BlockHitResult r) {
+            distance = (int)pos.distance(r.getLocation().toVector3f());
         } else {
-            distance = (int)Math.sqrt(player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()));
+            distance = (int)pos.distance(player.getEyePosition().toVector3f());
         }
         return TextUtils.empty().withStyle(ChatFormatting.WHITE)
-            .append(TextUtils.text(String.format("X: %s, Y: %s, Z: %s", pos.getX(), pos.getY(), pos.getZ())).withStyle(ChatFormatting.WHITE))
+            .append(TextUtils.text(String.format("X: %s, Y: %s, Z: %s", (int)pos.x(), (int)pos.y(), (int)pos.z())).withStyle(ChatFormatting.WHITE))
             .append(TextUtils.text(" \u25A0 ").withStyle(ChatFormatting.GRAY))
             .append(TextUtils.text(String.format("%sm / %sm", (int)distance, getWireType().getMaxLength())).withStyle(distance == maxLength ? ChatFormatting.GOLD : (distance < maxLength ? ChatFormatting.GREEN : ChatFormatting.RED)))
         ;

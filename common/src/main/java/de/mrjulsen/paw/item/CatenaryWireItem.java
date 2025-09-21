@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.paw.block.CantileverBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
+import de.mrjulsen.paw.block.abstractions.ICatenaryWireConnector;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity.CantileverShapeData;
 import de.mrjulsen.paw.data.WireHitResult;
@@ -108,7 +109,7 @@ public class CatenaryWireItem extends WireBaseItem {
         } else if (hit instanceof RaycastHitResult h) {
             pos = h.getBlockPos();
         }
-        if (pos != null && level.getBlockEntity(pos) instanceof WireConnectorBlockEntity && level.getBlockState(pos).getBlock() instanceof AbstractCantileverBlock) {
+        if (pos != null && level.getBlockEntity(pos) instanceof WireConnectorBlockEntity && level.getBlockState(pos).getBlock() instanceof ICatenaryWireConnector) {
             return new BlockConnectorNodeData(pos);
         }
         return null;

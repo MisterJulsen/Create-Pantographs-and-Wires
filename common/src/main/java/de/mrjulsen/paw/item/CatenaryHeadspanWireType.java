@@ -116,7 +116,7 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 		Vector3f end = nodeB.getPos();
 
 		float upperWireHeight = customData.customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_UPPER_WIRE_HEIGHT);
-		float topWireHeight = customData.customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_TOP_WIRE_HEIGHT) + 0.4f;
+		float topWireHeight = upperWireHeight + customData.customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_TOP_WIRE_HEIGHT) + 0.4f;
 		float wireLength = new Vector3f(end).sub(start).length();
 		
 		int subSegments = (int)(wireLength / 2);

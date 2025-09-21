@@ -1,13 +1,10 @@
 package de.mrjulsen.paw.block;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.property.EInsulatorType;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
@@ -15,17 +12,9 @@ import de.mrjulsen.paw.blockentity.CantileverBlockEntity.CantileverData;
 import de.mrjulsen.paw.item.CantileverBlockItem;
 import de.mrjulsen.paw.item.CatenaryWireItem;
 import de.mrjulsen.paw.registry.ModBlocks;
-import de.mrjulsen.wires.WireConnection;
-import de.mrjulsen.wires.graph.WireGraph;
-import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.item.WireBaseItem.CustomData;
-import de.mrjulsen.wires.network.WireConnectionSyncData;
-import de.mrjulsen.wires.util.Utils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
