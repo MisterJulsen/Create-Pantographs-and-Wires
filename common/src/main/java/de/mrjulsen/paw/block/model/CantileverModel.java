@@ -17,10 +17,10 @@ import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity.CantileverData;
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
-import de.mrjulsen.mcdragonlib.client.model.mesh.AbstractModel;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.CornerType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.CubeMesh;
+import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Edge;
 import de.mrjulsen.mcdragonlib.client.model.mesh.EdgeType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Face;
@@ -39,7 +39,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 
-public class CantileverModel extends AbstractModel {
+public class CantileverModel extends DLModel {
     
     @Override
     protected Mesh getMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context) {
@@ -48,6 +48,7 @@ public class CantileverModel extends AbstractModel {
         ECantileverInsulatorsPlacement insulatorPlacement = context.has(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT) ? context.get(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT) : ECantileverInsulatorsPlacement.BACK;
         ECantileverRegistrationArmType registrationArmType = context.has(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM) ? context.get(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM) : ECantileverRegistrationArmType.CENTER;
         float catenaryHeight = context.has(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) ? context.get(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) : 1;
+        boolean useSupportTube = context.has(CantileverBlockEntity.PROPERTY_USE_SUPPORT_TUBE) ? context.get(CantileverBlockEntity.PROPERTY_USE_SUPPORT_TUBE) : false;
         ECantileverMastConnection mastConnection = context.has(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) ? context.get(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) : ECantileverMastConnection.NONE;
 
         CantileverData[] subCantilevers = context.has(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) ? context.get(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) : new CantileverData[] {
@@ -71,10 +72,10 @@ public class CantileverModel extends AbstractModel {
                     data.frontYOffset(),
                     data.registrationArm(),
                     data.catenaryHeight(),
-                    3,
+                    (data.registrationArm() == ECantileverRegistrationArmType.CENTER && data.catenaryHeight() == 1f && height == 1.5f && data.width() <= 1.5f) ? 12 : 3,
                     0.75f,
                     steadyArmOffset,
-                    true
+                    useSupportTube
                 );
                 mesh.combine(false, cantilever);
             }

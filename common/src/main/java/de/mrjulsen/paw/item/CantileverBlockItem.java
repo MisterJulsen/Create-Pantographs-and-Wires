@@ -157,6 +157,13 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
         return ECantileverInsulatorsPlacement.def();
     }
 
+    public static boolean shouldUseSupportTube(ItemStack stack) {
+        if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
+            return getNbt(stack).getBoolean(CantileverBlockEntity.NBT_USE_SUPPORT_TUBE);
+        }
+        return false;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);

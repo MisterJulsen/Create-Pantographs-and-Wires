@@ -37,16 +37,66 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 3f;
 
+    public record SliderConstraints(float min, float max, float step) {}
+    public record Constraints(
+        SliderConstraints width,
+        SliderConstraints height,
+        SliderConstraints armHeight,
+        boolean registrationArmsAllowed
+    ) {}
+
+    public static Constraints calculate(float width, float height, float armHeight) {
+        SliderConstraints widthConstraints = new SliderConstraints(MIN_WIDTH, MAX_WIDTH, 1.0f);
+
+        float minHeight = MIN_HEIGHT;
+        if (width >= 3) {
+            int offset = (int) Math.floor((width - 1) / 2.0f);
+            minHeight = Math.max(minHeight, offset * 0.5f);
+        }
+
+        if (width <= 1.5f && armHeight == 0.0f) {
+            minHeight = Math.max(minHeight, 0.5f);
+        }
+
+        float maxHeight = MAX_HEIGHT;
+        float minArmHeight = MIN_HEIGHT;
+
+        if (height >= 2.0f) {
+            minArmHeight = Math.max(minArmHeight, 1.0f);
+        } else if (height >= 1.0f) {
+            minArmHeight = Math.max(minArmHeight, 0.5f);
+        }
+
+        if (width <= 1.5f && height == 0.0f) {
+            minArmHeight = Math.max(minArmHeight, 0.5f);
+        }
+
+        float maxArmHeight = Math.min(MAX_HEIGHT, Math.max(1.0f, height));
+        float stepHeight = 0.5f;
+        float stepArm = 0.5f;
+
+        if (width <= 1.5f && height == 0.5f) {
+            stepArm = 1.0f;
+        }
+
+        SliderConstraints heightConstraints = new SliderConstraints(minHeight, maxHeight, stepHeight);
+        SliderConstraints armHeightConstraints = new SliderConstraints(minArmHeight, maxArmHeight, stepArm);
+        boolean b = width > MIN_WIDTH;
+
+        return new Constraints(widthConstraints, heightConstraints, armHeightConstraints, b);
+    }
+
+
     public static float getMaxHeight(float height) {
-        return Math.max(1, Math.min(MAX_HEIGHT, height - 0.5f));
+        return MAX_HEIGHT;//Math.max(1, Math.min(MAX_HEIGHT, height - 0.5f));
     }
 
     public static float getMinHeight(float height) {
-        return Math.max(MIN_HEIGHT, Math.min(height - 0.5f, 1));
+        return MIN_HEIGHT;//Math.max(MIN_HEIGHT, Math.min(height - 0.5f, 1));
     }
     
     public static float getMaxWidth(float height) {
-        return Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, height + 3.5f));
+        return MAX_WIDTH;//Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, height + 3.5f));
     }
 
     public static float getMinWidth(float height) {

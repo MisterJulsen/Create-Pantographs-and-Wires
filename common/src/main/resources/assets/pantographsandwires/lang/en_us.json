@@ -87,7 +87,10 @@
     "item.pantographsandwires.iron_spring": "Iron Spring",
     
     "gui.pantographsandwires.cantilever_settings.title": "Cantilever Configuration",
-    "gui.pantographsandwires.cantilever_settings.size": "Size",
+    "gui.pantographsandwires.cantilever_settings.width": "Width",
+    "gui.pantographsandwires.cantilever_settings.height": "Height",
+    "gui.pantographsandwires.cantilever_settings.catenary_height": "Catenary Height",
+    "gui.pantographsandwires.cantilever_settings.advanced_settings_option": "Show Advanced Options",
     
     "enum.pantographsandwires.cantilever_registration_arm": "Registration Arm",
     "enum.pantographsandwires.cantilever_registration_arm.center": "Centered",
@@ -98,6 +101,10 @@
     "enum.pantographsandwires.insulator_placement.none": "None",
     "enum.pantographsandwires.insulator_placement.back": "Back",
     "enum.pantographsandwires.insulator_placement.front": "Front",
+    
+    "enum.pantographsandwires.show_support_tube": "Bracing",
+    "enum.pantographsandwires.show_support_tube.true": "Visible",
+    "enum.pantographsandwires.show_support_tube.false": "Hidden",
 
     "item.wiresapi.wire.connection_not_loaded": "One of the connectors is not loaded.",
     "item.wiresapi.wire.connector_invalid": "One of the connectors is invalid.",

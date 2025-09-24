@@ -72,6 +72,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     public static final ModelProperty<Byte> PROPERTY_CANTILEVERS_COUNT = new ModelProperty<>();
     public static final ModelProperty<ECantileverMastConnection> PROPERTY_MAST_CONNECTION_TYPE = new ModelProperty<>();
     public static final ModelProperty<CantileverData[]> PROPERTY_SUB_CANTILEVER_SETTINGS = new ModelProperty<>();
+    public static final ModelProperty<Boolean> PROPERTY_USE_SUPPORT_TUBE = new ModelProperty<>();
 
     public static final String NBT_WIDTH = "Width";
     public static final String NBT_HEIGHT = "Height";
@@ -79,6 +80,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     public static final String NBT_REGISTRATION_ARM_TYPE = "RegistrationArmType";
     public static final String NBT_INSULATOR_TYPE = "InsulatorType";
     public static final String NBT_CATENARY_HEIGHT = "CatenaryHeight";
+    public static final String NBT_USE_SUPPORT_TUBE = "UseSupportTube";
     public static final String NBT_POST_CONNECTION_OFFSET = "PostConnectionOffset";
     public static final String NBT_MAST_CONNECTION_TYPE = "MastConnectionType";
     public static final String NBT_CANTILEVERS_COUNT = "CantileversCount";
@@ -90,6 +92,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     public static final ECantileverRegistrationArmType DEFAULT_REGISTRATION_ARM_TYPE = ECantileverRegistrationArmType.CENTER;
     public static final EInsulatorType DEFAULT_INSULATOR_TYPE = EInsulatorType.BROWN;
     public static final float DEFAULT_CATENARY_HEIGHT = 1;
+    public static final boolean DEFAULT_USE_SUPPORT_TUBE = false;
     public static final float DEFAULT_POST_CONNECTION_OFFSET = 0;
     public static final ECantileverMastConnection DEFAULT_MAST_CONNECTION_TYPE = ECantileverMastConnection.NONE;
     public static final byte DEFAULT_CANTILEVERS_COUNT = 1;
@@ -100,6 +103,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     private ECantileverRegistrationArmType registrationArmType = DEFAULT_REGISTRATION_ARM_TYPE;
     private EInsulatorType insulatorType = DEFAULT_INSULATOR_TYPE;
     private float catenaryHeight = DEFAULT_CATENARY_HEIGHT;
+    private boolean useSupportTube = DEFAULT_USE_SUPPORT_TUBE;
     private float postConnectionOffset = DEFAULT_POST_CONNECTION_OFFSET;
     private ECantileverMastConnection mastConnectionType = DEFAULT_MAST_CONNECTION_TYPE;
     private byte cantileversCount = DEFAULT_CANTILEVERS_COUNT;
@@ -127,6 +131,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         nbt.putFloat(NBT_POST_CONNECTION_OFFSET, postConnectionOffset);
         nbt.putByte(NBT_MAST_CONNECTION_TYPE, mastConnectionType.getIndex());
         nbt.putByte(NBT_CANTILEVERS_COUNT, cantileversCount);
+        nbt.putBoolean(NBT_USE_SUPPORT_TUBE, useSupportTube);
         ListTag list = new ListTag();
         for (SubCantileverSetting s : subCanileverSettings) {
             list.add((s == null ? SubCantileverSetting.EMPTY : s).toNbt());
@@ -147,6 +152,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         this.postConnectionOffset = nbt.getFloat(NBT_POST_CONNECTION_OFFSET);
         this.mastConnectionType = ECantileverMastConnection.getByIndex(nbt.getByte(NBT_MAST_CONNECTION_TYPE));
         this.cantileversCount = MathUtils.clamp(nbt.getByte(NBT_CANTILEVERS_COUNT), (byte)1, MAX_CANTILEVERS);
+        this.useSupportTube = nbt.getBoolean(NBT_USE_SUPPORT_TUBE);
 
         Arrays.fill(subCanileverSettings, SubCantileverSetting.EMPTY);
         for (Tag tag : nbt.getList(NBT_SUB_CANTILEVER_SETTINGS, Tag.TAG_COMPOUND)) {
@@ -277,6 +283,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
             .with(PROPERTY_CANTILEVERS_COUNT, cantileversCount)
             .with(PROPERTY_MAST_CONNECTION_TYPE, mastConnectionType)
             .with(PROPERTY_SUB_CANTILEVER_SETTINGS, cantileverDataCache.get())
+            .with(PROPERTY_USE_SUPPORT_TUBE, useSupportTube)
             .build();
     }
     
@@ -364,6 +371,15 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
     public void setPostConnectionOffset(float postConnectionOffset) {
         this.postConnectionOffset = postConnectionOffset;
+        update();
+    }
+    
+    public boolean shouldUseSupportTube() {
+        return useSupportTube;
+    }
+
+    public void setUseSupportTube(boolean b) {
+        this.useSupportTube = b;
         update();
     }
 

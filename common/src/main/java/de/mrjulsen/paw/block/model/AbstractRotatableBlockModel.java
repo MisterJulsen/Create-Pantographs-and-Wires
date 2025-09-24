@@ -5,7 +5,8 @@ import org.joml.Vector3f;
 import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
-import de.mrjulsen.mcdragonlib.client.model.mesh.AbstractModel;
+import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel;
+import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel.ModelType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.paw.block.abstractions.IRotatableBlock;
 import net.minecraft.client.resources.model.BakedModel;
@@ -13,7 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 
-public abstract class AbstractRotatableBlockModel extends AbstractModel {
+public abstract class AbstractRotatableBlockModel extends DLModel {
 
     protected abstract Mesh getBaseMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context);
 

@@ -84,7 +84,10 @@
     
     
     "gui.pantographsandwires.cantilever_settings.title": "Ausleger konfigurieren",
-    "gui.pantographsandwires.cantilever_settings.size": "Größe",
+    "gui.pantographsandwires.cantilever_settings.width": "Breite",
+    "gui.pantographsandwires.cantilever_settings.height": "Höhe",
+    "gui.pantographsandwires.cantilever_settings.catenary_height": "Oberleitungshöhe",
+    "gui.pantographsandwires.cantilever_settings.advanced_settings_option": "Erweitere Optionen anzeigen",
     
     "enum.pantographsandwires.cantilever_registration_arm": "Seitenhalter",
     "enum.pantographsandwires.cantilever_registration_arm.center": "Zentriert",
@@ -95,6 +98,10 @@
     "enum.pantographsandwires.insulator_placement.none": "Keine",
     "enum.pantographsandwires.insulator_placement.back": "Hinten",
     "enum.pantographsandwires.insulator_placement.front": "Vorne",
+    
+    "enum.pantographsandwires.show_support_tube": "Verstrebung",
+    "enum.pantographsandwires.show_support_tube.true": "Sichtbar",
+    "enum.pantographsandwires.show_support_tube.false": "Keine",
     
     "item.pantographsandwires.wire.not_enough_insulators": "Nicht genügend Isolatoren im Stapel. Benötigt: %s",
     "item.pantographsandwires.wire.invalid_decoration_position": "An dieser Position können keine Bauteile angebracht werden.",

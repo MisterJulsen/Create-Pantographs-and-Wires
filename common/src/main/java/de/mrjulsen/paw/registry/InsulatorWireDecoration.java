@@ -11,9 +11,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
-import de.mrjulsen.mcdragonlib.client.model.mesh.AbstractModel;
-import de.mrjulsen.mcdragonlib.client.model.mesh.AbstractModel.ModelType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
+import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel;
+import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel.ModelType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.decoration.WireDecorationRenderer;
@@ -89,7 +89,7 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
 
     private static class Renderer extends WireDecorationRenderer<InsulatorWireDecoration> {
 
-        private final Supplier<AbstractModel> model = Suppliers.memoize(() -> new AbstractModel() {
+        private final Supplier<DLModel> model = Suppliers.memoize(() -> new DLModel() {
 			@Override
 			protected Mesh getMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context) {
 				Mesh mesh = BasicMesh.fromBlock(((BlockItem)decoration.stack.getItem()).getBlock().defaultBlockState(), RandomSource.create());
