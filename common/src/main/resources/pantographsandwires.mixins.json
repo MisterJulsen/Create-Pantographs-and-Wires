@@ -31,6 +31,7 @@
     "BlockPlaceContextMixin",
     "ServerLevelMixin",
     "HitResultTypesMixin",
+    "DimensionDataStorageAccessor",
 
     "datafixer.ChunkSerializerMixin",
     "datafixer.DataFixTypesMixin",

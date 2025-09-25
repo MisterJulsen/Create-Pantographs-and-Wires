@@ -20,13 +20,16 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.config.ModServerConfig;
+import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireCreationContext;
 import de.mrjulsen.wires.graph.NewWireCollision.WireBlockCollision;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
+import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.item.WireBaseItem.CustomData;
@@ -35,6 +38,7 @@ import de.mrjulsen.wires.network.NetworkManager;
 import de.mrjulsen.wires.network.WireChunkLoadingData;
 import de.mrjulsen.wires.network.WiresSyncData;
 import de.mrjulsen.wires.util.GraphId;
+import de.mrjulsen.wires.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -577,4 +581,75 @@ public class WireGraph extends SavedData implements IWireGraph {
         return true; 
     }
         */
+
+
+    
+    private static record PrimitiveNode(UUID id, BlockConnectorNodeData nodeData, Vector3f pos) {}  
+    private static record PrimitiveEdge(PrimitiveNode nodeA, PrimitiveNode nodeB, IWireType type, CompoundTag customData) {}  
+
+    public final void upgrade(CompoundTag nbt) {
+        final int steps = 2;
+        long startTime = 0;
+        PantographsAndWires.LOGGER.info("Converting wire data has begun! This process may take a moment.");
+
+        // STEP 1
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 1/" + steps + "]: Reading and processing legacy data...");
+        startTime = System.currentTimeMillis();
+
+        List<CompoundTag> connectionsList = nbt.getList("Connections", Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList();
+        Map<BlockPos, PrimitiveNode> nodeData = new HashMap<>();
+        List<PrimitiveEdge> edges = new ArrayList<>();
+
+        for (CompoundTag connection : connectionsList) {
+            String wireId = connection.getString("WireType");
+            IWireType type = switch (wireId) {
+                case "pantographsandwires:catenary_wire" -> ModWireRegistry.CATENARY_WIRE;
+                case "pantographsandwires:energy_wire" -> ModWireRegistry.ENERGY_WIRE;
+                default -> null;
+            };
+            if (type == null) {
+                PantographsAndWires.LOGGER.warn("[WIRE CONVERSION] Unknown wire type id '" + type + "''. This connection is skipped!");
+                continue;
+            }
+
+            CompoundTag customData = new CompoundTag();
+            if (wireId.equals("pantographsandwires:catenary_wire")) {
+                CompoundTag customDataNbt = connection.getCompound("CreationData");
+
+                int cantileverAIndex = customDataNbt.getBoolean("ClickedRight1") ? 1 : 0;
+                int cantileverBIndex = customDataNbt.getBoolean("ClickedRight2") ? 1 : 0;
+                if (cantileverAIndex > 0 || cantileverBIndex > 0) {
+                    CompoundTag customPointData = new CompoundTag();
+                    if (cantileverAIndex > 0) {
+                        CompoundTag pointNbt = new CompoundTag();
+                        pointNbt.putInt("CantileverIndex", cantileverAIndex);
+                        customPointData.put("0", pointNbt);
+                    }
+                    if (cantileverBIndex > 0) {
+                        CompoundTag pointNbt = new CompoundTag();
+                        pointNbt.putInt("CantileverIndex", cantileverBIndex);
+                        customPointData.put("1", pointNbt);
+                    }
+                    customData.put("CustomPointData", customPointData);
+                }
+            }
+            BlockPos nodeAPos = Utils.getNbtBlockPos(connection, "PosA");
+            BlockPos nodeBPos = Utils.getNbtBlockPos(connection, "PosB");
+            PrimitiveNode nodeA = nodeData.computeIfAbsent(nodeAPos, (x) -> new PrimitiveNode(UUID.randomUUID(), new BlockConnectorNodeData(x), new Vector3f(x.getX(), x.getY(), x.getZ())));
+            PrimitiveNode nodeB = nodeData.computeIfAbsent(nodeBPos, (x) -> new PrimitiveNode(UUID.randomUUID(), new BlockConnectorNodeData(x), new Vector3f(x.getX(), x.getY(), x.getZ())));            
+            edges.add(new PrimitiveEdge(nodeA, nodeB, type, customData));
+        }
+
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 1 SUCCESS]: Found " + nodeData.size() + " Nodes and " + edges.size() + " connections. Took " + (System.currentTimeMillis() - startTime) + "ms");        
+        // STEP 2
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 2/" + steps + "]: Converting data..");
+        startTime = System.currentTimeMillis();
+
+        for (PrimitiveEdge edge : edges) {
+            MutableInt i = new MutableInt();
+            createEdge(edge.type(), new CustomData(edge.customData()), edge.nodeA.nodeData(), edge.nodeB.nodeData(), i);
+        }
+
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 2 SUCCESS]: Took " + (System.currentTimeMillis() - startTime) + "ms"); 
+    }
 }
