@@ -8,6 +8,8 @@ import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.math.Axis;
+import com.simibubi.create.foundation.gui.AllIcons;
+
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
 import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel;
@@ -18,6 +20,7 @@ import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLGuiComponent;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindow;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindowManager;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.components.DLCheckBox;
+import de.mrjulsen.mcdragonlib.client.newgui.widgets.util.CursorType;
 import de.mrjulsen.mcdragonlib.client.util.Graphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
@@ -33,6 +36,7 @@ import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverIns
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverRegistrationArmType;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
+import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateEnumSlider;
 import de.mrjulsen.paw.client.gui.widgets.CreateSlider;
 import de.mrjulsen.paw.client.gui.widgets.IIconEnum;
@@ -89,10 +93,10 @@ public class CantileverSettingsScreen extends DLWindow {
     private static final ResourceLocation TEXTURE = new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/cantilever_settings.png");
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
-    private static final int GUI_WIDTH = 231;
-    private static final int GUI_HEIGHT = 202;
-    private static final int AREA2_Y = 173;
-    private static final int AREA1_Y = 150;
+    private static final int GUI_WIDTH = 251;
+    private static final int GUI_HEIGHT = 231;
+    private static final int AREA1_Y = 155;
+    private static final int AREA2_Y = 177;
 
     private final Component title = TextUtils.translate("gui." + PantographsAndWires.MOD_ID + ".cantilever_settings.title");
     private final Component txtAdvancedOptions = TextUtils.translate("gui." + PantographsAndWires.MOD_ID + ".cantilever_settings.advanced_settings_option");
@@ -162,7 +166,7 @@ public class CantileverSettingsScreen extends DLWindow {
         int cbTxtW = Minecraft.getInstance().font.width(txtAdvancedOptions);
         int cbW = 16 + cbTxtW;
         int cbH = Minecraft.getInstance().font.lineHeight;
-        DLCheckBox advancedOptionCb = new DLCheckBox(210 - cbW, 143 - cbH, cbW, cbH) {
+        DLCheckBox advancedOptionCb = new DLCheckBox(220 - cbW, 148 - cbH, cbW, cbH) {
             @Override
             public void renderMainLayer(Graphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
                 if (checked.get()) {
@@ -173,6 +177,14 @@ public class CantileverSettingsScreen extends DLWindow {
                 GuiUtils.drawString(graphics, Minecraft.getInstance().font, 16, height() / 2 - Minecraft.getInstance().font.lineHeight / 2, text.get(), DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.LEFT, false);
             }
         };
+
+        CreateButton doneBtn = new CreateButton(width() - 7 - CreateButton.WIDTH, height() - 6 - CreateButton.HEIGHT, AllIcons.I_CONFIRM);
+        doneBtn.cursor.set(CursorType.HAND);
+        doneBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            getWindowManager().closeWindow(this);
+            return false;
+        });
+        addComponent(doneBtn);
         
 
         final Runnable relayoutFunc = () -> {
@@ -218,6 +230,7 @@ public class CantileverSettingsScreen extends DLWindow {
         cantileverSizeSlider.min.set((double)AbstractCantileverBlock.MIN_WIDTH);
         cantileverSizeSlider.max.set((double)AbstractCantileverBlock.MAX_WIDTH);
         cantileverSizeSlider.value.set((double)this.width);
+        cantileverSizeSlider.cursor.set(CursorType.HRESIZE);
         cantileverSizeSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.width = (float)e.value();
 
@@ -233,6 +246,7 @@ public class CantileverSettingsScreen extends DLWindow {
         cantileverHeightSlider.min.set((double)AbstractCantileverBlock.MIN_HEIGHT);
         cantileverHeightSlider.max.set((double)AbstractCantileverBlock.MAX_HEIGHT);
         cantileverHeightSlider.value.set((double)this.height);
+        cantileverHeightSlider.cursor.set(CursorType.HRESIZE);
         cantileverHeightSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.height = (float)e.value();
             if (updatingValues.isFalse()) updateFunc.run();
@@ -247,6 +261,7 @@ public class CantileverSettingsScreen extends DLWindow {
         regstrationArmHeightSlider.min.set((double)AbstractCantileverBlock.MIN_HEIGHT);
         regstrationArmHeightSlider.max.set((double)AbstractCantileverBlock.MAX_HEIGHT);
         regstrationArmHeightSlider.value.set((double)this.catenaryHeight);
+        regstrationArmHeightSlider.cursor.set(CursorType.HRESIZE);
         regstrationArmHeightSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.catenaryHeight = (float)e.value();
             if (updatingValues.isFalse()) updateFunc.run();
@@ -260,6 +275,7 @@ public class CantileverSettingsScreen extends DLWindow {
 
         
         insulatorPlacementSlider.value.set((double)this.insulatorPlacement.ordinal());
+        insulatorPlacementSlider.cursor.set(CursorType.HRESIZE);
         insulatorPlacementSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.insulatorPlacement = ECantileverInsulatorsPlacement.values()[(int)e.value()];
             stateCache.clear();
@@ -269,6 +285,7 @@ public class CantileverSettingsScreen extends DLWindow {
         addComponent(insulatorPlacementSlider);
 
         registrationArmSlider.value.set((double)this.registrationArmType.ordinal());
+        registrationArmSlider.cursor.set(CursorType.HRESIZE);
         registrationArmSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.registrationArmType = ECantileverRegistrationArmType.values()[(int)e.value()];
             stateCache.clear();
@@ -277,6 +294,8 @@ public class CantileverSettingsScreen extends DLWindow {
         });
         addComponent(registrationArmSlider);
         
+        bracingSlider.value.set(showBracing ? 1D : 0D);
+        bracingSlider.cursor.set(CursorType.HRESIZE);
         bracingSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {            
             this.showBracing = SupportTubeEnum.values()[(int)e.value()].get();
             if (updatingValues.isFalse()) updateFunc.run();
@@ -290,6 +309,7 @@ public class CantileverSettingsScreen extends DLWindow {
 
         advancedOptionCb.text.set(txtAdvancedOptions);
         advancedOptionCb.checked.set(showAdvanced);
+        advancedOptionCb.cursor.set(CursorType.HAND);
         advancedOptionCb.addEventListener(DLGuiCommonEvents.CheckedChangedEvent.class, (s, e) -> {
             showAdvanced = e.checked();
             relayoutFunc.run();
@@ -349,7 +369,7 @@ public class CantileverSettingsScreen extends DLWindow {
         Lighting.setupForFlatItems();
         graphics.poseStack().pushPose();
         graphics.poseStack().setIdentity();
-        graphics.poseStack().translate((x() + 20) + 24 * 4, y() + 48, 200);
+        graphics.poseStack().translate((x() + 30) + 24 * 4, y() + 54, 200);
         graphics.poseStack().pushPose();
         graphics.poseStack().scale(24, 24, -24);
         graphics.poseStack().mulPose(Axis.ZP.rotationDegrees(180));
@@ -367,7 +387,7 @@ public class CantileverSettingsScreen extends DLWindow {
 
         graphics.poseStack().pushPose();
         graphics.poseStack().translate(0, 0, 500);
-        GuiUtils.drawString(graphics, Minecraft.getInstance().font, width() / 2, 6, title, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.CENTER, false);
+        GuiUtils.drawString(graphics, Minecraft.getInstance().font, width() / 2, 4, title, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.CENTER, false);
         graphics.poseStack().popPose();
     }
     
