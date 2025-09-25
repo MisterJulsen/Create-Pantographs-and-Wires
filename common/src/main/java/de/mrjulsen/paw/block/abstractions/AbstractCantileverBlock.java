@@ -36,6 +36,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     public static final float MAX_WIDTH = 6.5f;
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 3f;
+    public static final byte MAX_CANTILEVERS = 3;
 
     public record SliderConstraints(float min, float max, float step) {}
     public record Constraints(
@@ -86,21 +87,14 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         return new Constraints(widthConstraints, heightConstraints, armHeightConstraints, b);
     }
 
-
-    public static float getMaxHeight(float height) {
-        return MAX_HEIGHT;//Math.max(1, Math.min(MAX_HEIGHT, height - 0.5f));
-    }
-
-    public static float getMinHeight(float height) {
-        return MIN_HEIGHT;//Math.max(MIN_HEIGHT, Math.min(height - 0.5f, 1));
-    }
-    
-    public static float getMaxWidth(float height) {
-        return MAX_WIDTH;//Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, height + 3.5f));
-    }
-
-    public static float getMinWidth(float height) {
-        return MIN_WIDTH;
+    public static byte additionalCantileversCheck(float width, float height, float catenaryHeight) {
+        if (width <= 2) {
+            return 1;
+        }
+        if (catenaryHeight < 0.5f) {
+            return 2;
+        }
+        return MAX_CANTILEVERS;
     }
 
     public static enum ECantileverRegistrationArmType implements StringRepresentable, IIconEnum, ITranslatableEnum {

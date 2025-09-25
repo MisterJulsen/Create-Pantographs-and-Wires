@@ -1,5 +1,6 @@
 package de.mrjulsen.paw.item;
 
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverInsulatorsPlacement;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverRegistrationArmType;
@@ -9,6 +10,8 @@ import de.mrjulsen.paw.blockentity.CantileverBlockEntity.SubCantileverSetting;
 import de.mrjulsen.paw.event.ClientWrapper;
 import de.mrjulsen.paw.registry.ModNetworkAccessor.CantileverSettingsData;
 import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CantileverBlockItem<T extends AbstractCantileverBlock> extends BlockItem {
+
+    private static final String KEY_TOO_SMALL_FOR_ADDITIONAL_CANTILEVERS = "block." + PantographsAndWires.MOD_ID + ".cantilever.too_small_for_multiple_cantilevers";
 
     private final EInsulatorType insulatorType;
 
@@ -54,13 +59,19 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
-        if (level.getBlockEntity(context.getClickedPos()) instanceof CantileverBlockEntity be && be.getCantileversCount() < 3) {
-            byte count = (byte)(be.getCantileversCount() + 1);
-            be.getSubCanileverSettings()[count - 2] = new SubCantileverSetting((byte)(count - 2), getCantileverType(context.getItemInHand()));
-            be.setCantileversCount(count);
-            be.update();
-            be.setDoNotUpdate(true);
-            return true;
+        if (level.getBlockEntity(context.getClickedPos()) instanceof CantileverBlockEntity be) {
+            byte allowedCount = AbstractCantileverBlock.additionalCantileversCheck(be.getWidth(), be.getHeight(), be.getCatenaryHeight());
+            byte currentCount = be.getCantileversCount();
+            if (currentCount < allowedCount) {
+                byte count = (byte)(be.getCantileversCount() + 1);
+                be.getSubCanileverSettings()[count - 2] = new SubCantileverSetting((byte)(count - 2), getCantileverType(context.getItemInHand()));
+                be.setCantileversCount(count);
+                be.update();
+                be.setDoNotUpdate(true);
+                return true;
+            } else if (allowedCount < AbstractCantileverBlock.MAX_CANTILEVERS) {
+                context.getPlayer().displayClientMessage(TextUtils.translate(KEY_TOO_SMALL_FOR_ADDITIONAL_CANTILEVERS).withStyle(ChatFormatting.RED), true);
+            }
         }
         return super.placeBlock(context, state);
     }

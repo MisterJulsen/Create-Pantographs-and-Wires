@@ -44,6 +44,7 @@
     "block.pantographsandwires.cantilever_green": "Cantilever",
     "block.pantographsandwires.cantilever_brown": "Cantilever",
     "block.pantographsandwires.cantilever.too_many_connections": "Cannot place wire on this cantilever. Too many connections.",
+    "block.pantographsandwires.cantilever.too_small_for_multiple_cantilevers": "This cantilever is too small to add additional ones.",
     "block.pantographsandwires.cantilever_bracket": "Cantilever Bracket",
     "block.pantographsandwires.cantilever_bracket_exposed": "Exposed Cantilever Bracket",
     "block.pantographsandwires.cantilever_bracket_weathered": "Weathered Cantilever Bracket",
