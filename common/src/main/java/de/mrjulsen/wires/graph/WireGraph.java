@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,14 +14,18 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3f;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.paw.PantographsAndWires;
+import de.mrjulsen.paw.config.ModCommonConfig;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.IWireType;
@@ -143,7 +148,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             setNode(node);
         }
         for (WireEdge edge : edges) {
-            setEdge(edge);
+            setEdge(edge, true);
         }
         setDirty();
     }
@@ -245,17 +250,22 @@ public class WireGraph extends SavedData implements IWireGraph {
         setDirty();
     }
 
-    public synchronized void removeNode(UUID id, Vector3f breakPos, Optional<Player> player) {
+    public synchronized void removeNode(UUID id, @Nullable Vector3f breakPos, @Nullable Optional<Player> player) {
         if (!nodes.containsKey(id)) {
             return;
         }
 
         WireNode node = nodes.get(id);
-        Collection<WireEdge> edgesToRemove = new ArrayList<>(edgesByNode.get(node));
+        
+
+        if (breakPos != null && player != null) {Collection<WireEdge> edgesToRemove = new ArrayList<>(edgesByNode.get(node));
         for (WireEdge edge : edgesToRemove) {
             removeEdge(edge.getId(), breakPos, player);
         }
-        node.onRemove(getLevel(), breakPos, player);
+
+            node.onRemove(getLevel(), breakPos, player);
+            
+        }
 
         this.nodes.remove(id);
         this.nodesByBlock.values().removeIf(x -> x.equals(id));
@@ -273,29 +283,29 @@ public class WireGraph extends SavedData implements IWireGraph {
     public synchronized WireEdge createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex) {
         WireNode nodeA = nodeDataA.getOrCreateNodeInternal(this, type, customData);
         WireNode nodeB = nodeDataB.getOrCreateNodeInternal(this, type, customData);
+
+        if (nodeA == null || nodeB == null) {
+            return null;
+        }
+
         WireConnectionData custom = new WireConnectionData(
             customData,
             nodeDataA.getConnectorCustomData(this, customData, nodeA, pointStartIndex.getAndIncrement()).orElse(new ConnectorDataProvider.Empty()),
             nodeDataB.getConnectorCustomData(this, customData, nodeB, pointStartIndex.getAndIncrement()).orElse(new ConnectorDataProvider.Empty())
         );
 
-        if (nodeA == null || nodeB == null) {
-            return null;
-        }
-
         WireEdge edge = new WireEdge(this, type, custom, nodeA.getId(), nodeB.getId());
-        setEdge(edge);
+        setEdge(edge, true);
         return edge;
     }
 
-    public synchronized void setEdge(WireEdge edge) {
+    public synchronized void setEdge(WireEdge edge, boolean updateClients) {
         WireBatch batch = edge.getType().buildWire(WireCreationContext.COLLISION, getLevel(), edge.getWireConnectionData(), edge, getNode(edge.getNodeAId()), getNode(edge.getNodeBId()));
         if (batch == null) {
             return;
         }
         
-        removeEdgeInternal(edge.getId());
-
+        removeEdgeInternal(edge.getId(), false);
         WireNode nodeA = getNode(edge.getNodeAId());
         WireNode nodeB = getNode(edge.getNodeBId());
         this.edges.put(edge.getId(), edge);
@@ -317,9 +327,11 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
         
         // Sync to clients
-        WiresSyncData netData = new WiresSyncData(getId(), null, List.of(edge), List.of(nodeA, nodeB), true);
-        for (ServerPlayer player : getPlayersForEdge(edge.getId())) {
-            DataAccessor.getFromClient(player, new WiresSyncData.Wrapper(netData), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
+        if (updateClients) {            
+            WiresSyncData netData = new WiresSyncData(getId(), null, List.of(edge), List.of(nodeA, nodeB), true);
+            for (ServerPlayer player : getPlayersForEdge(edge.getId())) {
+                DataAccessor.getFromClient(player, new WiresSyncData.Wrapper(netData), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
+            }
         }
 
         setDirty();
@@ -334,7 +346,8 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
     }
 
-    public synchronized void removeEdge(UUID id, Vector3f removePosition, Optional<Player> player) {
+
+    public synchronized void removeEdge(UUID id, @Nullable Vector3f removePosition, @Nullable Optional<Player> player) {
         if (!edges.containsKey(id)) {
             return;
         }
@@ -344,27 +357,57 @@ public class WireGraph extends SavedData implements IWireGraph {
             DataAccessor.getFromClient(serverPlayer, new DeleteWireSyncData(getId(), List.of(id)), NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
         }
 
-        this.edges.get(id).onRemove(level, removePosition, player);
-        WireEdge edge = removeEdgeInternal(id);
-        
-        if (!getNode(edge.getNodeAId()).removeConnection(id)) {
-            removeNode(edge.getNodeAId(), new Vector3f(), Optional.empty());
-        }
-        if (!getNode(edge.getNodeBId()).removeConnection(id)) {
-            removeNode(edge.getNodeBId(), new Vector3f(), Optional.empty());
+        if (removePosition != null && player != null) {
+            this.edges.get(id).onRemove(level, removePosition, player);
         }
 
+        removeEdgeInternal(id, true);
         setDirty();
     }
 
-    protected synchronized WireEdge removeEdgeInternal(UUID id) {
+    /**
+     * 
+     * @param id
+     * @param deleteEmptyNodes
+     * @return The last assigned edge
+     */
+    protected synchronized Optional<WireEdge> removeEdgeInternal(UUID id, boolean deleteEmptyNodes) {
         WireEdge edge = edges.remove(id);
+        if (edge == null) {
+            return Optional.empty();
+        }
+
         edgesByNode.values().removeIf(x -> x.equals(edge));
         NewWireCollision collision = collisionById.remove(id);
         collisionByChunk.values().removeIf(x -> x == collision);
         collisionBySection.values().removeIf(x -> x == collision);
         collisionByBlock.values().removeIf(x -> x == collision);
-        return edge;
+
+        removeEdgeFromNode(edge, edge.getNodeAId(), deleteEmptyNodes);
+        removeEdgeFromNode(edge, edge.getNodeBId(), deleteEmptyNodes);
+
+        return Optional.of(edge);
+    }
+
+    protected synchronized void removeEdgeFromNode(WireEdge edge, UUID nodeId, boolean deleteEmptyNode) {
+        if (!edge.getNodeAId().equals(nodeId) && !edge.getNodeBId().equals(nodeId)) {
+            throw new IllegalStateException("Node " + nodeId + " is not part of edge " + edge.getId());
+        }
+        if (!getNode(nodeId).removeConnection(edge.getId()) && deleteEmptyNode) {
+            if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]                - REMOVE REPLACED NODE: " + nodeId);
+            removeNode(nodeId, null, null);
+        }
+    }
+
+    protected synchronized void replaceNodeInEdge(WireEdge edge, UUID oldNodeId, UUID newNodeId, boolean deleteEmptyNode) {
+        boolean isA = edge.getNodeAId().equals(oldNodeId);
+        removeEdgeFromNode(edge, oldNodeId, deleteEmptyNode);
+        if (isA) {
+            edge.nodeA = newNodeId;
+        } else {
+            edge.nodeB = newNodeId;
+        }
+        if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]            - EDGE NODES MODIFIED: " + oldNodeId + " -> " + newNodeId + ", is point A? " + isA + ", Edge Id: " + edge.getId());
     }
 
 
@@ -379,7 +422,7 @@ public class WireGraph extends SavedData implements IWireGraph {
      * @return A list of players
      */
     public Collection<ServerPlayer> getPlayersForEdge(UUID edgeId) {   
-        if (!collisionById.containsKey(edgeId))      {
+        if (!collisionById.containsKey(edgeId)) {
             return List.of();
         }
 
@@ -400,17 +443,28 @@ public class WireGraph extends SavedData implements IWireGraph {
      * Updates the data for this node, which may be changed, for example, when the connection block changes.
      * @param node The node whose data should be updated.
      */
-    public void updateNodeData(WireNode node) {
-        node.getData().updateWireNode(this, node);
-        Iterator<UUID> ids = node.getConnections().iterator();
+    protected WireNode updateNodeData(WireNode node) {
+        WireNode newNode = node.getData().updateWireNode(this, node);
+        if (newNode == null) {
+            return node;
+        }
+        boolean swapNode = !node.getId().equals(newNode.getId());
+        if (swapNode) {
+            if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]    - NODE SWAPPED: " + node.getId() + " -> " + newNode.getId() + ", with connections: " + node.getConnections().size());
+        }
+
+        Iterator<UUID> ids = new ArrayList<>(node.getConnections()).iterator();
         while (ids.hasNext()) {
             UUID id = ids.next();
             if (!hasEdge(id)) {
-                ids.remove();
+                node.removeConnection(id);
                 continue;
             }
             
-            WireEdge edge = getEdge(id);
+            WireEdge edge = getEdge(id);            
+            if (swapNode) {
+                replaceNodeInEdge(edge, node.getId(), newNode.getId(), true);
+            }
             WireNode nodeA = getNode(edge.getNodeAId());
             WireNode nodeB = getNode(edge.getNodeBId());
             CustomData customData = edge.getWireConnectionData().customData();
@@ -419,8 +473,11 @@ public class WireGraph extends SavedData implements IWireGraph {
                 nodeA.getData().getConnectorCustomData(this, customData, nodeA, 0).orElse(edge.getWireConnectionData().connectorA()),
                 nodeB.getData().getConnectorCustomData(this, customData, nodeB, 1).orElse(edge.getWireConnectionData().connectorB())
             ));
+            setEdge(edge, true);
+            setDirty();
+            
         }
-        //WiresApi.LOGGER.warn("A wire was misaligned! Data has been corrected. ID: {}, PointA: {}, PointB: {}", id, pointA, pointB);
+        return newNode;
     }
     
     public Collection<NewWireCollision> getCollisionsInChunk(ChunkPos chunk) {
@@ -516,16 +573,34 @@ public class WireGraph extends SavedData implements IWireGraph {
 	}
 
     public void onChunkLoad(Level level, ChunkPos pos, Player player) {
+        if (level.isClientSide()) return;
+
         playersWatchingChunk.put(pos, player.getUUID());
         
         synchronized (nodesByChunk) {
             if (nodesByChunk.containsKey(pos) && player instanceof ServerPlayer serverPlayer) {
-                Collection<UUID> edgeIds = nodesByChunk.get(pos).stream().flatMap(x -> {
-                    WireNode node = getNode(x);
-                    updateNodeData(node);
-                    return node.getConnections().stream();
-                }).toList();
-                if (edgeIds.isEmpty()) return;
+                Set<UUID> edgeIds = new LinkedHashSet<>();
+                Collection<UUID> nodeIds = ImmutableList.copyOf(nodesByChunk.get(pos));
+                for (UUID nodeId : nodeIds) {
+                    if (!hasNode(nodeId)) {
+                        continue;
+                    }
+                    WireNode node = updateNodeData(getNode(nodeId));
+                    if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER] - NODE " + nodeId + ": " + node.getPos().x + ", " + node.getPos().y + ", " + node.getPos().z);
+
+                    if (!node.getData().validate(this, new CompoundTag(), 0)) {
+                        removeNode(nodeId, new Vector3f(0), Optional.of(player));
+                        PantographsAndWires.LOGGER.warn("Removed wire node with id {} at {}, because it is no longer valid.", node.getId(), node.getPos());
+                        continue;
+                    }
+
+                    for (UUID connectionId : node.getConnections()) {
+                        edgeIds.add(connectionId);
+                    }
+                }
+                if (edgeIds.isEmpty()) {
+                    return;
+                }
 
                 Collection<WireEdge> edges = new ArrayList<>(edgeIds.size());
                 Set<WireNode> nodes = new HashSet<>();
@@ -555,33 +630,6 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
     }
 
-    /*
-    public boolean recalcAttachPoints(WireGraph network, Multimap<ChunkPos, WireCollision> chunkMap, Multimap<SectionPos, WireCollision> sectionMap, Multimap<BlockPos, WireCollision> blockMap) {
-        boolean hasChanged = false;
-        if (network.getLevel().isLoaded(getPointA()) && network.getLevel().getBlockState(getPointA()).getBlock() instanceof IWireConnector c) {
-            CompoundTag connectorData = null;// c.wireRenderData(network.level(), getPointA(), network.level().getBlockState(getPointA()), getCustomData(), 0);
-            if (!connectionANbt.equals(connectorData)) {
-                this.connectionANbt = connectorData;
-                hasChanged = true;
-            }
-        }
-        if (network.getLevel().isLoaded(getPointB()) && network.getLevel().getBlockState(getPointB()).getBlock() instanceof IWireConnector c) {
-            CompoundTag connectorData = null;//c.wireRenderData(network.level(), getPointB(), network.level().getBlockState(getPointB()), getCustomData(), 1);
-            if (!connectionBNbt.equals(connectorData)) {
-                this.connectionBNbt = connectorData;
-                hasChanged = true;
-            }
-        }
-        if (!hasChanged) return false;
-        WireConnectionSyncData sync = WireConnectionSyncData.of(this);
-        WireCollision collision = null;// new WireCollision(chunkMap, sectionMap, blockMap, this.getId(), getPointA(), getWireType().buildWire(WireCreationContext.COLLISION, network.level(), sync).getCollisions());
-        setCollisionData(collision);
-        setWireConnectionSyncData(sync);
-        WiresApi.LOGGER.warn("A wire was misaligned! Data has been corrected. ID: {}, PointA: {}, PointB: {}", id, pointA, pointB);
-        return true; 
-    }
-        */
-
 
     
     private static record PrimitiveNode(UUID id, BlockConnectorNodeData nodeData, Vector3f pos) {}  
@@ -590,7 +638,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     public final void upgrade(CompoundTag nbt) {
         final int steps = 2;
         long startTime = 0;
-        PantographsAndWires.LOGGER.info("Converting wire data has begun! This process may take a moment.");
+        PantographsAndWires.LOGGER.info("Converting wire data for dimension " + level.dimension().location() + "! This process may take a moment. Please wait...");
 
         // STEP 1
         PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 1/" + steps + "]: Reading and processing legacy data...");
@@ -640,7 +688,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             edges.add(new PrimitiveEdge(nodeA, nodeB, type, customData));
         }
 
-        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 1 SUCCESS]: Found " + nodeData.size() + " Nodes and " + edges.size() + " connections. Took " + (System.currentTimeMillis() - startTime) + "ms");        
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 1 SUCCESS]: Found " + nodeData.size() + " nodes and " + edges.size() + " edges. Took " + (System.currentTimeMillis() - startTime) + "ms");        
         // STEP 2
         PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 2/" + steps + "]: Converting data..");
         startTime = System.currentTimeMillis();
@@ -650,6 +698,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             createEdge(edge.type(), new CustomData(edge.customData()), edge.nodeA.nodeData(), edge.nodeB.nodeData(), i);
         }
 
-        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 2 SUCCESS]: Took " + (System.currentTimeMillis() - startTime) + "ms"); 
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 2 SUCCESS]: Took " + (System.currentTimeMillis() - startTime) + "ms");
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STATUS]: " + getStatistics().print(true));
     }
 }

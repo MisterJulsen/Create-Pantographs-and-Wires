@@ -51,8 +51,11 @@ public abstract class NodeData implements INBTSerializable {
      * or wire connections are NOT covered here! They must be updated in the corresponding metadata sections!
      * @param graph The current {@link WireGraph} being worked on.
      * @param node The wire node.
+     * @return The {@code node} itself, if some settings of the node has been changed, a new node, if the node has been changed, or {@code null} if nothing has been changed.
      */
-    public void updateWireNode(WireGraph graph, WireNode node) {}
+    public WireNode updateWireNode(WireGraph graph, WireNode node) {
+        return null;
+    }
 
     /**
      * Retrieves additional data for a connection point, such as the wire attachment position.

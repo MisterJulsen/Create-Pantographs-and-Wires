@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.debug;
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -54,6 +55,7 @@ public class WireDebugRenderer {
 
         for (WireGraphClient graph : WireGraphManager.getAllClient(Minecraft.getInstance().level)) {           
             for (WireNode node : graph.getNodes()) {
+                if (node == null) continue;
                 if (node.getPos().distance(cameraPos) > 16) continue;
                 renderNameTag(poseStack, mbs, LightTexture.FULL_BRIGHT, node.getPos(), 0.2f, List.of(
                     TextUtils.text("ID: " + node.getId().toString()),
@@ -64,6 +66,8 @@ public class WireDebugRenderer {
                 ));
             }
             for (WireEdge edge : graph.getEdges()) {
+                if (edge == null) continue;
+                if (!graph.hasNode(edge.getNodeAId()) || !graph.hasNode(edge.getNodeBId())) continue;
                 if (edge.getCenterPos().distance(cameraPos) > 16) continue;
                 renderNameTag(poseStack, mbs, LightTexture.FULL_BRIGHT, graph.getNode(edge.getNodeAId()).getPos().add(graph.getNode(edge.getNodeBId()).getPos()).div(2), 0.2f, List.of(
                     TextUtils.text("ID: " + edge.getId()),
@@ -78,19 +82,26 @@ public class WireDebugRenderer {
                         TextUtils.text(wireData.name()).withStyle(ChatFormatting.GOLD)
                     ));
                 }
-
             }
 
-            VertexConsumer buffer = mbs.getBuffer(RenderType.lines());        
-
-            for (WireNode node : graph.getNodes()) {
-                renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0.25f, 0, 0), new Vector3f(node.getPos()).add(0.25f, 0, 0), 1, 1, 0, 1);
-                renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0, 0.25f, 0), new Vector3f(node.getPos()).add(0, 0.25f, 0), 1, 1, 0, 1);
-                renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0, 0, 0.25f), new Vector3f(node.getPos()).add(0, 0, 0.25f), 1, 1, 0, 1);
+            VertexConsumer buffer = mbs.getBuffer(RenderType.lines());            
+            Collection<WireNode> nodes = graph.getNodes();
+            synchronized (nodes) {                
+                for (WireNode node : nodes) {
+                    if (node.getPos().distance(cameraPos) > 256) continue;
+                    renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0.25f, 0, 0), new Vector3f(node.getPos()).add(0.25f, 0, 0), 1, 1, 0, 1);
+                    renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0, 0.25f, 0), new Vector3f(node.getPos()).add(0, 0.25f, 0), 1, 1, 0, 1);
+                    renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0, 0, 0.25f), new Vector3f(node.getPos()).add(0, 0, 0.25f), 1, 1, 0, 1);
+                }
+            }            
+            Collection<WireEdge> edges = graph.getEdges();
+            synchronized (edges) {
+                for (WireEdge edge : graph.getEdges()) {
+                    if (edge.getCenterPos().distance(cameraPos) > 256) continue;
+                    renderDebugLineGradient(poseStack, buffer, graph.getNode(edge.getNodeAId()).getPos(), graph.getNode(edge.getNodeBId()).getPos(), 1, 0, 1, 1, 0, 1, 1, 1);
+                }
             }
-            for (WireEdge edge : graph.getEdges()) {
-                renderDebugLineGradient(poseStack, buffer, graph.getNode(edge.getNodeAId()).getPos(), graph.getNode(edge.getNodeBId()).getPos(), 1, 0, 1, 1, 0, 1, 1, 1);
-            }
+            
 
             for (int a = -2; a <= 2; a++) {
                 for (int b = -2; b <= 2; b++) {

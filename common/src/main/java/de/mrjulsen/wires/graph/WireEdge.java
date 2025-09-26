@@ -42,8 +42,8 @@ public class WireEdge {
     private WireConnectionData customData;
     
     private final IWireType wireType;
-    private final UUID nodeA;
-    private final UUID nodeB;
+    UUID nodeA;
+    UUID nodeB;
     private final Map<String, TreeMap<Float, WireDecorationData>> decorations = new HashMap<>();
 
     public WireEdge(WireGraph graph, IWireType type, WireConnectionData customData, UUID nodeA, UUID nodeB) {

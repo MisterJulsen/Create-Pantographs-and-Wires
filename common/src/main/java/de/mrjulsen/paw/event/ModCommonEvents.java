@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.joml.Vector3f;
 
-import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.mixin.DimensionDataStorageAccessor;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.WireGraph;
@@ -29,9 +28,7 @@ public final class ModCommonEvents {
                 WireGraphManager.get(level, WiresApi.PAW_CATENARY_WIRES).upgrade(nbt.getCompound("data"));
                 level.getDataStorage().save();
                 ((DimensionDataStorageAccessor)level.getDataStorage()).paw$getDataFile("wiresapi_wire_network").delete();
-            } catch (IOException e) {
-                PantographsAndWires.LOGGER.error("Could not convert legacy wire data.", e);
-            }
+            } catch (IOException e) {}
         });
 
         LifecycleEvent.SERVER_STOPPED.register((server) -> {

@@ -78,20 +78,21 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
     }
 
     @Override
-    public void updateWireNode(WireGraph graph, WireNode node) {
+    public WireNode updateWireNode(WireGraph graph, WireNode node) {
         if (wireId == null) {
-            return;
+            return null;
         }
         WireEdge edge = graph.getEdge(wireId.id());
         NewWireCollision collision = graph.getCollisionById(wireId.id()).orElse(null);
         if (edge == null || collision == null) {
-            return;
+            return null;
         }
         WirePoints points = collision.getWirePointsOf(wireId.name());
         if (points == null) {
-            return;
+            return null;
         }
         node.setPos(points.vertices()[0]);
+        return node;
     }
 
     @Override

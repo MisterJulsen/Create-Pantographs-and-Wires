@@ -69,19 +69,20 @@ public class CatenaryWireConnectorNodeData extends NodeData {
     }
 
     @Override
-    public void updateWireNode(WireGraph graph, WireNode node) {
+    public WireNode updateWireNode(WireGraph graph, WireNode node) {
         if (wireId == null) {
-            return;
+            return null;
         }
 
         WireEdge edge = graph.getEdge(wireId.id());
         NewWireCollision collision = graph.getCollisionById(wireId.id()).orElse(null);
         if (edge == null || collision == null) {
-            return;
+            return null;
         }  
         float length = collision.length(wireId.name());
         float posOnWire = length * posPercentage;
         node.setPos(collision.wirePosToWorldPos(wireId.name(), posOnWire));
+        return node;
     }
     
     @Override

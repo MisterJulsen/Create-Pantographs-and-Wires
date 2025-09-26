@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.joml.Vector3f;
 
+import de.mrjulsen.paw.PantographsAndWires;
+import de.mrjulsen.paw.config.ModCommonConfig;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
@@ -21,8 +23,10 @@ import net.minecraft.nbt.CompoundTag;
 public class BlockConnectorNodeData extends NodeData {
 
     private static final String NBT_POS = "Pos";
+    private static final String NBT_PENDING = "IsPending";
     
     private BlockPos pos;
+    private boolean pending;
 
     public BlockConnectorNodeData() {}
 
@@ -32,6 +36,10 @@ public class BlockConnectorNodeData extends NodeData {
 
     public BlockPos getPos() {
         return pos;
+    }
+
+    public boolean isPending() {
+        return pending;
     }
     
     @Override
@@ -43,17 +51,19 @@ public class BlockConnectorNodeData extends NodeData {
     public CompoundTag serializeNbt() {
         CompoundTag nbt = new CompoundTag();
         Utils.putNbtBlockPos(nbt, NBT_POS, pos);
+        if (pending) nbt.putBoolean(NBT_PENDING, pending);
         return nbt;
     }
 
     @Override
     public void deserializeNbt(CompoundTag nbt) {
         this.pos = Utils.getNbtBlockPos(nbt, NBT_POS);
+        this.pending = nbt.getBoolean(NBT_PENDING);
     }
     
     @Override
     public WireNode getOrCreateNode(WireGraph graph) {
-        if (graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity be && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector) {
+        if (graph.getLevel().isLoaded(getPos()) && graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity be && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector) {
             WireNode node = null;
             if (be.getNodeId() == null || !graph.hasNode(be.getNodeId().id())) {
                 node = graph.createNode(this, new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ()));
@@ -62,13 +72,39 @@ public class BlockConnectorNodeData extends NodeData {
                 node = graph.getNode(be.getNodeId().id());
             }
             return node;
-        }        
+        }
+        pending = true;
         return graph.createNode(this, new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ()));
+    }
+
+    public boolean isTest() {
+        return (pos.getX() == 1103 && pos.getY() == 8 && pos.getZ() == -4877) || (pos.getX() == -164 && pos.getY() == 77 && pos.getZ() == -56);
+    }
+    
+    @Override
+    public WireNode updateWireNode(WireGraph graph, WireNode node) {
+        if (pending) {
+            pending = false;
+            if (graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity be && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector) {
+                WireNode newNode = null;
+                if (be.getNodeId() == null || !graph.hasNode(be.getNodeId().id())) {
+                    newNode = graph.createNode(this, new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ()));
+                    be.setNodeId(new NodeId(newNode.getId(), graph.getId()));
+                    if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]        - Create new node: " + newNode.getId());
+                } else {
+                    newNode = graph.getNode(be.getNodeId().id());
+                    if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]        - Use existing node: " + newNode.getId());
+                }
+                return newNode;
+            }
+        }
+        if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]        - COULD NOT REPLACE DUMMY NODE! This is not intended, but could occur if there is no longer a valid connector block at the corresponding location.");
+        return node;
     }
     
     @Override
     public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
-        if (graph.getLevel().isLoaded(getPos()) && graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector connector) {
+        if (!pending && graph.getLevel().isLoaded(getPos()) && graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector connector) {
             return Optional.of(connector.getConnectorData(graph.getLevel(), getPos(), customData, pointIndex));
         }
         return Optional.empty();
@@ -81,7 +117,7 @@ public class BlockConnectorNodeData extends NodeData {
 
     @Override
     public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
-        return graph.getLevel().isLoaded(getPos()) && graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity;
+        return pending || !graph.getLevel().isLoaded(getPos()) || (graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity);
     }
 
     @Override

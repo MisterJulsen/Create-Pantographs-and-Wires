@@ -234,7 +234,7 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 					}
 				}
 
-				network.setEdge(edge);
+				network.setEdge(edge, true);
 				network.sendEdgeToClient(edge);
 				network.setDirty();
 			
@@ -287,7 +287,7 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 					}
 					nbt.put(NBT_DROPPERS, li);
 					
-					network.setEdge(edge);
+					network.setEdge(edge, true);
 					network.sendEdgeToClient(edge);
 					network.setDirty();
 				}
