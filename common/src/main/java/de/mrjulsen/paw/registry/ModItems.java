@@ -80,10 +80,6 @@ public class ModItems {
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
 
-    public static final ItemEntry<Item> CATENARY_WIRE = PantographsAndWires.REGISTRATE.item("catenary_wire", Item::new)
-        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
-        .register();
-
     public static final ItemEntry<Item> EMPTY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("empty_wire_coil", Item::new)
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
