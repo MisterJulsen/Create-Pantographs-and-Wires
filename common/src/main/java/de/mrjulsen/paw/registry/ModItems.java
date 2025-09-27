@@ -75,10 +75,6 @@ public class ModItems {
     public static final ItemEntry<Item> PENCIL = PantographsAndWires.REGISTRATE.item("pencil", Item::new)
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
-    
-    public static final ItemEntry<Item> IRON_SPRING = PantographsAndWires.REGISTRATE.item("iron_spring", Item::new)
-        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
-        .register();    
 
     public static final ItemEntry<Item> COPPER_WIRE = PantographsAndWires.REGISTRATE.item("copper_wire", Item::new)
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
