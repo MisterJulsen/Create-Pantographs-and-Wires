@@ -60,7 +60,7 @@ public record WireId(UUID id, String name, IWireType type) {
             for (WireBlockCollision collision : collisionsinBlock) {
                 Vector3f a = new Vector3f(collision.getInVector()).add(pos.getX(), pos.getY(), pos.getZ());
                 Vector3f b = new Vector3f(collision.getOutVector()).add(pos.getX(), pos.getY(), pos.getZ());
-                LineShape wire = new LineShape(a, b,  DragonLib.PIXEL);
+                LineShape wire = new LineShape(a, b, DragonLib.PIXEL * 2);
                 Optional<RaycastHitResult> res = wire.intersects(rayOrigin, rayDirection).map(h -> new RaycastHitResult(new Vec3(h), pos, new Vector3f(h).sub(rayOrigin).length(), collision));
                 if (res.isPresent() && (hit == null || hit.getDistance() < res.get().getDistance())) {
                     hit = res.get();
