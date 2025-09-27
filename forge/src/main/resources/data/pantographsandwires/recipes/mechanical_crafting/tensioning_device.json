@@ -15,7 +15,7 @@
       "item": "create:cogwheel"
     },
     "W": {
-      "tag": "forge:wires/iron"
+      "tag": "forge:wires/copper"
     },
     "S": {
       "tag": "minecraft:stone_bricks"
