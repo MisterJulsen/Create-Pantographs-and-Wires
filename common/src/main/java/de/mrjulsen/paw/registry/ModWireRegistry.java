@@ -28,8 +28,8 @@ public class ModWireRegistry {
     public static final DLRegistryObject<RegistrationArmWireDecoration> CATENARY_HEADSPAN_REGISTRATION_ARM = DECORATION_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan_registration_arm"), RegistrationArmWireDecoration::new);
     
     public static final DLStaticRegistry<IPawWireItemBase> WIRE_SUBTYPES_REGISTRY = new DLStaticRegistry<>();
-    public static final DLStaticRegistryObject<CatenaryWireItem> CATENARY_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_wire"), CatenaryWireItem::new);
     public static final DLStaticRegistryObject<FeederWireItem> ENERGY_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "energy_wire"), FeederWireItem::new);
+    public static final DLStaticRegistryObject<CatenaryWireItem> CATENARY_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_wire"), CatenaryWireItem::new);
     public static final DLStaticRegistryObject<CatenaryHeadspanWireItem> CATENARY_HEADSPAN_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanWireItem::new);
 
     public static void init() {}

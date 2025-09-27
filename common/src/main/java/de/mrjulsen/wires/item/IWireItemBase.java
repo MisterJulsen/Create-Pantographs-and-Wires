@@ -46,6 +46,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public interface IWireItemBase extends IWireInteractableItem {
     
+    public static final String NBT_ROOT = "ConnectionData";
     public static final String NBT_POINTS = "CustomPointData";
     public static final String NBT_CONNECTOR_TYPE = "ConnectorType";
     public static final String NBT_POS = "Pos";
@@ -162,7 +163,7 @@ public interface IWireItemBase extends IWireInteractableItem {
         }
 
         // --- Decode Item data ---
-        CompoundTag itemData = stack.getOrCreateTag();
+        CompoundTag itemData = getNbt(stack);
         CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
         List<CompoundTag> points = new ArrayList<>();        
         if (itemData.contains(NBT_POINTS)) {
@@ -181,7 +182,7 @@ public interface IWireItemBase extends IWireInteractableItem {
         }
         itemData.put(NBT_POINTS, pointsList);
         itemData.put(NBT_CUSTOM_DATA, customDataNbt);
-        stack.setTag(itemData);
+        setNbt(stack, itemData);
 
         // --- Create wire ---
         if (getActor(stack).canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
@@ -189,10 +190,6 @@ public interface IWireItemBase extends IWireInteractableItem {
         }
         
         return InteractionResult.SUCCESS;
-    }
-
-    public static void clear(ItemStack stack) {
-        stack.setTag(new CompoundTag());
     }
 
     default NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
@@ -217,11 +214,11 @@ public interface IWireItemBase extends IWireInteractableItem {
      * @return The text component which is displayed in the HUD
      */
     default Component createHudInfoText(ItemStack stack, Player player, HitResult hit) {
-        if (!stack.hasTag()) {
+        if (!stack.hasTag() || !stack.getTag().contains(NBT_ROOT)) {
             return null;
         }
         
-        CompoundTag itemData = getTag(stack);
+        CompoundTag itemData = getNbt(stack);
         ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
         WireGraph graph = WireGraphManager.get(player.level(), getWireType(stack).getGraphId(itemData));
         if (graph == null || list.isEmpty()) {
@@ -305,9 +302,29 @@ public interface IWireItemBase extends IWireInteractableItem {
         return Optional.ofNullable(shape.clip(start, end, pos));
     }
 
-    public static CompoundTag getTag(ItemStack stack) {
+    public static CompoundTag getNbt(ItemStack stack) {
         CompoundTag nbt = stack.getOrCreateTag();
-        if (!nbt.contains(NBT_POINTS)) nbt.put(NBT_POINTS, new ListTag());
-        return nbt;
-    }    
+        CompoundTag root;
+        if (!nbt.contains(NBT_ROOT)) {
+            root = new CompoundTag();
+        } else {
+            root = nbt.getCompound(NBT_ROOT);
+        }
+        if (!root.contains(NBT_POINTS)) {
+            root.put(NBT_POINTS, new ListTag());
+        }
+        nbt.put(NBT_ROOT, root);
+        return root;
+    }
+
+    public static void setNbt(ItemStack stack, CompoundTag nbt) {
+        CompoundTag itemNbt = stack.getOrCreateTag();
+        itemNbt.put(NBT_ROOT, nbt);
+        stack.setTag(itemNbt);
+    }
+
+
+    public static void clear(ItemStack stack) {
+        stack.getOrCreateTag().remove(NBT_ROOT);
+    }
 }

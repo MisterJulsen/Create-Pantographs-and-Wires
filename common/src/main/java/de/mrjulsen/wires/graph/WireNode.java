@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.WiresApi;
-import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.util.Utils;
 import net.minecraft.nbt.CompoundTag;

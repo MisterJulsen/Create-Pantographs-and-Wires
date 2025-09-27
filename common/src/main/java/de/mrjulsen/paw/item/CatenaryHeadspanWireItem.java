@@ -6,7 +6,6 @@ import java.util.function.BiConsumer;
 
 import org.joml.Vector3f;
 
-import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
@@ -14,7 +13,6 @@ import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.registry.ModWireRegistry;
-import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.data.node.LatticeMastNodeData;
@@ -22,7 +20,6 @@ import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.registry.DLStaticRegistryObject;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphManager;
-import de.mrjulsen.wires.graph.data.node.CatenaryWireConnectorNodeData;
 import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.item.IWireItemBase;
 import net.minecraft.ChatFormatting;
@@ -76,10 +73,6 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
         if (hit instanceof BlockHitResult h && level.getBlockState(h.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
             return new LatticeMastNodeData(h.getBlockPos());
-        } else if (hit instanceof WireHitResult h) {
-            float posOnWire = (float)ModMath.snap(h.getPosOnWire(), 0.5f);
-            float p = h.getCollision(level).map(x -> MathUtils.clamp(1F / x.length(h.getWireId().name()) * posOnWire, 0F, 1F)).orElse(0F);
-            return new CatenaryWireConnectorNodeData(h.getWireId(), p);
         }
         return null;
     }
@@ -95,7 +88,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
         }
 
         // --- Decode Item data ---
-        CompoundTag itemData = stack.getOrCreateTag();
+        CompoundTag itemData = IWireItemBase.getNbt(stack);
         CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
         List<CompoundTag> points = new ArrayList<>();        
         if (itemData.contains(NBT_POINTS)) {
@@ -157,7 +150,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
         }
         itemData.put(NBT_POINTS, pointsList);
         itemData.put(NBT_CUSTOM_DATA, customDataNbt);
-        stack.setTag(itemData);
+        IWireItemBase.setNbt(stack, itemData);
 
         // --- Create wire ---
         if (canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
@@ -178,7 +171,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
             return null;
         }
         
-        CompoundTag itemData = IWireItemBase.getTag(stack);
+        CompoundTag itemData = IWireItemBase.getNbt(stack);
         ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
         if (list.size() < 2) {
             return IPawWireItemBase.super.createHudInfoText(stack, player, hit);

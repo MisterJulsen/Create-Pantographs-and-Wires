@@ -72,7 +72,6 @@ public class CatenaryWireItem implements IPawWireItemBase {
     
     @Override
     public InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
-        System.out.println("CATENARY WIRE IMPL");
         if (level.isClientSide) {
             return InteractionResultHolder.consume(player.getItemInHand(usedHand));
         }
