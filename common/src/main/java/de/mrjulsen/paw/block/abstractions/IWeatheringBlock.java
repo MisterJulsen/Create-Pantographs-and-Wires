@@ -49,6 +49,6 @@ public interface IWeatheringBlock<T extends Block & IWeatheringBlock<T>> extends
     }
 
     default float getChanceModifier() {
-        return this.getAge() == WeatherState.UNAFFECTED ? 0.75F : 1.0F;
+        return this.getAge() == WeatherState.UNAFFECTED ? 0.1F : 0.2F;
     }
 }

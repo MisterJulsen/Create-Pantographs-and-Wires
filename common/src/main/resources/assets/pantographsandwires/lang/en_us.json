@@ -87,6 +87,14 @@
     "item.pantographsandwires.empty_wire_coil": "Empty Wire Coil",
     "item.pantographsandwires.iron_spring": "Iron Spring",
     
+    "wire.pantographsandwires.energy_wire": "Energy Wire",
+    "wire.pantographsandwires.catenary_wire": "Catenary Wire",
+    "wire.pantographsandwires.catenary_headspan": "Catenary Headspan Wire",
+
+    "gui.pantographsandwires.wire_selection.title": "Wire Selection",
+    "gui.pantographsandwires.wire_selection.instruction": "Select a wire type",
+    "gui.pantographsandwires.wire_selection.wire_type": "Wire Type",
+
     "gui.pantographsandwires.cantilever_settings.title": "Cantilever Configuration",
     "gui.pantographsandwires.cantilever_settings.width": "Width",
     "gui.pantographsandwires.cantilever_settings.height": "Height",

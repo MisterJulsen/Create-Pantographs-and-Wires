@@ -9,18 +9,22 @@ import org.joml.Vector3f;
 import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
+import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.registry.ModBlocks;
+import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.data.node.LatticeMastNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
+import de.mrjulsen.wires.graph.registry.DLStaticRegistryObject;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.data.node.CatenaryWireConnectorNodeData;
-import de.mrjulsen.wires.item.WireBaseItem;
+import de.mrjulsen.wires.item.IPawWireItemBase;
+import de.mrjulsen.wires.item.IWireItemBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -34,7 +38,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-public class CatenaryHeadspanWireItem extends WireBaseItem {
+public class CatenaryHeadspanWireItem implements IPawWireItemBase {
     
     public static final String NBT_UPPER_WIRE_HEIGHT = "UpperWireHeight";
     public static final String NBT_TOP_WIRE_HEIGHT = "TopWireHeight";
@@ -42,19 +46,34 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
 	private static final String KEY_HEIGHT_DIFFERENCE_TOO_SMALL = "item." + PantographsAndWires.MOD_ID + ".catenary_headspan.small_height_difference";
 	private static final String KEY_HEIGHT_DIFFERENCE_TOO_LARGE = "item." + PantographsAndWires.MOD_ID + ".catenary_headspan.large_height_difference";
 
-    public CatenaryHeadspanWireItem(Properties properties, IWireType wireType) {
-        super(properties, wireType);
-    }
-
 
     @Override
     public InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
-        return placeWire(level, player, hand, hit, EWireConnectorType.WIRE, (a, b) -> {});
+        return placeWire(level, player, hand, hit, (a, b) -> {});
     }
-    
 
     @Override
-    protected NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit, EWireConnectorType type) {
+    public IWireType getWireType(ItemStack stack) {
+        return ModWireRegistry.CATENARY_HEADSPAN;
+    }    
+
+    @Override
+    public DLStaticRegistryObject<IPawWireItemBase> getRegistryType() {
+        return (DLStaticRegistryObject<IPawWireItemBase>)(Object)ModWireRegistry.CATENARY_HEADSPAN_ITEM_SUBTYPE;
+    }  
+
+    @Override
+    public String getTranslationKey() {
+        return "wire." + PantographsAndWires.MOD_ID + ".catenary_headspan";
+    }
+
+    @Override
+    public ModGuiIcons getIcon() {
+        return ModGuiIcons.CATENARY_HEADSPAN_WIRE;
+    }  
+
+    @Override
+    public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
         if (hit instanceof BlockHitResult h && level.getBlockState(h.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
             return new LatticeMastNodeData(h.getBlockPos());
         } else if (hit instanceof WireHitResult h) {
@@ -65,12 +84,13 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
         return null;
     }
 
-    public InteractionResult placeWire(Level level, Player player, InteractionHand hand, HitResult hit, EWireConnectorType type, BiConsumer<CompoundTag, CompoundTag> metadata) { 
+    @Override
+    public InteractionResult placeWire(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata) { 
         if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
         ItemStack stack = player.getItemInHand(hand);
-        if (!(stack.getItem() instanceof WireBaseItem)) {
+        if (!(stack.getItem() instanceof IWireItemBase)) {
             return InteractionResult.FAIL;
         }
 
@@ -84,8 +104,8 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
 
         // --- Set data ---
         if (points.size() < 2) {
-            if (!addNewPoint(level, player, hand, hit, type, metadata, stack, itemData, customDataNbt, points)) {
-                clear(stack);
+            if (!addNewPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points)) {
+                IWireItemBase.clear(stack);
                 return InteractionResult.FAIL;
             }
         } else if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) || !customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
@@ -102,11 +122,11 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
                         float d = h.getBlockPos().getY() - nB.getBlockPos().getY();
                         if (d < min) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_SMALL, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         } else if (d > max) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_LARGE, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         }
                         customDataNbt.putFloat(NBT_UPPER_WIRE_HEIGHT, d);
@@ -117,11 +137,11 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
                         float d = h.getBlockPos().getY() - nB.getBlockPos().getY() - p;                        
                         if (d < min) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_SMALL, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         } else if (d > max) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_LARGE, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         }
                         customDataNbt.putFloat(NBT_TOP_WIRE_HEIGHT, d);
@@ -148,8 +168,8 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
     }
 
     @Override
-    protected boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
-        return super.canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points) && customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) && customDataNbt.contains(NBT_TOP_WIRE_HEIGHT);
+    public boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        return IPawWireItemBase.super.canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points) && customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) && customDataNbt.contains(NBT_TOP_WIRE_HEIGHT);
     }
 
     @Override
@@ -158,13 +178,13 @@ public class CatenaryHeadspanWireItem extends WireBaseItem {
             return null;
         }
         
-        CompoundTag itemData = getTag(stack);
+        CompoundTag itemData = IWireItemBase.getTag(stack);
         ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
         if (list.size() < 2) {
-            return super.createHudInfoText(stack, player, hit);
+            return IPawWireItemBase.super.createHudInfoText(stack, player, hit);
         }
 
-        WireGraph graph = WireGraphManager.get(player.level(), getWireType().getGraphId(itemData));
+        WireGraph graph = WireGraphManager.get(player.level(), getWireType(stack).getGraphId(itemData));
         if (graph == null || list.isEmpty()) {
             return null;
         }

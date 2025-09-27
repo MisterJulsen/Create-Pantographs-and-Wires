@@ -4,12 +4,15 @@ import java.util.Optional;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.CantileverBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.abstractions.ICatenaryWireConnector;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity.CantileverShapeData;
+import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.data.WireHitResult;
+import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.paw.util.collision.LineShape;
 import de.mrjulsen.paw.util.collision.RaycastHitResult;
 import de.mrjulsen.paw.util.collision.RaycastUtils;
@@ -17,8 +20,9 @@ import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
 import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
+import de.mrjulsen.wires.graph.registry.DLStaticRegistryObject;
 import de.mrjulsen.wires.graph.data.node.CatenaryHeadspanConnectionNodeData;
-import de.mrjulsen.wires.item.WireBaseItem;
+import de.mrjulsen.wires.item.IPawWireItemBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,27 +35,44 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class CatenaryWireItem extends WireBaseItem {
+public class CatenaryWireItem implements IPawWireItemBase {
 
     public static final String NBT_CANTILEVER_INDEX = "CantileverIndex";
 
-    public CatenaryWireItem(Properties properties, IWireType wireType) {
-        super(properties, wireType);
+    @Override
+    public IWireType getWireType(ItemStack stack) {
+        return ModWireRegistry.CATENARY_WIRE;
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public DLStaticRegistryObject<IPawWireItemBase> getRegistryType() {
+        return (DLStaticRegistryObject<IPawWireItemBase>)(Object)ModWireRegistry.CATENARY_WIRE_ITEM_SUBTYPE;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return "wire." + PantographsAndWires.MOD_ID + ".catenary_wire";
+    }
+
+    @Override
+    public ModGuiIcons getIcon() {
+        return ModGuiIcons.CATENARY_WIRE;
+    }
+
+    @Override
+    public InteractionResult useWireOn(UseOnContext context) {
         if (!context.getLevel().isClientSide) {
-            InteractionResult result = use(context.getLevel(), context.getPlayer(), context.getHand()).getResult();
+            InteractionResult result = useWire(context.getLevel(), context.getPlayer(), context.getHand()).getResult();
             if (result == InteractionResult.FAIL) {
-                return super.useOn(context);
+                return IPawWireItemBase.super.useWireOn(context);
             }
         }
         return InteractionResult.CONSUME;
     }
     
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {        
+    public InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
+        System.out.println("CATENARY WIRE IMPL");
         if (level.isClientSide) {
             return InteractionResultHolder.consume(player.getItemInHand(usedHand));
         }
@@ -88,7 +109,7 @@ public class CatenaryWireItem extends WireBaseItem {
         );
 
         result.ifPresent(x -> {
-            placeWire(level, player, usedHand, x, EWireConnectorType.BLOCK, (metaNbt, pointMeta) -> {
+            placeWire(level, player, usedHand, x, (metaNbt, pointMeta) -> {
                 pointMeta.putInt(NBT_CANTILEVER_INDEX, (Integer)x.getHitData());
             });
         });
@@ -98,12 +119,12 @@ public class CatenaryWireItem extends WireBaseItem {
 
     @Override
     public InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
-        return placeWire(level, player, hand, hit, EWireConnectorType.WIRE, (a, b) -> {});
+        return placeWire(level, player, hand, hit, (a, b) -> {});
     }
     
 
     @Override
-    protected NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit, EWireConnectorType type) {
+    public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
         if (hit instanceof WireHitResult h && CatenaryHeadspanWireType.canConnectCatenary(h.getWireId())) {
             return new CatenaryHeadspanConnectionNodeData(h.getWireId());
         }

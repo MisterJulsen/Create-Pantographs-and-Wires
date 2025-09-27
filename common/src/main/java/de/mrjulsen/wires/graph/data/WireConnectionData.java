@@ -2,7 +2,7 @@ package de.mrjulsen.wires.graph.data;
 
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import net.minecraft.nbt.CompoundTag;
 
 /**

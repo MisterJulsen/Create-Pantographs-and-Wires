@@ -10,13 +10,14 @@ import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
-import de.mrjulsen.wires.item.WireBaseItem;
+import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.util.GraphId;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 
@@ -86,7 +87,7 @@ public interface IWireType {
      * @param item Das {@code item} ist das Item des wires, dass sich mit diesem wire verbinden möchte.
      * @return A new instance of {@link WireNode} or {@code null} to prevent wire connections from this side.
      */
-    default NodeData attachWireTo(Level level, Player player, InteractionHand hand, WireHitResult hit, WireBaseItem item) {
+    default <I extends Item & IWireItemBase> NodeData attachWireTo(Level level, Player player, InteractionHand hand, WireHitResult hit, I item) {
         return null;
     }
 }

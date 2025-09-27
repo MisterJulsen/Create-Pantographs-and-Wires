@@ -4,11 +4,9 @@ import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import de.mrjulsen.paw.PantographsAndWires;
-import de.mrjulsen.paw.item.CatenaryWireItem;
-import de.mrjulsen.paw.item.FeederWireItem;
 import de.mrjulsen.paw.item.FuelItem;
-import de.mrjulsen.paw.item.CatenaryHeadspanWireItem;
 import de.mrjulsen.paw.item.PantographItem;
+import de.mrjulsen.wires.item.MultiWireItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -26,7 +24,11 @@ public class ModItems {
 	public static final TagKey<Item> TAG_INSULATORS = createTag("insulators");
 	public static final TagKey<Item> TAG_WRENCH = TagKey.create(Registries.ITEM, new ResourceLocation("forge:tools/wrench"));
 
+    public static final ItemEntry<MultiWireItem> WIRE = PantographsAndWires.REGISTRATE.item("wire_coil", p -> new MultiWireItem(p))
+        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
+        .register();
 
+    /*
     public static final ItemEntry<CatenaryWireItem> CATENARY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("catenary_wire_coil", p -> new CatenaryWireItem(p, ModWireRegistry.CATENARY_WIRE))
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
@@ -38,6 +40,7 @@ public class ModItems {
     public static final ItemEntry<CatenaryHeadspanWireItem> CATENARY_HEADSPAN_WIRE = PantographsAndWires.REGISTRATE.item("catenary_headspan", p -> new CatenaryHeadspanWireItem(p, ModWireRegistry.CATENARY_HEADSPAN))
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
+        */
 
     public static final ItemEntry<PantographItem> PANTOGRAPH = PantographsAndWires.REGISTRATE.item("pantograph", p -> PantographItem.create(ModBlocks.PANTOGRAPH.get(), p, false))
         .properties(p -> p)

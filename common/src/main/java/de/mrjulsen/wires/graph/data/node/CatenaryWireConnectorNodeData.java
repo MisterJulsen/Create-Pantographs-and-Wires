@@ -13,7 +13,7 @@ import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import de.mrjulsen.wires.network.WireId;
 import net.minecraft.nbt.CompoundTag;
 

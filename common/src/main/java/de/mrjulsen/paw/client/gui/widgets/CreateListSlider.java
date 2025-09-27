@@ -1,34 +1,42 @@
 package de.mrjulsen.paw.client.gui.widgets;
 
+import java.util.List;
+
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.components.DLSlider;
 import de.mrjulsen.mcdragonlib.client.util.Graphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.mcdragonlib.util.math.Rectangle;
-import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.ModGuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class CreateEnumSlider<T extends Enum<T> & IIconRepresentable & ITranslatableEnum> extends DLSlider {
+public class CreateListSlider<T extends IIconRepresentable & ITranslatable> extends DLSlider {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation("create:textures/gui/value_settings.png");
     private static final int SLIDER_BAR_SIZE = 8;
     private static final int SLIDER_DOCK_WIDTH = 7;
     private static final int SLIDER_SIZE = 22;
     
-    private final Class<T> clazz;
+    private final List<T> values;
 
-    public CreateEnumSlider(int x, int y, int w, int h, Class<T> clazz) {
+    public CreateListSlider(int x, int y, int w, int h, List<T> values) {
         super(x, y, w, h);
-        this.clazz = clazz;
-        max.set((double)clazz.getEnumConstants().length - 1);
+        this.values = values;
+        max.set((double)values.size() - 1);
         sliderWidth.set(SLIDER_SIZE);
-    }    
+    }
+    
+    public T getValue() {
+        return values.get(value.get().intValue());
+    }
+    
+    public void setValue(T value) {
+        this.value.set((double)values.indexOf(value));
+    }
 
     @Override
     protected void updateSliderValue(double mouseX, double mouseY) {
@@ -47,21 +55,20 @@ public class CreateEnumSlider<T extends Enum<T> & IIconRepresentable & ITranslat
 
         int sliderX = (int)((double)(width() - sliderWidth.get()) / (max.get() - min.get()) * (value.get() - min.get()));
         GuiUtils.drawTexture(TEXTURE, graphics, sliderX, height() / 2 - SLIDER_SIZE / 2, 0, 43, SLIDER_SIZE, SLIDER_SIZE);
-        clazz.getEnumConstants()[value.get().intValue()].getIcon().render(graphics, sliderX + 3, 3);
+        values.get(value.get().intValue()).getIcon().render(graphics, sliderX + 3, 3);
     }
     
     @Override
     public void renderFrontLayer(Graphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {        
         if (isSelected() || isDragged()) {
             Font font = Minecraft.getInstance().font;
-            T e = clazz.getEnumConstants()[value.get().intValue()];
-            Component titleTxt = TextUtils.translate(e.getEnumTranslationKey(PantographsAndWires.MOD_ID));
-            Component valueTxt = TextUtils.translate(e.getValueTranslationKey(PantographsAndWires.MOD_ID));
-            int halfWidth = Math.max(font.width(titleTxt) / 2, font.width(valueTxt) / 2);
+            T e = values.get(value.get().intValue());
+            Component valueTxt = TextUtils.translate(e.getTranslationKey());
+            int halfWidth = Math.max(font.width(text.get()) / 2, font.width(valueTxt) / 2);
 
             ModGuiUtils.renderRoundedBox(graphics, width() / 2 - halfWidth - 3, -font.lineHeight * 2 - 6, halfWidth * 2 + 6, font.lineHeight * 2 + 5, 0xAA000000);
             GuiUtils.drawString(graphics, font, width() / 2, -font.lineHeight - 2, valueTxt, 0xFF94B5DD, EAlignment.CENTER, false);
-            GuiUtils.drawString(graphics, font, width() / 2, -font.lineHeight * 2 - 4, titleTxt, 0xFFFFFFFF, EAlignment.CENTER, false);
+            GuiUtils.drawString(graphics, font, width() / 2, -font.lineHeight * 2 - 4, text.get(), 0xFFFFFFFF, EAlignment.CENTER, false);
         }
     }
     

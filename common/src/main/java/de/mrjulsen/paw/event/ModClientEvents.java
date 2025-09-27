@@ -15,7 +15,7 @@ import de.mrjulsen.wires.graph.DLStatistics;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
-import de.mrjulsen.wires.item.WireBaseItem;
+import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.render.WireRenderer;
 import de.mrjulsen.wires.util.ClientUtils;
 import dev.architectury.event.CompoundEventResult;
@@ -95,7 +95,7 @@ public final class ModClientEvents {
             for (InteractionHand hand : InteractionHand.values()) {
                 ItemStack stack = player.getItemInHand(hand);
 
-                if (stack.getItem() instanceof WireBaseItem item) {
+                if (stack.getItem() instanceof IWireItemBase item) {
                     HitResult lookingAt = Minecraft.getInstance().hitResult;
                     Component text = item.createHudInfoText(stack, Minecraft.getInstance().player, lookingAt);
                     if (text == null) {

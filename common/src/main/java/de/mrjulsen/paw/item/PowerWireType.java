@@ -59,7 +59,7 @@ public class PowerWireType extends AbstractWireType {
 	@Override
 	public void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {
 		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator())) {
-			ItemEntity itementity = new ItemEntity(level, breakPosition.x(), breakPosition.y(), breakPosition.z(), ModItems.COPPER_WIRE_COIL.asStack());
+			ItemEntity itementity = new ItemEntity(level, breakPosition.x(), breakPosition.y(), breakPosition.z(), ModItems.WIRE.asStack());
             itementity.setDefaultPickUpDelay();
             level.addFreshEntity(itementity);
 		}

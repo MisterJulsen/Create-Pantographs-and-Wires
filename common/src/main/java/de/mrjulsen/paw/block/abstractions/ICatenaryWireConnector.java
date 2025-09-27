@@ -1,7 +1,7 @@
 package de.mrjulsen.paw.block.abstractions;
 
 import de.mrjulsen.wires.block.IWireConnector;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;

@@ -7,7 +7,7 @@ import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
 import de.mrjulsen.wires.graph.data.provider.BasicConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.Level;

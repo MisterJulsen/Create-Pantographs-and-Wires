@@ -2,7 +2,7 @@ package de.mrjulsen.paw.block;
 
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.paw.util.ModMath;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
 import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;

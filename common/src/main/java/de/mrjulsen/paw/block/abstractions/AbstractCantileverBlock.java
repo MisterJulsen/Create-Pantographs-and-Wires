@@ -2,12 +2,12 @@ package de.mrjulsen.paw.block.abstractions;
 
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
-import de.mrjulsen.paw.client.gui.widgets.IIconEnum;
+import de.mrjulsen.paw.client.gui.widgets.IIconRepresentable;
 import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 
 import java.util.Arrays;
 
@@ -97,7 +97,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         return MAX_CANTILEVERS;
     }
 
-    public static enum ECantileverRegistrationArmType implements StringRepresentable, IIconEnum, ITranslatableEnum {
+    public static enum ECantileverRegistrationArmType implements StringRepresentable, IIconRepresentable, ITranslatableEnum {
         CENTER("center", ModGuiIcons.CANTILEVER_CENTER, 0, 0),
         INNER("inner", ModGuiIcons.CANTILEVER_INNER, -0.25f, 1),
         OUTER("outer", ModGuiIcons.CANTILEVER_OUTER, 0.25f, 0);
@@ -155,7 +155,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         }
     }
 
-    public static enum ECantileverInsulatorsPlacement implements StringRepresentable, IIconEnum, ITranslatableEnum {
+    public static enum ECantileverInsulatorsPlacement implements StringRepresentable, IIconRepresentable, ITranslatableEnum {
         BACK("back", ModGuiIcons.CANTILEVER_INSULATOR_BACK, 0),
         FRONT("front", ModGuiIcons.CANTILEVER_INSULATOR_FRONT, 0.8f);
 

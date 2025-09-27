@@ -81,6 +81,15 @@
     "item.pantographsandwires.copper_wire_coil": "Kupferdrahtspule",
     "item.pantographsandwires.empty_wire_coil": "Leere Drahtspule",
     "item.pantographsandwires.iron_spring": "Eisenfeder",
+    "item.pantographsandwires.wire": "Leitung",
+    
+    "wire.pantographsandwires.energy_wire": "Bahnstromspeiseleitung",
+    "wire.pantographsandwires.catenary_wire": "Kettenfahrleitung",
+    "wire.pantographsandwires.catenary_headspan": "Quertragwerk",
+
+    "gui.pantographsandwires.wire_selection.title": "Leitungsauswahl",
+    "gui.pantographsandwires.wire_selection.instruction": "Wähle einen Leitungstyp",
+    "gui.pantographsandwires.wire_selection.wire_type": "Leitungstyp",
     
     
     "gui.pantographsandwires.cantilever_settings.title": "Ausleger konfigurieren",

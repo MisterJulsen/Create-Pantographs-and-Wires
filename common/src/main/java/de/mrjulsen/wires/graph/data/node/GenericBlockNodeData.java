@@ -12,7 +12,7 @@ import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.provider.BasicConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import de.mrjulsen.wires.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

@@ -15,13 +15,14 @@ public final record DLRegistryObject<T extends INBTSerializable>(ResourceLocatio
     public CompoundTag wrap(T data) {
         CompoundTag tag = new CompoundTag();
         tag.putString(NBT_ID, id.toString());
-        tag.put(NBT_DATA, data.serializeNbt());
+        CompoundTag metaData = data.serializeNbt();
+        if (metaData != null && !metaData.isEmpty()) tag.put(NBT_DATA, metaData);
         return tag;
     }
 
     public T unwrap(CompoundTag tag) {
         T instance = create();
-        instance.deserializeNbt(tag.getCompound(NBT_DATA));
+        instance.deserializeNbt(tag.contains(NBT_DATA) ? tag.getCompound(NBT_DATA) : new CompoundTag());
         return instance;
     }
     

@@ -12,7 +12,7 @@ import de.mrjulsen.paw.blockentity.CantileverBlockEntity.CantileverData;
 import de.mrjulsen.paw.item.CantileverBlockItem;
 import de.mrjulsen.paw.item.CatenaryWireItem;
 import de.mrjulsen.paw.registry.ModBlocks;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;

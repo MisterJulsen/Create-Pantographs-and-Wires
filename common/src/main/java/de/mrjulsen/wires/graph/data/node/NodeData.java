@@ -11,7 +11,7 @@ import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;

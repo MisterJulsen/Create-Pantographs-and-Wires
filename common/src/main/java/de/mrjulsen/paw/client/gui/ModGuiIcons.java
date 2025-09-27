@@ -19,7 +19,11 @@ public enum ModGuiIcons {
     CANTILEVER_INSULATOR_NONE("cantilever_insulator_none", 4, 0),
     CANTILEVER_INSULATOR_BACK("cantilever_insulator_back", 5, 0),
     CANTILEVER_INSULATOR_FRONT("cantilever_insulator_front", 6, 0),
-    CANTILEVER_SUPPORT_TUBE("cantilever_support_tube", 7, 0);
+    CANTILEVER_SUPPORT_TUBE("cantilever_support_tube", 7, 0),
+    CATENARY_WIRE("catenary_wire", 8, 0),
+    ENERGY_WIRE("energy_wire", 9, 0),
+    CATENARY_HEADSPAN_WIRE("catenary_headspan_wire", 10, 0),
+    TENSION_WIRE("tension_wire", 11, 0);
 
 
     private String id;

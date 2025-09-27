@@ -1,0 +1,313 @@
+package de.mrjulsen.wires.item;
+
+import de.mrjulsen.wires.block.WireConnectorBlockEntity;
+import de.mrjulsen.wires.graph.WireGraph;
+import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
+import de.mrjulsen.wires.graph.data.node.NodeData;
+import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
+import de.mrjulsen.wires.IWireType;
+import de.mrjulsen.wires.WiresApi;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.joml.Vector3f;
+
+import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.paw.data.WireHitResult;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+/**
+ * Basic item class for a specific {@code IWireType} with basic functionality.
+ */
+public interface IWireItemBase extends IWireInteractableItem {
+    
+    public static final String NBT_POINTS = "CustomPointData";
+    public static final String NBT_CONNECTOR_TYPE = "ConnectorType";
+    public static final String NBT_POS = "Pos";
+    public static final String NBT_WIRE_ID = "WireId";
+    public static final String NBT_CUSTOM_DATA = "CustomData";
+    public static final String NBT_TOTAL_POINTS_COUNT = "PointsCount";
+
+    /**
+     * The type of this wire item.
+     * @return The {@code IWireType}
+     */
+    IWireType getWireType(ItemStack stack);
+
+    default IWireItemBase getActor(ItemStack stack) {
+        return this;
+    }
+    
+
+    default InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
+        return InteractionResultHolder.success(player.getItemInHand(usedHand));
+    }
+
+    default InteractionResult useWireOn(UseOnContext context) {        
+        return getActor(context.getItemInHand()).placeWire(
+            context.getLevel(),
+            context.getPlayer(),
+            context.getHand(),
+            new BlockHitResult(
+                context.getClickLocation(),
+                context.getClickedFace(),
+                context.getClickedPos(),
+                context.isInside()),
+            null
+        );
+    }
+
+    @Override
+    default InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
+        return getActor(player.getItemInHand(hand)).placeWire(level, player, hand, hit, null);
+    }
+
+    default boolean addNewPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
+        NodeData data = getActor(stack).createNodeData(level, player, hand, hit);
+        if (data == null) {
+            return false;
+        }
+
+        // Additional checks
+        checks: {
+            String translationKey = "";
+            
+            if (!points.isEmpty()) {
+                NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
+                if (previousNode.toWorldPos(graph).distance(data.toWorldPos(graph)) > getWireType(stack).getMaxLength()) {
+                    translationKey = "item." + WiresApi.MOD_ID + ".wire.to_far_away";
+                } else if (previousNode.equals(data)) {
+                    translationKey = "item." + WiresApi.MOD_ID + ".wire.same_connector";
+                }
+            }
+            if (!data.validate(graph, itemData, points.size())) {
+                translationKey = "item." + WiresApi.MOD_ID + ".wire.connector_invalid";
+            } else {
+                break checks;
+            } 
+            player.displayClientMessage(TextUtils.translate(translationKey, getWireType(stack).getMaxLength()).withStyle(ChatFormatting.RED), true);
+            clear(stack);
+            return false;
+        }
+
+        CompoundTag nodeMeta = new CompoundTag();
+        DLUtils.doIfNotNull(metadata, x -> x.accept(customDataNbt, nodeMeta));
+
+        CompoundTag nodeData = data.getRegistryType().wrap(data);
+        nodeData.put(NBT_CUSTOM_DATA, nodeMeta);
+        points.add(nodeData);
+        return true;
+    }
+
+    default boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        return points.size() >= 2;
+    }
+
+    
+    default boolean createWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
+        List<NodeData> deserializedData = new ArrayList<>(points.size());
+        CompoundTag pointsMeta = new CompoundTag();
+
+        for (int i = 0; i < points.size(); i++) {
+            CompoundTag nodeNbt = points.get(i);
+            pointsMeta.put(String.valueOf(i), nodeNbt.getCompound(NBT_CUSTOM_DATA));
+            deserializedData.add(WiresApi.NODE_DATA_REGISTRY.load(nodeNbt));
+        }
+
+        CompoundTag metaCollection = new CompoundTag();
+        if (!customDataNbt.isEmpty()) metaCollection.put(NBT_CUSTOM_DATA, customDataNbt);
+        if (!pointsMeta.isEmpty()) metaCollection.put(NBT_POINTS, pointsMeta);
+        metaCollection.putInt(NBT_TOTAL_POINTS_COUNT, points.size());
+
+        MutableInt idx = new MutableInt();
+        graph.createEdge(getWireType(stack), new CustomData(metaCollection), deserializedData.get(0), deserializedData.get(1), idx);
+        clear(stack);
+        return true;
+    }
+
+    default InteractionResult placeWire(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata) { 
+        if (level.isClientSide()) {
+            return InteractionResult.PASS;
+        }
+        ItemStack stack = player.getItemInHand(hand);
+        if (!(stack.getItem() instanceof IWireItemBase)) {
+            return InteractionResult.FAIL;
+        }
+
+        // --- Decode Item data ---
+        CompoundTag itemData = stack.getOrCreateTag();
+        CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
+        List<CompoundTag> points = new ArrayList<>();        
+        if (itemData.contains(NBT_POINTS)) {
+            points.addAll(itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList());
+        }
+
+        // --- Set data ---
+        if (!getActor(stack).addNewPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points)) {
+            return InteractionResult.FAIL;
+        }
+
+        // --- Save data ---
+        ListTag pointsList = new ListTag();
+        for (CompoundTag p : points) {
+            pointsList.add(p);
+        }
+        itemData.put(NBT_POINTS, pointsList);
+        itemData.put(NBT_CUSTOM_DATA, customDataNbt);
+        stack.setTag(itemData);
+
+        // --- Create wire ---
+        if (getActor(stack).canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
+            getActor(stack).createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
+        }
+        
+        return InteractionResult.SUCCESS;
+    }
+
+    public static void clear(ItemStack stack) {
+        stack.setTag(new CompoundTag());
+    }
+
+    default NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
+        if (hit instanceof BlockHitResult blockHit) {
+            if (level.getBlockEntity(blockHit.getBlockPos()) instanceof WireConnectorBlockEntity) {
+                return new BlockConnectorNodeData(blockHit.getBlockPos());
+            }
+            BlockPos pos = blockHit.getBlockPos();
+            BlockState state = level.getBlockState(blockHit.getBlockPos());
+            VoxelShape shape = state.getVisualShape(level, blockHit.getBlockPos(), CollisionContext.empty());
+            return clipFromSide(shape, pos, blockHit.getDirection()).map(x -> {
+                return new GenericBlockNodeData(blockHit.getBlockPos(), x.getLocation().toVector3f());
+            }).orElse(null);
+        }
+        return null;
+    }
+
+    /**
+     * The text rendered above the hotbar when creating a wire connection which displays information, such as the first connection point and the current distance to that point.
+     * @param stack The itemstack
+     * @param hit The current location the player is looking at
+     * @return The text component which is displayed in the HUD
+     */
+    default Component createHudInfoText(ItemStack stack, Player player, HitResult hit) {
+        if (!stack.hasTag()) {
+            return null;
+        }
+        
+        CompoundTag itemData = getTag(stack);
+        ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
+        WireGraph graph = WireGraphManager.get(player.level(), getWireType(stack).getGraphId(itemData));
+        if (graph == null || list.isEmpty()) {
+            return null;
+        }
+
+        CompoundTag lastPointData = (CompoundTag)list.get(list.size() - 1);
+        NodeData node = WiresApi.NODE_DATA_REGISTRY.load(lastPointData);
+        Vector3f pos = node.toWorldPos(graph);
+
+        int maxLength = getWireType(stack).getMaxLength();
+        int distance;
+        if (hit instanceof BlockHitResult r) {
+            distance = (int)pos.distance(r.getLocation().toVector3f());
+        } else {
+            distance = (int)pos.distance(player.getEyePosition().toVector3f());
+        }
+        return TextUtils.empty().withStyle(ChatFormatting.WHITE)
+            .append(TextUtils.text(String.format("X: %s, Y: %s, Z: %s", (int)pos.x(), (int)pos.y(), (int)pos.z())).withStyle(ChatFormatting.WHITE))
+            .append(TextUtils.text(" \u25A0 ").withStyle(ChatFormatting.GRAY))
+            .append(TextUtils.text(String.format("%sm / %sm", (int)distance, getWireType(stack).getMaxLength())).withStyle(distance == maxLength ? ChatFormatting.GOLD : (distance < maxLength ? ChatFormatting.GREEN : ChatFormatting.RED)))
+        ;
+    }
+
+
+
+
+    
+
+    public static Optional<BlockHitResult> clipFromSide(VoxelShape shape, BlockPos pos, Direction dir) {
+        if (shape.isEmpty()) {
+            return Optional.empty();
+        }
+
+        AABB bounds = shape.bounds();
+        double minX = 0.5;
+        double minY = 0.5;
+        double minZ = 0.5;
+        double maxX = 0.5;
+        double maxY = 0.5;
+        double maxZ = 0.5;
+
+        switch (dir) {
+            case DOWN  -> {
+                minY = bounds.maxY;
+                maxY = bounds.minY;
+            }
+            case UP    -> {
+                minY = bounds.minY;
+                maxY = bounds.maxY;
+            }
+            case NORTH -> {
+                minZ = bounds.maxZ;
+                maxZ = bounds.minZ;
+            }
+            case SOUTH -> {
+                minZ = bounds.minZ;
+                maxZ = bounds.maxZ;
+            }
+            case WEST  -> {
+                minX = bounds.maxX;
+                maxX = bounds.minX;
+            }
+            case EAST  -> {
+                minX = bounds.minX;
+                maxX = bounds.maxX;
+            }
+        }
+
+        Vec3 block = new Vec3(pos.getX(), pos.getY(), pos.getZ());
+        Vec3 start = new Vec3(
+                maxX + dir.getStepX() * 0.001,
+                maxY + dir.getStepY() * 0.001,
+                maxZ + dir.getStepZ() * 0.001
+        ).add(block);
+        Vec3 end = new Vec3(
+                minX - dir.getStepX() * 0.001,
+                minY - dir.getStepY() * 0.001,
+                minZ - dir.getStepZ() * 0.001
+        ).add(block);
+        return Optional.ofNullable(shape.clip(start, end, pos));
+    }
+
+    public static CompoundTag getTag(ItemStack stack) {
+        CompoundTag nbt = stack.getOrCreateTag();
+        if (!nbt.contains(NBT_POINTS)) nbt.put(NBT_POINTS, new ListTag());
+        return nbt;
+    }    
+}

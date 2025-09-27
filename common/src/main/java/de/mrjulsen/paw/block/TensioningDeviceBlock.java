@@ -14,7 +14,7 @@ import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 
 import org.joml.Vector3f;
 

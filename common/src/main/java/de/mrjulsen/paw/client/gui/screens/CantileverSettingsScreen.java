@@ -39,7 +39,7 @@ import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateEnumSlider;
 import de.mrjulsen.paw.client.gui.widgets.CreateSlider;
-import de.mrjulsen.paw.client.gui.widgets.IIconEnum;
+import de.mrjulsen.paw.client.gui.widgets.IIconRepresentable;
 import de.mrjulsen.paw.item.CantileverBlockItem;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.registry.ModNetworkAccessor;
@@ -58,7 +58,7 @@ public class CantileverSettingsScreen extends DLWindow {
 
     private static boolean showAdvanced = false;
 
-    private static enum SupportTubeEnum implements ITranslatableEnum, IIconEnum {
+    private static enum SupportTubeEnum implements ITranslatableEnum, IIconRepresentable {
         OFF(false, ModGuiIcons.CANTILEVER_INSULATOR_NONE),
         ON(true, ModGuiIcons.CANTILEVER_SUPPORT_TUBE);
 

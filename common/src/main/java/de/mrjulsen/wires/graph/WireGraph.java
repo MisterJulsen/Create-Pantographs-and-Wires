@@ -37,7 +37,7 @@ import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
-import de.mrjulsen.wires.item.WireBaseItem.CustomData;
+import de.mrjulsen.wires.item.CustomData;
 import de.mrjulsen.wires.network.DeleteWireSyncData;
 import de.mrjulsen.wires.network.NetworkManager;
 import de.mrjulsen.wires.network.WireChunkLoadingData;
