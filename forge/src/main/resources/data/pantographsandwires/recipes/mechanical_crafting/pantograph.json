@@ -4,7 +4,7 @@
     "GGG",
     "RMR",
     " B ",
-    "ISI",
+    "IMI",
     "N N"
   ],
   "key": {
@@ -19,9 +19,6 @@
     },
     "I": {
       "tag": "forge:ingots/iron"
-    },
-    "S": {
-      "item": "forge:nuggets/iron"
     },
     "N": {
       "item": "pantographsandwires:insulator_brown"
