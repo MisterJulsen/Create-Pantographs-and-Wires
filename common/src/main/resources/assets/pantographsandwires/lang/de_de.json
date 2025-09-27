@@ -81,7 +81,7 @@
     "item.pantographsandwires.copper_wire_coil": "Kupferdrahtspule",
     "item.pantographsandwires.empty_wire_coil": "Leere Drahtspule",
     "item.pantographsandwires.iron_spring": "Eisenfeder",
-    "item.pantographsandwires.wire": "Leitung",
+    "item.pantographsandwires.wire_coil": "Leitungsspule",
     
     "wire.pantographsandwires.energy_wire": "Bahnstromspeiseleitung",
     "wire.pantographsandwires.catenary_wire": "Kettenfahrleitung",
