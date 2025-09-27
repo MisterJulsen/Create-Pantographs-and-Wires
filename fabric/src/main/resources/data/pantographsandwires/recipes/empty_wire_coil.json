@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shaped",
     "key": {
       "A": {
-        "tag": "minecraft:planks"
+        "tag": "minecraft:wooden_slabs"
       },
       "B": {
         "tag": "c:wooden_rods"
