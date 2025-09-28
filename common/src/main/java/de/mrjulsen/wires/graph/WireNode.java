@@ -56,17 +56,17 @@ public class WireNode {
         return nbt;
     }
 
-    public static WireNode fromNbt(IWireGraph graph, CompoundTag nbt) {
+    public static Optional<WireNode> fromNbt(IWireGraph graph, CompoundTag nbt) {
         try {
             List<UUID> connections = nbt.getList(NBT_CONNECTIONS, Tag.TAG_INT_ARRAY).stream().map(x -> NbtUtils.loadUUID(x)).toList();
             WireNode node = new WireNode(graph, WiresApi.NODE_DATA_REGISTRY.load(nbt.getCompound(NBT_DATA)), nbt.getUUID(NBT_ID)); // TODO
             node.pos = Utils.getNbtVector3f(nbt, NBT_POS);
             node.connectedWires.addAll(connections);
-            return node;
+            return Optional.of(node);
         } catch (Exception e) {
             WiresApi.LOGGER.error("Could not load wire node, because the nbt data is invalid: " + nbt, e);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

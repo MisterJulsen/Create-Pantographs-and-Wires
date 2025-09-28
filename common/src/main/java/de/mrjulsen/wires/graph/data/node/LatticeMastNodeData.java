@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.graph.data.node;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.joml.Vector3f;
@@ -78,6 +79,11 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
             return getBlockPos().equals(o.getBlockPos());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBlockPos());
     }
     
 }

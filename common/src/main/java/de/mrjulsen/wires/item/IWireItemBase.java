@@ -16,6 +16,7 @@ import java.util.function.BiConsumer;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3f;
 
+import de.mrjulsen.mcdragonlib.data.StatusResult;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.data.WireHitResult;
@@ -89,30 +90,15 @@ public interface IWireItemBase extends IWireInteractableItem {
     }
 
     default boolean addNewPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
-        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
         NodeData data = getActor(stack).createNodeData(level, player, hand, hit);
         if (data == null) {
             return false;
         }
 
         // Additional checks
-        checks: {
-            String translationKey = "";
-            
-            if (!points.isEmpty()) {
-                NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
-                if (previousNode.toWorldPos(graph).distance(data.toWorldPos(graph)) > getWireType(stack).getMaxLength()) {
-                    translationKey = "item." + WiresApi.MOD_ID + ".wire.to_far_away";
-                } else if (previousNode.equals(data)) {
-                    translationKey = "item." + WiresApi.MOD_ID + ".wire.same_connector";
-                }
-            }
-            if (!data.validate(graph, itemData, points.size())) {
-                translationKey = "item." + WiresApi.MOD_ID + ".wire.connector_invalid";
-            } else {
-                break checks;
-            } 
-            player.displayClientMessage(TextUtils.translate(translationKey, getWireType(stack).getMaxLength()).withStyle(ChatFormatting.RED), true);
+        StatusResult testResult = testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, data);
+        if (!testResult.result()) {
+            player.displayClientMessage(TextUtils.translate(testResult.message(), getWireType(stack).getMaxLength()).withStyle(ChatFormatting.RED), true);
             clear(stack);
             return false;
         }
@@ -124,6 +110,23 @@ public interface IWireItemBase extends IWireInteractableItem {
         nodeData.put(NBT_CUSTOM_DATA, nodeMeta);
         points.add(nodeData);
         return true;
+    }
+
+    default StatusResult testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points, NodeData nodeData) {
+        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
+        
+        if (!points.isEmpty()) {
+            NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
+            if (previousNode.toWorldPos(graph).distance(nodeData.toWorldPos(graph)) > getWireType(stack).getMaxLength()) {
+                return new StatusResult(false, 0, "item." + WiresApi.MOD_ID + ".wire.to_far_away");
+            } else if (previousNode.equals(nodeData)) {
+                return new StatusResult(false, 0, "item." + WiresApi.MOD_ID + ".wire.same_connector");
+            }
+        }
+        if (!nodeData.validate(graph, itemData, points.size())) {
+            return new StatusResult(false, 0, "item." + WiresApi.MOD_ID + ".wire.connector_invalid");
+        }
+        return new StatusResult(true, 0, "");
     }
 
     default boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
@@ -148,7 +151,9 @@ public interface IWireItemBase extends IWireInteractableItem {
         metaCollection.putInt(NBT_TOTAL_POINTS_COUNT, points.size());
 
         MutableInt idx = new MutableInt();
-        graph.createEdge(getWireType(stack), new CustomData(metaCollection), deserializedData.get(0), deserializedData.get(1), idx);
+        if (graph.createEdge(getWireType(stack), new CustomData(metaCollection), deserializedData.get(0), deserializedData.get(1), idx).isEmpty()) {
+            
+        }
         clear(stack);
         return true;
     }

@@ -5,6 +5,7 @@ import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverIns
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverRegistrationArmType;
 import de.mrjulsen.paw.item.CantileverBlockItem;
 import de.mrjulsen.wires.item.IPawWireItemBase;
+import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.item.MultiWireItem;
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessorType;
 import net.minecraft.nbt.CompoundTag;
@@ -73,6 +74,16 @@ public final class ModNetworkAccessor {
                 if (!MultiWireItem.setNbt(player.getOffhandItem(), in)) {
                     PantographsAndWires.LOGGER.warn("Could not set NBT for 'mainhand=" + player.getMainHandItem() + ",offhand=" + player.getOffhandItem() + "'' because this item is not a MultiWireItem.");
                 }
+            }
+            return false;
+        }
+    ));
+    public static final DataAccessorType<Void, Void, Void> CLEAR_WIRE_CONNECTION_DATA = DataAccessorType.register(new ResourceLocation(PantographsAndWires.MOD_ID, "clear_wire_connection_data"), DataAccessorType.Builder.createNoIO(
+        (player, in, temp, nbt, iteration) -> {
+            if (player.getMainHandItem().getItem() instanceof MultiWireItem) {
+                IWireItemBase.clear(player.getMainHandItem());
+            } else if (player.getOffhandItem().getItem() instanceof MultiWireItem) {
+                IWireItemBase.clear(player.getOffhandItem());
             }
             return false;
         }

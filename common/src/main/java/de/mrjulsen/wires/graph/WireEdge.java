@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.joml.Vector3f;
 
@@ -16,6 +18,7 @@ import de.mrjulsen.wires.WireTypeRegistry;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.decoration.WireDecorationData;
 import de.mrjulsen.wires.decoration.IWireDecoration;
+import de.mrjulsen.wires.graph.data.WireEdgeHash;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
 import de.mrjulsen.wires.graph.data.accessor.GenericWireNodeAccessor;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
@@ -42,21 +45,32 @@ public class WireEdge {
     private WireConnectionData customData;
     
     private final IWireType wireType;
-    UUID nodeA;
-    UUID nodeB;
+    private UUID nodeA;
+    private UUID nodeB;
+    private final WireEdgeHash hash;
     private final Map<String, TreeMap<Float, WireDecorationData>> decorations = new HashMap<>();
 
-    public WireEdge(WireGraph graph, IWireType type, WireConnectionData customData, UUID nodeA, UUID nodeB) {
-        this(graph, graph.createNewEdgeId(), type, customData, nodeA, nodeB);
+    public WireEdge(WireGraph graph, IWireType type, WireConnectionData customData, UUID nodeA, UUID nodeB, WireEdgeHash hash) {
+        this(graph, graph.createNewEdgeId(), type, customData, nodeA, nodeB, hash);
     }
     
-    private WireEdge(IWireGraph graph, UUID id, IWireType type, WireConnectionData customData, UUID nodeA, UUID nodeB) {
+    private WireEdge(IWireGraph graph, UUID id, IWireType type, WireConnectionData customData, UUID nodeA, UUID nodeB, WireEdgeHash hash) {
         this.graph = graph;
         this.id = id;
         this.wireType = type;
         this.nodeA = nodeA;
         this.nodeB = nodeB;
         this.customData = customData;
+        this.hash = hash;
+    }
+
+    void swapNodes(UUID nodeA, UUID nodeB) {
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
+    }
+
+    public WireEdgeHash getHash() {
+        return hash;
     }
 
     public CompoundTag toNbt() {
@@ -75,26 +89,35 @@ public class WireEdge {
     }
 
     public static Optional<WireEdge> fromNbt(IWireGraph graph, CompoundTag nbt) {
+        boolean isClient = graph instanceof WireGraphClient;
         try {
+            UUID nodeAId = nbt.getUUID(NBT_NODE_A);
+            UUID nodeBId = nbt.getUUID(NBT_NODE_B);
+            if (!graph.hasNode(nodeAId) || !graph.hasNode(nodeBId)) {
+                throw new IllegalStateException("One of the wire connection nodes no longer exists.");
+            }
+            
+            WireConnectionData customData = WireConnectionData.fromNbt(nbt.getCompound(NBT_CUSTOM_DATA));
+            WireEdgeHash hash = new WireEdgeHash(customData.customData(), graph.getNode(nodeAId), graph.getNode(nodeBId));
+            if (!isClient && ((WireGraph)graph).hasEdge(hash)) {
+                throw new IllegalStateException("An equivalent edge with the same data already exists. This edge is skipped.");
+            }
             WireEdge edge = new WireEdge(
                 graph,
                 nbt.getUUID(NBT_ID),
                 WireTypeRegistry.get(new ResourceLocation(nbt.getString(NBT_WIRE_TYPE))),
-                WireConnectionData.fromNbt(nbt.getCompound(NBT_CUSTOM_DATA)),
-                nbt.getUUID(NBT_NODE_A),
-                nbt.getUUID(NBT_NODE_B)
+                customData,
+                nodeAId,
+                nodeBId,
+                hash
             );
             
             nbt.getList(NBT_DECORATIONS, Tag.TAG_COMPOUND).forEach(x -> {
                 edge.addDecoration(WireDecorationData.fromNbt((CompoundTag)x));
             });
-
-            //if (!graph.hasNode(edge.getNodeAId()) || !graph.hasNode(edge.getNodeBId())) {
-            //    //throw new IllegalStateException("One of the wire connection nodes no longer exists.");
-            //}
             return Optional.of(edge);
         } catch (Exception e) {
-            WiresApi.LOGGER.error("Could not load wire connection, because the nbt data is invalid: " + nbt, e);
+            WiresApi.LOGGER.error("Could not load wire connection, because the nbt data is invalid: " + e.getMessage());
         }
         return Optional.empty();
     }
@@ -187,13 +210,29 @@ public class WireEdge {
     }    
 
     public Collection<WireDecorationData> getDecorations() {
+        return getDecorations((d) -> true);
+    }
+
+    public Collection<WireDecorationData> getDecorations(Predicate<WireDecorationData> condition) {
         Collection<WireDecorationData> decorations = new ArrayList<>();
         for (TreeMap<Float, WireDecorationData> decor : this.decorations.values()) {
             for (WireDecorationData d : decor.values()) {
-                decorations.add(d);
+                if (condition.test(d)) {
+                    decorations.add(d);
+                }
             }
         }
         return decorations;
+    }
+
+    public void queryDecorations(Predicate<WireDecorationData> condition, Consumer<WireDecorationData> callback) {
+        for (TreeMap<Float, WireDecorationData> decor : this.decorations.values()) {
+            for (WireDecorationData d : decor.values()) {
+                if (condition.test(d)) {
+                    callback.accept(d);
+                }
+            }
+        }
     }
 
     

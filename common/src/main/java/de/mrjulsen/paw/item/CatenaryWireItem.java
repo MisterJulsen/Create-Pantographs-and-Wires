@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.CantileverBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
@@ -18,12 +19,15 @@ import de.mrjulsen.paw.util.collision.RaycastHitResult;
 import de.mrjulsen.paw.util.collision.RaycastUtils;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
+import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.registry.DLStaticRegistryObject;
 import de.mrjulsen.wires.graph.data.node.CatenaryHeadspanConnectionNodeData;
 import de.mrjulsen.wires.item.IPawWireItemBase;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -38,6 +42,8 @@ import net.minecraft.world.phys.Vec3;
 public class CatenaryWireItem implements IPawWireItemBase {
 
     public static final String NBT_CANTILEVER_INDEX = "CantileverIndex";
+
+    private final Component txtNoRegistrationArm = TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".catenary_headspan.dropper_missing_registration_arm").withStyle(ChatFormatting.RED);
 
     @Override
     public IWireType getWireType(ItemStack stack) {
@@ -124,8 +130,13 @@ public class CatenaryWireItem implements IPawWireItemBase {
 
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
-        if (hit instanceof WireHitResult h && CatenaryHeadspanWireType.canConnectCatenary(h.getWireId())) {
-            return new CatenaryHeadspanConnectionNodeData(h.getWireId());
+        if (hit instanceof WireHitResult h) {
+            if (CatenaryHeadspanWireType.canConnectCatenary(WireGraphManager.get(level, h.getGraphId()).getEdge(h.getWireId().id()), h.getWireId())) {
+                return new CatenaryHeadspanConnectionNodeData(h.getWireId());
+            } else {
+                player.displayClientMessage(txtNoRegistrationArm, true);
+                return null;
+            }
         }
 
         BlockPos pos = null;

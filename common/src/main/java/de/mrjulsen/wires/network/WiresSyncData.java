@@ -1,10 +1,12 @@
 package de.mrjulsen.wires.network;
 
 import java.util.Collection;
+import java.util.function.Supplier;
+
 import javax.annotation.Nullable;
 
 import de.mrjulsen.wires.graph.WireEdge;
-import de.mrjulsen.wires.graph.WireGraph;
+import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.util.GraphId;
@@ -18,8 +20,8 @@ import net.minecraft.world.level.Level;
 public record WiresSyncData(
     GraphId id,
     @Nullable ChunkPos pos,
-    Collection<WireEdge> edges,
-    Collection<WireNode> nodes,
+    Supplier<Collection<WireEdge>> edges,
+    Supplier<Collection<WireNode>> nodes,
     boolean forceUpdate
 ) {
 
@@ -33,11 +35,11 @@ public record WiresSyncData(
         CompoundTag nbt = new CompoundTag();
         if (pos != null) Utils.putNbtChunkPos(nbt, NBT_CHUNK, pos);
         ListTag edgesList = new ListTag();
-        for (WireEdge edge : edges) {
+        for (WireEdge edge : edges.get()) {
             edgesList.add(edge.toNbt());
         }
         ListTag nodesList = new ListTag();
-        for (WireNode node : nodes) {
+        for (WireNode node : nodes.get()) {
             nodesList.add(node.toNbt());
         }
         nbt.putString(NBT_GRAPH_ID, id.id());
@@ -49,12 +51,12 @@ public record WiresSyncData(
 
     public static WiresSyncData fromNbt(Level level, CompoundTag nbt) {
         GraphId id = new GraphId(nbt.getString(NBT_GRAPH_ID));
-        WireGraph graph = WireGraphManager.get(level, id);
+        WireGraphClient graph = WireGraphManager.getClient(level, id);
         return new WiresSyncData(
             id,
             nbt.contains(NBT_CHUNK) ? Utils.getNbtChunkPos(nbt, NBT_CHUNK) : null,
-            nbt.getList(NBT_EDGES, Tag.TAG_COMPOUND).stream().map(x -> WireEdge.fromNbt(graph, (CompoundTag)x).orElse(null)).toList(),
-            nbt.getList(NBT_NODES, Tag.TAG_COMPOUND).stream().map(x -> WireNode.fromNbt(graph, (CompoundTag)x)).toList(),
+            () -> nbt.getList(NBT_EDGES, Tag.TAG_COMPOUND).stream().map(x -> WireEdge.fromNbt(graph, (CompoundTag)x).orElse(null)).toList(),
+            () -> nbt.getList(NBT_NODES, Tag.TAG_COMPOUND).stream().map(x -> WireNode.fromNbt(graph, (CompoundTag)x).orElse(null)).toList(),
             nbt.getBoolean(NBT_FORCE_UPDATE)   
         );
     }

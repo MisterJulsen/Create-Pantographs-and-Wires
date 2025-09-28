@@ -4,11 +4,13 @@ import de.mrjulsen.paw.event.ClientWrapper;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.paw.registry.ModNetworkAccessor.WireSettingsData;
 import de.mrjulsen.wires.IWireType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 
 public class MultiWireItem extends AbstractWireItemBase {
 
@@ -46,4 +48,10 @@ public class MultiWireItem extends AbstractWireItemBase {
         IPawWireItemBase item = (IPawWireItemBase)getActor(player.getItemInHand(usedHand));
         return item.useWire(level, player, usedHand);
     }
+
+    @Override
+    public Component createHudInfoText(ItemStack stack, Player player, HitResult hit) {
+        return getActor(stack).createHudInfoText(stack, player, hit);
+    }
+    
 }

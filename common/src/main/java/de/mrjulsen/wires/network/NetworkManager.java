@@ -26,10 +26,12 @@ public final class NetworkManager {
         }, (player, in, temp, nbt, iteration) -> {
             WiresSyncData data = in.unwrap(player.level());
             WireGraphClient graph = WireGraphManager.getClient(player.level(), data.id());
-            for (WireNode node : data.nodes()) {
+            for (WireNode node : data.nodes().get()) {
+                if (node == null) continue;
                 graph.addNode(node);
             }
-            for (WireEdge edge : data.edges()) {
+            for (WireEdge edge : data.edges().get()) {
+                if (edge == null) continue;
                 graph.addEdge(edge);
             }
             return false;

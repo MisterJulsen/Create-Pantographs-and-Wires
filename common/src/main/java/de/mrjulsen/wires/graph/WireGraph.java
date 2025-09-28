@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -32,6 +31,7 @@ import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireCreationContext;
 import de.mrjulsen.wires.graph.NewWireCollision.WireBlockCollision;
+import de.mrjulsen.wires.graph.data.WireEdgeHash;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
@@ -79,6 +79,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     final Map<ResourceLocation, NodeAccessor<?>> nodesByType = new ConcurrentHashMap<>();
 
     final Multimap<WireNode, WireEdge> edgesByNode = MultimapBuilder.hashKeys().hashSetValues().build();
+    final Map<WireEdgeHash, WireEdge> edgesByHash = new ConcurrentHashMap<>();
     
     // Collision
     final Map<UUID, NewWireCollision> collisionById = new HashMap<>();
@@ -109,6 +110,7 @@ public class WireGraph extends SavedData implements IWireGraph {
 
             new DLStatistics.Stat(edgesGroup, "Edges", edges.size()),
             new DLStatistics.Stat(edgesGroup, "Edges (by node)", edgesByNode.size()),
+            new DLStatistics.Stat(edgesGroup, "Edges (by hash)", edgesByHash.size()),
 
             new DLStatistics.Stat(collisionsGroup, "Collision", collisionById.size()),
             new DLStatistics.Stat(collisionsGroup, "Collision (by block)", collisionByBlock.size()),
@@ -142,13 +144,11 @@ public class WireGraph extends SavedData implements IWireGraph {
     }
 
     private void applyData(CompoundTag nbt) {
-        Collection<WireNode> nodes = nbt.getList(NBT_NODES, Tag.TAG_COMPOUND).stream().map(x -> WireNode.fromNbt(this, (CompoundTag)x)).toList();
-        Collection<WireEdge> edges = nbt.getList(NBT_EDGES, Tag.TAG_COMPOUND).stream().map(x -> WireEdge.fromNbt(this, (CompoundTag)x).get()).toList();
-        for (WireNode node : nodes) {
-            setNode(node);
+        for (Tag tag : nbt.getList(NBT_NODES, Tag.TAG_COMPOUND)) {
+            WireNode.fromNbt(this, (CompoundTag)tag).ifPresent(this::setNode);
         }
-        for (WireEdge edge : edges) {
-            setEdge(edge, true);
+        for (Tag tag : nbt.getList(NBT_EDGES, Tag.TAG_COMPOUND)) {
+            WireEdge.fromNbt(this, (CompoundTag)tag).ifPresent(e -> setEdge(e, true));
         }
         setDirty();
     }
@@ -198,6 +198,10 @@ public class WireGraph extends SavedData implements IWireGraph {
         return edges.get(id);
     }
 
+    public WireEdge getEdge(WireEdgeHash hash) {
+        return edgesByHash.get(hash);
+    }
+
     @Override
     public Collection<WireNode> getNodes() {
         return Collections.synchronizedCollection(Collections.unmodifiableCollection(nodes.values()));
@@ -218,6 +222,9 @@ public class WireGraph extends SavedData implements IWireGraph {
         return nodes.containsKey(id);
     }
 
+    public boolean hasEdge(WireEdgeHash hash) {
+        return edgesByHash.containsKey(hash);
+    }
 
     
 
@@ -276,16 +283,21 @@ public class WireGraph extends SavedData implements IWireGraph {
     }
 
 
+    //private record EdgeKey(IWireType type, CustomData data, NodeData nodeDataA, nodeDataB) {}
 
     /**
      * Creates a new edge but doesn't add it to the graph. For this, use {@link WireGraph#setEdge}.
      */
-    public synchronized WireEdge createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex) {
+    public synchronized Optional<WireEdge> createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex) {
+        WireEdgeHash hash = new WireEdgeHash(customData, nodeDataA, nodeDataB);
+        if (edgesByHash.containsKey(hash)) {
+            return Optional.empty();
+        }
+
         WireNode nodeA = nodeDataA.getOrCreateNodeInternal(this, type, customData);
         WireNode nodeB = nodeDataB.getOrCreateNodeInternal(this, type, customData);
-
         if (nodeA == null || nodeB == null) {
-            return null;
+            return Optional.empty();
         }
 
         WireConnectionData custom = new WireConnectionData(
@@ -294,9 +306,9 @@ public class WireGraph extends SavedData implements IWireGraph {
             nodeDataB.getConnectorCustomData(this, customData, nodeB, pointStartIndex.getAndIncrement()).orElse(new ConnectorDataProvider.Empty())
         );
 
-        WireEdge edge = new WireEdge(this, type, custom, nodeA.getId(), nodeB.getId());
+        WireEdge edge = new WireEdge(this, type, custom, nodeA.getId(), nodeB.getId(), hash);
         setEdge(edge, true);
-        return edge;
+        return Optional.of(edge);
     }
 
     public synchronized void setEdge(WireEdge edge, boolean updateClients) {
@@ -309,6 +321,7 @@ public class WireGraph extends SavedData implements IWireGraph {
         WireNode nodeA = getNode(edge.getNodeAId());
         WireNode nodeB = getNode(edge.getNodeBId());
         this.edges.put(edge.getId(), edge);
+        this.edgesByHash.put(edge.getHash(), edge);
         this.edgesByNode.put(nodeA, edge);
         this.edgesByNode.put(nodeB, edge);
         nodeA.addConnection(edge.getId());
@@ -328,7 +341,7 @@ public class WireGraph extends SavedData implements IWireGraph {
         
         // Sync to clients
         if (updateClients) {            
-            WiresSyncData netData = new WiresSyncData(getId(), null, List.of(edge), List.of(nodeA, nodeB), true);
+            WiresSyncData netData = new WiresSyncData(getId(), null, () -> List.of(edge), () -> List.of(nodeA, nodeB), true);
             for (ServerPlayer player : getPlayersForEdge(edge.getId())) {
                 DataAccessor.getFromClient(player, new WiresSyncData.Wrapper(netData), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
             }
@@ -340,7 +353,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     public void sendEdgeToClient(WireEdge edge) {        
         WireNode nodeA = getNode(edge.getNodeAId());
         WireNode nodeB = getNode(edge.getNodeBId());
-        WiresSyncData netData = new WiresSyncData(getId(), null, List.of(edge), List.of(nodeA, nodeB), true);
+        WiresSyncData netData = new WiresSyncData(getId(), null, () -> List.of(edge), () -> List.of(nodeA, nodeB), true);
         for (ServerPlayer player : getPlayersForEdge(edge.getId())) {
             DataAccessor.getFromClient(player, new WiresSyncData.Wrapper(netData), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
         }
@@ -378,6 +391,7 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
 
         edgesByNode.values().removeIf(x -> x.equals(edge));
+        edgesByHash.values().removeIf(x -> x.equals(edge));
         NewWireCollision collision = collisionById.remove(id);
         collisionByChunk.values().removeIf(x -> x == collision);
         collisionBySection.values().removeIf(x -> x == collision);
@@ -403,9 +417,9 @@ public class WireGraph extends SavedData implements IWireGraph {
         boolean isA = edge.getNodeAId().equals(oldNodeId);
         removeEdgeFromNode(edge, oldNodeId, deleteEmptyNode);
         if (isA) {
-            edge.nodeA = newNodeId;
+            edge.swapNodes(newNodeId, edge.getNodeBId());
         } else {
-            edge.nodeB = newNodeId;
+            edge.swapNodes(edge.getNodeAId(), newNodeId);
         }
         if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]            - EDGE NODES MODIFIED: " + oldNodeId + " -> " + newNodeId + ", is point A? " + isA + ", Edge Id: " + edge.getId());
     }
@@ -610,7 +624,7 @@ public class WireGraph extends SavedData implements IWireGraph {
                     nodes.add(getNode(edge.getNodeAId()));
                     nodes.add(getNode(edge.getNodeBId()));
                 }
-                DataAccessor.getFromClient(serverPlayer, new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, edges, nodes, true)), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
+                DataAccessor.getFromClient(serverPlayer, new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true)), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
             }
         }
     }

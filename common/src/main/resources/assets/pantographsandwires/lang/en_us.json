@@ -124,6 +124,7 @@
     "item.pantographsandwires.wire.invalid_decoration_position": "No components can be attached to this position.",
     "item.pantographsandwires.wire.one_invalid_decoration_position": "One of the %s positions is not suitable for attaching components.",
     
+    "item.pantographsandwires.catenary_headspan.dropper_missing_registration_arm": "Add a registration arm to a dropper to connect catenary wires to it.",
     "item.pantographsandwires.catenary_headspan.dropper_has_registration_arm": "This dropper already has a registration arm attached to it.",
     "item.pantographsandwires.catenary_headspan.dropper_exists": "A dropper already exists at this position.",
     "item.pantographsandwires.catenary_headspan.invalid_dropper_position": "No dropper wire can be created at this location.",

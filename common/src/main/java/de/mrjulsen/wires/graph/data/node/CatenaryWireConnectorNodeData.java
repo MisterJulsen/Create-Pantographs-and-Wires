@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.graph.data.node;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.joml.Vector3f;
@@ -113,5 +114,10 @@ public class CatenaryWireConnectorNodeData extends NodeData {
             return wireId.equals(o.wireId) && posPercentage == o.posPercentage;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(wireId, posPercentage);
     }
 }

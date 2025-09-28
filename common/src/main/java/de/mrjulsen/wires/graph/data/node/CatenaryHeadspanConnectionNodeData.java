@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.graph.data.node;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -154,5 +155,10 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
             return wireId.equals(o.wireId);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(wireId);
     }
 }
