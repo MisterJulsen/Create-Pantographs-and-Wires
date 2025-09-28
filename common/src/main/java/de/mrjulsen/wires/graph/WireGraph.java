@@ -645,8 +645,8 @@ public class WireGraph extends SavedData implements IWireGraph {
         startTime = System.currentTimeMillis();
 
         List<CompoundTag> connectionsList = nbt.getList("Connections", Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList();
-        Map<BlockPos, PrimitiveNode> nodeData = new HashMap<>();
         List<PrimitiveEdge> edges = new ArrayList<>();
+        int nodesCount = 0;
 
         for (CompoundTag connection : connectionsList) {
             String wireId = connection.getString("WireType");
@@ -683,12 +683,13 @@ public class WireGraph extends SavedData implements IWireGraph {
             }
             BlockPos nodeAPos = Utils.getNbtBlockPos(connection, "PosA");
             BlockPos nodeBPos = Utils.getNbtBlockPos(connection, "PosB");
-            PrimitiveNode nodeA = nodeData.computeIfAbsent(nodeAPos, (x) -> new PrimitiveNode(UUID.randomUUID(), new BlockConnectorNodeData(x), new Vector3f(x.getX(), x.getY(), x.getZ())));
-            PrimitiveNode nodeB = nodeData.computeIfAbsent(nodeBPos, (x) -> new PrimitiveNode(UUID.randomUUID(), new BlockConnectorNodeData(x), new Vector3f(x.getX(), x.getY(), x.getZ())));            
+            PrimitiveNode nodeA = new PrimitiveNode(UUID.randomUUID(), new BlockConnectorNodeData(nodeAPos), new Vector3f(nodeAPos.getX(), nodeAPos.getY(), nodeAPos.getZ()));
+            PrimitiveNode nodeB = new PrimitiveNode(UUID.randomUUID(), new BlockConnectorNodeData(nodeBPos), new Vector3f(nodeBPos.getX(), nodeBPos.getY(), nodeBPos.getZ()));
+            nodesCount++;
             edges.add(new PrimitiveEdge(nodeA, nodeB, type, customData));
         }
 
-        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 1 SUCCESS]: Found " + nodeData.size() + " nodes and " + edges.size() + " edges. Took " + (System.currentTimeMillis() - startTime) + "ms");        
+        PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 1 SUCCESS]: Found " + nodesCount + " nodes and " + edges.size() + " edges. Took " + (System.currentTimeMillis() - startTime) + "ms");        
         // STEP 2
         PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 2/" + steps + "]: Converting data..");
         startTime = System.currentTimeMillis();
