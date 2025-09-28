@@ -133,10 +133,10 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
         Vector3f offset = new Vector3f(0, 0, DragonLib.PIXEL * 2);
         Vector3f offsetVec = ModMath.rotateToDirection(offset, headspanDirection);
 
-		Wire topWire1 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 1, context, new Vector3f(start).add(-offsetVec.x(), topWireHeight, -offsetVec.z()), new Vector3f(end).add(-offsetVec.x(), topWireHeight, -offsetVec.z()), CableType.HANGING, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.fixed(subSegments)));
-		Wire topWire2 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 2, context, new Vector3f(start).add(offsetVec.x(), topWireHeight, offsetVec.z()), new Vector3f(end).add(offsetVec.x(), topWireHeight, offsetVec.z()), CableType.TENSION, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.fixed(subSegments)));
-		Wire upperWire = WireBuilder.createWire(WIRE_UPPER_TENSION, context, new Vector3f(start).add(0, upperWireHeight, 0), new Vector3f(end).add(0, upperWireHeight, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.fixed(subSegments)));
-		Wire lowerWire = WireBuilder.createWire(WIRE_LOWER_TENSION, context, new Vector3f(start).add(0, DragonLib.PIXEL * -2, 0), new Vector3f(end).add(0, DragonLib.PIXEL * -2, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.fixed(subSegments)));
+		Wire topWire1 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 1, context, new Vector3f(start).add(-offsetVec.x(), topWireHeight, -offsetVec.z()), new Vector3f(end).add(-offsetVec.x(), topWireHeight, -offsetVec.z()), CableType.HANGING, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire topWire2 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 2, context, new Vector3f(start).add(offsetVec.x(), topWireHeight, offsetVec.z()), new Vector3f(end).add(offsetVec.x(), topWireHeight, offsetVec.z()), CableType.TENSION, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire upperWire = WireBuilder.createWire(WIRE_UPPER_TENSION, context, new Vector3f(start).add(0, upperWireHeight, 0), new Vector3f(end).add(0, upperWireHeight, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire lowerWire = WireBuilder.createWire(WIRE_LOWER_TENSION, context, new Vector3f(start).add(0, DragonLib.PIXEL * -2, 0), new Vector3f(end).add(0, DragonLib.PIXEL * -2, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
 		WireBatch batch = WireBatch.of(lowerWire, upperWire, topWire1, topWire2);
 
 		if (dropperDistances.length > 0 && upperWire.getCollisionData().isPresent() && lowerWire.getCollisionData().isPresent() && topWire1.getCollisionData().isPresent() && topWire2.getCollisionData().isPresent()) {			
@@ -226,12 +226,11 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 				}
 				nbt.put(NBT_DROPPERS, li);
 
-				for (WireDecorationData decoration : edge.getDecorations()) {
-					if (decoration.getDecoration() instanceof RegistrationArmWireDecoration deco) {
-						if (deco.getDropperId().equals(dropperId)) {
-							edge.removeDecorations(level, Optional.of(player), WIRE_LOWER_TENSION, List.of(decoration));
-						}
-					}
+				Collection<WireDecorationData> decorations = edge.getDecorations((deco) -> {
+					return deco.getDecoration() instanceof RegistrationArmWireDecoration d && d.getDropperId().equals(dropperId);
+				});
+				for (WireDecorationData decoration : decorations) {
+					edge.removeDecorations(level, Optional.of(player), WIRE_LOWER_TENSION, List.of(decoration));
 				}
 
 				network.setEdge(edge, true);
@@ -403,8 +402,21 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
         return cross > 0;
     }
 
-	public static boolean canConnectCatenary(WireId id) {
-		return id.type() == ModWireRegistry.CATENARY_HEADSPAN && id.name().startsWith(WIRE_DROPPER_L);
+	public static boolean canConnectCatenary(WireEdge edge, WireId id) {
+		if (id.type() != ModWireRegistry.CATENARY_HEADSPAN || !id.name().startsWith(WIRE_DROPPER_L)) {
+			return false;
+		}
+
+		return toDropperId(id.name()).map(dropperId -> {
+			for (WireDecorationData decoration : edge.getDecorations()) {
+				if (decoration.getDecoration() instanceof RegistrationArmWireDecoration deco) {
+					if (deco.getDropperId().equals(dropperId)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}).orElse(false);
 	}
 
 	public static Optional<UUID> toDropperId(String wireName) {
