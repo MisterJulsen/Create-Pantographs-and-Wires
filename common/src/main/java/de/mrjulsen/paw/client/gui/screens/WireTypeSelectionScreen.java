@@ -22,6 +22,7 @@ import de.mrjulsen.paw.registry.ModNetworkAccessor;
 import de.mrjulsen.paw.registry.ModNetworkAccessor.WireSettingsData;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.item.IPawWireItemBase;
+import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.item.MultiWireItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -77,6 +78,16 @@ public class WireTypeSelectionScreen extends DLWindow {
             return false;
         });
         addComponent(doneBtn);
+        
+        CreateButton resetBtn = new CreateButton(7, height() - 6 - CreateButton.HEIGHT, AllIcons.I_TRASH);
+        resetBtn.cursor.set(CursorType.HAND);
+        resetBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {            
+            IWireItemBase.clear(stack);
+            DataAccessor.getFromServer(null, ModNetworkAccessor.CLEAR_WIRE_CONNECTION_DATA, $ -> {});
+            getWindowManager().closeWindow(this);
+            return false;
+        });
+        addComponent(resetBtn);
     }
             
     @Override
