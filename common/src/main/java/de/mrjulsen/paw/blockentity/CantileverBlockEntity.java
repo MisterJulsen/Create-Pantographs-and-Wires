@@ -247,7 +247,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         float z = -cantilever.x();
         float y = cantilever.y();
         float yFront = y + cantilever.frontYOffset();
-        float height = cantilever.catenaryHeight();
+        float height = cantilever.height() - 0.5f;
         float xOffset = cantilever.z();
         Vector3f a = new Vector3f(xOffset - 0.5f, y, 0.5f - z);
         Vector3f b = new Vector3f(xOffset - 0.5f, yFront, 0.5f - size);
