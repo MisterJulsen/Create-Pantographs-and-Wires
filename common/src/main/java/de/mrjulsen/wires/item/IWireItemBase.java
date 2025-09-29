@@ -151,8 +151,16 @@ public interface IWireItemBase extends IWireInteractableItem {
         metaCollection.putInt(NBT_TOTAL_POINTS_COUNT, points.size());
 
         MutableInt idx = new MutableInt();
-        if (graph.createEdge(getWireType(stack), new CustomData(metaCollection), deserializedData.get(0), deserializedData.get(1), idx).isEmpty()) {
-            
+        CreateEdgeResult result = graph.createEdge(getWireType(stack), new CustomData(metaCollection), deserializedData.get(0), deserializedData.get(1), idx, true);
+        if (!result.success()) {
+            String key = switch (result.code()) {
+                case CreateEdgeResult.CONNECTION_EXISTS -> "item." + WiresApi.MOD_ID + ".wire.connection_already_exists";
+                case CreateEdgeResult.INVALID_CONNECTOR -> "item." + WiresApi.MOD_ID + ".wire.connector_invalid";
+                default -> "";
+            };
+            player.displayClientMessage(TextUtils.translate(key).withStyle(ChatFormatting.RED), true);
+            clear(stack);
+            return false;
         }
         clear(stack);
         return true;

@@ -285,30 +285,37 @@ public class WireGraph extends SavedData implements IWireGraph {
 
     //private record EdgeKey(IWireType type, CustomData data, NodeData nodeDataA, nodeDataB) {}
 
+    public record CreateEdgeResult(boolean success, int code, Optional<WireEdge> edge) {
+        public static final int CONNECTION_EXISTS = 0;
+        public static final int INVALID_CONNECTOR = 1;
+    }
+
     /**
      * Creates a new edge but doesn't add it to the graph. For this, use {@link WireGraph#setEdge}.
      */
-    public synchronized Optional<WireEdge> createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex) {
+    public synchronized CreateEdgeResult createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex, boolean sendToPlayers) {
         WireEdgeHash hash = new WireEdgeHash(customData, nodeDataA, nodeDataB);
         if (edgesByHash.containsKey(hash)) {
-            return Optional.empty();
+            return new CreateEdgeResult(false, CreateEdgeResult.CONNECTION_EXISTS, Optional.empty());
         }
 
         WireNode nodeA = nodeDataA.getOrCreateNodeInternal(this, type, customData);
         WireNode nodeB = nodeDataB.getOrCreateNodeInternal(this, type, customData);
         if (nodeA == null || nodeB == null) {
-            return Optional.empty();
+            return new CreateEdgeResult(false, CreateEdgeResult.INVALID_CONNECTOR, Optional.empty());
         }
 
-        WireConnectionData custom = new WireConnectionData(
-            customData,
-            nodeDataA.getConnectorCustomData(this, customData, nodeA, pointStartIndex.getAndIncrement()).orElse(new ConnectorDataProvider.Empty()),
-            nodeDataB.getConnectorCustomData(this, customData, nodeB, pointStartIndex.getAndIncrement()).orElse(new ConnectorDataProvider.Empty())
-        );
+        Optional<ConnectorDataProvider> connectorDataA = nodeDataA.getConnectorCustomData(this, customData, nodeA, pointStartIndex.getAndIncrement());
+        Optional<ConnectorDataProvider> connectorDataB = nodeDataB.getConnectorCustomData(this, customData, nodeB, pointStartIndex.getAndIncrement());
+        if (connectorDataA.isEmpty() || connectorDataB.isEmpty()) {
+            return new CreateEdgeResult(false, CreateEdgeResult.INVALID_CONNECTOR, Optional.empty());
+        } 
+
+        WireConnectionData custom = new WireConnectionData(customData, connectorDataA.get(), connectorDataB.get());
 
         WireEdge edge = new WireEdge(this, type, custom, nodeA.getId(), nodeB.getId(), hash);
-        setEdge(edge, true);
-        return Optional.of(edge);
+        setEdge(edge, sendToPlayers);
+            return new CreateEdgeResult(true, -1, Optional.of(edge));
     }
 
     public synchronized void setEdge(WireEdge edge, boolean updateClients) {
@@ -710,7 +717,7 @@ public class WireGraph extends SavedData implements IWireGraph {
 
         for (PrimitiveEdge edge : edges) {
             MutableInt i = new MutableInt();
-            createEdge(edge.type(), new CustomData(edge.customData()), edge.nodeA.nodeData(), edge.nodeB.nodeData(), i);
+            createEdge(edge.type(), new CustomData(edge.customData()), edge.nodeA.nodeData(), edge.nodeB.nodeData(), i, false);
         }
 
         PantographsAndWires.LOGGER.info("[WIRE CONVERSION] [STEP 2 SUCCESS]: Took " + (System.currentTimeMillis() - startTime) + "ms");
