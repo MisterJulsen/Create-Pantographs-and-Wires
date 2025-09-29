@@ -5,12 +5,15 @@ import java.util.Set;
 
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
+import de.mrjulsen.mcdragonlib.client.model.mesh.Face;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock.WeatherState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -26,7 +29,7 @@ public class OxidizedBlockModel extends AbstractRotatableBlockModel {
 
     @Override
     protected Mesh getBaseMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context) {
-        Mesh mesh = BasicMesh.fromBakedModel(state, originalModel, random);
+        Mesh mesh = fromBakedModel(state, originalModel, random);
         if (state.getBlock() instanceof IWeatheringBlock block) {
             WeatherState ws = (WeatherState)block.getAge();
             HashMap<ResourceLocation, TextureAtlasSprite> oxidizedTextures = new HashMap<>(oxidizingTextures.size());
@@ -45,5 +48,17 @@ public class OxidizedBlockModel extends AbstractRotatableBlockModel {
             });
         }
         return mesh;
-    }    
+    }
+    
+    public static BasicMesh fromBakedModel(BlockState state, BakedModel srcModel, RandomSource random) {
+        BasicMesh mesh = new BasicMesh();
+        Direction[] directions = new Direction[Direction.values().length + 1];
+        System.arraycopy(Direction.values(), 0, directions, 0, Direction.values().length);
+        for (Direction side : directions) {
+            for (BakedQuad quad : srcModel.getQuads(state, side, random)) {
+                mesh.addFace(new Face(quad, side));
+            }
+        }
+        return mesh;
+    }
 }
