@@ -11,6 +11,8 @@ public class ModServerConfig {
     
     public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_WIRE_MAX_LENGTH;
     public static final ForgeConfigSpec.ConfigValue<Integer> ENERGY_WIRE_MAX_LENGTH;
+    public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_LENGTH;
+    public static final ForgeConfigSpec.ConfigValue<Integer> DECORATION_WIRE_MAX_LENGTH;
     public static final ForgeConfigSpec.ConfigValue<Double> WIRE_COLLISION_TRACER_STEP_SIZE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> BLOCKS_BREAK_WIRES;
     public static final ForgeConfigSpec.ConfigValue<Boolean> WIRE_ENTITY_DAMAGE;
@@ -22,10 +24,14 @@ public class ModServerConfig {
     static {
         BUILDER.push(PantographsAndWires.MOD_ID + "_common_config");
 
-        CATENARY_WIRE_MAX_LENGTH = BUILDER.comment(new String[] {"[in Blocks]", "The maximum length of the catenary wire between two masts.", "Default: 48"})
-            .defineInRange("wires.catenary_max_length", 50, 16, 64);
-        ENERGY_WIRE_MAX_LENGTH = BUILDER.comment(new String[] {"[in Blocks]", "The maximum length of the energy wire between two masts.", "Default: 48"})
-            .defineInRange("wires.energy_max_length", 50, 16, 64);
+        CATENARY_WIRE_MAX_LENGTH = BUILDER.comment(new String[] {"[in Blocks]", "The maximum length of the catenary wire between two masts.", "Default: 50"})
+            .defineInRange("wires.catenary_max_length", 50, 16, 128);
+        ENERGY_WIRE_MAX_LENGTH = BUILDER.comment(new String[] {"[in Blocks]", "The maximum length of the energy wire between two masts.", "Default: 64"})
+            .defineInRange("wires.energy_max_length", 64, 16, 128);
+        CATENARY_HEADSPAN_MAX_LENGTH = BUILDER.comment(new String[] {"[in Blocks]", "The maximum length of the catenary headspan wire between two masts.", "Default: 50"})
+            .defineInRange("wires.catenary_headspan_length", 50, 16, 128);
+        DECORATION_WIRE_MAX_LENGTH = BUILDER.comment(new String[] {"[in Blocks]", "The maximum length of the decoration wire between two masts.", "Default: 64"})
+            .defineInRange("wires.decoration_length", 64, 16, 128);
 
         CATENARY_HEADSPAN_MIN_UPPER_TENSION_WIRE = BUILDER.comment(new String[] {"[in Blocks]", "The minimum distance between the two tension wires. The minimum distance cannot be larger than the maximum distance. If it is entered incorrectly, the minimum distance is 'max - 1'.", "Default: 1"})
             .defineInRange("wires.catenary_headspan.upper_tension_wire_min_height", 1, 1, 7);

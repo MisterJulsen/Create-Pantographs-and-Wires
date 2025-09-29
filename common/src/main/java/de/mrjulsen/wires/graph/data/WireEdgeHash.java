@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 import de.mrjulsen.paw.PantographsAndWires;
+import de.mrjulsen.paw.config.ModCommonConfig;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.item.CustomData;
@@ -51,6 +52,10 @@ public class WireEdgeHash {
 
     private static byte[] compressStringToGzipBytes(CompoundTag... objects) {
         byte[] encodedData = encode(objects);
+        if (!ModCommonConfig.COMPRESS_HASH_VALUES.get()) {
+            return encodedData;
+        }
+        
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try (GZIPOutputStream gzipOS = new GZIPOutputStream(bos)) {
             gzipOS.write(encodedData);

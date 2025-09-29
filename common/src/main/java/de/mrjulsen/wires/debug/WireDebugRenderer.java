@@ -18,9 +18,9 @@ import de.mrjulsen.wires.graph.NewWireCollision;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphClient;
+import de.mrjulsen.wires.graph.WireGraphClient.DebugWireData;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.WireNode;
-import de.mrjulsen.wires.graph.WireGraphClient.DebugWireData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -54,7 +54,7 @@ public class WireDebugRenderer {
         
         MultiBufferSource.BufferSource mbs = Minecraft.getInstance().renderBuffers().bufferSource();
 
-        for (WireGraph graph : WireGraphManager.getAll(Minecraft.getInstance().level)) {           
+        for (WireGraphClient graph : WireGraphManager.getAllClient(Minecraft.getInstance().level)) {           
             for (WireNode node : graph.getNodes()) {
                 if (node == null) continue;
                 if (node.getPos().distance(cameraPos) > 16) continue;
@@ -77,14 +77,12 @@ public class WireDebugRenderer {
                     TextUtils.text("Node Type[B]: " + edge.getWireConnectionData().connectorB().getRegistryType().id()).withStyle(ChatFormatting.AQUA),
                     TextUtils.text("Wire Type: " + edge.getType().getRegistryId())
                 ));
-
-                /*
+                
                 for (DebugWireData wireData : graph.debug_getWireDataForEdge(edge.getId())) {
                     renderNameTag(poseStack, mbs, LightTexture.FULL_BRIGHT, wireData.centerPos(), 0, List.of(
                         TextUtils.text(wireData.name()).withStyle(ChatFormatting.GOLD)
                     ));
                 }
-                    */
             }
 
             VertexConsumer buffer = mbs.getBuffer(RenderType.lines());            
