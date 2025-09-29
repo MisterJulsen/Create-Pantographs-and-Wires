@@ -1,17 +1,14 @@
 package de.mrjulsen.wires.item;
 
-import de.mrjulsen.wires.block.WireConnectorBlockEntity;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphManager;
-import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
+import de.mrjulsen.wires.graph.WireGraph.CreateEdgeResult;
 import de.mrjulsen.wires.graph.data.node.NodeData;
-import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WiresApi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3f;
@@ -21,8 +18,6 @@ import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.data.WireHitResult;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -34,13 +29,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Basic item class for a specific {@code IWireType} with basic functionality.
@@ -206,17 +196,6 @@ public interface IWireItemBase extends IWireInteractableItem {
     }
 
     default NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
-        if (hit instanceof BlockHitResult blockHit) {
-            if (level.getBlockEntity(blockHit.getBlockPos()) instanceof WireConnectorBlockEntity) {
-                return new BlockConnectorNodeData(blockHit.getBlockPos());
-            }
-            BlockPos pos = blockHit.getBlockPos();
-            BlockState state = level.getBlockState(blockHit.getBlockPos());
-            VoxelShape shape = state.getVisualShape(level, blockHit.getBlockPos(), CollisionContext.empty());
-            return clipFromSide(shape, pos, blockHit.getDirection()).map(x -> {
-                return new GenericBlockNodeData(blockHit.getBlockPos(), x.getLocation().toVector3f());
-            }).orElse(null);
-        }
         return null;
     }
 
@@ -256,64 +235,6 @@ public interface IWireItemBase extends IWireInteractableItem {
         ;
     }
 
-
-
-
-    
-
-    public static Optional<BlockHitResult> clipFromSide(VoxelShape shape, BlockPos pos, Direction dir) {
-        if (shape.isEmpty()) {
-            return Optional.empty();
-        }
-
-        AABB bounds = shape.bounds();
-        double minX = 0.5;
-        double minY = 0.5;
-        double minZ = 0.5;
-        double maxX = 0.5;
-        double maxY = 0.5;
-        double maxZ = 0.5;
-
-        switch (dir) {
-            case DOWN  -> {
-                minY = bounds.maxY;
-                maxY = bounds.minY;
-            }
-            case UP    -> {
-                minY = bounds.minY;
-                maxY = bounds.maxY;
-            }
-            case NORTH -> {
-                minZ = bounds.maxZ;
-                maxZ = bounds.minZ;
-            }
-            case SOUTH -> {
-                minZ = bounds.minZ;
-                maxZ = bounds.maxZ;
-            }
-            case WEST  -> {
-                minX = bounds.maxX;
-                maxX = bounds.minX;
-            }
-            case EAST  -> {
-                minX = bounds.minX;
-                maxX = bounds.maxX;
-            }
-        }
-
-        Vec3 block = new Vec3(pos.getX(), pos.getY(), pos.getZ());
-        Vec3 start = new Vec3(
-                maxX + dir.getStepX() * 0.001,
-                maxY + dir.getStepY() * 0.001,
-                maxZ + dir.getStepZ() * 0.001
-        ).add(block);
-        Vec3 end = new Vec3(
-                minX - dir.getStepX() * 0.001,
-                minY - dir.getStepY() * 0.001,
-                minZ - dir.getStepZ() * 0.001
-        ).add(block);
-        return Optional.ofNullable(shape.clip(start, end, pos));
-    }
 
     public static CompoundTag getNbt(ItemStack stack) {
         CompoundTag nbt = stack.getOrCreateTag();

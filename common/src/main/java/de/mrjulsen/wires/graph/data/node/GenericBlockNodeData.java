@@ -62,12 +62,12 @@ public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
     
     @Override
     public WireNode getOrCreateNode(WireGraph graph) {
-        return graph.createNode(this, new Vector3f(attachPoint.x(), attachPoint.y(), attachPoint.z()));
+        return graph.createNode(this, new Vector3f(pos.getX(), pos.getY(), pos.getZ()));
     }
     
     @Override
     public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
-        return Optional.of(new BasicConnectorDataProvider(new Vector3f()));
+        return Optional.of(new BasicConnectorDataProvider(new Vector3f(attachPoint)));
     }
 
     @Override

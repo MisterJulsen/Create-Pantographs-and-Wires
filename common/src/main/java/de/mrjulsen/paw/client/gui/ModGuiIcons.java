@@ -23,7 +23,7 @@ public enum ModGuiIcons {
     CATENARY_WIRE("catenary_wire", 8, 0),
     ENERGY_WIRE("energy_wire", 9, 0),
     CATENARY_HEADSPAN_WIRE("catenary_headspan_wire", 10, 0),
-    TENSION_WIRE("tension_wire", 11, 0);
+    DECORATION_WIRE("decoration_wire", 11, 0);
 
 
     private String id;
