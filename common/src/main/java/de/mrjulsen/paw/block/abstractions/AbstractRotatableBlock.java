@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.joml.Vector3f;
+
 import de.mrjulsen.paw.util.Const;
+import de.mrjulsen.paw.util.DLBoundingBox;
 import de.mrjulsen.paw.util.ModMath;
+import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.util.MathUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -207,7 +211,13 @@ public abstract class AbstractRotatableBlock extends Block implements IRotatable
                 shapes.add(Block.box(rect[0].x * 16f, aabb.minY * 16f, rect[0].y * 16f, (rect[1].x + Const.PIXEL) * 16f, aabb.maxY * 16f, rect[1].y * 16f));
             }
         }
-
+        
+        //if (angle != 0) {
+        //    DLBoundingBox box = DLBoundingBox.fromVoxelShape(base);
+        //    //box.translate(offset.x, 0, offset.y);
+        //    //box.rotate(com.mojang.math.Axis.YP.rotationDegrees(-angle), new Vector3f(pivot.x, 0, pivot.y));
+        //    base = box.toVoxelShape();
+        //}
         return new ShapeCacheEntry(Shapes.or(Shapes.empty(), shapes.toArray(VoxelShape[]::new)).optimize(), finalCorners);
     }
 

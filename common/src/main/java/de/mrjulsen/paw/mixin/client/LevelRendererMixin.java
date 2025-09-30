@@ -37,11 +37,11 @@ public class LevelRendererMixin {
             poseStack.pushPose();
             Vec2 offset = rot.getOffset(state);
             poseStack.translate((double)pos.getX() - camX, (double)pos.getY() - camY, (double)pos.getZ() - camZ);
-            poseStack.translate(pivot.x + offset.x, 0, pivot.y + offset.y);
             poseStack.pushPose();
             if (ModClientConfig.DEBUG_ORIGINAL_HITBOX.get()) {
-                renderShape(poseStack, consumer, state.getShape(this.level, pos, CollisionContext.of(entity)), -pivot.x, 0, -pivot.y, 0.0F, 0.0F, 0.0F, 0.4F);
+                renderShape(poseStack, consumer, state.getShape(this.level, pos, CollisionContext.of(entity)), 0, 0, 0, 0.0F, 0.0F, 0.0F, 0.4F);
             } else {
+                poseStack.translate(pivot.x + offset.x, 0, pivot.y + offset.y);
                 poseStack.mulPose(Axis.YP.rotationDegrees(rot.getRelativeYRotation(state)));
                 renderShape(poseStack, consumer, rot.getBaseShape(state, this.level, pos, CollisionContext.of(entity)), -pivot.x, 0, -pivot.y, 0.0F, 0.0F, 0.0F, 0.4F);
             }
