@@ -17,7 +17,6 @@ import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateListSlider;
-import de.mrjulsen.paw.data.WireTypes;
 import de.mrjulsen.paw.registry.ModNetworkAccessor;
 import de.mrjulsen.paw.registry.ModNetworkAccessor.WireSettingsData;
 import de.mrjulsen.paw.registry.ModWireRegistry;
@@ -48,7 +47,7 @@ public class WireTypeSelectionScreen extends DLWindow {
         if (!(stack.getItem() instanceof MultiWireItem item)) {
             throw new IllegalArgumentException("This item is no MultiWireItem.");
         }
-        this.selectedType = (IPawWireItemBase)item.getActor(stack);
+        this.selectedType = (IPawWireItemBase)item.getSubType(stack);
 
         setSize(GUI_WIDTH, GUI_HEIGHT);
         setPosition(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - width() / 2, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2 - height() / 2);
@@ -60,7 +59,7 @@ public class WireTypeSelectionScreen extends DLWindow {
             return false;
         });
         
-        int w = WireTypes.values().length * 12;
+        int w = ModWireRegistry.WIRE_SUBTYPES_REGISTRY.getAll().size() * 20;
         CreateListSlider<IPawWireItemBase> typeSelection = new CreateListSlider<>(width() / 2 - w / 2, 43, w, 20, ModWireRegistry.WIRE_SUBTYPES_REGISTRY.getAll());
         typeSelection.cursor.set(CursorType.HRESIZE);
         typeSelection.text.set(txtWireType);
