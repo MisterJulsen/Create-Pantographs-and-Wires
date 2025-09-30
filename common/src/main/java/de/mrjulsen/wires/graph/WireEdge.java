@@ -241,7 +241,7 @@ public class WireEdge {
         if (getGraph() instanceof WireGraph graph) {
             for (TreeMap<Float, WireDecorationData> e : decorations.values()) {
                 for (WireDecorationData decoration : e.values()) {
-                    decoration.getDecoration().onBreak(level, graph.getCollisionById(id).map(x -> x.wirePosToWorldPos(decoration.getWireName(), decoration.getPos())).orElse(new Vector3f()), player);
+                    decoration.getDecoration().onBreak(level, graph.getCollisionById(id).map(x -> x.wirePosToWorldPos(decoration.getWireName(), decoration.getPos())).orElse(breakPosition), player);
                 }
             }
 

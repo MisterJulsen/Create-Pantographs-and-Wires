@@ -17,6 +17,7 @@ public class ModServerConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> BLOCKS_BREAK_WIRES;
     public static final ForgeConfigSpec.ConfigValue<Boolean> WIRE_ENTITY_DAMAGE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> USE_OXIDATION;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> DROP_WIRE_ITEMS_IN_CREATIVE;
     public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MIN_UPPER_TENSION_WIRE;
     public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_UPPER_TENSION_WIRE;
     public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE;
@@ -51,6 +52,8 @@ public class ModServerConfig {
 
         USE_OXIDATION = BUILDER.comment(new String[] { "When activated, metal blocks oxidize and concrete blocks erode slowly, similar to copper.", "Default: ON" })
             .define("gameplay.oxidation", true);
+        DROP_WIRE_ITEMS_IN_CREATIVE = BUILDER.comment(new String[] { "When enabled, wires drop items if the player modifying the wire is in creative mode.", "Default: OFF" })
+            .define("gameplay.drop_wire_items_in_creative", false);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

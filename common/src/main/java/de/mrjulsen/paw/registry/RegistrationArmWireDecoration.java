@@ -19,6 +19,7 @@ import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.mcdragonlib.data.Cache;
 import de.mrjulsen.mcdragonlib.data.DataCache;
 import de.mrjulsen.paw.block.RegistrationArmBlock;
+import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.decoration.WireDecorationRenderer;
@@ -76,7 +77,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
 
     @Override
     public void onBreak(Level level, Vector3f position, Optional<Player> player) {
-        if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator())) {
+        if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
             ItemEntity itementity = new ItemEntity(level, position.x(), position.y(), position.z(), stack);
             itementity.setDefaultPickUpDelay();
             level.addFreshEntity(itementity);

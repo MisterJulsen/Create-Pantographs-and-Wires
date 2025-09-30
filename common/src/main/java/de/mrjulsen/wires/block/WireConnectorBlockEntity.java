@@ -57,7 +57,7 @@ public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBloc
 		super.setRemoved();
         if (!wasUnloaded() && !level.isClientSide) {
             if (nodeId != null) {
-                WireGraphManager.get(level, nodeId.graphId()).removeNode(nodeId.id(), new Vector3f(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()), Optional.empty());
+                WireGraphManager.get(level, nodeId.graphId()).removeNode(nodeId.id(), new Vector3f(getBlockPos().getX() + 0.5f, getBlockPos().getY() + 0.5f, getBlockPos().getZ() + 0.5f), Optional.empty());
             }
         }
         wasUnloaded = false;

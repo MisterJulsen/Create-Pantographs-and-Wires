@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3f;
@@ -257,21 +256,25 @@ public class WireGraph extends SavedData implements IWireGraph {
         setDirty();
     }
 
-    public synchronized void removeNode(UUID id, @Nullable Vector3f breakPos, @Nullable Optional<Player> player) {
+    /**
+     * 
+     * @param id
+     * @param breakPos The break position or {@code null} to disable drops
+     * @param player
+     */
+    public synchronized void removeNode(UUID id, Vector3f breakPos, Optional<Player> player) {
         if (!nodes.containsKey(id)) {
             return;
         }
 
         WireNode node = nodes.get(id);
         
-
-        if (breakPos != null && player != null) {Collection<WireEdge> edgesToRemove = new ArrayList<>(edgesByNode.get(node));
-        for (WireEdge edge : edgesToRemove) {
-            removeEdge(edge.getId(), breakPos, player);
-        }
-
-            node.onRemove(getLevel(), breakPos, player);
-            
+        if (breakPos != null && player != null) {
+            Collection<WireEdge> edgesToRemove = new ArrayList<>(edgesByNode.get(node));
+            for (WireEdge edge : edgesToRemove) {
+                removeEdge(edge.getId(), breakPos, player);
+            }
+            node.onRemove(getLevel(), breakPos, player);            
         }
 
         this.nodes.remove(id);
@@ -367,7 +370,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     }
 
 
-    public synchronized void removeEdge(UUID id, @Nullable Vector3f removePosition, @Nullable Optional<Player> player) {
+    public synchronized void removeEdge(UUID id, Vector3f removePosition, Optional<Player> player) {
         if (!edges.containsKey(id)) {
             return;
         }
@@ -551,7 +554,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             // TODO Drop wire item
 
             for (UUID connection : connectionsToBreak) {
-                removeEdge(connection, new Vector3f(pos.getX(), pos.getY(), pos.getZ()), player);
+                removeEdge(connection, new Vector3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f), player);
             }
 
             ChunkPos chunk = new ChunkPos(pos);            
@@ -610,7 +613,7 @@ public class WireGraph extends SavedData implements IWireGraph {
                     if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER] - NODE " + nodeId + ": " + node.getPos().x + ", " + node.getPos().y + ", " + node.getPos().z);
 
                     if (!node.getData().validate(this, new CompoundTag(), 0)) {
-                        removeNode(nodeId, new Vector3f(0), Optional.of(player));
+                        removeNode(nodeId, null, null);
                         PantographsAndWires.LOGGER.warn("Removed wire node with id {} at {}, because it is no longer valid.", node.getId(), node.getPos());
                         continue;
                     }

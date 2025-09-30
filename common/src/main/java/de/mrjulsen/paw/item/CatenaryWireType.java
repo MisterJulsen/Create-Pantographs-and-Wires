@@ -69,7 +69,7 @@ public class CatenaryWireType extends AbstractWireType {
 
 	@Override
 	public void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {
-		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator())) {
+		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
 			ItemEntity itementity = new ItemEntity(level, breakPosition.x(), breakPosition.y(), breakPosition.z(), ModItems.WIRE.asStack());
             itementity.setDefaultPickUpDelay();
             level.addFreshEntity(itementity);

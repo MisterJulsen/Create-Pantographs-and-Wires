@@ -15,6 +15,7 @@ import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel;
 import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel.ModelType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
+import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.decoration.WireDecorationRenderer;
 import de.mrjulsen.wires.graph.registry.DLRegistryObject;
@@ -59,7 +60,7 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
 
     @Override
     public void onBreak(Level level, Vector3f position, Optional<Player> player) {
-        if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator())) {
+        if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
             ItemEntity itementity = new ItemEntity(level, position.x(), position.y(), position.z(), stack);
             itementity.setDefaultPickUpDelay();
             level.addFreshEntity(itementity);

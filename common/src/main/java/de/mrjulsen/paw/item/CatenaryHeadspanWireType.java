@@ -99,12 +99,12 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 			WiresApi.CATENARY_HEADSPAN.getAccessor(graph).ifPresent(x -> {
 				Collection<WireNode> nodes = new ArrayList<>(x.get(edge.getId()));
 				for (WireNode node : nodes) {
-					g.removeNode(node.getId(), breakPosition, player);
+					g.removeNode(node.getId(), node.getData().toWorldPos(g), player);
 				}
 			});
 		}		
 
-		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator())) {
+		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
 			ItemEntity itementity = new ItemEntity(level, breakPosition.x(), breakPosition.y(), breakPosition.z(), ModItems.WIRE.asStack());
             itementity.setDefaultPickUpDelay();
             level.addFreshEntity(itementity);
