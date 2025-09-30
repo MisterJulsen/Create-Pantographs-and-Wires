@@ -120,7 +120,7 @@ public class CatenaryWireType extends AbstractWireType {
 				network.removeEdge(hitResult.getWireId().id(), hitResult.getLocation().toVector3f(), Optional.of(player));
 			} else if (player.getItemInHand(hand).is(ModItems.TAG_INSULATORS) && player.getItemInHand(hand).getItem() instanceof BlockItem) {
 				ItemStack stack = player.getItemInHand(hand);
-				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(2));
+				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(1));
 				
 				if (stack.getCount() < 2) {
 					player.displayClientMessage(TextUtils.translate(KEY_NOT_ENOUGH_INSULATORS, 2).withStyle(ChatFormatting.RED), true);

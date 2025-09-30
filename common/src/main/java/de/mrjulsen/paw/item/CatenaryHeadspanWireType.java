@@ -377,7 +377,7 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 							player.displayClientMessage(TextUtils.translate(KEY_NOT_ENOUGH_INSULATORS, 2).withStyle(ChatFormatting.RED), true);
 							return InteractionResult.FAIL;
 						}
-						element = new InsulatorWireDecoration(stack.copyWithCount(2));
+						element = new InsulatorWireDecoration(stack.copyWithCount(1));
 						if (edge.canPlaceDecoration(pos, WIRE_LOWER_TENSION, element) && edge.canPlaceDecoration(pos, WIRE_UPPER_TENSION, element)) {
 							edge.addDecoration(pos, WIRE_LOWER_TENSION, element);
 							edge.addDecoration(pos, WIRE_UPPER_TENSION, element);
