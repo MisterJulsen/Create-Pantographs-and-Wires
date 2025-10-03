@@ -40,6 +40,7 @@ public record WiresSyncData(
         }
         ListTag nodesList = new ListTag();
         for (WireNode node : nodes.get()) {
+            if (node == null) continue;
             nodesList.add(node.toNbt());
         }
         nbt.putString(NBT_GRAPH_ID, id.id());

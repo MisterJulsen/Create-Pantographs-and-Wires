@@ -630,6 +630,7 @@ public class WireGraph extends SavedData implements IWireGraph {
                 Set<WireNode> nodes = new HashSet<>();
                 for (UUID id : edgeIds) {
                     WireEdge edge = getEdge(id);
+                    if (edge == null) continue;
                     edges.add(edge);
                     nodes.add(getNode(edge.getNodeAId()));
                     nodes.add(getNode(edge.getNodeBId()));
