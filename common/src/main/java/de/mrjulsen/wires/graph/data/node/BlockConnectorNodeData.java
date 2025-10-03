@@ -10,6 +10,7 @@ import de.mrjulsen.paw.config.ModCommonConfig;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
+import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
@@ -112,7 +113,7 @@ public class BlockConnectorNodeData extends NodeData {
     }
 
     @Override
-    public Vector3f toWorldPos(WireGraph graph) {
+    public Vector3f toWorldPos(IWireGraph graph) {
         return new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ());
     }
 

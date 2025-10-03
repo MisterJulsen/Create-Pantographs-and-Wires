@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.wires.WiresApi;
+import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
@@ -71,7 +72,7 @@ public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
     }
 
     @Override
-    public Vector3f toWorldPos(WireGraph graph) {
+    public Vector3f toWorldPos(IWireGraph graph) {
         return new Vector3f(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()).add(getAttachPoint());
     }
 

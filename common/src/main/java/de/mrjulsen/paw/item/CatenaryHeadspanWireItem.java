@@ -19,6 +19,7 @@ import de.mrjulsen.wires.graph.data.node.LatticeMastNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.registry.DLStaticRegistryObject;
 import de.mrjulsen.wires.graph.WireGraph;
+import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.item.IWireItemBase;
@@ -177,7 +178,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
             return IPawWireItemBase.super.createHudInfoText(stack, player, hit);
         }
 
-        WireGraph graph = WireGraphManager.get(player.level(), getWireType(stack).getGraphId(itemData));
+        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(itemData));
         if (graph == null || list.isEmpty()) {
             return null;
         }

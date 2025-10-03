@@ -1,6 +1,7 @@
 package de.mrjulsen.wires.item;
 
 import de.mrjulsen.wires.graph.WireGraph;
+import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.WireGraph.CreateEdgeResult;
 import de.mrjulsen.wires.graph.data.node.NodeData;
@@ -217,7 +218,7 @@ public interface IWireItemBase extends IWireInteractableItem {
         
         CompoundTag itemData = getNbt(stack);
         ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
-        WireGraph graph = WireGraphManager.get(player.level(), getWireType(stack).getGraphId(itemData));
+        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(itemData));
         if (graph == null || list.isEmpty()) {
             return null;
         }

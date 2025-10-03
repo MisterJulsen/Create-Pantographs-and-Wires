@@ -15,9 +15,11 @@ import de.mrjulsen.paw.registry.RegistrationArmWireDecoration;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.WirePoints;
 import de.mrjulsen.wires.WiresApi;
+import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.NewWireCollision;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraph;
+import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
@@ -131,12 +133,12 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
     }       
 
     @Override
-    public Vector3f toWorldPos(WireGraph graph) {
+    public Vector3f toWorldPos(IWireGraph graph) {
         if (wireId == null) {
             return new Vector3f();
         }
         WireEdge edge = graph.getEdge(wireId.id());
-        NewWireCollision collision = graph.getCollisionById(wireId.id()).orElse(null);
+        NewWireCollision collision = (graph instanceof WireGraph g) ? g.getCollisionById(wireId.id()).orElse(null) : ((graph instanceof WireGraphClient gc) ? gc.getCollisionById(wireId.id()).orElse(null) : null);
         if (edge == null || collision == null) {
             return new Vector3f();
         }

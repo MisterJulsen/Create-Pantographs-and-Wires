@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.data.INBTSerializable;
 import de.mrjulsen.wires.IWireType;
+import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
@@ -29,7 +30,7 @@ public abstract class NodeData implements INBTSerializable {
         return node;
     }
 
-    public abstract Vector3f toWorldPos(WireGraph graph);
+    public abstract Vector3f toWorldPos(IWireGraph graph);
 
     public abstract NodeDataRegistryObject<NodeData, NodeAccessor<NodeData>> getRegistryType();
 
