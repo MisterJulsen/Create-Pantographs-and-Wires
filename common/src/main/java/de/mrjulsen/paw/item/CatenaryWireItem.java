@@ -84,11 +84,11 @@ public class CatenaryWireItem implements IPawWireItemBase {
 
         Optional<RaycastHitResult> result = RaycastUtils.rayTrace(
             player.getEyePosition().toVector3f(),
-            player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(10)),
+            player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(5)),
             level,
             AbstractCantileverBlock.MAX_WIDTH,
             DragonLib.PIXEL,
-            (lvl, pos, rayOrigin, rayDirection) -> {                
+            (lvl, pos, rayOrigin, rayDirection) -> {
                 if (!(lvl.getBlockState(pos).getBlock() instanceof CantileverBlock && lvl.getBlockEntity(pos) instanceof CantileverBlockEntity be)) 
                     return Optional.empty();
 
