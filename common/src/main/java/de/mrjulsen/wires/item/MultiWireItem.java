@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
@@ -44,8 +45,8 @@ public class MultiWireItem extends AbstractWireItemBase {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
-        return getSubType(player.getItemInHand(usedHand)).useWire(level, player, usedHand);
+    public InteractionResult useOn(UseOnContext context) {
+        return getSubType(context.getItemInHand()).useWireOn(context);
     }
 
     public static boolean setNbt(ItemStack stack, WireSettingsData data) {

@@ -198,6 +198,9 @@ public class NewWireCollision {
      * @return The world position.
      */
     public Vector3f wirePosToWorldPos(String name, float distanceOnWire) {
+        if (!debug_hasWirePoints(name)) {
+            return new Vector3f();
+        }
         Vector3f[] v = getWirePointsOf(name).vertices();
         Vector3f a = new Vector3f(v[0]);
         float sum = 0f;

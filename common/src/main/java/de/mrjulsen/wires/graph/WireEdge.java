@@ -251,6 +251,7 @@ public class WireEdge {
                     Collection<WireNode> nodes = new ArrayList<>(a.get(id));
                     for (WireNode node : nodes) {
                         graph.removeNode(node.getId(), breakPosition, player);
+                        a.remove(node);
                     }
                 }
             }
