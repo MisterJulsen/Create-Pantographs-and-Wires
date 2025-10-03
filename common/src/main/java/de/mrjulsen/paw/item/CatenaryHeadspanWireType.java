@@ -25,8 +25,6 @@ import de.mrjulsen.paw.registry.ModItems;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.paw.registry.RegistrationArmWireDecoration;
 import de.mrjulsen.paw.util.ModMath;
-import de.mrjulsen.wires.util.GraphId;
-import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.NewWireCollision;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraph;
@@ -40,7 +38,6 @@ import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireBuilder;
 import de.mrjulsen.wires.WireCreationContext;
 import de.mrjulsen.wires.WirePoints;
-import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.SegmentControl.Config;
 import de.mrjulsen.wires.WireBuilder.CableType;
 import de.mrjulsen.wires.decoration.WireDecorationData;
@@ -51,14 +48,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 
-public class CatenaryHeadspanWireType extends AbstractWireType {
+public class CatenaryHeadspanWireType extends PAWWireType {
 
 	private static final String KEY_NOT_ENOUGH_INSULATORS = "item." + PantographsAndWires.MOD_ID + ".wire.not_enough_insulators";
 	private static final String KEY_INVALID_DECORATION_POSITION = "item." + PantographsAndWires.MOD_ID + ".wire.invalid_decoration_position";
@@ -86,29 +82,11 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 	@Override
 	public int getMaxLength() {
 		return ModServerConfig.CATENARY_WIRE_MAX_LENGTH.get();
-	}	
-
-	@Override
-	public GraphId getGraphId(CompoundTag itemData) {
-		return WiresApi.PAW_CATENARY_WIRES;
 	}
-
+	
 	@Override
-	public void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {
-		if (graph instanceof WireGraph g) {
-			WiresApi.CATENARY_HEADSPAN.getAccessor(graph).ifPresent(x -> {
-				Collection<WireNode> nodes = new ArrayList<>(x.get(edge.getId()));
-				for (WireNode node : nodes) {
-					g.removeNode(node.getId(), node.getData().toWorldPos(g), player);
-				}
-			});
-		}		
-
-		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
-			ItemEntity itementity = new ItemEntity(level, breakPosition.x(), breakPosition.y(), breakPosition.z(), ModItems.WIRE.asStack());
-            itementity.setDefaultPickUpDelay();
-            level.addFreshEntity(itementity);
-		}
+	public int getWireLength(int connectionLength) {
+		return connectionLength * 4;
 	}
 
 	@Override
@@ -129,12 +107,15 @@ public class CatenaryHeadspanWireType extends AbstractWireType {
 			lastDropperDistance = droppers.get(i).pos();
 		}
 
-		Vector3f headspanDirection = new Vector3f(end).sub(start).normalize();
-        Vector3f offset = new Vector3f(0, 0, DragonLib.PIXEL * 2);
-        Vector3f offsetVec = ModMath.rotateToDirection(offset, headspanDirection);
+		Vector3f direction = new Vector3f(end).sub(start);
+		direction = new Vector3f(direction.x(), 0, direction.z());
+		Vector3f rightVec = new Vector3f(direction.z(), 0, -direction.x()).normalize();
+		direction.absolute().normalize();
+        Vector3f offsetA = new Vector3f(rightVec).mul(DragonLib.PIXEL * 2);
+        Vector3f offsetB = new Vector3f(rightVec).mul(DragonLib.PIXEL * -2);
 
-		Wire topWire1 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 1, context, new Vector3f(start).add(-offsetVec.x(), topWireHeight, -offsetVec.z()), new Vector3f(end).add(-offsetVec.x(), topWireHeight, -offsetVec.z()), CableType.HANGING, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
-		Wire topWire2 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 2, context, new Vector3f(start).add(offsetVec.x(), topWireHeight, offsetVec.z()), new Vector3f(end).add(offsetVec.x(), topWireHeight, offsetVec.z()), CableType.TENSION, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire topWire1 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 1, context, new Vector3f(start).add(offsetA.x(), topWireHeight, offsetA.z()), new Vector3f(end).add(offsetA.x(), topWireHeight, offsetA.z()), CableType.HANGING, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire topWire2 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 2, context, new Vector3f(start).add(offsetB.x(), topWireHeight, offsetB.z()), new Vector3f(end).add(offsetB.x(), topWireHeight, offsetB.z()), CableType.TENSION, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
 		Wire upperWire = WireBuilder.createWire(WIRE_UPPER_TENSION, context, new Vector3f(start).add(0, upperWireHeight, 0), new Vector3f(end).add(0, upperWireHeight, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
 		Wire lowerWire = WireBuilder.createWire(WIRE_LOWER_TENSION, context, new Vector3f(start).add(0, DragonLib.PIXEL * -2, 0), new Vector3f(end).add(0, DragonLib.PIXEL * -2, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
 		WireBatch batch = WireBatch.of(lowerWire, upperWire, topWire1, topWire2);

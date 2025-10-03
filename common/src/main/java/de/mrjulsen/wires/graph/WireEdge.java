@@ -273,6 +273,11 @@ public class WireEdge {
 
         return summe.div(vectors.size());
     }
+    
+
+    public int length() {
+        return (int)graph.getNode(getNodeAId()).getPos().distance(graph.getNode(getNodeBId()).getPos());
+    }
 
 
 

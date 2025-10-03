@@ -114,6 +114,7 @@
     "item.pantographsandwires.wire.not_enough_insulators": "Nicht genügend Isolatoren im Stapel. Benötigt: %s",
     "item.pantographsandwires.wire.invalid_decoration_position": "An dieser Position können keine Bauteile angebracht werden.",
     "item.pantographsandwires.wire.one_invalid_decoration_position": "Einer der %s Positionen ist nicht geeignet, um dort Bauteile anzubringen.",
+    "item.pantographsandwires.wire.not_enough_wire": "Deine Leitung reicht nicht mehr für diese Distanz.",
 
     "item.pantographsandwires.catenary_headspan.dropper_missing_registration_arm": "Befestige einen Seitenhalter an einen Hänger, um die Oberleitung dort zu verbinden.",
     "item.pantographsandwires.catenary_headspan.dropper_has_registration_arm": "An diesen Hänger wurde bereits ein Seitenhalter angebracht.",

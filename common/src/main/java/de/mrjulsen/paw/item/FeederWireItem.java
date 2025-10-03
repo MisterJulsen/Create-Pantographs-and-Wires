@@ -46,7 +46,7 @@ public class FeederWireItem implements IPawWireItemBase {
     @Override
     public InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
         return placeWire(level, player, hand, hit, (a, b) -> {});
-    }    
+    }
 
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {

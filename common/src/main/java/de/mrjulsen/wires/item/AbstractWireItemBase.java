@@ -17,12 +17,12 @@ public abstract class AbstractWireItemBase extends Item implements IWireItemBase
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        return getActor(player.getItemInHand(usedHand)).useWire(level, player, usedHand);
+        return useWire(level, player, usedHand);
     }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        return getActor(context.getItemInHand()).useWireOn(context);
+        return useWireOn(context);
     }
     
 }

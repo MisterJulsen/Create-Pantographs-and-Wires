@@ -10,8 +10,6 @@ import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.registry.InsulatorWireDecoration;
 import de.mrjulsen.paw.registry.ModItems;
-import de.mrjulsen.wires.util.GraphId;
-import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphManager;
@@ -25,15 +23,12 @@ import de.mrjulsen.wires.Wire;
 import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireBuilder;
 import de.mrjulsen.wires.WireCreationContext;
-import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.SegmentControl.Config;
 import de.mrjulsen.wires.WireBuilder.CableType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +36,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 
-public class CatenaryWireType extends AbstractWireType {
+public class CatenaryWireType extends PAWWireType {
 
 	private static final String KEY_NOT_ENOUGH_INSULATORS = "item." + PantographsAndWires.MOD_ID + ".wire.not_enough_insulators";
 	private static final String KEY_ONE_INVALID_DECORATION_POSITION = "item." + PantographsAndWires.MOD_ID + ".wire.one_invalid_decoration_position";
@@ -60,20 +55,11 @@ public class CatenaryWireType extends AbstractWireType {
 	@Override
 	public int getMaxLength() {
 		return ModServerConfig.CATENARY_WIRE_MAX_LENGTH.get();
-	}	
-
-	@Override
-	public GraphId getGraphId(CompoundTag itemData) {
-		return WiresApi.PAW_CATENARY_WIRES;
 	}
-
+	
 	@Override
-	public void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {
-		if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
-			ItemEntity itementity = new ItemEntity(level, breakPosition.x(), breakPosition.y(), breakPosition.z(), ModItems.WIRE.asStack());
-            itementity.setDefaultPickUpDelay();
-            level.addFreshEntity(itementity);
-		}
+	public int getWireLength(int connectionLength) {
+		return connectionLength * 2;
 	}
 	
 	@Override

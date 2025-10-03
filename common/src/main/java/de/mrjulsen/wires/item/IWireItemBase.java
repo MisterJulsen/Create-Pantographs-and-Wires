@@ -61,7 +61,7 @@ public interface IWireItemBase extends IWireInteractableItem {
     }
 
     default InteractionResult useWireOn(UseOnContext context) {        
-        return getActor(context.getItemInHand()).placeWire(
+        return placeWire(
             context.getLevel(),
             context.getPlayer(),
             context.getHand(),
@@ -76,11 +76,11 @@ public interface IWireItemBase extends IWireInteractableItem {
 
     @Override
     default InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
-        return getActor(player.getItemInHand(hand)).placeWire(level, player, hand, hit, null);
+        return placeWire(level, player, hand, hit, null);
     }
 
     default boolean addNewPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
-        NodeData data = getActor(stack).createNodeData(level, player, hand, hit);
+        NodeData data = createNodeData(level, player, hand, hit);
         if (data == null) {
             return false;
         }
@@ -124,7 +124,7 @@ public interface IWireItemBase extends IWireInteractableItem {
     }
 
     
-    default boolean createWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+    default CreateEdgeResult createWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
         WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
         List<NodeData> deserializedData = new ArrayList<>(points.size());
         CompoundTag pointsMeta = new CompoundTag();
@@ -149,11 +149,13 @@ public interface IWireItemBase extends IWireInteractableItem {
                 default -> "";
             };
             player.displayClientMessage(TextUtils.translate(key).withStyle(ChatFormatting.RED), true);
-            clear(stack);
-            return false;
         }
         clear(stack);
-        return true;
+        return result;
+    }
+
+    default void removeWireItem(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, int length) {
+        stack.shrink(1);
     }
 
     default InteractionResult placeWire(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata) { 
@@ -174,7 +176,7 @@ public interface IWireItemBase extends IWireInteractableItem {
         }
 
         // --- Set data ---
-        if (!getActor(stack).addNewPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points)) {
+        if (!addNewPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points)) {
             return InteractionResult.FAIL;
         }
 
@@ -188,8 +190,11 @@ public interface IWireItemBase extends IWireInteractableItem {
         setNbt(stack, itemData);
 
         // --- Create wire ---
-        if (getActor(stack).canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
-            getActor(stack).createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
+        if (canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
+            CreateEdgeResult result = createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
+            if (result.success()) {
+                removeWireItem(level, player, hand, hit, stack, result.edge().get().length());
+            }
         }
         
         return InteractionResult.SUCCESS;
