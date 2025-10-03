@@ -24,8 +24,8 @@ public final class NetworkManager {
         }, (nbt) -> {
             return WiresSyncData.Wrapper.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
         }, (player, in, temp, nbt, iteration) -> {
-            WiresSyncData data = in.unwrap(player.level());
-            WireGraphClient graph = WireGraphManager.getClient(player.level(), data.id());
+            WiresSyncData data = in.unwrap(ClientUtils.level());
+            WireGraphClient graph = WireGraphManager.getClient(ClientUtils.level(), data.id());
             for (WireNode node : data.nodes().get()) {
                 if (node == null) continue;
                 graph.addNode(node);
@@ -44,7 +44,7 @@ public final class NetworkManager {
         }, (nbt) -> {
             return DeleteWireSyncData.fromNbt(nbt.getCompound(DataAccessorType.DEFAULT_NBT_DATA));
         }, (player, in, temp, nbt, iteration) -> {
-            WireGraphClient graph = WireGraphManager.getClient(player.level(), in.id());
+            WireGraphClient graph = WireGraphManager.getClient(ClientUtils.level(), in.id());
             for (UUID id : in.wireEdgeIds()) {
                 graph.removeEdge(id);
             }
