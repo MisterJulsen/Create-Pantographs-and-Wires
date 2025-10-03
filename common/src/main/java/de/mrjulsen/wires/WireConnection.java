@@ -116,8 +116,8 @@ public class WireConnection {
             TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
             Map.Entry<Float, WireDecorationData> lower = map.lowerEntry(d);
             Map.Entry<Float, WireDecorationData> upper = map.ceilingEntry(d);
-            if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius() > d - element.getRadius()) ||
-                (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius() < d + element.getRadius())) {
+            if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius(null) > d - element.getRadius(null)) ||
+                (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius(null) < d + element.getRadius(null))) {
                     return false;
             }
         }
@@ -138,7 +138,7 @@ public class WireConnection {
         TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
         List<WireDecorationData> decoResult = new ArrayList<>(2);
         for (WireDecorationData decoration : map.values()) {
-            if (decoration.getPos() + decoration.getDecoration().getRadius() >= d && decoration.getPos() - decoration.getDecoration().getRadius() <= d) {
+            if (decoration.getPos() + decoration.getDecoration().getRadius(null) >= d && decoration.getPos() - decoration.getDecoration().getRadius(null) <= d) {
                 decoResult.add(decoration);
             }
         }

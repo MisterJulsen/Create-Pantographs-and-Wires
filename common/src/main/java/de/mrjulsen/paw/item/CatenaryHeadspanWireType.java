@@ -309,12 +309,12 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 				offset += (centered ? DragonLib.PIXEL * -0.5f : DragonLib.PIXEL * 3.5f) * (front ? 1 : -1);
 
 				element = new RegistrationArmWireDecoration(stack.copyWithCount(1), front, state, dropperId);
-				if (edge.canPlaceDecoration(pos - element.getRadius() + offset, WIRE_LOWER_TENSION, element)) {
-					edge.addDecoration(pos - element.getRadius() + offset, WIRE_LOWER_TENSION, element);
+				if (edge.canPlaceDecoration(pos - element.getRadius(element) + offset, WIRE_LOWER_TENSION, element)) {
+					edge.addDecoration(pos - element.getRadius(element) + offset, WIRE_LOWER_TENSION, element);
 					stack.shrink(1);
 				} else if (!state.isAbove()) {
 					element = new RegistrationArmWireDecoration(stack.copyWithCount(1), front, centered ? State.ABOVE_CENTERED : State.ABOVE, dropperId);
-					if (edge.addDecoration(pos - element.getRadius() + offset, WIRE_LOWER_TENSION, element)) {
+					if (edge.addDecoration(pos - element.getRadius(element) + offset, WIRE_LOWER_TENSION, element)) {
 						stack.shrink(1);
 					}
 				}
@@ -337,12 +337,12 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 					
 					if (isLarge) {
 						wn = WIRE_DROPPER_L + wn;
-						if (edge.addDecoration(collision.length(wn) - element.getRadius(), wn, element)) {
+						if (edge.addDecoration(collision.length(wn) - element.getRadius(element), wn, element)) {
 							stack.shrink(1);
 						}
 					} else {
 						wn = WIRE_DROPPER_U + wn;
-						if (edge.addDecoration(element.getRadius(), wn, element)) {
+						if (edge.addDecoration(element.getRadius(element), wn, element)) {
 							stack.shrink(1);
 						}
 					}					

@@ -22,7 +22,7 @@ public interface IWireDecoration<T extends IWireDecoration<T>> extends IRegister
     }
 
     
-
-    float getRadius();
+    @Deprecated
+    float getRadius(IWireDecoration<?> element); // TODO temp workaround, real isOccupied method needed!
     WireDecorationRenderer<T> getRenderer();
 }

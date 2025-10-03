@@ -82,9 +82,9 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
     public void deserializeNbt(CompoundTag nbt) {
         this.stack = ItemStack.of(nbt);
     }
-
+    
     @Override
-    public float getRadius() {
+    public float getRadius(IWireDecoration<?> element) {
         return RADIUS;
     }
 

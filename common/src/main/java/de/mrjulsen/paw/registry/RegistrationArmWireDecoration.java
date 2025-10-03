@@ -123,9 +123,10 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
         this.dropperId = nbt.getUUID(NBT_DROPPER_ID);
     }
 
+    
     @Override
-    public float getRadius() {
-        return RADIUS;
+    public float getRadius(IWireDecoration<?> element) {
+        return element != null && (element instanceof RegistrationArmWireDecoration) ? RADIUS : 0;
     }
 
 

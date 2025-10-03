@@ -137,7 +137,7 @@ public class WireEdge {
         }
 
         if (!canPlaceDecoration(posOnWire, wireName, element)) {
-            //return false;
+            return false;
         }
         
         WireDecorationData decoration = new WireDecorationData(wireName, posOnWire, element);
@@ -147,7 +147,7 @@ public class WireEdge {
     }
 
     public boolean canPlaceDecoration(float posOnWire, String wireName, IWireDecoration<?> element) {
-        return !isOccupied(posOnWire, wireName, element.getRadius());
+        return !isOccupied(posOnWire, wireName, element.getRadius(element));
     }
     
     public boolean isOccupied(float posOnWire, String wireName, float radius) {
@@ -155,8 +155,8 @@ public class WireEdge {
             TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
             Map.Entry<Float, WireDecorationData> lower = map.lowerEntry(posOnWire);
             Map.Entry<Float, WireDecorationData> upper = map.ceilingEntry(posOnWire);
-            if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius() > posOnWire - radius) ||
-                (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius() < posOnWire + radius)) {
+            if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius(null) > posOnWire - radius) ||
+                (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius(null) < posOnWire + radius)) {
                     return true;
             }
         }
@@ -184,7 +184,7 @@ public class WireEdge {
         TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
         List<WireDecorationData> decoResult = new ArrayList<>(2);
         for (WireDecorationData decoration : map.values()) {
-            if (decoration.getPos() + decoration.getDecoration().getRadius() >= d && decoration.getPos() - decoration.getDecoration().getRadius() <= d) {
+            if (decoration.getPos() + decoration.getDecoration().getRadius(null) >= d && decoration.getPos() - decoration.getDecoration().getRadius(null) <= d) {
                 decoResult.add(decoration);
             }
         }
