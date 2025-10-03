@@ -43,7 +43,7 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
     @Override
     default void removeWireItem(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, int length) {
         if (!player.isCreative() && !player.isSpectator() && stack.getItem() instanceof MultiWireItem) {
-            updateWireAmount(player, stack, -length);
+            updateWireAmount(player, stack, -(getWireType(stack) instanceof PAWWireType paw ? paw.getWireLength(length) : length));
         }
     }
 
