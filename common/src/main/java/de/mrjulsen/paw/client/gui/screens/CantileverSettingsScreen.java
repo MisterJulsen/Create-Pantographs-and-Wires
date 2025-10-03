@@ -20,7 +20,6 @@ import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLGuiComponent;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindow;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindowManager;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.components.DLCheckBox;
-import de.mrjulsen.mcdragonlib.client.newgui.widgets.util.CursorType;
 import de.mrjulsen.mcdragonlib.client.util.Graphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
@@ -179,7 +178,6 @@ public class CantileverSettingsScreen extends DLWindow {
         };
 
         CreateButton doneBtn = new CreateButton(width() - 7 - CreateButton.WIDTH, height() - 6 - CreateButton.HEIGHT, AllIcons.I_CONFIRM);
-        doneBtn.cursor.set(CursorType.HAND);
         doneBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
             getWindowManager().closeWindow(this);
             return false;
@@ -230,7 +228,6 @@ public class CantileverSettingsScreen extends DLWindow {
         cantileverSizeSlider.min.set((double)AbstractCantileverBlock.MIN_WIDTH);
         cantileverSizeSlider.max.set((double)AbstractCantileverBlock.MAX_WIDTH);
         cantileverSizeSlider.value.set((double)this.width);
-        cantileverSizeSlider.cursor.set(CursorType.HRESIZE);
         cantileverSizeSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.width = (float)e.value();
 
@@ -246,7 +243,6 @@ public class CantileverSettingsScreen extends DLWindow {
         cantileverHeightSlider.min.set((double)AbstractCantileverBlock.MIN_HEIGHT);
         cantileverHeightSlider.max.set((double)AbstractCantileverBlock.MAX_HEIGHT);
         cantileverHeightSlider.value.set((double)this.height);
-        cantileverHeightSlider.cursor.set(CursorType.HRESIZE);
         cantileverHeightSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.height = (float)e.value();
             if (updatingValues.isFalse()) updateFunc.run();
@@ -261,7 +257,6 @@ public class CantileverSettingsScreen extends DLWindow {
         regstrationArmHeightSlider.min.set((double)AbstractCantileverBlock.MIN_HEIGHT);
         regstrationArmHeightSlider.max.set((double)AbstractCantileverBlock.MAX_HEIGHT);
         regstrationArmHeightSlider.value.set((double)this.catenaryHeight);
-        regstrationArmHeightSlider.cursor.set(CursorType.HRESIZE);
         regstrationArmHeightSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.catenaryHeight = (float)e.value();
             if (updatingValues.isFalse()) updateFunc.run();
@@ -275,7 +270,6 @@ public class CantileverSettingsScreen extends DLWindow {
 
         
         insulatorPlacementSlider.value.set((double)this.insulatorPlacement.ordinal());
-        insulatorPlacementSlider.cursor.set(CursorType.HRESIZE);
         insulatorPlacementSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.insulatorPlacement = ECantileverInsulatorsPlacement.values()[(int)e.value()];
             stateCache.clear();
@@ -285,7 +279,6 @@ public class CantileverSettingsScreen extends DLWindow {
         addComponent(insulatorPlacementSlider);
 
         registrationArmSlider.value.set((double)this.registrationArmType.ordinal());
-        registrationArmSlider.cursor.set(CursorType.HRESIZE);
         registrationArmSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
             this.registrationArmType = ECantileverRegistrationArmType.values()[(int)e.value()];
             stateCache.clear();
@@ -295,7 +288,6 @@ public class CantileverSettingsScreen extends DLWindow {
         addComponent(registrationArmSlider);
         
         bracingSlider.value.set(showBracing ? 1D : 0D);
-        bracingSlider.cursor.set(CursorType.HRESIZE);
         bracingSlider.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {            
             this.showBracing = SupportTubeEnum.values()[(int)e.value()].get();
             if (updatingValues.isFalse()) updateFunc.run();
@@ -309,7 +301,6 @@ public class CantileverSettingsScreen extends DLWindow {
 
         advancedOptionCb.text.set(txtAdvancedOptions);
         advancedOptionCb.checked.set(showAdvanced);
-        advancedOptionCb.cursor.set(CursorType.HAND);
         advancedOptionCb.addEventListener(DLGuiCommonEvents.CheckedChangedEvent.class, (s, e) -> {
             showAdvanced = e.checked();
             relayoutFunc.run();

@@ -7,7 +7,6 @@ import de.mrjulsen.mcdragonlib.client.newgui.events.DLGuiCommonEvents;
 import de.mrjulsen.mcdragonlib.client.newgui.events.DLGuiStandardEvents;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindow;
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindowManager;
-import de.mrjulsen.mcdragonlib.client.newgui.widgets.util.CursorType;
 import de.mrjulsen.mcdragonlib.client.util.Graphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
@@ -61,7 +60,6 @@ public class WireTypeSelectionScreen extends DLWindow {
         
         int w = ModWireRegistry.WIRE_SUBTYPES_REGISTRY.getAll().size() * 20;
         CreateListSlider<IPawWireItemBase> typeSelection = new CreateListSlider<>(width() / 2 - w / 2, 43, w, 20, ModWireRegistry.WIRE_SUBTYPES_REGISTRY.getAll());
-        typeSelection.cursor.set(CursorType.HRESIZE);
         typeSelection.text.set(txtWireType);
         typeSelection.setValue(selectedType);
         typeSelection.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
@@ -71,7 +69,6 @@ public class WireTypeSelectionScreen extends DLWindow {
         addComponent(typeSelection);
         
         CreateButton doneBtn = new CreateButton(width() - 7 - CreateButton.WIDTH, height() - 6 - CreateButton.HEIGHT, AllIcons.I_CONFIRM);
-        doneBtn.cursor.set(CursorType.HAND);
         doneBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
             getWindowManager().closeWindow(this);
             return false;
@@ -79,7 +76,6 @@ public class WireTypeSelectionScreen extends DLWindow {
         addComponent(doneBtn);
         
         CreateButton resetBtn = new CreateButton(7, height() - 6 - CreateButton.HEIGHT, AllIcons.I_TRASH);
-        resetBtn.cursor.set(CursorType.HAND);
         resetBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {            
             IWireItemBase.clear(stack);
             DataAccessor.getFromServer(null, ModNetworkAccessor.CLEAR_WIRE_CONNECTION_DATA, $ -> {});
