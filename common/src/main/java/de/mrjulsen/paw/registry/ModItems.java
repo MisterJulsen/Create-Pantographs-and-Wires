@@ -7,6 +7,7 @@ import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.item.FuelItem;
 import de.mrjulsen.paw.item.PantographItem;
 import de.mrjulsen.wires.item.MultiWireItem;
+import dev.architectury.platform.Platform;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -22,7 +23,7 @@ public class ModItems {
     
 	public static final TagKey<Item> TAG_CANTILEVERS = createTag("cantilevers");
 	public static final TagKey<Item> TAG_INSULATORS = createTag("insulators");
-	public static final TagKey<Item> TAG_WRENCH = TagKey.create(Registries.ITEM, new ResourceLocation("forge:tools/wrench"));
+	public static final TagKey<Item> TAG_WRENCH = TagKey.create(Registries.ITEM, new ResourceLocation(Platform.isFabric() ? "c:wrenches" : "forge:tools/wrench"));
 
     public static final ItemEntry<MultiWireItem> WIRE = PantographsAndWires.REGISTRATE.item("wire_coil", p -> new MultiWireItem(p))
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
