@@ -2,14 +2,12 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
-import org.joml.Vector3f;
-
 import de.mrjulsen.paw.PantographsAndWires;
-import de.mrjulsen.paw.block.abstractions.IRotatableBlock;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
+import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.IWireType;
-import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
+import de.mrjulsen.wires.graph.data.node.MastNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.registry.DLStaticRegistryObject;
 import de.mrjulsen.wires.item.IPawWireItemBase;
@@ -22,25 +20,24 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class DecorationWireItem implements IPawWireItemBase {
+public class SupportWireItem implements IPawWireItemBase {
 
     @Override
     public IWireType getWireType(ItemStack stack) {
-        return ModWireRegistry.DECORATION_WIRE;
+        return ModWireRegistry.SUPPORT_WIRE;
     }
 
     @Override
     public DLStaticRegistryObject<IPawWireItemBase> getRegistryType() {
-        return (DLStaticRegistryObject<IPawWireItemBase>)(Object)ModWireRegistry.DECORATION_WIRE_ITEM_SUBTYPE;
+        return (DLStaticRegistryObject<IPawWireItemBase>)(Object)ModWireRegistry.SUPPORT_WIRE_ITEM_SUBTYPE;
     }
 
     @Override
     public String getTranslationKey() {
-        return "wire." + PantographsAndWires.MOD_ID + ".decoration_wire";
+        return "wire." + PantographsAndWires.MOD_ID + ".support_wire";
     }
 
     @Override
@@ -50,19 +47,14 @@ public class DecorationWireItem implements IPawWireItemBase {
 
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {        
-        if (hit instanceof BlockHitResult blockHit) {
+        if (hit instanceof BlockHitResult blockHit && level.getBlockState(blockHit.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_SUPPORT_WIRE_CONNECTABLE))) {
             //BlockPos pos = blockHit.getBlockPos();
             //BlockState state = level.getBlockState(blockHit.getBlockPos());
             //VoxelShape shape = state.getVisualShape(level, blockHit.getBlockPos(), CollisionContext.empty());
             //return clipFromSide(shape, pos, blockHit.getDirection()).map(x -> {
             //    return new GenericBlockNodeData(x.getBlockPos(), x.getLocation().toVector3f().sub(x.getBlockPos().getX(), x.getBlockPos().getY(), x.getBlockPos().getZ()));
             //}).orElse(null);
-            Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
-            if (level.getBlockState(blockHit.getBlockPos()).getBlock() instanceof IRotatableBlock rot) {
-                Vec2 v = rot.getOffset(level.getBlockState(blockHit.getBlockPos()));
-                offset.add(v.x, 0, v.y);
-            }
-            return new GenericBlockNodeData(blockHit.getBlockPos(), offset);
+            return new MastNodeData(blockHit.getBlockPos());
         }
         return null;
     }

@@ -1,0 +1,15 @@
+{
+    "replace": false,
+    "values": [
+        "#pantographsandwires:lattice_masts",
+        "#pantographsandwires:cantilever_brackets",
+        "#pantographsandwires:concrete_pillars",
+        "#pantographsandwires:concrete_posts",
+        "#pantographsandwires:flat_lattice_masts",
+        "#pantographsandwires:diagonal_flat_lattice_masts",
+        "#pantographsandwires:h_beam_masts",
+        "#minecraft:walls",
+        "#minecraft:fences"
+
+    ]
+}

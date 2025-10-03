@@ -98,6 +98,7 @@ public class ModBlocks {
 	public static final TagKey<Block> TAG_CANTILEVER_CONNECTABLE_4PX = createTag("cantilever_connectable_4px");
 	
 	public static final TagKey<Block> TAG_CATENARY_HEADSPAN_CONNECTABLE = createTag("catenary_headspan_connectable");
+	public static final TagKey<Block> TAG_SUPPORT_WIRE_CONNECTABLE = createTag("support_wire_connectable");
 
 	public static final BlockEntry<PantographBlock> PANTOGRAPH = PantographsAndWires.REGISTRATE.block("pantograph", PantographBlock::new)
 		.initialProperties(SharedProperties::softMetal)

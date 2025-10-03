@@ -16,6 +16,7 @@ import de.mrjulsen.wires.graph.data.accessor.WireConnectorNodeAccessor;
 import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
 import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
 import de.mrjulsen.wires.graph.data.node.LatticeMastNodeData;
+import de.mrjulsen.wires.graph.data.node.MastNodeData;
 import de.mrjulsen.wires.graph.data.node.CatenaryHeadspanConnectionNodeData;
 import de.mrjulsen.wires.graph.data.node.CatenaryWireConnectorNodeData;
 import de.mrjulsen.wires.graph.data.provider.BasicConnectorDataProvider;
@@ -41,6 +42,7 @@ public class WiresApi {
     public static final NodeDataRegistryObject<BlockConnectorNodeData, BlockConnectorNodeAccessor> BLOCK_CONNECTOR = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "block_connector"), BlockConnectorNodeData::new, BlockConnectorNodeAccessor::new);
     public static final NodeDataRegistryObject<CatenaryWireConnectorNodeData, WireConnectorNodeAccessor> WIRE_CONNECTOR = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "wire_connector"), CatenaryWireConnectorNodeData::new, WireConnectorNodeAccessor::new);
     public static final NodeDataRegistryObject<LatticeMastNodeData, GenericBlockNodeAccessor<LatticeMastNodeData>> LATTICE_MAST = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "lattice_mast"), LatticeMastNodeData::new, GenericBlockNodeAccessor::new);
+    public static final NodeDataRegistryObject<MastNodeData, GenericBlockNodeAccessor<MastNodeData>> MAST = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "mast"), MastNodeData::new, GenericBlockNodeAccessor::new);
     public static final NodeDataRegistryObject<CatenaryHeadspanConnectionNodeData, GenericWireNodeAccessor<CatenaryHeadspanConnectionNodeData>> CATENARY_HEADSPAN = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanConnectionNodeData::new, GenericWireNodeAccessor::new);
 
     public static final DLRegistryObject<BasicConnectorDataProvider.Empty> EMPTY_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "empty_wire_connector"), ConnectorDataProvider.Empty::new);

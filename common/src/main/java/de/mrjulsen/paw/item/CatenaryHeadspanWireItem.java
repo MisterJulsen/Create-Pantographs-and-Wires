@@ -67,7 +67,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
     @Override
     public ModGuiIcons getIcon() {
         return ModGuiIcons.CATENARY_HEADSPAN_WIRE;
-    }  
+    }
 
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {

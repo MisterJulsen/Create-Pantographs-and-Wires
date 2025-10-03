@@ -81,9 +81,10 @@
     "item.pantographsandwires.empty_wire_coil": "Leere Drahtspule",
     "item.pantographsandwires.wire_coil": "Leitungsspule",
     
-    "wire.pantographsandwires.energy_wire": "Bahnstromspeiseleitung",
+    "wire.pantographsandwires.energy_wire": "Bahnspeiseleitung",
     "wire.pantographsandwires.catenary_wire": "Kettenfahrleitung",
     "wire.pantographsandwires.catenary_headspan": "Quertragwerk",
+    "wire.pantographsandwires.support_wire": "Stützseil",
 
     "gui.pantographsandwires.wire_selection.title": "Leitungsauswahl",
     "gui.pantographsandwires.wire_selection.instruction": "Wähle einen Leitungstyp",

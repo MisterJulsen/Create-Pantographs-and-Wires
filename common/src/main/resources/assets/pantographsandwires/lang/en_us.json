@@ -89,6 +89,7 @@
     "wire.pantographsandwires.energy_wire": "Energy Wire",
     "wire.pantographsandwires.catenary_wire": "Catenary Wire",
     "wire.pantographsandwires.catenary_headspan": "Catenary Headspan Wire",
+    "wire.pantographsandwires.support_wire": "Support Wire",
 
     "gui.pantographsandwires.wire_selection.title": "Wire Selection",
     "gui.pantographsandwires.wire_selection.instruction": "Select a wire type",
