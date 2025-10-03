@@ -2,5 +2,5 @@
 newmtl m_ad3d8878-c207-7f80-1da3-50670d8c8f1d
 map_Kd pantographsandwires:block/metal
 newmtl m_f89680e1-4dcb-6f4d-fd97-d66ddb55961e
-map_Kd pantographsandwires:block_galvanized_metal
+map_Kd pantographsandwires:block/metal_galvanized
 newmtl none
