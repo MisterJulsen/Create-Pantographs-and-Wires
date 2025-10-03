@@ -3,6 +3,7 @@ package de.mrjulsen.wires.item;
 import java.util.List;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.event.ClientWrapper;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.paw.registry.ModNetworkAccessor.WireSettingsData;
@@ -14,7 +15,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
@@ -38,10 +38,14 @@ public class MultiWireItem extends AbstractWireItemBase {
         return type == null ? ModWireRegistry.ENERGY_WIRE_ITEM_SUBTYPE.get() : type;
     }
     
+    @Override
+    public InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
+        return getSubType(player.getItemInHand(hand)).interactWithWire(level, player, hand, hit);
+    }
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
-        return getSubType(context.getItemInHand()).useWireOn(context);
+    public InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
+        return getSubType(player.getItemInHand(usedHand)).useWire(level, player, usedHand);
     }
 
     public static boolean setNbt(ItemStack stack, WireSettingsData data) {
