@@ -2,13 +2,11 @@ package de.mrjulsen.wires.item;
 
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.event.ClientWrapper;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.paw.registry.ModNetworkAccessor.WireSettingsData;
 import de.mrjulsen.wires.IWireType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -72,12 +70,8 @@ public class MultiWireItem extends AbstractWireItemBase {
     @Override
     public void appendHoverText(ItemStack stack, Level player, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, player, list, flag);
-        
-        if (stack.hasTag()) {
-            list.add(TextUtils.text("Type: " + getSubType(stack).getWireType(stack).getRegistryId().toString()));
-            list.add(TextUtils.text("Amount: " + IPawWireItemBase.getRemainingWire(stack) + "m"));
-        }
-        
+        list.add(TextUtils.text("Type: ").append(TextUtils.translate(((IPawWireItemBase)getSubType(stack)).getTranslationKey())));
+        list.add(TextUtils.text("Amount: " + IPawWireItemBase.getRemainingWire(stack) + "m"));        
     }
 
     @Override
