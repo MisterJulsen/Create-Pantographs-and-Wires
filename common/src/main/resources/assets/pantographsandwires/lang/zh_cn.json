@@ -142,7 +142,7 @@
   "item.pantographsandwires.wire.one_invalid_decoration_position": "有 %s 个位置不适合附加该部件。",
   "item.pantographsandwires.wire.connection_exists": "连接已存在。",
   "item.pantographsandwires.wire.cannot_create": "无法创建该连接。",
-  "item.pantographsandwires.wire.not_enough_wire": "线轴剩余导线过短。", // NEW
+  "item.pantographsandwires.wire.not_enough_wire": "线轴剩余导线过短。",
 
   "item.pantographsandwires.catenary_headspan.dropper_missing_registration_arm": "请在下垂线处添加定位节点以连接接触线。",
   "item.pantographsandwires.catenary_headspan.dropper_has_registration_arm": "该下垂线已附加定位节点。",
