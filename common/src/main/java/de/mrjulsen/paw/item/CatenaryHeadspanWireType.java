@@ -31,6 +31,10 @@ import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
+import de.mrjulsen.wires.graph.data.accessor.GenericWireNodeAccessor;
+import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
+import de.mrjulsen.wires.graph.data.node.NodeData;
+import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
 import de.mrjulsen.wires.network.WireId;
 import de.mrjulsen.wires.SegmentControl;
 import de.mrjulsen.wires.Wire;
@@ -38,6 +42,7 @@ import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireBuilder;
 import de.mrjulsen.wires.WireCreationContext;
 import de.mrjulsen.wires.WirePoints;
+import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.SegmentControl.Config;
 import de.mrjulsen.wires.WireBuilder.CableType;
 import de.mrjulsen.wires.decoration.WireDecorationData;
@@ -212,6 +217,17 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 				});
 				for (WireDecorationData decoration : decorations) {
 					edge.removeDecorations(level, Optional.of(player), WIRE_LOWER_TENSION, List.of(decoration));
+				}
+
+				for (NodeDataRegistryObject<? extends NodeData, ? extends NodeAccessor<? extends NodeData>> type : WiresApi.NODE_DATA_REGISTRY.getRegisteredTypes()) {
+					Optional<? extends NodeAccessor<?>> accessor = type.getAccessor(network);
+					if (accessor.isPresent() && accessor.get() instanceof GenericWireNodeAccessor a) {
+						Collection<WireNode> nodes = new ArrayList<>(a.get(hitResult.getWireId()));
+						for (WireNode node : nodes) {
+							network.removeNode(node.getId(), node.getPos(), Optional.of(player));
+							a.remove(node);
+						}
+					}
 				}
 
 				network.setEdge(edge, true);
