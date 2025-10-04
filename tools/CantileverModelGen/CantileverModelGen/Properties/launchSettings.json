@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "CantileverModelGen": {
-      "commandName": "Project",
-      "commandLineArgs": "double_cantilever \"E:\\Minecraft Modding\\Modding\\CreateModernRailways\\CMR 1.18.2\\tools\\blockbench\\double\""
-    }
-  }
-}

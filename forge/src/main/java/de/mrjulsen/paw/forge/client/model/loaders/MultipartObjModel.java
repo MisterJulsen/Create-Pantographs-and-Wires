@@ -5,9 +5,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
-import com.simibubi.create.foundation.utility.VecHelper;
 
 import joptsimple.internal.Strings;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

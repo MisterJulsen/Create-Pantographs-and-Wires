@@ -2,10 +2,10 @@ package de.mrjulsen.paw.blockentity;
 
 import org.joml.Vector3d;
 
-import com.simibubi.create.content.contraptions.behaviour.MovementBehaviour;
+import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
-import com.simibubi.create.foundation.utility.VecHelper;
 
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -32,9 +32,4 @@ public class PantographMovementBehaviour implements MovementBehaviour {
             be.contraptionTick();
         }
 	}
-
-    @Override
-    public boolean renderAsNormalBlockEntity() {
-        return true;
-    }
 }

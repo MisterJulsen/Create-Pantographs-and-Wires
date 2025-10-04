@@ -11,12 +11,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+
+import org.embeddedt.embeddium.render.frapi.SpriteFinderCache;
 import org.joml.Vector3fc;
 
 import javax.annotation.Nonnull;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import link.infra.indium.other.SpriteFinderCache;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -109,6 +109,21 @@ public final class SinkingVertexBuilder implements VertexConsumer {
         @Override
         public Direction getLightFace() {
             return null;
+        }
+
+        @Override
+        public int getLight(int idx) {
+            return 0;
+        }
+
+        @Override
+        public int getForgeNormal(int idx) {
+            return 0;
+        }
+
+        @Override
+        public int getComputedFaceNormal() {
+            return 0;
         }
     };
 
@@ -275,7 +290,7 @@ public final class SinkingVertexBuilder implements VertexConsumer {
             }
 
             // Detect sprite
-            TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().find(midU / 4, midV / 4);
+            TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().findNearestSprite(midU / 4, midV / 4);
             if(sprite != null) {
                 buffers.addSprite(sprite);
             }

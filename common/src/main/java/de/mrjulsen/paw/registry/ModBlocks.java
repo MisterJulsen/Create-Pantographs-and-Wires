@@ -13,6 +13,8 @@ import java.util.function.UnaryOperator;
 import com.google.common.collect.ImmutableMap;
 import com.simibubi.create.AllInteractionBehaviours;
 import com.simibubi.create.AllMovementBehaviours;
+import com.simibubi.create.api.behaviour.interaction.MovingInteractionBehaviour;
+import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.simibubi.create.foundation.data.TagGen;
@@ -103,8 +105,8 @@ public class ModBlocks {
 	public static final BlockEntry<PantographBlock> PANTOGRAPH = PantographsAndWires.REGISTRATE.block("pantograph", PantographBlock::new)
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
-		.onRegister(AllMovementBehaviours.movementBehaviour(new PantographMovementBehaviour()))
-		.onRegister(AllInteractionBehaviours.interactionBehaviour(new PantographInteractionBehaviour()))
+		.onRegister(MovementBehaviour.movementBehaviour(new PantographMovementBehaviour()))
+		.onRegister(MovingInteractionBehaviour.interactionBehaviour(new PantographInteractionBehaviour()))
 		.register();
 		
 	public static final ImmutableMap<WeatherState, BlockEntry<LatticeMastBlock>> LATTICE_MAST = registerOxidizingBlock("lattice_mast", LatticeMastBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder

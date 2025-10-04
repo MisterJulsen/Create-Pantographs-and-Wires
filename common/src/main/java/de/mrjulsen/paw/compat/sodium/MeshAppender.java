@@ -14,7 +14,7 @@ public interface MeshAppender {
      * Called to add appropriate geometry to the section.
      * @param context render context for this section
      */
-    void render(Context context);
+    void render(org.embeddedt.embeddium.api.MeshAppender.Context context);
 
     /**
      * Section rendering context for a MeshAppender.

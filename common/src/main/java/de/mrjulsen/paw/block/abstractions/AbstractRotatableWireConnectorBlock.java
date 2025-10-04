@@ -1,13 +1,13 @@
 package de.mrjulsen.paw.block.abstractions;
 
 import com.simibubi.create.foundation.block.IBE;
-import com.simibubi.create.foundation.utility.VecHelper;
 
 import de.mrjulsen.wires.block.IWireConnector;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
 import de.mrjulsen.wires.graph.data.provider.BasicConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.item.CustomData;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.Level;

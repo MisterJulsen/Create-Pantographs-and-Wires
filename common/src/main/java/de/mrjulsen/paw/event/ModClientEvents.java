@@ -8,8 +8,6 @@ import de.mrjulsen.mcdragonlib.client.model.CustomBlockModelRegistry;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.model.CantileverModel;
-import de.mrjulsen.paw.compat.sodium.IncompatabilityScreen;
-import de.mrjulsen.paw.compat.sodium.SodiumCompatEvent;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.wires.graph.DLStatistics;
 import de.mrjulsen.wires.graph.WireGraph;
@@ -109,6 +107,7 @@ public final class ModClientEvents {
             }
         });
 
+        /*
         if (PantographsAndWires.isSodiumLoaded()) {
             SodiumCompatEvent.init();
 
@@ -118,6 +117,7 @@ public final class ModClientEvents {
                 });
             }
         }
+            */
     }
     
 }

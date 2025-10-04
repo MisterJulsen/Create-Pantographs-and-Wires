@@ -56,8 +56,8 @@ subprojects {
                     includeGroup("com.eliotlash.mclib")
             }
         }
-
-
+        maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+        maven { url = "https://maven.tterrag.com" } // Registrate
     }
 
     dependencies {
@@ -90,7 +90,7 @@ subprojects {
             "java_version": rootProject.java_version,
             "maven_group": rootProject.maven_group,
             "create_forge_version": rootProject.create_forge_version,
-            "create_fabric_version": rootProject.create_fabric_version,
+            //"create_fabric_version": rootProject.create_fabric_version,
             "main_class_name": rootProject.main_class_name,
             "geckolib_minecraft_version": rootProject.geckolib_minecraft_version,
             "geckolib_fabric_version": rootProject.geckolib_fabric_version,

@@ -5,7 +5,6 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 
 import de.mrjulsen.paw.event.ModClientEvents;
 import de.mrjulsen.paw.event.ModCommonEvents;
@@ -20,7 +19,8 @@ import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.mcdragonlib.net.NetworkManagerBase;
 import dev.architectury.platform.Platform;
-import net.fabricmc.api.EnvType;
+import dev.architectury.utils.Env;
+import net.createmod.catnip.lang.FontHelper.Palette;
 import software.bernie.geckolib.GeckoLib;
 import java.util.List;
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public final class PantographsAndWires {
 
         CrossPlatform.registerConfig();
         ModCommonEvents.init();
-        if (Platform.getEnv() == EnvType.CLIENT) {
+        if (Platform.getEnvironment() == Env.CLIENT) {
             ModClientEvents.init();
         }
         

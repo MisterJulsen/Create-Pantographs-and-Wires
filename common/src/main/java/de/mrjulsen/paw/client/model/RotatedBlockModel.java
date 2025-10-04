@@ -6,10 +6,10 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.simibubi.create.foundation.utility.VecHelper;
 
 import de.mrjulsen.paw.block.abstractions.IConicalShape;
 import de.mrjulsen.paw.block.abstractions.IRotatableBlock;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;

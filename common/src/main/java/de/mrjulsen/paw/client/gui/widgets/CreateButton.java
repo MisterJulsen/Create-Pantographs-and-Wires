@@ -1,11 +1,10 @@
 package de.mrjulsen.paw.client.gui.widgets;
 
-import com.simibubi.create.foundation.gui.element.ScreenElement;
-
 import de.mrjulsen.mcdragonlib.client.newgui.widgets.components.DLButton;
 import de.mrjulsen.mcdragonlib.client.util.Graphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.util.math.Rectangle;
+import net.createmod.catnip.gui.element.ScreenElement;
 import net.minecraft.resources.ResourceLocation;
 
 public class CreateButton extends DLButton {
