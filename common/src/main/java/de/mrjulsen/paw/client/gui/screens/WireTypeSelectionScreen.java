@@ -16,8 +16,10 @@ import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateListSlider;
-import de.mrjulsen.paw.registry.ModNetworkAccessor;
-import de.mrjulsen.paw.registry.ModNetworkAccessor.WireSettingsData;
+import de.mrjulsen.paw.data.WireSettingsData;
+import de.mrjulsen.paw.network.stc.ClearWireConnectionPacket;
+import de.mrjulsen.paw.network.stc.UpdateCantileverSettingsPacket;
+import de.mrjulsen.paw.network.stc.UpdateWireSettingsPacket;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.item.IWireItemBase;
@@ -53,8 +55,9 @@ public class WireTypeSelectionScreen extends DLWindow {
 
         addEventListener(DLGuiStandardEvents.CloseEvent.class, (s, e) -> {
             WireSettingsData data = new WireSettingsData(selectedType);
-            MultiWireItem.setNbt(stack, data);
-            DataAccessor.getFromServer(data, ModNetworkAccessor.UPDATE_WIRE_SETTINGS, $ -> {});
+            MultiWireItem.setNbt(stack, data);            
+            PantographsAndWires.net().CHANNEL.sendToServer(new UpdateWireSettingsPacket(data));
+            //DataAccessor.getFromServer(data, ModNetworkAccessor.UPDATE_WIRE_SETTINGS, $ -> {});
             return false;
         });
         
@@ -77,8 +80,9 @@ public class WireTypeSelectionScreen extends DLWindow {
         
         CreateButton resetBtn = new CreateButton(7, height() - 6 - CreateButton.HEIGHT, AllIcons.I_TRASH);
         resetBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {            
-            IWireItemBase.clear(stack);
-            DataAccessor.getFromServer(null, ModNetworkAccessor.CLEAR_WIRE_CONNECTION_DATA, $ -> {});
+            IWireItemBase.clear(stack);            
+            PantographsAndWires.net().CHANNEL.sendToServer(new ClearWireConnectionPacket());
+            //DataAccessor.getFromServer(null, ModNetworkAccessor.CLEAR_WIRE_CONNECTION_DATA, $ -> {});
             getWindowManager().closeWindow(this);
             return false;
         });

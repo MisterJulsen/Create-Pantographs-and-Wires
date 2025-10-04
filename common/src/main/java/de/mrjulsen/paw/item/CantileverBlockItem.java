@@ -8,7 +8,6 @@ import de.mrjulsen.paw.block.property.EInsulatorType;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity.SubCantileverSetting;
 import de.mrjulsen.paw.event.ClientWrapper;
-import de.mrjulsen.paw.registry.ModNetworkAccessor.CantileverSettingsData;
 import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -120,7 +119,7 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
         return nbt;
     }
 
-    public static boolean setNbt(ItemStack stack, CantileverSettingsData data) {
+    public static boolean setNbt(ItemStack stack, de.mrjulsen.paw.data.CantileverSettingsData data) {
         if (stack.getItem() instanceof CantileverBlockItem) {
             CompoundTag nbt = getNbt(stack);
             nbt.putFloat(CantileverBlockEntity.NBT_WIDTH, data.width());

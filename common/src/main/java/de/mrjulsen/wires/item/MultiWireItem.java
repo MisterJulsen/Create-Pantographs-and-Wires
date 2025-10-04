@@ -4,9 +4,9 @@ import java.util.List;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.data.WireHitResult;
+import de.mrjulsen.paw.data.WireSettingsData;
 import de.mrjulsen.paw.event.ClientWrapper;
 import de.mrjulsen.paw.registry.ModWireRegistry;
-import de.mrjulsen.paw.registry.ModNetworkAccessor.WireSettingsData;
 import de.mrjulsen.wires.IWireType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;

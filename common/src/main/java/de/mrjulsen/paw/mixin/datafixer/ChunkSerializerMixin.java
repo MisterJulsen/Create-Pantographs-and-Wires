@@ -23,6 +23,7 @@ import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverReg
 import de.mrjulsen.paw.block.property.ECantileverConnectionType;
 import de.mrjulsen.paw.block.property.EInsulatorType;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
+import de.mrjulsen.paw.blockentity.CantileverBlockEntity.SubCantileverSetting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -175,12 +176,19 @@ public abstract class ChunkSerializerMixin {
                     if (existing != null) {
                         existing.putFloat(CantileverBlockEntity.NBT_WIDTH, width);
                         existing.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, insulatorPlacement);
-                        existing.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
                         existing.putFloat(CantileverBlockEntity.NBT_HEIGHT, height);
                         existing.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, catenaryHeight);
                         existing.putInt(CantileverBlockEntity.NBT_POST_CONNECTION_OFFSET, postConnectionOffset);
                         existing.putInt(CantileverBlockEntity.NBT_INSULATOR_TYPE, insulatorType);
                         existing.putByte(CantileverBlockEntity.NBT_CANTILEVERS_COUNT, cantileverCount);
+                        if (cantileverCount > 1 && registrationArmType == ECantileverRegistrationArmType.CENTER.ordinal()) {
+                            existing.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, ECantileverRegistrationArmType.INNER.ordinal());
+                            ListTag list = new ListTag();
+                            list.add(new SubCantileverSetting((byte)0, ECantileverRegistrationArmType.OUTER).toNbt());
+                            existing.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
+                        } else {
+                            existing.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
+                        }
                         blockEntitiesByPos.put(pos, existing);
                     } else {
                         CompoundTag newEntity = new CompoundTag();
@@ -190,12 +198,19 @@ public abstract class ChunkSerializerMixin {
                         newEntity.putString("id", PantographsAndWires.MOD_ID + ":" + "cantilever_block_entity");
                         newEntity.putFloat(CantileverBlockEntity.NBT_WIDTH, width);
                         newEntity.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, insulatorPlacement);
-                        newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
                         newEntity.putFloat(CantileverBlockEntity.NBT_HEIGHT, height);
                         newEntity.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, catenaryHeight);
                         newEntity.putInt(CantileverBlockEntity.NBT_POST_CONNECTION_OFFSET, postConnectionOffset);
                         newEntity.putInt(CantileverBlockEntity.NBT_INSULATOR_TYPE, insulatorType);
                         newEntity.putByte(CantileverBlockEntity.NBT_CANTILEVERS_COUNT, cantileverCount);
+                        if (cantileverCount > 1 && registrationArmType == ECantileverRegistrationArmType.CENTER.ordinal()) {
+                            newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, ECantileverRegistrationArmType.INNER.ordinal());
+                            ListTag list = new ListTag();
+                            list.add(new SubCantileverSetting((byte)0, ECantileverRegistrationArmType.OUTER).toNbt());
+                            newEntity.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
+                        } else {
+                            newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
+                        }
                         blockEntitiesByPos.put(pos, newEntity);
                     }
                 } catch (Exception e) {

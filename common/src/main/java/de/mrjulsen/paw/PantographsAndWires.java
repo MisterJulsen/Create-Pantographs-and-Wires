@@ -9,11 +9,13 @@ import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 
 import de.mrjulsen.paw.event.ModClientEvents;
 import de.mrjulsen.paw.event.ModCommonEvents;
+import de.mrjulsen.paw.network.stc.ClearWireConnectionPacket;
+import de.mrjulsen.paw.network.stc.UpdateCantileverSettingsPacket;
+import de.mrjulsen.paw.network.stc.UpdateWireSettingsPacket;
 import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.registry.ModCreativeModeTab;
 import de.mrjulsen.paw.registry.ModItems;
-import de.mrjulsen.paw.registry.ModNetworkAccessor;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.mcdragonlib.net.NetworkManagerBase;
@@ -43,7 +45,7 @@ public final class PantographsAndWires {
 		});
 	}
     
-    private static NetworkManagerBase cmrNet;
+    private static NetworkManagerBase net;
 
     public static void load() {}
 
@@ -52,7 +54,6 @@ public final class PantographsAndWires {
         GeckoLib.initialize();
         WiresApi.init();
 
-        ModNetworkAccessor.init();
         ModWireRegistry.init();
         ModBlocks.init();
         ModItems.init();
@@ -66,14 +67,17 @@ public final class PantographsAndWires {
             ModClientEvents.init();
         }
         
-        cmrNet = new NetworkManagerBase(MOD_ID, "paw_network", List.of(
+        net = new NetworkManagerBase(MOD_ID, "paw_network", List.of(
             // cts
             // stc
+            ClearWireConnectionPacket.class,
+            UpdateCantileverSettingsPacket.class,
+            UpdateWireSettingsPacket.class
         ));
     }
 
     public static NetworkManagerBase net() {
-        return cmrNet;
+        return net;
     }
 
     public static boolean useAdvancedLogging() {

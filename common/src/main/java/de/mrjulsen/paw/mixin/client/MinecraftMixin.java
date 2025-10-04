@@ -9,9 +9,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.paw.data.CustomHitResultTypes;
 import de.mrjulsen.paw.data.WireHitResult;
+import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.item.IWireInteractableItem;
-import de.mrjulsen.wires.network.NetworkManager;
 import de.mrjulsen.wires.network.WireInteractionData;
+import de.mrjulsen.wires.network.WiresSyncData;
+import de.mrjulsen.wires.network.packets.cts.WireInteractionPacket;
+import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
@@ -39,7 +42,9 @@ public class MinecraftMixin {
             if (interactionresult == null || !interactionresult.consumesAction()) {
                 interactionresult = hit.getWireId().type().use(player.level(), player, hand, hit);
             }
-            DataAccessor.getFromServer(new WireInteractionData(hand, hit), NetworkManager.WIRE_INTERACTION, $ -> {});
+            
+            WiresApi.net().CHANNEL.sendToServer(new WireInteractionPacket(new WireInteractionData(hand, hit)));
+            //DataAccessor.getFromServer(new WireInteractionData(hand, hit), NetworkManager.WIRE_INTERACTION, $ -> {});
             if (interactionresult.consumesAction()) {
                 if (interactionresult.shouldSwing()) {
                     player.swing(hand);

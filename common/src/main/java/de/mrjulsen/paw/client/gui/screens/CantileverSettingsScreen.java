@@ -39,10 +39,10 @@ import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateEnumSlider;
 import de.mrjulsen.paw.client.gui.widgets.CreateSlider;
 import de.mrjulsen.paw.client.gui.widgets.IIconRepresentable;
+import de.mrjulsen.paw.data.CantileverSettingsData;
 import de.mrjulsen.paw.item.CantileverBlockItem;
+import de.mrjulsen.paw.network.stc.UpdateCantileverSettingsPacket;
 import de.mrjulsen.paw.registry.ModBlocks;
-import de.mrjulsen.paw.registry.ModNetworkAccessor;
-import de.mrjulsen.paw.registry.ModNetworkAccessor.CantileverSettingsData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -136,7 +136,8 @@ public class CantileverSettingsScreen extends DLWindow {
         addEventListener(DLGuiStandardEvents.CloseEvent.class, (s, e) -> {            
             CantileverSettingsData data = new CantileverSettingsData(width, height, catenaryHeight, registrationArmType, insulatorPlacement, showBracing);
             CantileverBlockItem.setNbt(stack, data);
-            DataAccessor.getFromServer(data, ModNetworkAccessor.UPDATE_CANTILEVER_SETTINGS, $ -> {});
+            PantographsAndWires.net().CHANNEL.sendToServer(new UpdateCantileverSettingsPacket(data));
+            //DataAccessor.getFromServer(data, ModNetworkAccessor.UPDATE_CANTILEVER_SETTINGS, $ -> {});
             return false;
         });
 
