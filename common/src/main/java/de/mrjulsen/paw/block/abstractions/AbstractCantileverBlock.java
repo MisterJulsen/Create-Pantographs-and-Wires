@@ -9,7 +9,9 @@ import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.item.CustomData;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.joml.Vector3f;
 
@@ -18,14 +20,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -219,6 +225,20 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         BlockPos relativePos = getSupportBlockPos(level, pos, state);
         BlockState supportState = level.getBlockState(relativePos);
         return super.canSurvive(state, level, pos) && (!(supportState.getBlock() instanceof ICantileverConnectableBlock c) || c.canCantileverConnect(level, relativePos, supportState, direction));
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, Builder params) {
+        BlockEntity blockEntity = (BlockEntity)params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (blockEntity instanceof CantileverBlockEntity be) {
+            byte count = be.getCantileversCount();
+            List<ItemStack> items = new ArrayList<>();
+            for (byte i = 0; i < count; i++) {
+                items.addAll(super.getDrops(state, params));
+            }
+            return items;
+        }
+        return super.getDrops(state, params);
     }
 
     protected TagKey<Block> getSupportBlockTag() {
