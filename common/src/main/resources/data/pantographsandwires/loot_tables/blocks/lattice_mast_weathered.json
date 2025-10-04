@@ -7,7 +7,7 @@
         "entries": [
           {
             "type": "minecraft:item",
-            "name": "pantographsandwires:cantilever_brown"
+            "name": "pantographsandwires:lattice_mast_weathered"
           }
         ],
         "conditions": [
