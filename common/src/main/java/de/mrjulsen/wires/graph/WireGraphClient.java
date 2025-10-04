@@ -273,7 +273,7 @@ public class WireGraphClient implements IWireGraph {
         if (!hasConnectionsInSection(section)) {
             return List.of();
         }
-        return renderDataBySection.get(section);
+        return Collections.unmodifiableCollection(renderDataBySection.get(section));
     }
 
 
