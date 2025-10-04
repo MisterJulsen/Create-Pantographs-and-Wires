@@ -12,7 +12,6 @@ import de.mrjulsen.paw.event.ModCommonEvents;
 import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.registry.ModCreativeModeTab;
-import de.mrjulsen.paw.registry.ModDataFixers;
 import de.mrjulsen.paw.registry.ModItems;
 import de.mrjulsen.paw.registry.ModNetworkAccessor;
 import de.mrjulsen.paw.registry.ModWireRegistry;
@@ -32,7 +31,8 @@ public final class PantographsAndWires {
 
     //public static final ResourceLocation WIRE_NET = new ResourceLocation(PantographsAndWires.MOD_ID, "trains");
 
-    public static final int DATA_FIXER_VERSION = 1;
+    public static final String NBT_DATA_FIXER = MOD_ID + "_datafixer_version";
+    public static final int DATA_FIXER_VERSION = 2;
     
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
@@ -58,7 +58,7 @@ public final class PantographsAndWires {
         ModItems.init();
         ModBlockEntities.init();
         ModCreativeModeTab.setup();
-        ModDataFixers.init();
+        //ModDataFixers.init();
 
         CrossPlatform.registerConfig();
         ModCommonEvents.init();

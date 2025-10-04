@@ -33,9 +33,7 @@
     "HitResultTypesMixin",
     "DimensionDataStorageAccessor",
 
-    "datafixer.ChunkSerializerMixin",
-    "datafixer.DataFixTypesMixin",
-    "datafixer.IOWorkerMixin"
+    "datafixer.ChunkSerializerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
