@@ -49,8 +49,8 @@
   "block.pantographsandwires.u_insulator_brown": "独立双绝缘子串（棕色）",
   "block.pantographsandwires.u_insulator_green": "独立双绝缘子串（绿色）",
 
-  "block.pantographsandwires.cantilever_green": "悬臂（绿色）",
-  "block.pantographsandwires.cantilever_brown": "悬臂（棕色）",
+  "block.pantographsandwires.cantilever_green": "接触网架（绿色）",
+  "block.pantographsandwires.cantilever_brown": "接触网架（棕色）",
   "block.pantographsandwires.cantilever.too_many_connections": "悬臂接线过多。",
   "block.pantographsandwires.cantilever.too_small_for_multiple_cantilevers": "该悬臂过小，无法再增加悬臂。",
 
