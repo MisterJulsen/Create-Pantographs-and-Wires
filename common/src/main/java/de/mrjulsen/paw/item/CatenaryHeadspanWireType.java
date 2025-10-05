@@ -231,7 +231,6 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 				}
 
 				network.setAndUpdateEdge(edge, true);
-				network.sendEdgeToClient(edge);
 				network.setDirty();
 			
 			// --- REMOVE WIRES ---
@@ -284,7 +283,6 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 					nbt.put(NBT_DROPPERS, li);					
 
 					network.setAndUpdateEdge(edge, true);
-					network.sendEdgeToClient(edge);
 					network.setDirty();
 				}
 

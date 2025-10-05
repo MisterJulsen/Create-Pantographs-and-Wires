@@ -369,17 +369,14 @@ public class WireGraph extends SavedData implements IWireGraph {
         
         // Sync to clients
         if (notifyClients) {
-            WiresSyncData netData = new WiresSyncData(getId(), null, () -> List.of(edge), () -> List.of(getNode(edge.getNodeAId()), getNode(edge.getNodeBId())), true);
-            for (ServerPlayer player : getPlayersForEdge(edge.getId())) {
-                WiresApi.net().CHANNEL.sendToPlayer(player, new WireConnectorDataPacket(new WiresSyncData.Wrapper(netData)));
-            }
+            sendEdgeToClient(edge, true);
         }
     }
     
-    public void sendEdgeToClient(WireEdge edge) {        
+    public void sendEdgeToClient(WireEdge edge, boolean force) {        
         WireNode nodeA = getNode(edge.getNodeAId());
         WireNode nodeB = getNode(edge.getNodeBId());
-        WiresSyncData netData = new WiresSyncData(getId(), null, () -> List.of(edge), () -> List.of(nodeA, nodeB), true);
+        WiresSyncData netData = new WiresSyncData(getId(), null, () -> List.of(edge), () -> List.of(nodeA, nodeB), force);
         for (ServerPlayer player : getPlayersForEdge(edge.getId())) {
             WiresApi.net().CHANNEL.sendToPlayer(player, new WireConnectorDataPacket(new WiresSyncData.Wrapper(netData)));
         }
@@ -670,7 +667,7 @@ public class WireGraph extends SavedData implements IWireGraph {
                 nodes.add(getNode(edge.getNodeAId()));
                 nodes.add(getNode(edge.getNodeBId()));
             }
-            WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectorDataPacket(new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true))));
+            WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectorDataPacket(new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, false))));
             //DataAccessor.getFromClient(serverPlayer, new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true)), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
         }
     }

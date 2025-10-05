@@ -142,7 +142,7 @@ public class WireEdge {
         
         WireDecorationData decoration = new WireDecorationData(wireName, posOnWire, element);
         addDecoration(decoration);
-        graph.sendEdgeToClient(this);
+        graph.sendEdgeToClient(this, true);
         return true;
     }
 

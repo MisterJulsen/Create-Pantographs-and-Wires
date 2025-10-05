@@ -47,7 +47,7 @@ public class WireConnectorDataPacket implements IPacketBase<WireConnectorDataPac
                 }
                 for (WireEdge edge : d.edges().get()) {
                     if (edge == null) continue;
-                    graph.addEdge(edge);
+                    graph.addEdge(edge, d.forceUpdate());
                 }
             });
         });
