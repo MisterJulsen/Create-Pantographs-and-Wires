@@ -78,7 +78,7 @@ public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
 
     @Override
     public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
-        return graph.getLevel().isLoaded(pos) && !graph.getLevel().getBlockState(pos).isAir();
+        return !graph.getLevel().isLoaded(pos) || !graph.getLevel().getBlockState(pos).isAir();
     }
 
     @Override

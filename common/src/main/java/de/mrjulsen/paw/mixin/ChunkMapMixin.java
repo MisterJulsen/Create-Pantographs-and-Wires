@@ -13,6 +13,7 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 @Mixin(ChunkMap.class)
 public class ChunkMapMixin {
@@ -21,7 +22,14 @@ public class ChunkMapMixin {
     private ServerLevel level;
 
     @Inject(method = "updateChunkTracking", at = @At(value = "HEAD"))
-    protected void updateChunkTracking(ServerPlayer player, ChunkPos chunkPos, MutableObject<ClientboundLevelChunkWithLightPacket> packetCache, boolean wasLoaded, boolean load, CallbackInfo ci) {
-        ChunkLoadingEvents.fireChunkWatch(wasLoaded, load, player, chunkPos, level);
+    protected void paw$updateChunkTracking(ServerPlayer player, ChunkPos chunkPos, MutableObject<ClientboundLevelChunkWithLightPacket> packetCache, boolean wasLoaded, boolean load, CallbackInfo ci) {
+        if (player.level() == this.level && !load && wasLoaded) {
+            ChunkLoadingEvents.fireChunkWatch(wasLoaded, load, player, chunkPos, level);
+        }
+    }
+    
+    @Inject(method = "playerLoadedChunk", at = @At(value = "TAIL"))
+    protected void paw$playerLoadedChunk(ServerPlayer player, MutableObject<ClientboundLevelChunkWithLightPacket> packetCache, LevelChunk chunk, CallbackInfo ci) {
+        ChunkLoadingEvents.fireChunkWatch(false, true, player, chunk.getPos(), level);
     }
 }
