@@ -18,6 +18,7 @@ import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
 import de.mrjulsen.wires.item.CustomData;
 import de.mrjulsen.wires.util.NodeId;
+import de.mrjulsen.wires.util.SafeChunkUtils;
 import de.mrjulsen.wires.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -107,7 +108,7 @@ public class BlockConnectorNodeData extends NodeData {
     
     @Override
     public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
-        if (!pending && graph.getLevel().isLoaded(getPos()) && graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector connector) {
+        if (!pending && graph.getLevel().isLoaded(getPos()) && SafeChunkUtils.getSafeBE(graph.getLevel(), getPos()) instanceof WireConnectorBlockEntity && SafeChunkUtils.getBlockState(graph.getLevel(), getPos()).getBlock() instanceof IWireConnector connector) {
             return Optional.of(connector.getConnectorData(graph.getLevel(), getPos(), customData, pointIndex));
         }
         return Optional.empty();
