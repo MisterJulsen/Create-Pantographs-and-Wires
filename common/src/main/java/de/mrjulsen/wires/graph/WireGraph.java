@@ -282,9 +282,9 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
 
         this.nodes.remove(id);
-        this.nodesByBlock.values().removeIf(x -> x.equals(id));
-        this.nodesByChunk.values().removeIf(x -> x.equals(id));
-        this.nodesBySection.values().removeIf(x -> x.equals(id));
+        this.nodesByBlock.values().remove(id);
+        this.nodesByChunk.values().remove(id);
+        this.nodesBySection.values().remove(id);
         this.nodesByType.get(node.getData().getRegistryType().id()).remove(node);
         setDirty();
     }
@@ -407,12 +407,12 @@ public class WireGraph extends SavedData implements IWireGraph {
             return Optional.empty();
         }
 
-        edgesByNode.values().removeIf(x -> x.equals(edge));
-        edgesByHash.values().removeIf(x -> x.equals(edge));
+        edgesByNode.values().remove(edge);
+        edgesByHash.values().remove(edge);
         NewWireCollision collision = collisionById.remove(id);
-        collisionByChunk.values().removeIf(x -> x == collision);
-        collisionBySection.values().removeIf(x -> x == collision);
-        collisionByBlock.values().removeIf(x -> x == collision);
+        collisionByChunk.values().remove(collision);
+        collisionBySection.values().remove(collision);
+        collisionByBlock.values().remove(collision);
 
         removeEdgeFromNode(edge, edge.getNodeAId(), deleteEmptyNodes);
         removeEdgeFromNode(edge, edge.getNodeBId(), deleteEmptyNodes);
@@ -485,6 +485,8 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
 
         Iterator<UUID> ids = new ArrayList<>(node.getConnections()).iterator();
+        List<WireNode> nodesToSend = new ArrayList<>();
+        List<WireNode> edgesToSend = new ArrayList<>();
         while (ids.hasNext()) {
             UUID id = ids.next();
             if (!hasEdge(id)) {
@@ -502,12 +504,18 @@ public class WireGraph extends SavedData implements IWireGraph {
                 return node;
             }
             CustomData customData = edge.getWireConnectionData().customData();
-            edge.setWireConnectionData(new WireConnectionData(
+            WireConnectionData data = new WireConnectionData(
                 customData,
                 nodeA.getData().getConnectorCustomData(this, customData, nodeA, 0).orElse(edge.getWireConnectionData().connectorA()),
                 nodeB.getData().getConnectorCustomData(this, customData, nodeB, 1).orElse(edge.getWireConnectionData().connectorB())
-            ));
-            setEdge(edge, true);
+            );
+            
+            if (edge.getWireConnectionData().equals(data)) {
+                return node;
+            }
+
+            edge.setWireConnectionData(data);
+            setEdge(edge, false);
             setDirty();
             
         }
@@ -654,7 +662,7 @@ public class WireGraph extends SavedData implements IWireGraph {
 
     public void onChunkUnload(Level level, ChunkPos pos, Player player) {
         if (playersWatchingChunk.containsKey(pos)) {
-            playersWatchingChunk.get(pos).removeIf(x -> x.equals(player.getUUID()));
+            playersWatchingChunk.get(pos).remove(player.getUUID());
         }
         
         synchronized (collisionByChunk) {

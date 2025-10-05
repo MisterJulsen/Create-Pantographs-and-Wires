@@ -39,5 +39,13 @@ public class CantileverConnectorDataProvider extends BasicConnectorDataProvider 
     public Vector3f getTensionWireAttachOffset() {
         return new Vector3f(tensionWireAttachPoint);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CantileverConnectorDataProvider o) {
+            return super.equals(o) && tensionWireAttachPoint.equals(o.tensionWireAttachPoint);
+        }
+        return false;
+    }
     
 }
