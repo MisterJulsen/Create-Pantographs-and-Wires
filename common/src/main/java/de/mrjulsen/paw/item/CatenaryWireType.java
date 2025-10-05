@@ -115,7 +115,9 @@ public class CatenaryWireType extends PAWWireType {
 				if (a.canPlaceDecoration(hitResult.getPosOnWire(), WIRE_TENSION, element) && a.canPlaceDecoration(hitResult.getPosOnWire(), WIRE_CONTACT, element)) { 
 					a.addDecoration(hitResult.getLocation().toVector3f(), WIRE_TENSION, element);
 					a.addDecoration(hitResult.getLocation().toVector3f(), WIRE_CONTACT, element);
-					stack.shrink(2);
+					if (player == null || (!player.isCreative() && !player.isSpectator())) {
+						stack.shrink(2);
+					}
 				} else {							
 					player.displayClientMessage(TextUtils.translate(KEY_ONE_INVALID_DECORATION_POSITION, 2).withStyle(ChatFormatting.RED), true);
 					return InteractionResult.FAIL;

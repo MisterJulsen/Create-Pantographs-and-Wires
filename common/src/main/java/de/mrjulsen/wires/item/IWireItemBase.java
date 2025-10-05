@@ -156,7 +156,9 @@ public interface IWireItemBase extends IWireInteractableItem {
     }
 
     default void removeWireItem(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, int length) {
-        stack.shrink(1);
+        if (player == null || (!player.isCreative() && !player.isSpectator())) {
+            stack.shrink(1);
+        }
     }
 
     default InteractionResult placeWire(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata) { 

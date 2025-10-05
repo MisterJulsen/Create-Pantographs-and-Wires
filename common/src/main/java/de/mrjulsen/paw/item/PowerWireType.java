@@ -79,7 +79,9 @@ public class PowerWireType extends PAWWireType {
 				ItemStack stack = player.getItemInHand(hand);
 				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(1));
 				if (a.addDecoration(hitResult.getLocation().toVector3f(), "main", element)) {
-					stack.shrink(1);
+					if (player == null || (!player.isCreative() && !player.isSpectator())) {
+						stack.shrink(1);
+					}
 				}
 			}
 		}

@@ -88,7 +88,9 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
         int newValue = current + length;
         int cleanValue = MathUtils.clamp(newValue, 0, WIRE_LENGTH);
         if (newValue <= 0) {
-            stack.shrink(1);
+            if (player == null || (!player.isCreative() && !player.isSpectator())) {
+                stack.shrink(1);
+            }
             player.getInventory().add(ModItems.EMPTY_WIRE_COIL.asStack());
         } else {
             nbt.putInt(NBT_WIRE_LENGTH, cleanValue);
@@ -100,7 +102,9 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
     public static void setWireAmount(Player player, ItemStack stack, int newValue) {
         CompoundTag nbt = stack.getOrCreateTag();
         if (newValue <= 0) {
-            stack.shrink(1);
+            if (player == null || (!player.isCreative() && !player.isSpectator())) {
+                stack.shrink(1);
+            }
             player.getInventory().add(ModItems.EMPTY_WIRE_COIL.asStack());
         } else {
             nbt.putInt(NBT_WIRE_LENGTH, newValue);
