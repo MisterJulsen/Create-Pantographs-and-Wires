@@ -31,7 +31,7 @@ import de.mrjulsen.wires.graph.registry.NodeDataRegistry;
 import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
 import de.mrjulsen.wires.network.packets.cts.WireInteractionPacket;
 import de.mrjulsen.wires.network.packets.stc.DeleteWireConnectionPacket;
-import de.mrjulsen.wires.network.packets.stc.WireConnectionChunkLoadingPacket;
+import de.mrjulsen.wires.network.packets.stc.WireConnectionChunkUnloadingPacket;
 import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacket;
 import de.mrjulsen.wires.util.GraphId;
 import net.minecraft.resources.ResourceLocation;
@@ -68,7 +68,7 @@ public class WiresApi {
             WireInteractionPacket.class,
             // stc
             DeleteWireConnectionPacket.class,
-            WireConnectionChunkLoadingPacket.class,
+            WireConnectionChunkUnloadingPacket.class,
             WireConnectorDataPacket.class
         ));
     }
