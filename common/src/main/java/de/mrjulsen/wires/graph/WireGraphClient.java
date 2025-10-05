@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import org.joml.Vector3f;
 
@@ -21,7 +22,7 @@ import de.mrjulsen.wires.Wire;
 import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireCreationContext;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
-import de.mrjulsen.wires.network.WireChunkLoadingData;
+import de.mrjulsen.wires.network.WireChunkUnloadingData;
 import de.mrjulsen.wires.render.WireSegmentRenderDataBatch;
 import de.mrjulsen.wires.util.GraphId;
 import net.minecraft.client.Minecraft;
@@ -150,6 +151,9 @@ public class WireGraphClient implements IWireGraph {
 
     public void removeNode(UUID id) {
         WireNode node = nodes.remove(id);
+        if (node == null) {
+            return;
+        }
         this.edgesByNode.removeAll(node);
         this.nodesByType.get(node.getData().getRegistryType().id()).remove(node);
     }
@@ -206,12 +210,13 @@ public class WireGraphClient implements IWireGraph {
     }
 
     private void removeEdgeInternal(UUID id, boolean checkForEmptyNodes) {
-        if (!edges.containsKey(id)) {
+        WireEdge edge = edges.remove(id);
+        if (edge == null) {
             return;
         }
 
-        WireEdge edge = edges.remove(id);
-        edgesByNode.values().remove(edge);
+        final Predicate<WireEdge> edgeTest = (x) -> x.getId().equals(edge.getId());
+        edgesByNode.values().removeIf(edgeTest);
         debugWireDataByEdge.removeAll(id);
 
         if (checkForEmptyNodes) {
@@ -228,9 +233,13 @@ public class WireGraphClient implements IWireGraph {
         renderDataByChunk.values().removeAll(renderdata);    
 
         NewWireCollision collision = collisionById.remove(id);
-        collisionByChunk.values().remove(collision);
-        collisionBySection.values().remove(collision);
-        collisionByBlock.values().remove(collision);
+        if (collision == null) {
+            return;
+        }
+        final Predicate<NewWireCollision> collisionTest = (x) -> x == collision;
+        collisionByChunk.values().removeIf(collisionTest);
+        collisionBySection.values().removeIf(collisionTest);
+        collisionByBlock.values().removeIf(collisionTest);
         
         for (WireSegmentRenderDataBatch batch : renderdata) {
             SectionPos section = batch.getSection();
@@ -238,15 +247,10 @@ public class WireGraphClient implements IWireGraph {
         }
     }
 
-    public synchronized void updateClientEdge(WireEdge edge) {
-        removeEdge(edge.getId());
-        addEdge(edge);
-    }   
-
-    public void onClientChunkLoading(WireChunkLoadingData in) {
+    public void onClientChunkUnloading(WireChunkUnloadingData in) {
         Set<UUID> emptyConnections = new HashSet<>();
         for (WireSegmentRenderDataBatch renderdata : renderDataByChunk.get(in.pos())) {
-            renderdata.setUnloaded(!in.load());
+            renderdata.setUnloaded(true);
             if (!renderDataById.containsKey(renderdata.getId()) || renderDataById.get(renderdata.getId()).stream().allMatch(WireSegmentRenderDataBatch::isUnloaded)) {
                 emptyConnections.add(renderdata.getId());
             }

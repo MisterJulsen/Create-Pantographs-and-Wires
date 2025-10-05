@@ -12,17 +12,15 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.ChunkPos;
 
-public record WireChunkLoadingData(
+public record WireChunkUnloadingData(
     GraphId id,
     ChunkPos pos,
-    Collection<UUID> connections,
-    boolean load
+    Collection<UUID> connections
 ) {
 
     private static final String NBT_GRAPH_ID = "GraphId";
     private static final String NBT_CHUNK = "Chunk";
     private static final String NBT_ID = "Id";
-    private static final String NBT_LOAD = "Load";
 
     public CompoundTag toNbt() {
         CompoundTag nbt = new CompoundTag();
@@ -30,17 +28,15 @@ public record WireChunkLoadingData(
         ids.addAll(connections.stream().map(x -> StringTag.valueOf(x.toString())).toList());
         nbt.putString(NBT_GRAPH_ID, id.id());
         nbt.put(NBT_ID, ids);
-        nbt.putBoolean(NBT_LOAD, load);
         Utils.putNbtChunkPos(nbt, NBT_CHUNK, pos);
         return nbt;
     }
 
-    public static WireChunkLoadingData fromNbt(CompoundTag nbt) {
-        return new WireChunkLoadingData(
+    public static WireChunkUnloadingData fromNbt(CompoundTag nbt) {
+        return new WireChunkUnloadingData(
             new GraphId(nbt.getString(NBT_GRAPH_ID)),
             Utils.getNbtChunkPos(nbt, NBT_CHUNK),
-            nbt.getList(NBT_ID, Tag.TAG_STRING).stream().map(x -> UUID.fromString(x.getAsString())).collect(Collectors.toSet()),
-            nbt.getBoolean(NBT_LOAD)
+            nbt.getList(NBT_ID, Tag.TAG_STRING).stream().map(x -> UUID.fromString(x.getAsString())).collect(Collectors.toSet())
         );
     }
     

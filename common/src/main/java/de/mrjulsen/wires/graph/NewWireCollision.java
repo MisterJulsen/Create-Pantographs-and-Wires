@@ -317,7 +317,18 @@ public class NewWireCollision {
 	}
 
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof NewWireCollision o) {
+            return edgeId.equals(o.edgeId);
+        }
+        return false;
+    }
 
+    @Override
+    public int hashCode() {
+        return edgeId.hashCode();
+    }
 
 
 
