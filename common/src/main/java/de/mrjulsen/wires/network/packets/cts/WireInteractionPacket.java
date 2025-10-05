@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.item.IWireInteractableItem;
 import de.mrjulsen.wires.network.WireInteractionData;
 import dev.architectury.networking.NetworkManager.PacketContext;
@@ -40,14 +41,18 @@ public class WireInteractionPacket implements IPacketBase<WireInteractionPacket>
 
             DragonLib.getCurrentServer().ifPresent(x -> {
                 x.execute(() -> {
-                    Player player = contextSupplier.get().getPlayer();
-                    InteractionResult interactionresult = null;
-                    if (player.getItemInHand(packet.data.hand()).getItem() instanceof IWireInteractableItem i) {
-                        interactionresult = i.interactWithWire(player.level(), player, packet.data.hand(), packet.data.hit());
-                    }
-                    if (interactionresult == null || !interactionresult.consumesAction()) {
-                        interactionresult = packet.data.hit().getWireId().type().use(player.level(), player, packet.data.hand(), packet.data.hit());
-                    }
+                    try {
+                        Player player = contextSupplier.get().getPlayer();
+                        InteractionResult interactionresult = null;
+                        if (player.getItemInHand(packet.data.hand()).getItem() instanceof IWireInteractableItem i) {
+                            interactionresult = i.interactWithWire(player.level(), player, packet.data.hand(), packet.data.hit());
+                        }
+                        if (interactionresult == null || !interactionresult.consumesAction()) {
+                            interactionresult = packet.data.hit().getWireId().type().use(player.level(), player, packet.data.hand(), packet.data.hit());
+                        }
+                    } catch (Exception e) {
+                        PantographsAndWires.LOGGER.error("Unable to process WireInteractionPacket:", e);
+                    }                    
                 });
             });
         });

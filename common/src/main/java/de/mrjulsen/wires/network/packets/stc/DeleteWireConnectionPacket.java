@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.network.DeleteWireSyncData;
@@ -38,10 +39,15 @@ public class DeleteWireConnectionPacket implements IPacketBase<DeleteWireConnect
     public void handle(DeleteWireConnectionPacket packet, Supplier<PacketContext> contextSupplier) {
         contextSupplier.get().queue(() -> {            
             EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
-                WireGraphClient graph = WireGraphManager.getClient(ClientUtils.level(), packet.data.id());
-                for (UUID id : packet.data.wireEdgeIds()) {
-                    graph.removeEdge(id);
+                try {
+                    WireGraphClient graph = WireGraphManager.getClient(ClientUtils.level(), packet.data.id());
+                    for (UUID id : packet.data.wireEdgeIds()) {
+                        graph.removeEdge(id);
+                    }         
+                } catch (Exception e) {
+                    PantographsAndWires.LOGGER.error("Unable to process DeleteWireConnectionPacket:", e);
                 }
+                
             });
         });
     }
