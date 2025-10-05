@@ -38,5 +38,13 @@ public class BasicConnectorDataProvider extends ConnectorDataProvider {
     public Vector3f getAttachOffset() {
         return new Vector3f(attachOffset);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BasicConnectorDataProvider o) {
+            return attachOffset.equals(o.attachOffset);
+        }
+        return false;
+    }
     
 }

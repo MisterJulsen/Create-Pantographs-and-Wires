@@ -85,6 +85,7 @@ public class BlockConnectorNodeData extends NodeData {
     
     @Override
     public WireNode updateWireNode(WireGraph graph, WireNode node) {
+        boolean wasPending = pending;
         if (pending) {
             pending = false;
             if (graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity be && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector) {
@@ -101,7 +102,7 @@ public class BlockConnectorNodeData extends NodeData {
             }
         }
         if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]        - COULD NOT REPLACE DUMMY NODE! This is not intended, but could occur if there is no longer a valid connector block at the corresponding location.");
-        return node;
+        return wasPending ? node : null;
     }
     
     @Override

@@ -50,6 +50,11 @@ public abstract class ConnectorDataProvider implements IRegisterable<ConnectorDa
         public DLRegistryObject<ConnectorDataProvider> getRegistryType() {
             return (DLRegistryObject<ConnectorDataProvider>)(Object)WiresApi.EMPTY_WIRE_CONNECTOR;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof Empty;
+        }
         
     }
 }
