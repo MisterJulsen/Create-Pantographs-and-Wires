@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.registry.InsulatorWireDecoration;
+import de.mrjulsen.paw.registry.ModItems;
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraph;
@@ -75,7 +76,7 @@ public class PowerWireType extends PAWWireType {
 
 			if (player.getItemInHand(hand).is(Items.SHEARS)) {
 				network.removeEdge(hitResult.getWireId().id(), hitResult.getLocation().toVector3f(), Optional.of(player));
-			} else if (player.getItemInHand(hand).getItem() != Items.AIR && player.getItemInHand(hand).getItem() instanceof BlockItem) {
+			} else if (player.getItemInHand(hand).is(ModItems.TAG_INSULATORS) && player.getItemInHand(hand).getItem() instanceof BlockItem) {
 				ItemStack stack = player.getItemInHand(hand);
 				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(1));
 				if (a.addDecoration(hitResult.getLocation().toVector3f(), "main", element)) {
