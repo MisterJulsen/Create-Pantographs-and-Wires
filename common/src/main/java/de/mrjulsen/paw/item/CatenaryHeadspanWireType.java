@@ -327,11 +327,15 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 				element = new RegistrationArmWireDecoration(stack.copyWithCount(1), front, state, dropperId);
 				if (edge.canPlaceDecoration(pos - element.getRadius(element) + offset, WIRE_LOWER_TENSION, element)) {
 					edge.addDecoration(pos - element.getRadius(element) + offset, WIRE_LOWER_TENSION, element);
-					stack.shrink(1);
+					if (player == null || (!player.isCreative() && !player.isSpectator())) {
+						stack.shrink(1);
+					}
 				} else if (!state.isAbove()) {
 					element = new RegistrationArmWireDecoration(stack.copyWithCount(1), front, centered ? State.ABOVE_CENTERED : State.ABOVE, dropperId);
 					if (edge.addDecoration(pos - element.getRadius(element) + offset, WIRE_LOWER_TENSION, element)) {
-						stack.shrink(1);
+						if (player == null || (!player.isCreative() && !player.isSpectator())) {
+							stack.shrink(1);
+						}
 					}
 				}
 
@@ -354,12 +358,16 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 					if (isLarge) {
 						wn = WIRE_DROPPER_L + wn;
 						if (edge.addDecoration(collision.length(wn) - element.getRadius(element), wn, element)) {
-							stack.shrink(1);
+							if (player == null || (!player.isCreative() && !player.isSpectator())) {
+								stack.shrink(1);
+							}
 						}
 					} else {
 						wn = WIRE_DROPPER_U + wn;
 						if (edge.addDecoration(element.getRadius(element), wn, element)) {
-							stack.shrink(1);
+							if (player == null || (!player.isCreative() && !player.isSpectator())) {
+								stack.shrink(1);
+							}
 						}
 					}					
 				} else if (hitResult.getWireId().name().equals(WIRE_LOWER_TENSION) || hitResult.getWireId().name().equals(WIRE_UPPER_TENSION)) {
@@ -367,7 +375,9 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 					if (isLarge) {
 						element = new InsulatorWireDecoration(stack.copyWithCount(1));
 						if (edge.addDecoration(pos, WIRE_LOWER_TENSION, element)) {
-							stack.shrink(1);
+							if (player == null || (!player.isCreative() && !player.isSpectator())) {
+								stack.shrink(1);
+							}
 						}
 					} else {
 						if (stack.getCount() < 2) {
@@ -378,7 +388,9 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 						if (edge.canPlaceDecoration(pos, WIRE_LOWER_TENSION, element) && edge.canPlaceDecoration(pos, WIRE_UPPER_TENSION, element)) {
 							edge.addDecoration(pos, WIRE_LOWER_TENSION, element);
 							edge.addDecoration(pos, WIRE_UPPER_TENSION, element);
-							stack.shrink(2);
+							if (player == null || (!player.isCreative() && !player.isSpectator())) {
+								stack.shrink(2);
+							}
 						} else {							
 							player.displayClientMessage(TextUtils.translate(KEY_ONE_INVALID_DECORATION_POSITION, 2).withStyle(ChatFormatting.RED), true);
 							return InteractionResult.FAIL;
