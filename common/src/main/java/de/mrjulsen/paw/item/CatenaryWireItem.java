@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.data.Pair;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.CantileverBlock;
@@ -25,6 +26,7 @@ import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.registry.DLStaticRegistryObject;
 import de.mrjulsen.wires.graph.data.node.CatenaryHeadspanConnectionNodeData;
 import de.mrjulsen.wires.item.IPawWireItemBase;
+import de.mrjulsen.wires.network.WireId;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -131,8 +133,9 @@ public class CatenaryWireItem implements IPawWireItemBase {
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
         if (hit instanceof WireHitResult h) {
-            if (CatenaryHeadspanWireType.canConnectCatenary(WireGraphManager.get(level, h.getGraphId()).getEdge(h.getWireId().id()), h.getWireId())) {
-                return new CatenaryHeadspanConnectionNodeData(h.getWireId());
+            Pair<Boolean, WireId> result = CatenaryHeadspanWireType.canConnectCatenary(WireGraphManager.get(level, h.getGraphId()).getEdge(h.getWireId().id()), h.getWireId());
+            if (result.getFirst()) {
+                return new CatenaryHeadspanConnectionNodeData(result.getSecond());
             } else {
                 player.displayClientMessage(txtNoRegistrationArm, true);
                 return null;

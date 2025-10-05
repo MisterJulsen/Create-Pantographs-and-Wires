@@ -3,6 +3,7 @@ package de.mrjulsen.wires.network.packets.stc;
 import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.network.WireChunkUnloadingData;
 import de.mrjulsen.wires.util.ClientUtils;
@@ -36,7 +37,11 @@ public class WireConnectionChunkUnloadingPacket implements IPacketBase<WireConne
     public void handle(WireConnectionChunkUnloadingPacket packet, Supplier<PacketContext> contextSupplier) {
         contextSupplier.get().queue(() -> {            
             EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
-                WireGraphManager.getClient(ClientUtils.level(), packet.data.id()).onClientChunkUnloading(packet.data);
+                try {
+                    WireGraphManager.getClient(ClientUtils.level(), packet.data.id()).onClientChunkUnloading(packet.data);                
+                } catch (Exception e) {
+                    PantographsAndWires.LOGGER.error("Unable to process WireConnectionChunkUnloadingPacket:", e);
+                }
             });
         });
     }

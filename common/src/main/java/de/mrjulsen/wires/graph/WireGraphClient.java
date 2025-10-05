@@ -156,7 +156,8 @@ public class WireGraphClient implements IWireGraph {
 
 
     public void addNode(WireNode node) {
-        WireNode n = this.nodes.computeIfAbsent(node.getId(), x -> node);
+        this.nodes.computeIfAbsent(node.getId(), $ -> node);
+        WireNode n = this.nodes.get(node.getId());
         this.nodesByType.computeIfAbsent(node.getData().getRegistryType().id(), (a) -> node.getData().getRegistryType().createAccessor()).put(n);
     }
 

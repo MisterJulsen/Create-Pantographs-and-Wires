@@ -13,6 +13,7 @@ import org.joml.Vector3f;
 import com.eliotlash.mclib.utils.MathUtils;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.data.Pair;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.RegistrationArmBlock;
@@ -409,21 +410,21 @@ public class CatenaryHeadspanWireType extends PAWWireType {
         return cross > 0;
     }
 
-	public static boolean canConnectCatenary(WireEdge edge, WireId id) {
-		if (id.type() != ModWireRegistry.CATENARY_HEADSPAN || !id.name().startsWith(WIRE_DROPPER_L)) {
-			return false;
+	public static Pair<Boolean, WireId> canConnectCatenary(WireEdge edge, WireId id) {
+		if (id.type() != ModWireRegistry.CATENARY_HEADSPAN || (!id.name().startsWith(WIRE_DROPPER_L) && !id.name().startsWith(WIRE_DROPPER_U))) {
+			return Pair.of(false, id);
 		}
 
 		return toDropperId(id.name()).map(dropperId -> {
 			for (WireDecorationData decoration : edge.getDecorations()) {
 				if (decoration.getDecoration() instanceof RegistrationArmWireDecoration deco) {
 					if (deco.getDropperId().equals(dropperId)) {
-						return true;
+						return Pair.of(true, new WireId(id.id(), WIRE_DROPPER_L + dropperId.toString(), id.type()));
 					}
 				}
 			}
-			return false;
-		}).orElse(false);
+			return Pair.of(false, id);
+		}).orElse(Pair.of(false, id));
 	}
 
 	public static Optional<UUID> toDropperId(String wireName) {
