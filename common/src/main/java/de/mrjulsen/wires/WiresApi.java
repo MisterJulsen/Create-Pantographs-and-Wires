@@ -34,6 +34,7 @@ import de.mrjulsen.wires.network.packets.stc.DeleteWireConnectionPacket;
 import de.mrjulsen.wires.network.packets.stc.WireConnectionChunkUnloadingPacket;
 import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacket;
 import de.mrjulsen.wires.util.GraphId;
+import de.mrjulsen.wires.util.SafeChunkUtils;
 import net.minecraft.resources.ResourceLocation;
 
 public class WiresApi {
@@ -62,6 +63,10 @@ public class WiresApi {
 
     public static void init() {
         //NetworkManager.init();
+
+        dev.architectury.event.events.common.TickEvent.SERVER_LEVEL_PRE.register((level) -> {
+            SafeChunkUtils.onTick(level);
+        });
         
         net = new NetworkManagerBase(MOD_ID, "paw_network", List.of(
             // cts
