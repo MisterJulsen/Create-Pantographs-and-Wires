@@ -76,7 +76,6 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
             WirePoints points = collision.getWirePointsOf(wireId.name());
             return graph.createNode(this, points.vertices()[0]);
         });
-        node.addConnection(wireId.id());
         return node;
     }
 
