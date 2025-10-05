@@ -6,15 +6,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.paw.data.CustomHitResultTypes;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.item.IWireInteractableItem;
 import de.mrjulsen.wires.network.WireInteractionData;
-import de.mrjulsen.wires.network.WiresSyncData;
 import de.mrjulsen.wires.network.packets.cts.WireInteractionPacket;
-import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
