@@ -180,12 +180,12 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     private CantileverData[] calcCantilevers() {
         CantileverData[] dataArray = new CantileverData[getCantileversCount()];
 
-        float spacing = (1.0f / getCantileversCount()) * 2;
-        float z = Z_POS - (spacing * (getCantileversCount() - 1)) / 2f;
+        float spacing = (1.0f / dataArray.length) * 2;
+        float z = Z_POS - (spacing * (dataArray.length - 1)) / 2f;
 
-        List<Float> xPool = new ArrayList<>(getCantileversCount());
-        List<Float> yPool = new ArrayList<>(getCantileversCount());
-        for (float i = 0, x = -0.5f, y = 0.5f; i < getCantileversCount(); i++, x += 0.5f, y -= 0.5f) {
+        List<Float> xPool = new ArrayList<>(dataArray.length);
+        List<Float> yPool = new ArrayList<>(dataArray.length);
+        for (float i = 0, x = -0.5f, y = 0.5f; i < dataArray.length; i++, x += 0.5f, y -= 0.5f) {
             xPool.add(x);
             yPool.add(y);
         }
@@ -200,13 +200,13 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
             };
         };
 
-        for (int i = 0; i < getCantileversCount(); i++) {
+        for (int i = 0; i < dataArray.length; i++) {
             float lw = getWidth();
             float dY = 0;
             ECantileverRegistrationArmType lRegisterArm = getRegistrationArmType();
             float lCatenaryHeight = getCatenaryHeight();
 
-            if (getCantileversCount() > 1 && subCanileverSettings != null) {
+            if (dataArray.length > 1 && subCanileverSettings != null) {
                 if (i <= 0) {
                     Vector2f v = getter.apply(getRegistrationArmType());
                     lw += v.x();
