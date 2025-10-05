@@ -48,11 +48,11 @@ public class CantileverModel extends DLModel {
         ECantileverInsulatorsPlacement insulatorPlacement = context.has(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT) ? context.get(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT) : ECantileverInsulatorsPlacement.BACK;
         ECantileverRegistrationArmType registrationArmType = context.has(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM) ? context.get(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM) : ECantileverRegistrationArmType.CENTER;
         float catenaryHeight = context.has(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) ? context.get(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) : 1;
-        boolean useSupportTube = context.has(CantileverBlockEntity.PROPERTY_USE_SUPPORT_TUBE) ? context.get(CantileverBlockEntity.PROPERTY_USE_SUPPORT_TUBE) : false;
+        boolean showBracing = context.has(CantileverBlockEntity.PROPERTY_SHOW_BRACING) ? context.get(CantileverBlockEntity.PROPERTY_SHOW_BRACING) : false;
         ECantileverMastConnection mastConnection = context.has(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) ? context.get(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) : ECantileverMastConnection.NONE;
 
         CantileverData[] subCantilevers = context.has(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) ? context.get(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) : new CantileverData[] {
-            new CantileverData(0, CantileverBlockEntity.Y_POS, 0, width, height, 0, registrationArmType, catenaryHeight, 0)
+            new CantileverData(0, CantileverBlockEntity.Y_POS, 0, width, height, 0, registrationArmType, catenaryHeight, 0, showBracing)
         };
 
         BasicMesh mesh = new BasicMesh();
@@ -75,7 +75,7 @@ public class CantileverModel extends DLModel {
                     (data.registrationArm() == ECantileverRegistrationArmType.CENTER && data.catenaryHeight() == 1f && height == 1.5f && data.width() <= 1.5f) ? 12 : 3,
                     0.75f,
                     steadyArmOffset,
-                    useSupportTube
+                    data.showBracing()
                 );
                 mesh.combine(false, cantilever);
             }

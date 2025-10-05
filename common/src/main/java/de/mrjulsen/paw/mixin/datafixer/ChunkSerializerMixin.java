@@ -171,6 +171,7 @@ public abstract class ChunkSerializerMixin {
                     int postConnectionOffset = ECantileverConnectionType.getByName(((CompoundTag)state.get("Properties")).getString("connection").replace("\"", "")).getIndex();
                     float height = 0.5f * rawWidth - DragonLib.PIXEL * 2;
                     float catenaryHeight = width < 5 ? 1 : 2;
+                    boolean showBracing = width >= 4;
 
                     CompoundTag existing = blockEntitiesByPos.get(pos);
                     if (existing != null) {
@@ -184,7 +185,7 @@ public abstract class ChunkSerializerMixin {
                         if (cantileverCount > 1 && registrationArmType == ECantileverRegistrationArmType.CENTER.ordinal()) {
                             existing.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, ECantileverRegistrationArmType.INNER.ordinal());
                             ListTag list = new ListTag();
-                            list.add(new SubCantileverSetting((byte)0, ECantileverRegistrationArmType.OUTER).toNbt());
+                            list.add(new SubCantileverSetting((byte)0, ECantileverRegistrationArmType.OUTER, showBracing).toNbt());
                             existing.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
                         } else {
                             existing.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
@@ -206,7 +207,7 @@ public abstract class ChunkSerializerMixin {
                         if (cantileverCount > 1 && registrationArmType == ECantileverRegistrationArmType.CENTER.ordinal()) {
                             newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, ECantileverRegistrationArmType.INNER.ordinal());
                             ListTag list = new ListTag();
-                            list.add(new SubCantileverSetting((byte)0, ECantileverRegistrationArmType.OUTER).toNbt());
+                            list.add(new SubCantileverSetting((byte)0, ECantileverRegistrationArmType.OUTER, showBracing).toNbt());
                             newEntity.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
                         } else {
                             newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);

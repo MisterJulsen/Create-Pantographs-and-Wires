@@ -63,7 +63,7 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             byte currentCount = be.getCantileversCount();
             if (currentCount < allowedCount) {
                 byte count = (byte)(be.getCantileversCount() + 1);
-                be.getSubCanileverSettings()[count - 2] = new SubCantileverSetting((byte)(count - 2), getCantileverType(context.getItemInHand()));
+                be.getSubCanileverSettings()[count - 2] = new SubCantileverSetting((byte)(count - 2), getCantileverType(context.getItemInHand()), getShowBracing(context.getItemInHand()));
                 be.setCantileversCount(count);
                 be.update();
                 be.setDoNotUpdate(true);
@@ -127,6 +127,7 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             nbt.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, data.catenaryHeight());
             nbt.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, data.cantileverType().ordinal());
             nbt.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, data.insulatorPlacement().ordinal());
+            nbt.putBoolean(CantileverBlockEntity.NBT_SHOW_BRACING, data.showBracing());
             return true;
         } 
         return false;
@@ -144,6 +145,13 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             return getNbt(stack).getFloat(CantileverBlockEntity.NBT_HEIGHT);
         }
         return AbstractCantileverBlock.MIN_WIDTH;
+    }    
+
+    public static boolean getShowBracing(ItemStack stack) {
+        if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
+            return getNbt(stack).getBoolean(CantileverBlockEntity.NBT_SHOW_BRACING);
+        }
+        return false;
     }
 
     public static float getCatenaryHeight(ItemStack stack) {
@@ -165,13 +173,6 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             return ECantileverInsulatorsPlacement.values()[getNbt(stack).getInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT)];
         }
         return ECantileverInsulatorsPlacement.def();
-    }
-
-    public static boolean shouldUseSupportTube(ItemStack stack) {
-        if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
-            return getNbt(stack).getBoolean(CantileverBlockEntity.NBT_USE_SUPPORT_TUBE);
-        }
-        return false;
     }
 
     @Override
