@@ -20,6 +20,7 @@ import org.joml.Vector3f;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
 
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.paw.PantographsAndWires;
@@ -46,7 +47,6 @@ import de.mrjulsen.wires.network.packets.stc.WireConnectionChunkLoadingPacket;
 import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacket;
 import de.mrjulsen.wires.util.GraphId;
 import de.mrjulsen.wires.util.Utils;
-import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -76,22 +76,22 @@ public class WireGraph extends SavedData implements IWireGraph {
     private final Map<UUID, WireEdge> edges = new HashMap<>();
     
     // --- Access ---
-    final Multimap<BlockPos, UUID> nodesByBlock = MultimapBuilder.hashKeys().arrayListValues().build();
-    final Multimap<SectionPos, UUID> nodesBySection = MultimapBuilder.hashKeys().arrayListValues().build();
-    final Multimap<ChunkPos, UUID> nodesByChunk = MultimapBuilder.hashKeys().arrayListValues().build();
+    final Multimap<BlockPos, UUID> nodesByBlock = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<SectionPos, UUID> nodesBySection = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<ChunkPos, UUID> nodesByChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
     final Map<ResourceLocation, NodeAccessor<?>> nodesByType = new ConcurrentHashMap<>();
 
-    final Multimap<WireNode, WireEdge> edgesByNode = MultimapBuilder.hashKeys().hashSetValues().build();
+    final Multimap<WireNode, WireEdge> edgesByNode = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
     final Map<WireEdgeHash, WireEdge> edgesByHash = new ConcurrentHashMap<>();
     
     // Collision
-    final Map<UUID, NewWireCollision> collisionById = new HashMap<>();
-    final Multimap<BlockPos, NewWireCollision> collisionByBlock = MultimapBuilder.hashKeys().hashSetValues().build();
-    final Multimap<ChunkPos, NewWireCollision> collisionByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
-    final Multimap<SectionPos, NewWireCollision> collisionBySection = MultimapBuilder.hashKeys().hashSetValues().build();
+    final Map<UUID, NewWireCollision> collisionById = new ConcurrentHashMap<>();
+    final Multimap<BlockPos, NewWireCollision> collisionByBlock = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<ChunkPos, NewWireCollision> collisionByChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<SectionPos, NewWireCollision> collisionBySection = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
     
     // Chunk Loading
-    private final Multimap<ChunkPos, UUID> playersWatchingChunk = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<ChunkPos, UUID> playersWatchingChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
 
     public WireGraph(GraphId id, Level level) {
         this.id = id;
@@ -241,14 +241,14 @@ public class WireGraph extends SavedData implements IWireGraph {
       * @param pos The world position of the node.
       * @return The newly created node.
       */
-    public synchronized WireNode createNode(NodeData data, Vector3f pos) {
+    public WireNode createNode(NodeData data, Vector3f pos) {
         WireNode node = new WireNode(this, data);
         node.setPos(pos);
         setNode(node);
         return node;
     }
 
-    private synchronized void setNode(WireNode node) {        
+    private void setNode(WireNode node) {        
         BlockPos blockPos = new BlockPos((int)node.getPos().x(), (int)node.getPos().y(), (int)node.getPos().z());
         SectionPos section = SectionPos.of(blockPos);
         ChunkPos chunk = new ChunkPos(blockPos);
@@ -266,7 +266,7 @@ public class WireGraph extends SavedData implements IWireGraph {
      * @param breakPos The break position or {@code null} to disable drops
      * @param player
      */
-    public synchronized void removeNode(UUID id, Vector3f breakPos, Optional<Player> player) {
+    public void removeNode(UUID id, Vector3f breakPos, Optional<Player> player) {
         if (!nodes.containsKey(id)) {
             return;
         }
@@ -300,7 +300,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     /**
      * Creates a new edge but doesn't add it to the graph. For this, use {@link WireGraph#setEdge}.
      */
-    public synchronized CreateEdgeResult createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex, boolean sendToPlayers) {
+    public CreateEdgeResult createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex, boolean sendToPlayers) {
         WireEdgeHash hash = new WireEdgeHash(customData, nodeDataA, nodeDataB);
         if (edgesByHash.containsKey(hash)) {
             return new CreateEdgeResult(false, CreateEdgeResult.CONNECTION_EXISTS, Optional.empty());
@@ -325,7 +325,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             return new CreateEdgeResult(true, -1, Optional.of(edge));
     }
 
-    public synchronized void setEdge(WireEdge edge, boolean updateClients) {
+    public void setEdge(WireEdge edge, boolean updateClients) {
         WireBatch batch = edge.getType().buildWire(WireCreationContext.COLLISION, getLevel(), edge.getWireConnectionData(), edge, getNode(edge.getNodeAId()), getNode(edge.getNodeBId()));
         if (batch == null) {
             return;
@@ -376,7 +376,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     }
 
 
-    public synchronized void removeEdge(UUID id, Vector3f removePosition, Optional<Player> player) {
+    public void removeEdge(UUID id, Vector3f removePosition, Optional<Player> player) {
         if (!edges.containsKey(id)) {
             return;
         }
@@ -401,7 +401,7 @@ public class WireGraph extends SavedData implements IWireGraph {
      * @param deleteEmptyNodes
      * @return The last assigned edge
      */
-    protected synchronized Optional<WireEdge> removeEdgeInternal(UUID id, boolean deleteEmptyNodes) {
+    protected Optional<WireEdge> removeEdgeInternal(UUID id, boolean deleteEmptyNodes) {
         WireEdge edge = edges.remove(id);
         if (edge == null) {
             return Optional.empty();
@@ -420,7 +420,7 @@ public class WireGraph extends SavedData implements IWireGraph {
         return Optional.of(edge);
     }
 
-    protected synchronized void removeEdgeFromNode(WireEdge edge, UUID nodeId, boolean deleteEmptyNode) {
+    protected void removeEdgeFromNode(WireEdge edge, UUID nodeId, boolean deleteEmptyNode) {
         if (!edge.getNodeAId().equals(nodeId) && !edge.getNodeBId().equals(nodeId)) {
             throw new IllegalStateException("Node " + nodeId + " is not part of edge " + edge.getId());
         }
@@ -430,7 +430,7 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
     }
 
-    protected synchronized void replaceNodeInEdge(WireEdge edge, UUID oldNodeId, UUID newNodeId, boolean deleteEmptyNode) {
+    protected void replaceNodeInEdge(WireEdge edge, UUID oldNodeId, UUID newNodeId, boolean deleteEmptyNode) {
         boolean isA = edge.getNodeAId().equals(oldNodeId);
         removeEdgeFromNode(edge, oldNodeId, deleteEmptyNode);
         if (isA) {
@@ -620,43 +620,41 @@ public class WireGraph extends SavedData implements IWireGraph {
 
         playersWatchingChunk.put(pos, player.getUUID());
         
-        synchronized (nodesByChunk) {
-            if (nodesByChunk.containsKey(pos) && player instanceof ServerPlayer serverPlayer) {
-                Set<UUID> edgeIds = new LinkedHashSet<>();
-                Collection<UUID> nodeIds = ImmutableList.copyOf(nodesByChunk.get(pos));
-                for (UUID nodeId : nodeIds) {
-                    if (!hasNode(nodeId)) {
-                        continue;
-                    }
-                    WireNode node = updateNodeData(getNode(nodeId));
-                    if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER] - NODE " + nodeId + ": " + node.getPos().x + ", " + node.getPos().y + ", " + node.getPos().z);
-
-                    if (!node.getData().validate(this, new CompoundTag(), 0)) {
-                        removeNode(nodeId, null, null);
-                        PantographsAndWires.LOGGER.warn("Removed wire node with id {} and type {} at {}, because it is no longer valid.", node.getId(), node.getData().getClass().getSimpleName(), node.getPos());
-                        continue;
-                    }
-
-                    for (UUID connectionId : node.getConnections()) {
-                        edgeIds.add(connectionId);
-                    }
+        if (nodesByChunk.containsKey(pos) && player instanceof ServerPlayer serverPlayer) {
+            Set<UUID> edgeIds = new LinkedHashSet<>();
+            Collection<UUID> nodeIds = ImmutableList.copyOf(nodesByChunk.get(pos));
+            for (UUID nodeId : nodeIds) {
+                if (!hasNode(nodeId)) {
+                    continue;
                 }
-                if (edgeIds.isEmpty()) {
-                    return;
+                WireNode node = updateNodeData(getNode(nodeId));
+                if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER] - NODE " + nodeId + ": " + node.getPos().x + ", " + node.getPos().y + ", " + node.getPos().z);
+
+                if (!node.getData().validate(this, new CompoundTag(), 0)) {
+                    removeNode(nodeId, null, null);
+                    PantographsAndWires.LOGGER.warn("Removed wire node with id {} and type {} at {}, because it is no longer valid.", node.getId(), node.getData().getClass().getSimpleName(), node.getPos());
+                    continue;
                 }
 
-                Collection<WireEdge> edges = new ArrayList<>(edgeIds.size());
-                Set<WireNode> nodes = new HashSet<>();
-                for (UUID id : edgeIds) {
-                    WireEdge edge = getEdge(id);
-                    if (edge == null) continue;
-                    edges.add(edge);
-                    nodes.add(getNode(edge.getNodeAId()));
-                    nodes.add(getNode(edge.getNodeBId()));
+                for (UUID connectionId : node.getConnections()) {
+                    edgeIds.add(connectionId);
                 }
-                WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectorDataPacket(new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true))));
-                //DataAccessor.getFromClient(serverPlayer, new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true)), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
             }
+            if (edgeIds.isEmpty()) {
+                return;
+            }
+
+            Collection<WireEdge> edges = new ArrayList<>(edgeIds.size());
+            Set<WireNode> nodes = new HashSet<>();
+            for (UUID id : edgeIds) {
+                WireEdge edge = getEdge(id);
+                if (edge == null) continue;
+                edges.add(edge);
+                nodes.add(getNode(edge.getNodeAId()));
+                nodes.add(getNode(edge.getNodeBId()));
+            }
+            WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectorDataPacket(new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true))));
+            //DataAccessor.getFromClient(serverPlayer, new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true)), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
         }
     }
 
@@ -665,14 +663,12 @@ public class WireGraph extends SavedData implements IWireGraph {
             playersWatchingChunk.get(pos).remove(player.getUUID());
         }
         
-        synchronized (collisionByChunk) {
-            if (collisionByChunk.containsKey(pos) && player instanceof ServerPlayer serverPlayer) {
-                Collection<UUID> edgeIds = collisionByChunk.get(pos).stream().map(x -> x.getId()).toList();
-                if (edgeIds.isEmpty()) return;
-                
-                WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectionChunkLoadingPacket(new WireChunkLoadingData(getId(), pos, edgeIds, false)));
-                //DataAccessor.getFromClient(serverPlayer, new WireChunkLoadingData(getId(), pos, edgeIds, false), NetworkManager.WIRE_CONNECTION_CHUNK_LOADING, $ -> {});
-            }
+        if (collisionByChunk.containsKey(pos) && player instanceof ServerPlayer serverPlayer) {
+            Collection<UUID> edgeIds = collisionByChunk.get(pos).stream().map(x -> x.getId()).toList();
+            if (edgeIds.isEmpty()) return;
+            
+            WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectionChunkLoadingPacket(new WireChunkLoadingData(getId(), pos, edgeIds, false)));
+            //DataAccessor.getFromClient(serverPlayer, new WireChunkLoadingData(getId(), pos, edgeIds, false), NetworkManager.WIRE_CONNECTION_CHUNK_LOADING, $ -> {});
         }
     }
 

@@ -80,10 +80,8 @@ public class WireRenderer implements ResourceManagerReloadListener {
 
 	private static void renderConnectionsInternal(WireGraphClient graph, VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section, PoseStack poseStack) {
 		Collection<WireSegmentRenderDataBatch> connections = graph.connectionsInSection(section);
-		synchronized (connections) {
-			for (WireSegmentRenderDataBatch connection : connections) {
-				connection.render(region, vertexConsumer);
-			}
+		for (WireSegmentRenderDataBatch connection : connections) {
+			connection.render(region, vertexConsumer);
 		}
 	}
 }

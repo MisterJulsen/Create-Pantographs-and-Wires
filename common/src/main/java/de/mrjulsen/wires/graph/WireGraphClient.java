@@ -15,6 +15,7 @@ import org.joml.Vector3f;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
 
 import de.mrjulsen.wires.Wire;
 import de.mrjulsen.wires.WireBatch;
@@ -42,18 +43,18 @@ public class WireGraphClient implements IWireGraph {
     
     private final Map<ResourceLocation, NodeAccessor<?>> nodesByType = new ConcurrentHashMap<>();
 
-    private final Multimap<WireNode, WireEdge> edgesByNode = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<WireNode, WireEdge> edgesByNode = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
     
     // Collision
     final Map<UUID, NewWireCollision> collisionById = new HashMap<>();
-    final Multimap<BlockPos, NewWireCollision> collisionByBlock = MultimapBuilder.hashKeys().hashSetValues().build();
-    final Multimap<ChunkPos, NewWireCollision> collisionByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
-    final Multimap<SectionPos, NewWireCollision> collisionBySection = MultimapBuilder.hashKeys().hashSetValues().build();
+    final Multimap<BlockPos, NewWireCollision> collisionByBlock = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<ChunkPos, NewWireCollision> collisionByChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<SectionPos, NewWireCollision> collisionBySection = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
     
     // Client Rendering
-    final Multimap<UUID, WireSegmentRenderDataBatch> renderDataById = MultimapBuilder.hashKeys().hashSetValues().build();
-    final Multimap<ChunkPos, WireSegmentRenderDataBatch> renderDataByChunk = MultimapBuilder.hashKeys().hashSetValues().build();
-    final Multimap<SectionPos, WireSegmentRenderDataBatch> renderDataBySection = MultimapBuilder.hashKeys().hashSetValues().build();
+    final Multimap<UUID, WireSegmentRenderDataBatch> renderDataById = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<ChunkPos, WireSegmentRenderDataBatch> renderDataByChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final Multimap<SectionPos, WireSegmentRenderDataBatch> renderDataBySection = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
 
     // Debug
     private final Multimap<UUID, DebugWireData> debugWireDataByEdge = MultimapBuilder.hashKeys().linkedListValues().build();
@@ -142,18 +143,18 @@ public class WireGraphClient implements IWireGraph {
 
 
 
-    public synchronized void addNode(WireNode node) {
-        this.nodes.put(node.getId(), node);        
+    public void addNode(WireNode node) {
+        this.nodes.put(node.getId(), node);
         this.nodesByType.computeIfAbsent(node.getData().getRegistryType().id(), (a) -> node.getData().getRegistryType().createAccessor()).put(node);
     }
 
-    public synchronized void removeNode(UUID id) {
+    public void removeNode(UUID id) {
         WireNode node = nodes.remove(id);
         this.edgesByNode.removeAll(node);
         this.nodesByType.get(node.getData().getRegistryType().id()).remove(node);
     }
 
-    public synchronized WireEdge addEdge(WireEdge edge) {
+    public WireEdge addEdge(WireEdge edge) {
         WireBatch batch = edge.getType().buildWire(WireCreationContext.BOTH, getLevel(), edge.getWireConnectionData(), edge, getNode(edge.getNodeAId()), getNode(edge.getNodeBId()));
         if (batch == null) {
             return edge;
@@ -200,11 +201,11 @@ public class WireGraphClient implements IWireGraph {
         return edge;
     }
 
-    public synchronized void removeEdge(UUID id) {
+    public void removeEdge(UUID id) {
         removeEdgeInternal(id, true);
     }
 
-    private synchronized void removeEdgeInternal(UUID id, boolean checkForEmptyNodes) {
+    private void removeEdgeInternal(UUID id, boolean checkForEmptyNodes) {
         if (!edges.containsKey(id)) {
             return;
         }
@@ -227,9 +228,9 @@ public class WireGraphClient implements IWireGraph {
         renderDataByChunk.values().removeAll(renderdata);    
 
         NewWireCollision collision = collisionById.remove(id);
-        collisionByChunk.values().removeIf(x -> x.getId().equals(collision.getId()));
-        collisionBySection.values().removeIf(x -> x.getId().equals(collision.getId()));
-        collisionByBlock.values().removeIf(x -> x.getId().equals(collision.getId()));
+        collisionByChunk.values().remove(collision);
+        collisionBySection.values().remove(collision);
+        collisionByBlock.values().remove(collision);
         
         for (WireSegmentRenderDataBatch batch : renderdata) {
             SectionPos section = batch.getSection();
@@ -242,19 +243,17 @@ public class WireGraphClient implements IWireGraph {
         addEdge(edge);
     }   
 
-    public synchronized void onClientChunkLoading(WireChunkLoadingData in) {
-        synchronized (renderDataByChunk) {
-            Set<UUID> emptyConnections = new HashSet<>();
-            for (WireSegmentRenderDataBatch renderdata : renderDataByChunk.get(in.pos())) {
-                renderdata.setUnloaded(!in.load());
-                if (!renderDataById.containsKey(renderdata.getId()) || renderDataById.get(renderdata.getId()).stream().allMatch(WireSegmentRenderDataBatch::isUnloaded)) {
-                    emptyConnections.add(renderdata.getId());
-                }
+    public void onClientChunkLoading(WireChunkLoadingData in) {
+        Set<UUID> emptyConnections = new HashSet<>();
+        for (WireSegmentRenderDataBatch renderdata : renderDataByChunk.get(in.pos())) {
+            renderdata.setUnloaded(!in.load());
+            if (!renderDataById.containsKey(renderdata.getId()) || renderDataById.get(renderdata.getId()).stream().allMatch(WireSegmentRenderDataBatch::isUnloaded)) {
+                emptyConnections.add(renderdata.getId());
             }
+        }
 
-            for (UUID id : emptyConnections) {
-                removeEdge(id);
-            }
+        for (UUID id : emptyConnections) {
+            removeEdge(id);
         }
     }
 
@@ -265,11 +264,11 @@ public class WireGraphClient implements IWireGraph {
 
     
 
-    public synchronized boolean hasConnectionsInSection(SectionPos section) {
+    public boolean hasConnectionsInSection(SectionPos section) {
         return renderDataBySection.containsKey(section);
     }
 
-    public synchronized Collection<WireSegmentRenderDataBatch> connectionsInSection(SectionPos section) {
+    public Collection<WireSegmentRenderDataBatch> connectionsInSection(SectionPos section) {
         if (!hasConnectionsInSection(section)) {
             return List.of();
         }
