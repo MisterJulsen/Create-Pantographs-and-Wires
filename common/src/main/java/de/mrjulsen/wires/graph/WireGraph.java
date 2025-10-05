@@ -633,7 +633,7 @@ public class WireGraph extends SavedData implements IWireGraph {
 
                     if (!node.getData().validate(this, new CompoundTag(), 0)) {
                         removeNode(nodeId, null, null);
-                        PantographsAndWires.LOGGER.warn("Removed wire node with id {} at {}, because it is no longer valid.", node.getId(), node.getPos());
+                        PantographsAndWires.LOGGER.warn("Removed wire node with id {} and type {} at {}, because it is no longer valid.", node.getId(), node.getData().getClass().getSimpleName(), node.getPos());
                         continue;
                     }
 

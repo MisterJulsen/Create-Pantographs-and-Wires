@@ -71,7 +71,7 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
 
     @Override
     public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
-        return graph.getLevel().isLoaded(pos) && graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE));
+        return !graph.getLevel().isLoaded(pos) || graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE));
     }
 
     @Override

@@ -71,7 +71,7 @@ public class MastNodeData extends NodeData implements INodeDataBlock {
 
     @Override
     public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
-        return graph.getLevel().isLoaded(pos) && graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_SUPPORT_WIRE_CONNECTABLE));
+        return !graph.getLevel().isLoaded(pos) || graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_SUPPORT_WIRE_CONNECTABLE));
     }
 
     @Override
