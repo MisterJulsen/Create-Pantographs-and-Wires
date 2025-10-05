@@ -127,7 +127,7 @@ public class CantileverSettingsScreen extends DLWindow {
         this.catenaryHeight = CantileverBlockItem.getCatenaryHeight(stack);
         this.registrationArmType = CantileverBlockItem.getCantileverType(stack);
         this.insulatorPlacement = CantileverBlockItem.getInsulatorPlacement(stack);
-        this.showBracing = CantileverBlockItem.shouldUseSupportTube(stack);
+        this.showBracing = CantileverBlockItem.getShowBracing(stack);
 
         addEventListener(DLGuiStandardEvents.LayoutUpdateEvent.class, (s, e) -> {
             setPosition(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - width() / 2, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2 - height() / 2);
@@ -214,12 +214,16 @@ public class CantileverSettingsScreen extends DLWindow {
             registrationArmSlider.visible.set(c.registrationArmsAllowed());
             if (!c.registrationArmsAllowed()) {
                 registrationArmSlider.value.set((double)ECantileverRegistrationArmType.CENTER.ordinal());
-            }            
+            }
+            if (width <= 1.5f) {
+                showBracing = false;
+            }
 
             if (!showAdvanced) {
                 float w = (width - 0.5f);
                 cantileverHeightSlider.value.set((double)(w / 2 + 0.5d));
                 regstrationArmHeightSlider.value.set((double)(w <= 1 ? 0.5d : Math.floor((w + 1) / 3.0d)));
+                showBracing = w >= 4;
             }
 
             relayoutFunc.run();
@@ -350,7 +354,7 @@ public class CantileverSettingsScreen extends DLWindow {
             .with(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT, insulatorPlacement)
             .with(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM, registrationArmType)
             .with(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT, catenaryHeight)
-            .with(CantileverBlockEntity.PROPERTY_USE_SUPPORT_TUBE, showBracing)
+            .with(CantileverBlockEntity.PROPERTY_SHOW_BRACING, showBracing)
             .build();
     }
             
