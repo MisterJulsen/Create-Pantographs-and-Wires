@@ -1,0 +1,50 @@
+{
+    "itemGroup.pantographsandwires.tab": "Create: Pantographs & Wires",
+
+    "gui.pantographsandwires.sodium_error.title": "Create: Pantographs & Wires",
+    "gui.pantographsandwires.sodium_error.subtitle": "Sodiumはインストールされていますが、Indiumはインストールされていません！",
+    "gui.pantographsandwires.sodium_error.description": "このmodは、IndiumなしでSodiumがインストールされている場合は動作しません。一部のブロックが読み込まれず、ワイヤーがクラッシュしてゲームをプレイできなくなります。Indiumをインストールしてゲームを再起動してください。",
+
+    "block.pantographsandwires.pantograph": "パンタグラフ",
+    "block.pantographsandwires.tensioning_device": "張力調整装置",
+    "block.pantographsandwires.lattice_mast": "格子状の架線柱",
+    "block.pantographsandwires.flat_lattice_mast": "平格子状の架線柱",
+    "block.pantographsandwires.flat_lattice_mast_diagonal": "斜め平格子状の架線柱",
+    "block.pantographsandwires.concrete_pillar": "コンクリートの支柱",
+    "block.pantographsandwires.concrete_post": "コンクリート柱",
+    "block.pantographsandwires.h_beam_mast": "Hビーム状の架線柱",
+    "block.pantographsandwires.insulator_brown": "茶色の絶縁体",
+    "block.pantographsandwires.insulator_green": "緑色の絶縁体",
+    "block.pantographsandwires.v_insulator_brown": "V字型絶縁体",
+    "block.pantographsandwires.v_insulator_green": "V字型絶縁体",
+    "block.pantographsandwires.u_insulator_brown": "U字型絶縁体",
+    "block.pantographsandwires.u_insulator_green": "U字型絶縁体",
+    "block.pantographsandwires.cantilever_3_green": "カンチレバー",
+    "block.pantographsandwires.cantilever_3_brown": "カンチレバー",
+    "block.pantographsandwires.cantilever_bracket": "カンチレバーブラケット",
+    "block.pantographsandwires.cantilever_bracket_vertical": "カンチレバーブラケット（垂直延長）",
+    "block.pantographsandwires.cantilever_bracket_at_post": "カンチレバーブラケット（架線柱接続）",
+    "block.pantographsandwires.power_line_bracket": "電力線ブラケット",
+
+    "item.pantographsandwires.cantilever": "カンチレバー",
+    "item.pantographsandwires.catenary_wire": "架線",
+    "item.pantographsandwires.power_wire": "電力線",
+    "item.pantographsandwires.wire.connection_not_loaded": "コネクタの1つがロードされていません。",
+    "item.pantographsandwires.wire.connector_invalid": "コネクタの1つが無効です。",
+    "item.pantographsandwires.wire.same_connector": "同じコネクタに接続できません。",
+    "item.pantographsandwires.wire.connection_already_exists": "この接続はすでに存在します。",
+    "item.pantographsandwires.wire.to_far_away": "以前の接続ポイントから離れすぎています。最大%sブロック。",
+
+    "gui.pantographsandwires.cantilever_settings.title": "カンチレバー設定",
+    "gui.pantographsandwires.cantilever_settings.size": "大きさ",
+
+    "enum.pantographsandwires.cantilever_registration_arm": "レジストレーションアーム",
+    "enum.pantographsandwires.cantilever_registration_arm.center": "中央",
+    "enum.pantographsandwires.cantilever_registration_arm.inner": "内側",
+    "enum.pantographsandwires.cantilever_registration_arm.outer": "外側",
+    
+    "enum.pantographsandwires.insulator_placement": "絶縁体の配置",
+    "enum.pantographsandwires.insulator_placement.none": "無し",
+    "enum.pantographsandwires.insulator_placement.back": "背面",
+    "enum.pantographsandwires.insulator_placement.front": "正面"
+}
