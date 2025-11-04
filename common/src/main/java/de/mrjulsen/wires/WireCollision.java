@@ -16,9 +16,10 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
 import de.mrjulsen.paw.config.ModServerConfig;
-import de.mrjulsen.mcdragonlib.data.Cache;
-import de.mrjulsen.mcdragonlib.data.MapCache;
+import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.util.Cache;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
@@ -62,7 +63,7 @@ public class WireCollision {
 
         for (Map.Entry<String, WirePoints> p : points.entrySet()) {
             Vector3f[] vec = p.getValue().vertices();
-            Map<BlockPos, WireBlockCollision> positions = traceAlongWire(p.getKey(), vec, (float)(WiresApi.PIXEL * ModServerConfig.WIRE_COLLISION_TRACER_STEP_SIZE.get()), origin);
+            Map<BlockPos, WireBlockCollision> positions = traceAlongWire(p.getKey(), vec, (float)(DragonLib.BLOCK_PIXEL * ModServerConfig.WIRE_COLLISION_TRACER_STEP_SIZE.get()), origin);
             for (Map.Entry<BlockPos, WireBlockCollision> pos : positions.entrySet()) {
                 DLUtils.doIfNotNull(blockMap, x -> x.put(pos.getKey(), this));
                 SectionPos section = SectionPos.of(pos.getKey());
@@ -294,7 +295,7 @@ public class WireCollision {
         }
 
         private static float bounds(double v) {
-            return (float)(v <= WiresApi.PIXEL ? 0 : (v >= 1D - WiresApi.PIXEL ? 1 : v));
+            return (float)(v <= DragonLib.BLOCK_PIXEL ? 0 : (v >= 1D - DragonLib.BLOCK_PIXEL ? 1 : v));
         }
 
         @Override

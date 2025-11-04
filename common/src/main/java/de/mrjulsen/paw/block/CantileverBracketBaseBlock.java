@@ -8,7 +8,7 @@ import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
-import de.mrjulsen.mcdragonlib.data.MapCache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;

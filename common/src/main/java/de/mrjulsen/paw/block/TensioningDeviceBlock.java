@@ -19,7 +19,7 @@ import de.mrjulsen.wires.item.CustomData;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
-import de.mrjulsen.mcdragonlib.data.MapCache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;

@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.config.ModCommonConfig;
 import de.mrjulsen.paw.config.ModServerConfig;
@@ -29,7 +30,6 @@ import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WireBatch;
 import de.mrjulsen.wires.WireCreationContext;
-import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.NewWireCollision.WireBlockCollision;
 import de.mrjulsen.wires.graph.data.WireEdgeHash;
 import de.mrjulsen.wires.graph.data.WireConnectionData;
@@ -39,11 +39,12 @@ import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.item.CustomData;
 import de.mrjulsen.wires.network.DeleteWireSyncData;
+import de.mrjulsen.wires.network.ModNetworkManager;
 import de.mrjulsen.wires.network.WireChunkUnloadingData;
 import de.mrjulsen.wires.network.WiresSyncData;
-import de.mrjulsen.wires.network.packets.stc.DeleteWireConnectionPacket;
-import de.mrjulsen.wires.network.packets.stc.WireConnectionChunkUnloadingPacket;
-import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacket;
+import de.mrjulsen.wires.network.packets.stc.DeleteWireConnectionPacketData;
+import de.mrjulsen.wires.network.packets.stc.WireConnectionChunkUnloadingPacketData;
+import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacketData;
 import de.mrjulsen.wires.util.GraphId;
 import de.mrjulsen.wires.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -378,7 +379,7 @@ public class WireGraph extends SavedData implements IWireGraph {
         WireNode nodeB = getNode(edge.getNodeBId());
         WiresSyncData netData = new WiresSyncData(getId(), null, () -> List.of(edge), () -> List.of(nodeA, nodeB), force);
         for (ServerPlayer player : getPlayersForEdge(edge.getId())) {
-            WiresApi.net().CHANNEL.sendToPlayer(player, new WireConnectorDataPacket(new WiresSyncData.Wrapper(netData)));
+            ModNetworkManager.WIRE_CONNECTOR_DATA.send(NetworkDirection.toPlayer(player), new WireConnectorDataPacketData(new WiresSyncData.Wrapper(netData)));
         }
     }
 
@@ -389,8 +390,8 @@ public class WireGraph extends SavedData implements IWireGraph {
         }
 
         // Sync to clients
-        for (ServerPlayer serverPlayer : getPlayersForEdge(id)) {            
-            WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new DeleteWireConnectionPacket(new DeleteWireSyncData(getId(), List.of(id))));
+        for (ServerPlayer serverPlayer : getPlayersForEdge(id)) {    
+            ModNetworkManager.DELETE_WIRE_CONNECTION.send(NetworkDirection.toPlayer(serverPlayer), new DeleteWireConnectionPacketData(new DeleteWireSyncData(getId(), List.of(id))));
         }
 
         if (removePosition != null && player != null) {
@@ -597,8 +598,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             
             for (UUID playerId : updatePlayers) {
                 if (level.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer) {
-                    WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new DeleteWireConnectionPacket(new DeleteWireSyncData(getId(), connectionsToBreak)));
-                    //DataAccessor.getFromClient(serverPlayer, new DeleteWireSyncData(getId(), connectionsToBreak), NetworkManager.DELETE_WIRE_CONNECTION, $ -> {});
+                    ModNetworkManager.DELETE_WIRE_CONNECTION.send(NetworkDirection.toPlayer(serverPlayer), new DeleteWireConnectionPacketData(new DeleteWireSyncData(getId(), connectionsToBreak)));
                 }
             }
 		}
@@ -667,8 +667,8 @@ public class WireGraph extends SavedData implements IWireGraph {
                 nodes.add(getNode(edge.getNodeAId()));
                 nodes.add(getNode(edge.getNodeBId()));
             }
-            WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectorDataPacket(new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, false))));
-            //DataAccessor.getFromClient(serverPlayer, new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, true)), NetworkManager.WIRE_CONNECTOR_DATA_TRANSFER, $ -> {});
+            
+            ModNetworkManager.WIRE_CONNECTOR_DATA.send(NetworkDirection.toPlayer(serverPlayer), new WireConnectorDataPacketData(new WiresSyncData.Wrapper(new WiresSyncData(getId(), pos, () -> edges, () -> nodes, false))));
         }
     }
 
@@ -682,8 +682,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             Collection<UUID> edgeIds = collisionByChunk.get(pos).stream().map(x -> x.getId()).toList();
             if (edgeIds.isEmpty()) return;
             
-            WiresApi.net().CHANNEL.sendToPlayer(serverPlayer, new WireConnectionChunkUnloadingPacket(new WireChunkUnloadingData(getId(), pos, edgeIds)));
-            //DataAccessor.getFromClient(serverPlayer, new WireChunkLoadingData(getId(), pos, edgeIds, false), NetworkManager.WIRE_CONNECTION_CHUNK_LOADING, $ -> {});
+            ModNetworkManager.CONNECTION_CHUNK_UNLOADING.send(NetworkDirection.toPlayer(serverPlayer), new WireConnectionChunkUnloadingPacketData(new WireChunkUnloadingData(getId(), pos, edgeIds)));
         }
     }
 

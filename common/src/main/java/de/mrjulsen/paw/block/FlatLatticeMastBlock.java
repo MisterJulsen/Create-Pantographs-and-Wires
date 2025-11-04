@@ -3,10 +3,10 @@ package de.mrjulsen.paw.block;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import de.mrjulsen.paw.block.abstractions.AbstractMultipartPostBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.property.EPostPart;
-import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;

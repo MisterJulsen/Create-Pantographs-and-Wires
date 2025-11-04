@@ -55,8 +55,8 @@ public class SupportWireType extends PAWWireType {
 		direction = new Vector3f(direction.x(), 0, direction.z());
 		Vector3f rightVec = new Vector3f(direction.z(), 0, -direction.x()).normalize();
 		direction.absolute().normalize();
-        Vector3f offsetA = new Vector3f(rightVec).mul(DragonLib.PIXEL * 2);
-        Vector3f offsetB = new Vector3f(rightVec).mul(DragonLib.PIXEL * -2);
+        Vector3f offsetA = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * 2);
+        Vector3f offsetB = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * -2);
 
 		Wire wire1 = WireBuilder.createWire("main1", context, new Vector3f(a).add(offsetA.x(), 0, offsetA.z()), new Vector3f(b).add(offsetA.x(), 0, offsetA.z()), CableType.TIGHT, THICKNESS, 0, SegmentControl.createAuto());
 		Wire wire2 = WireBuilder.createWire("main2", context, new Vector3f(a).add(offsetB.x(), 0, offsetB.z()), new Vector3f(b).add(offsetB.x(), 0, offsetB.z()), CableType.TIGHT, THICKNESS, 0, SegmentControl.createAuto());

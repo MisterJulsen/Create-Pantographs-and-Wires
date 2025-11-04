@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.mrjulsen.mcdragonlib.data.Cache;
+import de.mrjulsen.mcdragonlib.util.Cache;
 import de.mrjulsen.wires.decoration.WireDecorationData;
 import de.mrjulsen.wires.render.WireRenderData;
 import de.mrjulsen.wires.render.WireSegmentRenderData;

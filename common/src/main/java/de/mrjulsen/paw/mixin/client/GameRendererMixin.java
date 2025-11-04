@@ -37,8 +37,8 @@ public class GameRendererMixin {
             new Vector3f((float)from.x, (float)from.y, (float)from.z),
             new Vector3f((float)to.x, (float)to.y, (float)to.z),
             mc.level,
-            DragonLib.PIXEL * 4,
-            DragonLib.PIXEL * 2,
+            DragonLib.BLOCK_PIXEL * 4,
+            DragonLib.BLOCK_PIXEL * 2,
             WireId::checkCollision
         );
 

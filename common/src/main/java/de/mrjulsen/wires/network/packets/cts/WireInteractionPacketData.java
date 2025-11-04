@@ -1,48 +1,50 @@
 package de.mrjulsen.wires.network.packets.cts;
 
-import java.util.function.Supplier;
-
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.item.IWireInteractableItem;
 import de.mrjulsen.wires.network.WireInteractionData;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 
-public class WireInteractionPacket implements IPacketBase<WireInteractionPacket> {
+public class WireInteractionPacketData extends NetworkPacketData {
+
+    private static final String NBT_DATA = "Data";
 
     private WireInteractionData data;
 
-    public WireInteractionPacket() {}
+    public WireInteractionPacketData(DLStatus status) {
+        super(status);
+    }
 
-    public WireInteractionPacket(WireInteractionData data) {
+    public WireInteractionPacketData(WireInteractionData data) {
+        super(DLStatus.OK);
         this.data = data;
-
     }
 
     @Override
-    public void encode(WireInteractionPacket packet, FriendlyByteBuf buf) {
-        buf.writeNbt(packet.data.toNbt());
+    protected void write(CompoundTag nbt) {
+        nbt.put(NBT_DATA, data.toNbt());
     }
 
     @Override
-    public WireInteractionPacket decode(FriendlyByteBuf buf) {
-        return new WireInteractionPacket(WireInteractionData.fromNbt(buf.readNbt()).orElse(null));
+    protected void read(CompoundTag nbt) {
+        this.data = WireInteractionData.fromNbt(nbt.getCompound(NBT_DATA)).orElse(null);
     }
 
-    @Override
-    public void handle(WireInteractionPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {            
+    public static void handle(WireInteractionPacketData packet, NetworkPacketContext contextSupplier) {
+        contextSupplier.queue(() -> {
             if (packet.data == null)
                 return;            
 
             DragonLib.getCurrentServer().ifPresent(x -> {
                 x.execute(() -> {
                     try {
-                        Player player = contextSupplier.get().getPlayer();
+                        Player player = contextSupplier.getPlayer();
                         InteractionResult interactionresult = null;
                         if (player.getItemInHand(packet.data.hand()).getItem() instanceof IWireInteractableItem i) {
                             interactionresult = i.interactWithWire(player.level(), player, packet.data.hand(), packet.data.hit());

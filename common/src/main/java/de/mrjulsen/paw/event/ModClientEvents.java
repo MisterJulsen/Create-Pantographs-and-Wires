@@ -4,7 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.client.model.CustomBlockModelRegistry;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLScreenWrapper;
+import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.model.CantileverModel;
@@ -37,7 +38,7 @@ public final class ModClientEvents {
     public static void init() {
 
         for (Supplier<? extends AbstractCantileverBlock> cantilever : ModBlocks.getCantilevers()) {
-            CustomBlockModelRegistry.registerForBlock(() -> cantilever.get(), CantileverModel::new, null);
+            DLBlockModelRegistry.registerForBlock(() -> cantilever.get(), CantileverModel::new, null);
         }
 
         ClientGuiEvent.DEBUG_TEXT_LEFT.register((lines) -> {
@@ -105,6 +106,17 @@ public final class ModClientEvents {
                 }
             }
         });
+
+        if (PantographsAndWires.isSodiumLoaded()) {
+            SodiumCompatEvent.init();
+
+            if (!PantographsAndWires.isIndiumLoaded()) {
+                ClientGuiEvent.SET_SCREEN.register((screen) -> {
+                    DLScreenWrapper<?> wrapper = new DLScreenWrapper<>(null, IncompatabilityScreen::new);
+                    return CompoundEventResult.interruptTrue(wrapper);
+                });
+            }
+        }
     }
     
 }

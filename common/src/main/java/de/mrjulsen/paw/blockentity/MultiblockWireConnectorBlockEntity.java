@@ -1,7 +1,7 @@
 package de.mrjulsen.paw.blockentity;
 
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import de.mrjulsen.paw.block.abstractions.AbstractRotatableBlock;
 import de.mrjulsen.paw.block.abstractions.IMultiblock;
 import net.minecraft.core.BlockPos;
