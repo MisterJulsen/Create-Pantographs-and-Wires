@@ -3,7 +3,7 @@ package de.mrjulsen.paw.block;
 import java.util.Arrays;
 
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
-import de.mrjulsen.mcdragonlib.data.MapCache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;

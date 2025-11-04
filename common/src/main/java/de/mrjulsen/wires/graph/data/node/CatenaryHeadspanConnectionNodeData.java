@@ -126,7 +126,7 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
         Vector3f offsetVec = ModMath.rotateToDirection(offset, headspanDirection);
 
         return Optional.of(new CantileverConnectorDataProvider(
-            new Vector3f(offsetVec.x(), registrationArm.map(x -> x.getVariant().isAbove() ? DragonLib.PIXEL * 4 : DragonLib.PIXEL * -6).orElse(0f), offsetVec.z()),
+            new Vector3f(offsetVec.x(), registrationArm.map(x -> x.getVariant().isAbove() ? DragonLib.BLOCK_PIXEL * 4 : DragonLib.BLOCK_PIXEL * -6).orElse(0f), offsetVec.z()),
             new Vector3f(dropperWirePoints.vertices()[dropperWirePoints.vertices().length - 1]).sub(node.getPos()).add(0, b ? -InsulatorWireDecoration.RADIUS * 2 : 0, 0)
         ));
     }       

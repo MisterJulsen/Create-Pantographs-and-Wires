@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3f;
 
-import de.mrjulsen.mcdragonlib.data.StatusResult;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.data.WireHitResult;
@@ -87,8 +87,8 @@ public interface IWireItemBase extends IWireInteractableItem {
         }
 
         // Additional checks
-        StatusResult testResult = testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, data);
-        if (!testResult.result()) {
+        DLStatus testResult = testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, data);
+        if (testResult.flag() != DLStatus.FLAG_OK) {
             player.displayClientMessage(TextUtils.translate(testResult.message(), getWireType(stack).getMaxLength()).withStyle(ChatFormatting.RED), true);
             clear(stack);
             return false;
@@ -103,21 +103,21 @@ public interface IWireItemBase extends IWireInteractableItem {
         return true;
     }
 
-    default StatusResult testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points, NodeData nodeData) {
+    default DLStatus testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points, NodeData nodeData) {
         WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
         
         if (!points.isEmpty()) {
             NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
             if (previousNode.toWorldPos(graph).distance(nodeData.toWorldPos(graph)) > getWireType(stack).getMaxLength()) {
-                return new StatusResult(false, 0, "item." + WiresApi.MOD_ID + ".wire.to_far_away");
+                return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + WiresApi.MOD_ID + ".wire.to_far_away");
             } else if (previousNode.equals(nodeData)) {
-                return new StatusResult(false, 0, "item." + WiresApi.MOD_ID + ".wire.same_connector");
+                return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + WiresApi.MOD_ID + ".wire.same_connector");
             }
         }
         if (!nodeData.validate(graph, itemData, points.size())) {
-            return new StatusResult(false, 0, "item." + WiresApi.MOD_ID + ".wire.connector_invalid");
+            return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + WiresApi.MOD_ID + ".wire.connector_invalid");
         }
-        return new StatusResult(true, 0, "");
+        return new DLStatus(DLStatus.FLAG_OK, 0, "");
     }
 
     default boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {

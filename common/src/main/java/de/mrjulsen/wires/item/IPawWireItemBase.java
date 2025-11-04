@@ -8,9 +8,9 @@ import java.util.function.BiConsumer;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3f;
 
-import de.mrjulsen.mcdragonlib.data.StatusResult;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.widgets.IIconRepresentable;
 import de.mrjulsen.paw.client.gui.widgets.ITranslatable;
@@ -49,9 +49,9 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
     }
 
     @Override
-    default StatusResult testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points, NodeData nodeData) {
-        StatusResult result = IWireItemBase.super.testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, nodeData);
-        if (!result.result()) {
+    default DLStatus testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points, NodeData nodeData) {
+        DLStatus result = IWireItemBase.super.testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, nodeData);
+        if (result.flag() != DLStatus.FLAG_OK) {
             return result;
         }
 
@@ -60,7 +60,7 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
             NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
             int distance = (int)previousNode.toWorldPos(graph).distance(nodeData.toWorldPos(graph));
             if (getWireType(stack) instanceof PAWWireType paw &&  paw.getWireLength(distance) > getRemainingWire(stack)) {
-                return new StatusResult(false, 0, "item." + PantographsAndWires.MOD_ID + ".wire.not_enough_wire");
+                return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + PantographsAndWires.MOD_ID + ".wire.not_enough_wire");
             }
         }
         return result;

@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import com.eliotlash.mclib.utils.MathUtils;
 import com.mojang.math.Axis;
 
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverInsulatorsPlacement;
@@ -27,7 +28,6 @@ import de.mrjulsen.mcdragonlib.client.model.mesh.Face;
 import de.mrjulsen.mcdragonlib.client.model.mesh.FaceVertex;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Vertex;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -89,25 +89,25 @@ public class CantileverModel extends DLModel {
                 CubeMesh mastBracketBottom = null;
 
                 if (cantileversCount <= 1 && mastConnection == ECantileverMastConnection.HINGE) {
-                    Vector3f size = new Vector3f(DragonLib.PIXEL * 3, DragonLib.PIXEL * 3, DragonLib.PIXEL * 4);
-                    mastBracketTop = new CubeMesh(new Vector3f(-data.x() - DragonLib.PIXEL * 2, data.y() - DragonLib.PIXEL, 0.5f - DragonLib.PIXEL * 2), size);
+                    Vector3f size = new Vector3f(DragonLib.BLOCK_PIXEL * 3, DragonLib.BLOCK_PIXEL * 3, DragonLib.BLOCK_PIXEL * 4);
+                    mastBracketTop = new CubeMesh(new Vector3f(-data.x() - DragonLib.BLOCK_PIXEL * 2, data.y() - DragonLib.BLOCK_PIXEL, 0.5f - DragonLib.BLOCK_PIXEL * 2), size);
                     mastBracketTop.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();
                     });
-                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x() - DragonLib.PIXEL * 2, -data.height(), 0.5f - DragonLib.PIXEL * 2), size);
+                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x() - DragonLib.BLOCK_PIXEL * 2, -data.height(), 0.5f - DragonLib.BLOCK_PIXEL * 2), size);
                     mastBracketBottom.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();
                     });
                 } else {
-                    Vector3f size = new Vector3f(DragonLib.PIXEL * 1, DragonLib.PIXEL * 3, w + DragonLib.PIXEL * 6);
-                    mastBracketTop = new CubeMesh(new Vector3f(-data.x(), data.y() - DragonLib.PIXEL, 0.5f - (w / 2f) - DragonLib.PIXEL * 3), size);
+                    Vector3f size = new Vector3f(DragonLib.BLOCK_PIXEL * 1, DragonLib.BLOCK_PIXEL * 3, w + DragonLib.BLOCK_PIXEL * 6);
+                    mastBracketTop = new CubeMesh(new Vector3f(-data.x(), data.y() - DragonLib.BLOCK_PIXEL, 0.5f - (w / 2f) - DragonLib.BLOCK_PIXEL * 3), size);
                     mastBracketTop.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();
                     });
-                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x(), -data.height(), 0.5f - (w / 2f) - DragonLib.PIXEL * 3), size);
+                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x(), -data.height(), 0.5f - (w / 2f) - DragonLib.BLOCK_PIXEL * 3), size);
                     mastBracketBottom.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();
@@ -150,12 +150,12 @@ public class CantileverModel extends DLModel {
         final TextureAtlasSprite METAL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal"));
         final TextureAtlasSprite ANVIL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation(PantographsAndWires.MOD_ID, "block/anvil"));
 
-        final float bracketTubeThickness = DragonLib.PIXEL * 1f;
-        final float thickness = DragonLib.PIXEL * 1f;
-        final float holderThinkness = DragonLib.PIXEL * 1;
-        final float steadyArmBodyHeight = DragonLib.PIXEL * 1.5f;
-        final float wireAttachThickness = DragonLib.PIXEL * 2;
-        final float insulatorPostDistance = DragonLib.PIXEL * 1;
+        final float bracketTubeThickness = DragonLib.BLOCK_PIXEL * 1f;
+        final float thickness = DragonLib.BLOCK_PIXEL * 1f;
+        final float holderThinkness = DragonLib.BLOCK_PIXEL * 1;
+        final float steadyArmBodyHeight = DragonLib.BLOCK_PIXEL * 1.5f;
+        final float wireAttachThickness = DragonLib.BLOCK_PIXEL * 2;
+        final float insulatorPostDistance = DragonLib.BLOCK_PIXEL * 1;
 
         final float rawWidth = width;
         width += xOffset;
@@ -189,7 +189,7 @@ public class CantileverModel extends DLModel {
         Face bracketTubeEast = bracketTube.getFaceOnSide(Direction.EAST);
         bracketTubeAngle = calcAngle(width, (float)Math.abs(bracketTubeOrigin.y() - bracketTubeTopWestEdge.center().y() + thickness));
         bracketTubeEast.rotate(Axis.ZP.rotationDegrees(bracketTubeAngle), bracketTubeEast.getEdge(EdgeType.TOP).center());
-        bracketTubeEast.translate(new Vector3f(bracketTubeEast.getNormal()).mul(DragonLib.PIXEL * 1));
+        bracketTubeEast.translate(new Vector3f(bracketTubeEast.getNormal()).mul(DragonLib.BLOCK_PIXEL * 1));
         final Vector3f bracketTubeNormal = bracketTube.getFaceOnSide(Direction.EAST).getNormal();
 
         // --- STAY TUBE ---
@@ -211,8 +211,8 @@ public class CantileverModel extends DLModel {
         BasicMesh steadyArm = new BasicMesh();
         Vector3f registrationArmAttachPoint = new Vector3f();
 
-        Vector3f steadyArmBaseOrigin = new Vector3f(rawWidth - DragonLib.PIXEL * 0.5f + steadyArmOffset, -wireOffsetY, zOffset - wireAttachThickness / 2f);
-        CubeMesh steadyArmBase = new CubeMesh(steadyArmBaseOrigin, new Vector3f(DragonLib.PIXEL * 1, wireAttachThickness, wireAttachThickness));
+        Vector3f steadyArmBaseOrigin = new Vector3f(rawWidth - DragonLib.BLOCK_PIXEL * 0.5f + steadyArmOffset, -wireOffsetY, zOffset - wireAttachThickness / 2f);
+        CubeMesh steadyArmBase = new CubeMesh(steadyArmBaseOrigin, new Vector3f(DragonLib.BLOCK_PIXEL * 1, wireAttachThickness, wireAttachThickness));
 
         steadyArm.combine(false, steadyArmBase);
         
@@ -222,8 +222,8 @@ public class CantileverModel extends DLModel {
             steadyArmBody.rotate(Axis.ZP.rotationDegrees(-5), steadyArmBase.getFaceOnSide(Direction.UP).center());
             steadyArmBody.rotate(Axis.YP.rotationDegrees(registrationArmType == ECantileverRegistrationArmType.OUTER ? 180 : 0), steadyArmBase.getFaceOnSide(Direction.UP).center());
 
-            Vector3f steadyArmRootOrigin = new Vector3f(steadyArmBody.getFaceOnSide(Direction.WEST).getEdge(EdgeType.BOTTOM).center()).add(-holderThinkness / 2f, -DragonLib.PIXEL * 0.5f, -holderThinkness / 2f);
-            CubeMesh steadyArmRoot = new CubeMesh(steadyArmRootOrigin, new Vector3f(holderThinkness, DragonLib.PIXEL * 3.5f, holderThinkness));
+            Vector3f steadyArmRootOrigin = new Vector3f(steadyArmBody.getFaceOnSide(Direction.WEST).getEdge(EdgeType.BOTTOM).center()).add(-holderThinkness / 2f, -DragonLib.BLOCK_PIXEL * 0.5f, -holderThinkness / 2f);
+            CubeMesh steadyArmRoot = new CubeMesh(steadyArmRootOrigin, new Vector3f(holderThinkness, DragonLib.BLOCK_PIXEL * 3.5f, holderThinkness));
 
             steadyArm.combine(false, steadyArmBody, steadyArmRoot);
             registrationArmAttachPoint = steadyArmRoot.getFaceOnSide(Direction.UP).center();

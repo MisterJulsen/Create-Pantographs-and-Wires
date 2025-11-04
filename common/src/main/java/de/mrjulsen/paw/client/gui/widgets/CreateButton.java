@@ -2,15 +2,17 @@ package de.mrjulsen.paw.client.gui.widgets;
 
 import com.simibubi.create.foundation.gui.element.ScreenElement;
 
-import de.mrjulsen.mcdragonlib.client.newgui.widgets.components.DLButton;
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.CursorType;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
+import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.math.Rectangle;
-import net.minecraft.resources.ResourceLocation;
 
 public class CreateButton extends DLButton {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("create", "textures/gui/widgets.png");
+    private static final DLTexture TEXTURE = new DLTexture(DLUtils.resourceLocation("create", "textures/gui/widgets.png"), 256, 256);
     public static final int WIDTH = 18;
     public static final int HEIGHT = 18;
     private final ScreenElement icon;
@@ -18,16 +20,17 @@ public class CreateButton extends DLButton {
     public CreateButton(int x, int y, ScreenElement icon) {
         super(x, y, WIDTH, HEIGHT);
         this.icon = icon;
+        this.cursor.set(CursorType.HAND);
     }
 
     @Override
-    public void renderMainLayer(Graphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
+    public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
         if (!enabled.get()) {
-            GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, WIDTH * 2, 0, WIDTH, HEIGHT);
+            GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, WIDTH, HEIGHT, WIDTH * 2, 0);
         } else if (isSelected()) {
-            GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, WIDTH, 0, WIDTH, HEIGHT);
+            GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, WIDTH, HEIGHT, WIDTH, 0);
         } else {
-            GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, 0, 0, WIDTH, HEIGHT);
+            GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, WIDTH, HEIGHT, 0, 0);
         }
 
         icon.render(graphics.graphics(), 1, 1);

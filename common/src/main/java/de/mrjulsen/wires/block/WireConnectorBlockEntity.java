@@ -7,7 +7,8 @@ import java.util.Optional;
 
 import org.joml.Vector3f;
 
-import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;

@@ -2,11 +2,11 @@ package de.mrjulsen.paw.block;
 
 import java.util.Objects;
 
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import de.mrjulsen.paw.block.abstractions.AbstractRotatableWireConnectorBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractRotatedConnectableBlock;
 import de.mrjulsen.paw.registry.ModBlockEntities;
 import de.mrjulsen.wires.block.WireConnectorBlockEntity;
-import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;

@@ -13,7 +13,7 @@ import org.joml.Vector3f;
 import com.eliotlash.mclib.utils.MathUtils;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.data.Pair;
+import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.RegistrationArmBlock;
@@ -117,13 +117,13 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 		direction = new Vector3f(direction.x(), 0, direction.z());
 		Vector3f rightVec = new Vector3f(direction.z(), 0, -direction.x()).normalize();
 		direction.absolute().normalize();
-        Vector3f offsetA = new Vector3f(rightVec).mul(DragonLib.PIXEL * 2);
-        Vector3f offsetB = new Vector3f(rightVec).mul(DragonLib.PIXEL * -2);
+        Vector3f offsetA = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * 2);
+        Vector3f offsetB = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * -2);
 
 		Wire topWire1 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 1, context, new Vector3f(start).add(offsetA.x(), topWireHeight, offsetA.z()), new Vector3f(end).add(offsetA.x(), topWireHeight, offsetA.z()), CableType.HANGING, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
 		Wire topWire2 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 2, context, new Vector3f(start).add(offsetB.x(), topWireHeight, offsetB.z()), new Vector3f(end).add(offsetB.x(), topWireHeight, offsetB.z()), CableType.TENSION, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
 		Wire upperWire = WireBuilder.createWire(WIRE_UPPER_TENSION, context, new Vector3f(start).add(0, upperWireHeight, 0), new Vector3f(end).add(0, upperWireHeight, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
-		Wire lowerWire = WireBuilder.createWire(WIRE_LOWER_TENSION, context, new Vector3f(start).add(0, DragonLib.PIXEL * -2, 0), new Vector3f(end).add(0, DragonLib.PIXEL * -2, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire lowerWire = WireBuilder.createWire(WIRE_LOWER_TENSION, context, new Vector3f(start).add(0, DragonLib.BLOCK_PIXEL * -2, 0), new Vector3f(end).add(0, DragonLib.BLOCK_PIXEL * -2, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
 		WireBatch batch = WireBatch.of(lowerWire, upperWire, topWire1, topWire2);
 
 		if (dropperDistances.length > 0 && upperWire.getCollisionData().isPresent() && lowerWire.getCollisionData().isPresent() && topWire1.getCollisionData().isPresent() && topWire2.getCollisionData().isPresent()) {			
@@ -259,7 +259,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 						pointsByLocation.add(collision.length(WIRE_LOWER_TENSION) * dropper.pos());
 					}
 
-					if (edge.isOccupied(pos, WIRE_LOWER_TENSION, DragonLib.PIXEL / 2) || edge.isOccupied(pos, WIRE_UPPER_TENSION, DragonLib.PIXEL / 2)) {
+					if (edge.isOccupied(pos, WIRE_LOWER_TENSION, DragonLib.BLOCK_PIXEL / 2) || edge.isOccupied(pos, WIRE_UPPER_TENSION, DragonLib.BLOCK_PIXEL / 2)) {
 						player.displayClientMessage(TextUtils.translate(KEY_INVALID_DROPPER_LOCATION).withStyle(ChatFormatting.RED), true);
 						return InteractionResult.FAIL;
 					}
@@ -321,7 +321,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 				boolean front = isFront(network.getNode(edge.getNodeAId()).getPos(), network.getNode(edge.getNodeBId()).getPos(), player.getViewVector(0).toVector3f()) ^ CantileverBlockItem.getCantileverType(stack) == ECantileverRegistrationArmType.OUTER;
 				RegistrationArmBlock.State state = centered ? State.NORMAL_CENTERED : State.NORMAL;
 				float offset = front ? 1 : 0;
-				offset += (centered ? DragonLib.PIXEL * -0.5f : DragonLib.PIXEL * 3.5f) * (front ? 1 : -1);
+				offset += (centered ? DragonLib.BLOCK_PIXEL * -0.5f : DragonLib.BLOCK_PIXEL * 3.5f) * (front ? 1 : -1);
 
 				element = new RegistrationArmWireDecoration(stack.copyWithCount(1), front, state, dropperId);
 				if (edge.canPlaceDecoration(pos - element.getRadius(element) + offset, WIRE_LOWER_TENSION, element)) {

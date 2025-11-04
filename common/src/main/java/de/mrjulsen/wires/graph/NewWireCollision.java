@@ -15,11 +15,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
+import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.util.Cache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.wires.WirePoints;
-import de.mrjulsen.wires.WiresApi;
-import de.mrjulsen.mcdragonlib.data.Cache;
-import de.mrjulsen.mcdragonlib.data.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
@@ -62,7 +62,7 @@ public class NewWireCollision {
         }, Object::hashCode);
 
         for (Map.Entry<String, WirePoints> p : points.entrySet()) {
-            Map<BlockPos, WireBlockCollision> positions = traceAlongWire(p.getKey(), p.getValue(), (float)(WiresApi.PIXEL * ModServerConfig.WIRE_COLLISION_TRACER_STEP_SIZE.get()));
+            Map<BlockPos, WireBlockCollision> positions = traceAlongWire(p.getKey(), p.getValue(), (float)(DragonLib.BLOCK_PIXEL * ModServerConfig.WIRE_COLLISION_TRACER_STEP_SIZE.get()));
             for (Map.Entry<BlockPos, WireBlockCollision> pos : positions.entrySet()) {
                 SectionPos section = SectionPos.of(pos.getKey());
                 ChunkPos chunk = section.chunk();
@@ -367,7 +367,7 @@ public class NewWireCollision {
         }
 
         private static float bounds(double v) {
-            return (float)(v <= WiresApi.PIXEL ? 0 : (v >= 1D - WiresApi.PIXEL ? 1 : v));
+            return (float)(v <= DragonLib.BLOCK_PIXEL ? 0 : (v >= 1D - DragonLib.BLOCK_PIXEL ? 1 : v));
         }
 
         public WireBlockCollision setSecondPoint(Vector3f oEntryPointB) {

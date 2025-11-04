@@ -49,7 +49,7 @@ import de.mrjulsen.paw.item.CantileverBlockItem;
 import de.mrjulsen.paw.item.FuelBlockItem;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
-import de.mrjulsen.mcdragonlib.client.model.CustomBlockModelRegistry;
+import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
@@ -321,7 +321,7 @@ public class ModBlocks {
 				.register()
 			;
 			if (Platform.getEnvironment() == Env.CLIENT) {
-				CustomBlockModelRegistry.registerForBlock(() -> block.get(), () -> new OxidizedBlockModel(oxidizingTextures), () -> new OxidizedBlockModel(oxidizingTextures));
+				DLBlockModelRegistry.registerForBlock(() -> block.get(), () -> new OxidizedBlockModel(oxidizingTextures), () -> new OxidizedBlockModel(oxidizingTextures));
 			}
 			variants.put(s, block);
 			previous.set(block);
@@ -333,7 +333,7 @@ public class ModBlocks {
 				.register()
 			;
 			if (Platform.getEnvironment() == Env.CLIENT) {
-				CustomBlockModelRegistry.registerForBlock(() -> block.get(), () -> new OxidizedBlockModel(oxidizingTextures), () -> new OxidizedBlockModel(oxidizingTextures));
+				DLBlockModelRegistry.registerForBlock(() -> block.get(), () -> new OxidizedBlockModel(oxidizingTextures), () -> new OxidizedBlockModel(oxidizingTextures));
 			}
 			variants.put(s, block);
 		}

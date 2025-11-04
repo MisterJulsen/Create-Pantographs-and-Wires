@@ -3,7 +3,8 @@ package de.mrjulsen.wires.render;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import de.mrjulsen.mcdragonlib.data.Cache;
+
+import de.mrjulsen.mcdragonlib.util.Cache;
 import de.mrjulsen.paw.mixin.client.RenderChunkAccess;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.WireGraphClient;
