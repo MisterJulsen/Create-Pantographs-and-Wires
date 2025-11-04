@@ -1,13 +1,9 @@
 package de.mrjulsen.wires;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.net.NetworkManagerBase;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphClient;
@@ -29,17 +25,13 @@ import de.mrjulsen.wires.graph.registry.DLRegistry;
 import de.mrjulsen.wires.graph.registry.DLRegistryObject;
 import de.mrjulsen.wires.graph.registry.NodeDataRegistry;
 import de.mrjulsen.wires.graph.registry.NodeDataRegistryObject;
-import de.mrjulsen.wires.network.packets.cts.WireInteractionPacket;
-import de.mrjulsen.wires.network.packets.stc.DeleteWireConnectionPacket;
-import de.mrjulsen.wires.network.packets.stc.WireConnectionChunkUnloadingPacket;
-import de.mrjulsen.wires.network.packets.stc.WireConnectorDataPacket;
+import de.mrjulsen.wires.network.ModNetworkManager;
 import de.mrjulsen.wires.util.GraphId;
 import de.mrjulsen.wires.util.SafeChunkUtils;
 import net.minecraft.resources.ResourceLocation;
 
 public class WiresApi {
     public static final String MOD_ID = "wiresapi";
-    public static final float PIXEL = DragonLib.PIXEL;
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final DLRegistry<ConnectorDataProvider> CONNECTOR_DATA_PROVIDER_REGISTRY = new DLRegistry<>();
@@ -59,26 +51,12 @@ public class WiresApi {
     public static final GraphId PAW_CATENARY_WIRES = WireGraphManager.register("paw_catenary", WireGraph::new, WireGraphClient::new);
 
     
-    private static NetworkManagerBase net;
-
     public static void init() {
-        //NetworkManager.init();
+        ModNetworkManager.init();
 
         dev.architectury.event.events.common.TickEvent.SERVER_LEVEL_PRE.register((level) -> {
             SafeChunkUtils.onTick(level);
         });
         
-        net = new NetworkManagerBase(MOD_ID, "paw_network", List.of(
-            // cts
-            WireInteractionPacket.class,
-            // stc
-            DeleteWireConnectionPacket.class,
-            WireConnectionChunkUnloadingPacket.class,
-            WireConnectorDataPacket.class
-        ));
-    }
-
-    public static NetworkManagerBase net() {
-        return net;
     }
 }

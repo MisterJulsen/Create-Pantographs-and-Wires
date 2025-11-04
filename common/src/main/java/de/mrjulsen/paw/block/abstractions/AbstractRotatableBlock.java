@@ -5,13 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.joml.Vector3f;
-
 import de.mrjulsen.paw.util.Const;
-import de.mrjulsen.paw.util.DLBoundingBox;
 import de.mrjulsen.paw.util.ModMath;
-import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;

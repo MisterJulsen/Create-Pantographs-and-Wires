@@ -20,8 +20,8 @@ import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.network.WireConnectionSyncData;
 import de.mrjulsen.wires.util.Utils;
-import de.mrjulsen.mcdragonlib.data.Cache;
-import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.mcdragonlib.util.Cache;
+import de.mrjulsen.mcdragonlib.util.NbtUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
@@ -74,8 +74,8 @@ public class WireConnection {
     public CompoundTag toNbt() {
         CompoundTag nbt = new CompoundTag();
         nbt.putUUID(NBT_ID, id);
-        DLUtils.putNbtBlockPos(nbt, NBT_POS_A, pointA);
-        DLUtils.putNbtBlockPos(nbt, NBT_POS_B, pointB);
+        NbtUtils.putNbtPos(nbt, NBT_POS_A, pointA);
+        NbtUtils.putNbtPos(nbt, NBT_POS_B, pointB);
         nbt.putString(NBT_WIRE_TYPE, wireType.getRegistryId().toString());
         nbt.put(NBT_CONNECTION_DATA_A, connectionANbt);
         nbt.put(NBT_CONNECTION_DATA_B, connectionBNbt);
@@ -94,8 +94,8 @@ public class WireConnection {
         if (WireTypeRegistry.has(wireTypeId)) {
             WireConnection connection = new WireConnection(
                 nbt.getUUID(NBT_ID),
-                DLUtils.getNbtBlockPos(nbt, NBT_POS_A),
-                DLUtils.getNbtBlockPos(nbt, NBT_POS_B),
+                NbtUtils.getNbtBlockPos(nbt, NBT_POS_A),
+                NbtUtils.getNbtBlockPos(nbt, NBT_POS_B),
                 WireTypeRegistry.get(wireTypeId),
                 nbt.getCompound(NBT_CONNECTION_DATA_A),
                 nbt.getCompound(NBT_CONNECTION_DATA_B),

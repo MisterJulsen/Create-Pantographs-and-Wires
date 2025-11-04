@@ -1,10 +1,9 @@
 package de.mrjulsen.paw.client.gui;
 
+import de.mrjulsen.mcdragonlib.client.util.DLTexture;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
-import net.minecraft.resources.ResourceLocation;
 
 public final class CMRGui {
-    public static final ResourceLocation GUI = new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/gui.png");
-    public static final int GUI_WIDTH = 64;
-    public static final int GUI_HEIGHT = 64;
+    public static final DLTexture GUI = new DLTexture(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/gui/gui.png"), 64, 64);
 }

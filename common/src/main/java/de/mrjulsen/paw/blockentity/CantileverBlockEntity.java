@@ -13,8 +13,8 @@ import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.client.model.ICustomModelBlockEntity;
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
 import de.mrjulsen.mcdragonlib.client.model.ModelContext.ModelProperty;
-import de.mrjulsen.mcdragonlib.data.Cache;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.util.Cache;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import de.mrjulsen.paw.block.CantileverBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverInsulatorsPlacement;
@@ -61,7 +61,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
     public static final byte MAX_CANTILEVERS = 3;
     public static final float Z_POS = 0.5f;
-    public static final float Y_POS = DragonLib.PIXEL * 10;
+    public static final float Y_POS = DragonLib.BLOCK_PIXEL * 10;
 
     public static final ModelProperty<Float> PROPERTY_WIDTH = new ModelProperty<>();
     public static final ModelProperty<Float> PROPERTY_HEIGHT = new ModelProperty<>();
@@ -229,7 +229,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
                 }
             }
 
-            dataArray[i] = new CantileverData(DragonLib.PIXEL * ((16f - getPostConnectionOffset()) / 2), Y_POS, z, lw, getHeight(), dY, lRegisterArm, lCatenaryHeight, spacing, lShowBracing);
+            dataArray[i] = new CantileverData(DragonLib.BLOCK_PIXEL * ((16f - getPostConnectionOffset()) / 2), Y_POS, z, lw, getHeight(), dY, lRegisterArm, lCatenaryHeight, spacing, lShowBracing);
             z += spacing;
         }
         return dataArray;

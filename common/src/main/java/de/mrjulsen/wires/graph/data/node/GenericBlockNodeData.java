@@ -84,7 +84,7 @@ public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof GenericBlockNodeData o) {
-            return getBlockPos().equals(o.getBlockPos()) && getAttachPoint().distance(o.getAttachPoint()) > DragonLib.PIXEL * 4;
+            return getBlockPos().equals(o.getBlockPos()) && getAttachPoint().distance(o.getAttachPoint()) > DragonLib.BLOCK_PIXEL * 4;
         }
         return false;
     }

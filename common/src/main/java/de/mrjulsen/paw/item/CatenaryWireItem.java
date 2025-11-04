@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.data.Pair;
+import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.CantileverBlock;
@@ -89,7 +89,7 @@ public class CatenaryWireItem implements IPawWireItemBase {
             player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(5)),
             level,
             AbstractCantileverBlock.MAX_WIDTH,
-            DragonLib.PIXEL,
+            DragonLib.BLOCK_PIXEL,
             (lvl, pos, rayOrigin, rayDirection) -> {
                 if (!(lvl.getBlockState(pos).getBlock() instanceof CantileverBlock && lvl.getBlockEntity(pos) instanceof CantileverBlockEntity be)) 
                     return Optional.empty();
@@ -98,8 +98,8 @@ public class CatenaryWireItem implements IPawWireItemBase {
                     final int k = i;                    
                     CantileverShapeData shapeData = be.getCantileverInteractionShape(k);
                     LineShape[] shapes = new LineShape[] {
-                        new LineShape(shapeData.stayTubeRoot(), shapeData.front(), DragonLib.PIXEL * 2),
-                        new LineShape(shapeData.bracketTubeRoot(), shapeData.front(), DragonLib.PIXEL * 2)
+                        new LineShape(shapeData.stayTubeRoot(), shapeData.front(), DragonLib.BLOCK_PIXEL * 2),
+                        new LineShape(shapeData.bracketTubeRoot(), shapeData.front(), DragonLib.BLOCK_PIXEL * 2)
                     };
 
                     for (LineShape shape : shapes) {

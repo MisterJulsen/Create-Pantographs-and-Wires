@@ -6,7 +6,7 @@ import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.item.CustomData;
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
-import de.mrjulsen.mcdragonlib.data.MapCache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;

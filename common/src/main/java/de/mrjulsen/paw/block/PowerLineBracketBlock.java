@@ -13,7 +13,7 @@ import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
 import de.mrjulsen.paw.data.BlockModificationData;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.mcdragonlib.config.ECachingPriority;
-import de.mrjulsen.mcdragonlib.data.MapCache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;

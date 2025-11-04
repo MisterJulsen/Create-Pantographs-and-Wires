@@ -1,8 +1,8 @@
 package de.mrjulsen.wires.network.packets.stc;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.graph.WireGraphClient;
@@ -10,35 +10,38 @@ import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.network.WiresSyncData;
 import de.mrjulsen.wires.util.ClientUtils;
-import dev.architectury.networking.NetworkManager.PacketContext;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 
-public class WireConnectorDataPacket implements IPacketBase<WireConnectorDataPacket> {
+public class WireConnectorDataPacketData extends NetworkPacketData {
+
+    private static final String NBT_DATA = "Data";
 
     private WiresSyncData.Wrapper data;
 
-    public WireConnectorDataPacket() {}
+    public WireConnectorDataPacketData(DLStatus status) {
+        super(status);
+    }
 
-    public WireConnectorDataPacket(WiresSyncData.Wrapper data) {
+    public WireConnectorDataPacketData(WiresSyncData.Wrapper data) {
+        super(DLStatus.OK);
         this.data = data;
 
     }
 
     @Override
-    public void encode(WireConnectorDataPacket packet, FriendlyByteBuf buf) {
-        buf.writeNbt(packet.data.toNbt());
+    protected void write(CompoundTag nbt) {
+        nbt.put(NBT_DATA, data.toNbt());
     }
 
     @Override
-    public WireConnectorDataPacket decode(FriendlyByteBuf buf) {
-        return new WireConnectorDataPacket(WiresSyncData.Wrapper.fromNbt(buf.readNbt()));
+    protected void read(CompoundTag nbt) {
+        this.data = WiresSyncData.Wrapper.fromNbt(nbt.getCompound(NBT_DATA));
     }
-
-    @Override
-    public void handle(WireConnectorDataPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {            
+    
+    public static void handle(WireConnectorDataPacketData packet, NetworkPacketContext contextSupplier) {
+        contextSupplier.queue(() -> {            
             EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
                 try {
                     WiresSyncData d = packet.data.unwrap(ClientUtils.level());

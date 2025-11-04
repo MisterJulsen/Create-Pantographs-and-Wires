@@ -12,11 +12,10 @@ import org.joml.Vector3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import de.mrjulsen.mcdragonlib.data.Pair;
+import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.wires.graph.NewWireCollision;
 import de.mrjulsen.wires.graph.WireEdge;
-import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphClient.DebugWireData;
 import de.mrjulsen.wires.graph.WireGraphManager;

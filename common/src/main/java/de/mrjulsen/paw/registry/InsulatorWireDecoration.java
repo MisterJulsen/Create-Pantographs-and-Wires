@@ -14,6 +14,7 @@ import de.mrjulsen.mcdragonlib.client.model.ModelContext;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel;
 import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel.ModelType;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.wires.decoration.IWireDecoration;
@@ -113,7 +114,7 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
             if (!(decoration.stack.getItem() instanceof BlockItem blockitem)) {
                 return;
             }
-            model.get().render(poseStack.last(), consumer, ModelType.BLOCK, blockitem.getBlock().defaultBlockState(), ModelContext.EMPTY, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+            model.get().render(poseStack.last(), consumer, ModelType.BLOCK, blockitem.getBlock().defaultBlockState(), ModelContext.EMPTY, DLColor.WHITE, light, OverlayTexture.NO_OVERLAY);
         }
         
     }

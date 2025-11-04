@@ -12,7 +12,6 @@ import org.joml.Vector3f;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
-import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.debug.WireDebugRenderer;

@@ -2,7 +2,7 @@ package de.mrjulsen.paw.client.model;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.data.MapCache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 
 public enum ETransformationType {
     NONE(0),

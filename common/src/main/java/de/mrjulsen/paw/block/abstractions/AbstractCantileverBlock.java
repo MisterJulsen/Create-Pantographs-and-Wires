@@ -1,5 +1,7 @@
 package de.mrjulsen.paw.block.abstractions;
 
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.client.gui.widgets.IIconRepresentable;
@@ -15,7 +17,6 @@ import java.util.List;
 
 import org.joml.Vector3f;
 
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.TagKey;
@@ -103,7 +104,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         return MAX_CANTILEVERS;
     }
 
-    public static enum ECantileverRegistrationArmType implements StringRepresentable, IIconRepresentable, ITranslatableEnum {
+    public static enum ECantileverRegistrationArmType implements IIconRepresentable, ITranslatableEnum {
         CENTER("center", ModGuiIcons.CANTILEVER_CENTER, 0, 0),
         INNER("inner", ModGuiIcons.CANTILEVER_INNER, -0.25f, 1),
         OUTER("outer", ModGuiIcons.CANTILEVER_OUTER, 0.25f, 0);
@@ -138,16 +139,6 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
             return name;
         }
 
-        @Override
-        public String getEnumName() {
-            return "cantilever_registration_arm";
-        }
-
-        @Override
-        public String getEnumValueName() {
-            return name;
-        }
-
         public static ECantileverRegistrationArmType def() {
             return CENTER;
         }
@@ -159,9 +150,14 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
                 default -> this;
             };
         }
+
+        @Override
+        public Data getTranslationData() {
+            return new Data(PantographsAndWires.MOD_ID, "cantilever_registration_arm", name);
+        }
     }
 
-    public static enum ECantileverInsulatorsPlacement implements StringRepresentable, IIconRepresentable, ITranslatableEnum {
+    public static enum ECantileverInsulatorsPlacement implements IIconRepresentable, ITranslatableEnum {
         BACK("back", ModGuiIcons.CANTILEVER_INSULATOR_BACK, 0),
         FRONT("front", ModGuiIcons.CANTILEVER_INSULATOR_FRONT, 0.8f);
 
@@ -193,18 +189,13 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
             return name;
         }
 
-        @Override
-        public String getEnumName() {
-            return "insulator_placement";
-        }
-
-        @Override
-        public String getEnumValueName() {
-            return name;
-        }
-
         public static ECantileverInsulatorsPlacement def() {
             return BACK;
+        }
+
+        @Override
+        public Data getTranslationData() {
+            return new Data(PantographsAndWires.MOD_ID, "insulator_placement", name);
         }
     }
 

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.data.Pair;
+import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverInsulatorsPlacement;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverRegistrationArmType;
@@ -169,7 +169,7 @@ public abstract class ChunkSerializerMixin {
                     int insulatorPlacement = ECantileverInsulatorsPlacement.getByName(((CompoundTag)state.get("Properties")).getString("insulator_placement").replace("\"", "")).ordinal();
                     int registrationArmType = ECantileverRegistrationArmType.getByName(((CompoundTag)state.get("Properties")).getString("registration_arm").replace("\"", "")).ordinal();
                     int postConnectionOffset = ECantileverConnectionType.getByName(((CompoundTag)state.get("Properties")).getString("connection").replace("\"", "")).getIndex();
-                    float height = 0.5f * rawWidth - DragonLib.PIXEL * 2;
+                    float height = 0.5f * rawWidth - DragonLib.BLOCK_PIXEL * 2;
                     float catenaryHeight = width < 5 ? 1 : 2;
                     boolean showBracing = width >= 4;
 

@@ -3,37 +3,37 @@ package de.mrjulsen.paw.client.gui.screens;
 import com.simibubi.create.foundation.gui.AllIcons;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.client.newgui.events.DLGuiCommonEvents;
-import de.mrjulsen.mcdragonlib.client.newgui.events.DLGuiStandardEvents;
-import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindow;
-import de.mrjulsen.mcdragonlib.client.newgui.widgets.base.DLWindowManager;
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
+import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindowManager;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLSlider;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
+import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.core.EAlignment;
+import de.mrjulsen.mcdragonlib.data.ETextAlignment;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
+import de.mrjulsen.mcdragonlib.util.DLColor;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateListSlider;
 import de.mrjulsen.paw.data.WireSettingsData;
-import de.mrjulsen.paw.network.stc.ClearWireConnectionPacket;
-import de.mrjulsen.paw.network.stc.UpdateCantileverSettingsPacket;
-import de.mrjulsen.paw.network.stc.UpdateWireSettingsPacket;
+import de.mrjulsen.paw.network.ModNetworkManager;
+import de.mrjulsen.paw.network.packets.ClearWireConnectionPacketData;
+import de.mrjulsen.paw.network.packets.UpdateWireSettingsPacketData;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.item.MultiWireItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class WireTypeSelectionScreen extends DLWindow {
     
-    private static final ResourceLocation TEXTURE = new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/quick_settings.png");
-    private static final int TEXTURE_WIDTH = 256;
-    private static final int TEXTURE_HEIGHT = 256;
+    private static final DLTexture TEXTURE = new DLTexture(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/gui/quick_settings.png"), 256, 256);
     private static final int GUI_WIDTH = 192;
     private static final int GUI_HEIGHT = 106;
 
@@ -55,9 +55,9 @@ public class WireTypeSelectionScreen extends DLWindow {
 
         addEventListener(DLGuiStandardEvents.CloseEvent.class, (s, e) -> {
             WireSettingsData data = new WireSettingsData(selectedType);
-            MultiWireItem.setNbt(stack, data);            
-            PantographsAndWires.net().CHANNEL.sendToServer(new UpdateWireSettingsPacket(data));
-            //DataAccessor.getFromServer(data, ModNetworkAccessor.UPDATE_WIRE_SETTINGS, $ -> {});
+            MultiWireItem.setNbt(stack, data);   
+        
+            ModNetworkManager.UPDATE_WIRE_SETTINGS.send(NetworkDirection.toServer(), new UpdateWireSettingsPacketData(data));
             return false;
         });
         
@@ -65,7 +65,7 @@ public class WireTypeSelectionScreen extends DLWindow {
         CreateListSlider<IPawWireItemBase> typeSelection = new CreateListSlider<>(width() / 2 - w / 2, 43, w, 20, ModWireRegistry.WIRE_SUBTYPES_REGISTRY.getAll());
         typeSelection.text.set(txtWireType);
         typeSelection.setValue(selectedType);
-        typeSelection.addEventListener(DLGuiCommonEvents.ValueChangedEvent.class, (s, e) -> {
+        typeSelection.addEventListener(DLSlider.ValueChangedEvent.class, (s, e) -> {
             this.selectedType = typeSelection.getValue();
             return false;
         });
@@ -80,9 +80,9 @@ public class WireTypeSelectionScreen extends DLWindow {
         
         CreateButton resetBtn = new CreateButton(7, height() - 6 - CreateButton.HEIGHT, AllIcons.I_TRASH);
         resetBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {            
-            IWireItemBase.clear(stack);            
-            PantographsAndWires.net().CHANNEL.sendToServer(new ClearWireConnectionPacket());
-            //DataAccessor.getFromServer(null, ModNetworkAccessor.CLEAR_WIRE_CONNECTION_DATA, $ -> {});
+            IWireItemBase.clear(stack);  
+
+            ModNetworkManager.CLEAR_WIRE_CONNECTION.send(NetworkDirection.toServer(), new ClearWireConnectionPacketData());
             getWindowManager().closeWindow(this);
             return false;
         });
@@ -90,10 +90,10 @@ public class WireTypeSelectionScreen extends DLWindow {
     }
             
     @Override
-    public void renderMainLayer(Graphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
-        GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, GUI_WIDTH, GUI_HEIGHT, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        GuiUtils.drawString(graphics, Minecraft.getInstance().font, width() / 2, 4, title, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.CENTER, false);
-        GuiUtils.drawString(graphics, Minecraft.getInstance().font, width() / 2, 26, txtInstruction, 0xFF7A7A7A, EAlignment.CENTER, false);
+    public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
+        GuiUtils.drawTexture(TEXTURE, graphics, 0, 0, GUI_WIDTH, GUI_HEIGHT);
+        GuiUtils.drawString(graphics, Minecraft.getInstance().font, width() / 2, 4, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);
+        GuiUtils.drawString(graphics, Minecraft.getInstance().font, width() / 2, 26, txtInstruction, DLColor.fromInt(0xFF7A7A7A), ETextAlignment.CENTER, false);
     }
     
 }

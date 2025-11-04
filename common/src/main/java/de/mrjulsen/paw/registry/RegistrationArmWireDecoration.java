@@ -15,16 +15,14 @@ import de.mrjulsen.mcdragonlib.client.model.ModelContext;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel;
 import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel.ModelType;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
-import de.mrjulsen.mcdragonlib.data.Cache;
-import de.mrjulsen.mcdragonlib.data.DataCache;
 import de.mrjulsen.paw.block.RegistrationArmBlock;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.decoration.WireDecorationRenderer;
 import de.mrjulsen.wires.graph.registry.DLRegistryObject;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -155,7 +153,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
 
         @Override
         public void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f direction, int light) {
-            model.get().render(poseStack.last(), consumer, ModelType.BLOCK, ModBlocks.REGISTRATION_ARM.getDefaultState(), ModelContext.EMPTY, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+            model.get().render(poseStack.last(), consumer, ModelType.BLOCK, ModBlocks.REGISTRATION_ARM.getDefaultState(), ModelContext.EMPTY, DLColor.WHITE, light, OverlayTexture.NO_OVERLAY);
         }
         
     }

@@ -1,6 +1,7 @@
 package de.mrjulsen.paw.blockentity;
 
-import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
