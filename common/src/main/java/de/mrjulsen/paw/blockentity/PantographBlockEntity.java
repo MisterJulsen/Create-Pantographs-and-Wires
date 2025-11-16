@@ -12,7 +12,6 @@ import org.joml.Vector3f;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
-import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.debug.WireDebugRenderer;
@@ -93,11 +92,11 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
 
     public void toggleExpandable() {
         setExpandable(!isExpandable());
+        notifyUpdate();
     }
 
     public void setExpandable(boolean b) {
         this.expandable = b;
-        notifyUpdate();
     }
 
     public boolean isExpandable() {
@@ -113,11 +112,16 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
         return this.expanded;
     }
 
+    @Override
+    public void writeSafe(CompoundTag tag) {
+        tag.putBoolean(NBT_EXPANDABLE, expandable);
+        super.writeSafe(tag);
+    }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        tag.putBoolean(NBT_EXPANDABLE, isExpandable());
+        tag.putBoolean(NBT_EXPANDABLE, expandable);
     }
 
     @Override
