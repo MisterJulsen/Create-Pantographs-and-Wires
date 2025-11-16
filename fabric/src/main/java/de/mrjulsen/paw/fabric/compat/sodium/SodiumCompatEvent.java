@@ -1,4 +1,4 @@
-package de.mrjulsen.paw.compat.sodium;
+package de.mrjulsen.paw.fabric.compat.sodium;
 
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;

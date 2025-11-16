@@ -16,7 +16,6 @@ import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.render.WireRenderer;
 import de.mrjulsen.wires.util.ClientUtils;
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
@@ -106,18 +105,6 @@ public final class ModClientEvents {
                 }
             }
         });
-
-        /*
-        if (PantographsAndWires.isSodiumLoaded()) {
-            SodiumCompatEvent.init();
-
-            if (!PantographsAndWires.isIndiumLoaded()) {
-                ClientGuiEvent.SET_SCREEN.register((screen) -> {
-                    return CompoundEventResult.interruptTrue(new IncompatabilityScreen());
-                });
-            }
-        }
-            */
     }
     
 }
