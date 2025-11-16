@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.github.fabricators_of_create.porting_lib.core.PortingLib;
+import net.createmod.catnip.math.VecHelper;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 
@@ -26,7 +27,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
-import com.simibubi.create.foundation.utility.VecHelper;
 
 import io.github.fabricators_of_create.porting_lib.models.UnbakedGeometryHelper;
 import io.github.fabricators_of_create.porting_lib.models.geometry.IUnbakedGeometry;
