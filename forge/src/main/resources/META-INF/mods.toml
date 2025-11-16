@@ -37,7 +37,7 @@ side = "BOTH"
 [[dependencies.${modid}]]
 modId = "create"
 mandatory = true
-versionRange = "[${create_forge_version_dependency},)"
+versionRange = "[${create_forge_dependency_version},)"
 ordering = "BEFORE"
 side = "BOTH"
 

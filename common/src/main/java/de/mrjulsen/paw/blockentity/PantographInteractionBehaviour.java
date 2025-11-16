@@ -6,6 +6,7 @@ import com.simibubi.create.api.behaviour.interaction.MovingInteractionBehaviour;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
+import de.mrjulsen.paw.CrossPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -20,11 +21,11 @@ public class PantographInteractionBehaviour extends MovingInteractionBehaviour {
         if (actor == null || actor.right == null)
             return false;
     
-        MovementContext ctx = actor.getRight();
+        MovementContext ctx = actor.right;
         boolean state = !ctx.blockEntityData.getBoolean(PantographBlockEntity.NBT_EXPANDABLE);
         ctx.blockEntityData.putBoolean(PantographBlockEntity.NBT_EXPANDABLE, state);
 
-        if (ctx.world.isClientSide() && contraption.presentBlockEntities.containsKey(localPos) && contraption.presentBlockEntities.get(localPos) instanceof PantographBlockEntity be) {            
+        if (CrossPlatform.getClientContraptionBlockEntity(contraption, localPos) instanceof PantographBlockEntity be) {
 		    be.setExpandable(state);
         }
 

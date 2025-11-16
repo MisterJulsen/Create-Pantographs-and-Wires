@@ -1,12 +1,16 @@
 package de.mrjulsen.paw.forge;
 
+import com.simibubi.create.content.contraptions.Contraption;
+
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.config.ModClientConfig;
 import de.mrjulsen.paw.config.ModCommonConfig;
 import de.mrjulsen.paw.config.ModServerConfig;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -23,5 +27,9 @@ public final class CrossPlatformImpl {
 
     public static double interactionRange(Player player) {
         return player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
+    }
+
+    public static BlockEntity getClientContraptionBlockEntity(Contraption contraption, BlockPos localPos) {
+        return contraption.getBlockEntityClientSide(localPos);
     }
 }

@@ -5,6 +5,7 @@ import org.joml.Vector3d;
 import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 
+import de.mrjulsen.paw.CrossPlatform;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -15,9 +16,7 @@ public class PantographMovementBehaviour implements MovementBehaviour {
 
 	@Override
 	public void tick(MovementContext context) {       
-        if (context.contraption.entity.level().isClientSide() &&
-            context.contraption.presentBlockEntities.containsKey(context.localPos) &&
-            context.contraption.presentBlockEntities.get(context.localPos) instanceof PantographBlockEntity be
+        if (context.contraption.entity.level().isClientSide() && CrossPlatform.getClientContraptionBlockEntity(context.contraption, context.localPos) instanceof PantographBlockEntity be
         ) {
             Direction dir = context.state.getValue(HorizontalDirectionalBlock.FACING);
             if (dir.getAxis() == Axis.X) {
