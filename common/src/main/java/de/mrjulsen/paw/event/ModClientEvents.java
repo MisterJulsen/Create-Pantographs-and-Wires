@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLScreenWrapper;
 import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
@@ -17,7 +16,6 @@ import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.render.WireRenderer;
 import de.mrjulsen.wires.util.ClientUtils;
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;

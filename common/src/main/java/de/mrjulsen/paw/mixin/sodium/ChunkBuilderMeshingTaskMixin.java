@@ -54,7 +54,7 @@ public class ChunkBuilderMeshingTaskMixin {
         BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos(minX, minY, minZ);
         ChunkBuildBuffers buffers = buildContext.buffers;
         try {
-            //MeshAppenderRenderer.renderMeshAppenders(slice, renderContext.getOrigin(), buffers);
+            MeshAppenderRenderer.renderMeshAppenders(slice, renderContext.getOrigin(), buffers);
         } catch (ReportedException var24) {
             throw fillCrashInfo(var24.getReport(), slice, blockPos);
         } catch (Exception var25) {

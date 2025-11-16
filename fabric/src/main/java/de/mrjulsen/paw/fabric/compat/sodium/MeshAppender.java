@@ -1,4 +1,4 @@
-package de.mrjulsen.paw.compat.sodium;
+package de.mrjulsen.paw.fabric.compat.sodium;
 
 import java.util.function.Function;
 
@@ -14,7 +14,7 @@ public interface MeshAppender {
      * Called to add appropriate geometry to the section.
      * @param context render context for this section
      */
-    void render(org.embeddedt.embeddium.api.MeshAppender.Context context);
+    void render(Context context);
 
     /**
      * Section rendering context for a MeshAppender.

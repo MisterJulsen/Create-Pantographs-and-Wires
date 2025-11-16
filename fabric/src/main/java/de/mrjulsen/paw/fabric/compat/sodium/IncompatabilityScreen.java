@@ -1,4 +1,4 @@
-package de.mrjulsen.paw.compat.sodium;
+package de.mrjulsen.paw.fabric.compat.sodium;
 
 import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;

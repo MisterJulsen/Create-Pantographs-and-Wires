@@ -1,7 +1,12 @@
 package de.mrjulsen.paw.fabric.client;
 
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.fabric.client.model.loaders.MultipartObjLoader;
+import de.mrjulsen.paw.fabric.compat.sodium.IncompatabilityScreen;
+import de.mrjulsen.paw.fabric.compat.sodium.SodiumCompatEvent;
 import de.mrjulsen.wires.debug.WireDebugRenderer;
+import dev.architectury.event.CompoundEventResult;
+import dev.architectury.event.events.client.ClientGuiEvent;
 import io.github.fabricators_of_create.porting_lib.models.geometry.RegisterGeometryLoadersCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
@@ -19,5 +24,16 @@ public class ClientSetup implements ClientModInitializer {
         WorldRenderEvents.LAST.register((WorldRenderContext context) -> {
             WireDebugRenderer.renderWireCollisions(context.matrixStack());
         });
+        
+
+        if (PantographsAndWires.isSodiumLoaded()) {
+            SodiumCompatEvent.init();
+
+            if (!PantographsAndWires.isIndiumLoaded()) {
+                ClientGuiEvent.SET_SCREEN.register((screen) -> {
+                    return CompoundEventResult.interruptTrue(new IncompatabilityScreen());
+                });
+            }
+        }
     }
 }

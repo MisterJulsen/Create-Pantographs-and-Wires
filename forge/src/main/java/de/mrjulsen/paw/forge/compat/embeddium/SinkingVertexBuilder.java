@@ -1,4 +1,4 @@
-package de.mrjulsen.paw.compat.sodium;
+package de.mrjulsen.paw.forge.compat.embeddium;
 
 import me.jellysquid.mods.sodium.client.model.quad.ModelQuadView;
 import me.jellysquid.mods.sodium.client.model.quad.properties.ModelQuadFacing;
@@ -7,8 +7,6 @@ import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
 import me.jellysquid.mods.sodium.client.render.chunk.vertex.builder.ChunkMeshBufferBuilder;
 import me.jellysquid.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEncoder;
 import me.jellysquid.mods.sodium.client.util.ModelQuadUtil;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 
@@ -28,7 +26,6 @@ import java.util.Arrays;
  *
  * @author KitsuneAlex, embeddedt
  */
-@Environment(EnvType.CLIENT)
 public final class SinkingVertexBuilder implements VertexConsumer {
     private static final int VERTEX_SIZE_BYTES = 32;
     private static final int INITIAL_CAPACITY = 16384; // Seems to generally be enough for your average subchunk
@@ -51,7 +48,6 @@ public final class SinkingVertexBuilder implements VertexConsumer {
 
     private final ChunkVertexEncoder.Vertex[] sodiumVertexArray = ChunkVertexEncoder.Vertex.uninitializedQuad();
     private final ModelQuadView previousQuad = new ModelQuadView() {
-
         /**
          * @param idx the index of the desired vertex
          * @param offset the offset into that vertex, as an integer
@@ -110,7 +106,7 @@ public final class SinkingVertexBuilder implements VertexConsumer {
         public Direction getLightFace() {
             return null;
         }
-
+        
         @Override
         public int getLight(int idx) {
             return 0;
