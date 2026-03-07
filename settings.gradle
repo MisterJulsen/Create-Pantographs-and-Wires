@@ -3,12 +3,13 @@ pluginManagement {
         maven { url "https://maven.fabricmc.net/" }
         maven { url "https://maven.architectury.dev/" }
         maven { url "https://maven.minecraftforge.net/" }
+        maven { url "https://maven.mrjulsen.net/" }
         gradlePluginPortal()
     }
 }
 
 include("common")
-include("fabric")
-include("forge")
+//include("fabric")
+include("neoforge")
 
-rootProject.name = "Create Pantographs And Wires - Create 6"
+rootProject.name = "Create Pantographs And Wires 1.21.1 DL3 C6"

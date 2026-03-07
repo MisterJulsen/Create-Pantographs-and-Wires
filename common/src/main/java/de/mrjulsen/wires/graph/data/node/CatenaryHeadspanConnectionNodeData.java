@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -146,7 +147,7 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
     }
 
     @Override
-    public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
+    public boolean validate(WireGraph graph, WireConnectionDataComponent connectionData, int pointIndex) {
         return graph.getCollisionById(wireId.id()).map(x -> x.hasWire(wireId.name())).orElse(false);
     }
 

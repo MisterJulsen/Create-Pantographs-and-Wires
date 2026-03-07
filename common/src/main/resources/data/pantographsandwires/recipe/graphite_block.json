@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "tag": "c:ingots/graphite"
+      }
+    },
+    "pattern": [
+      "AAA",
+      "AAA",
+      "AAA"
+    ],
+    "result": {
+      "count": 1,
+      "id": "pantographsandwires:graphite_block"
+    }
+  }

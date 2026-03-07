@@ -1,5 +1,5 @@
 {
-  "loader": "pantographsandwires:multipart_obj",
+  "loader": "dragonlib:multipart_obj",
   "automatic_culling": true,
   "shade_quads": true,
   "flip_v": true,

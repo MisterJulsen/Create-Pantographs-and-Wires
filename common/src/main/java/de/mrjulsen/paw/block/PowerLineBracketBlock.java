@@ -143,8 +143,8 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
         Level level = context.getLevel();
         BlockState state = super.getStateForPlacement(context);
         BlockPos pos = context.getClickedPos();
-        BlockState supportState = contextExt.getPlacedOnState();
-        BlockPos supportPos = contextExt.getPlacedOnPos();
+        BlockState supportState = contextExt.paw$getPlacedOnState();
+        BlockPos supportPos = contextExt.paw$getPlacedOnPos();
         Direction clickedFace = context.getClickedFace();
 
         if (supportState.getBlock() instanceof PowerLineBracketBlock && supportState.getValue(FACING).getAxis() == clickedFace.getAxis()) {
@@ -218,7 +218,7 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
     }
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        this.onRandomTick(state, level, pos, random);
+        this.changeOverTime(state, level, pos, random);
     }
 
     public boolean isRandomlyTicking(BlockState state) {

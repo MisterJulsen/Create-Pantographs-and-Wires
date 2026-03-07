@@ -2,6 +2,8 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import de.mrjulsen.paw.components.WireAmountComponent;
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -11,7 +13,6 @@ import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.WireEdge;
 import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.util.GraphId;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,7 @@ public abstract class PAWWireType extends AbstractWireType {
 			}
 			return enableDrops;
 		}).orElse(enableDrops)) {
-			float scaleFactor = (float)IPawWireItemBase.WIRE_LENGTH / 8;
+			float scaleFactor = (float) WireAmountComponent.MAX_WIRE / 8;
 			int x = (int)Math.floor(length / scaleFactor);
 			float chance = 1.0f;
 			if (x < 1) {
@@ -48,10 +49,10 @@ public abstract class PAWWireType extends AbstractWireType {
 				level.addFreshEntity(itementity);
 			}
 		}
-    }	
+    }
 
 	@Override
-	public GraphId getGraphId(CompoundTag itemData) {
+	public GraphId getGraphId(WireConnectionDataComponent connectionData) {
 		return WiresApi.PAW_CATENARY_WIRES;
 	}
 

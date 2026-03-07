@@ -1,19 +1,19 @@
 package de.mrjulsen.paw.config;
 
 import de.mrjulsen.paw.PantographsAndWires;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ModCommonConfig {
-    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec SPEC;
 
     
-    public static final ForgeConfigSpec.ConfigValue<Boolean> ADVANCED_BLOCK_SELECTION;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> USE_DATA_FIXERS;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> CONVERT_WIRE_NETWORK;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> COMPRESS_HASH_VALUES;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> ADVANCED_LOGGING;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> WIRE_CONVERTER_LOGGING;
+    public static final ModConfigSpec.ConfigValue<Boolean> ADVANCED_BLOCK_SELECTION;
+    public static final ModConfigSpec.ConfigValue<Boolean> USE_DATA_FIXERS;
+    public static final ModConfigSpec.ConfigValue<Boolean> CONVERT_WIRE_NETWORK;
+    public static final ModConfigSpec.ConfigValue<Boolean> COMPRESS_HASH_VALUES;
+    public static final ModConfigSpec.ConfigValue<Boolean> ADVANCED_LOGGING;
+    public static final ModConfigSpec.ConfigValue<Boolean> WIRE_CONVERTER_LOGGING;
 
     public static final double MIN_SCALE = 0.25f;
     public static final double MAX_SCALE = 2.0f;

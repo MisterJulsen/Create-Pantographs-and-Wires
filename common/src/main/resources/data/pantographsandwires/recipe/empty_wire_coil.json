@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "tag": "minecraft:wooden_slabs"
+      },
+      "B": {
+        "tag": "c:rods/wooden"
+      }
+    },
+    "pattern": [
+      "A",
+      "B",
+      "A"
+    ],
+    "result": {
+      "count": 4,
+      "id": "pantographsandwires:empty_wire_coil"
+    }
+  }

@@ -1,11 +1,15 @@
 package de.mrjulsen.wires.item;
 
 import java.util.List;
+import java.util.Optional;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.paw.components.WireAmountComponent;
+import de.mrjulsen.paw.components.WireSubtypeComponent;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.data.WireSettingsData;
 import de.mrjulsen.paw.event.ClientWrapper;
+import de.mrjulsen.paw.registry.ModDataComponents;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.IWireType;
 import net.minecraft.network.chat.Component;
@@ -35,8 +39,9 @@ public class MultiWireItem extends AbstractWireItemBase {
     }
     
     public IWireItemBase getSubType(ItemStack stack) {
-        IPawWireItemBase type = ModWireRegistry.WIRE_SUBTYPES_REGISTRY.load(stack.getOrCreateTag().getCompound(NBT_TYPE));
-        return type == null ? ModWireRegistry.ENERGY_WIRE_ITEM_SUBTYPE.get() : type;
+        IPawWireItemBase fallback = ModWireRegistry.ENERGY_WIRE_ITEM_SUBTYPE.get();
+        WireSubtypeComponent subtype = ModDataComponents.getComponent(stack, ModDataComponents.WIRE_SUBTYPE, WireSubtypeComponent::empty);
+        return subtype.id().map(id -> ModWireRegistry.WIRE_SUBTYPES_REGISTRY.getById(id).orElse(fallback)).orElse(fallback);
     }
     
     @Override
@@ -49,12 +54,9 @@ public class MultiWireItem extends AbstractWireItemBase {
         return getSubType(context.getItemInHand()).useWireOn(context);
     }
 
-    public static boolean setNbt(ItemStack stack, WireSettingsData data) {
-        if (stack.getItem() instanceof MultiWireItem) {
-            data.toNbt(stack.getOrCreateTag());
-            return true;
-        } 
-        return false;
+    public static boolean setSettings(ItemStack stack, WireSettingsData data) {
+        ModDataComponents.setComponent(stack, ModDataComponents.WIRE_SUBTYPE, new WireSubtypeComponent(Optional.ofNullable(data.selectedType().getRegistryType().id())));
+        return true;
     }
 
     @Override
@@ -73,10 +75,10 @@ public class MultiWireItem extends AbstractWireItemBase {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level player, List<Component> list, TooltipFlag flag) {
-        super.appendHoverText(stack, player, list, flag);
-        list.add(TextUtils.text("Type: ").append(TextUtils.translate(((IPawWireItemBase)getSubType(stack)).getTranslationKey())));
-        list.add(TextUtils.text("Amount: " + IPawWireItemBase.getRemainingWire(stack) + "m"));        
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(TextUtils.text("Type: ").append(TextUtils.translate(((IPawWireItemBase)getSubType(stack)).getTranslationKey())));
+        tooltipComponents.add(TextUtils.text("Amount: " + IPawWireItemBase.getRemainingWire(stack) + "m"));
     }
 
     @Override
@@ -86,7 +88,7 @@ public class MultiWireItem extends AbstractWireItemBase {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return (IPawWireItemBase.getRemainingWire(stack) * 13) / IPawWireItemBase.WIRE_LENGTH;
+        return (IPawWireItemBase.getRemainingWire(stack) * 13) / WireAmountComponent.MAX_WIRE;
     }
 
     @Override

@@ -19,10 +19,12 @@ import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateListSlider;
+import de.mrjulsen.paw.components.WireSubtypeComponent;
 import de.mrjulsen.paw.data.WireSettingsData;
 import de.mrjulsen.paw.network.ModNetworkManager;
 import de.mrjulsen.paw.network.packets.ClearWireConnectionPacketData;
 import de.mrjulsen.paw.network.packets.UpdateWireSettingsPacketData;
+import de.mrjulsen.paw.registry.ModDataComponents;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.item.IWireItemBase;
@@ -30,6 +32,8 @@ import de.mrjulsen.wires.item.MultiWireItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Optional;
 
 public class WireTypeSelectionScreen extends DLWindow {
     
@@ -55,8 +59,7 @@ public class WireTypeSelectionScreen extends DLWindow {
 
         addEventListener(DLGuiStandardEvents.CloseEvent.class, (s, e) -> {
             WireSettingsData data = new WireSettingsData(selectedType);
-            MultiWireItem.setNbt(stack, data);   
-        
+            ModDataComponents.setComponent(stack, ModDataComponents.WIRE_SUBTYPE, new WireSubtypeComponent(Optional.of(data.selectedType().getRegistryType().id())));
             ModNetworkManager.UPDATE_WIRE_SETTINGS.send(NetworkDirection.toServer(), new UpdateWireSettingsPacketData(data));
             return false;
         });
@@ -80,7 +83,9 @@ public class WireTypeSelectionScreen extends DLWindow {
         
         CreateButton resetBtn = new CreateButton(7, height() - 6 - CreateButton.HEIGHT, AllIcons.I_TRASH);
         resetBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {            
-            IWireItemBase.clear(stack);  
+            if (stack.getItem() instanceof MultiWireItem mwi) {
+                mwi.clear(stack);
+            }
 
             ModNetworkManager.CLEAR_WIRE_CONNECTION.send(NetworkDirection.toServer(), new ClearWireConnectionPacketData());
             getWindowManager().closeWindow(this);

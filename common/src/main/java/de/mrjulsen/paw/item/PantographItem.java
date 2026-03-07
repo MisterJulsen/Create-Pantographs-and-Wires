@@ -4,13 +4,14 @@ import de.mrjulsen.paw.blockentity.PantographBlockEntity;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.molang.MolangParser;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public abstract class PantographItem extends BlockItem implements GeoItem {
@@ -34,15 +35,15 @@ public abstract class PantographItem extends BlockItem implements GeoItem {
 
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "popup_controller", 0, state -> {
-			MolangParser.INSTANCE.setValue("query.height_percentage", () -> {
+		controllers.add(new AnimationController<GeoAnimatable>(this, "popup_controller", 0, state -> {
+			MathParser.setVariable("query.height_percentage", () -> {
 				return expanded ? 1D / PantographBlockEntity.DELTA_HEIGHT * 2 : 0;
 			});
-			MolangParser.INSTANCE.setValue("query.func", () -> {            
-				double p = MolangParser.INSTANCE.getVariable("query.height_percentage").get();
+			MathParser.setVariable("query.func", () -> {
+				double p = MathParser.getVariableFor("query.height_percentage").get();
 				return PantographBlockEntity.getArmAngle(p);
 			});
-			MolangParser.INSTANCE.setMemoizedValue("query.head_rotation", () -> {
+			MathParser.setVariable("query.head_rotation", () -> {
 				return 0;
 			});
 			state.setAnimation(ANIM_WIRE_CONTACT);

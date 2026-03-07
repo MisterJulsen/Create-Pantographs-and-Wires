@@ -1,13 +1,13 @@
 package de.mrjulsen.paw.config;
 
 import de.mrjulsen.paw.PantographsAndWires;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ModClientConfig {
-    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec SPEC;
 
-    public static final ForgeConfigSpec.ConfigValue<Boolean> DEBUG_ORIGINAL_HITBOX;
+    public static final ModConfigSpec.ConfigValue<Boolean> DEBUG_ORIGINAL_HITBOX;
 
     static {
         BUILDER.push(PantographsAndWires.MOD_ID + "_client_config");

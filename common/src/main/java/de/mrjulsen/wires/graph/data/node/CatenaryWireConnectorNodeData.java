@@ -3,6 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.WiresApi;
@@ -106,7 +107,7 @@ public class CatenaryWireConnectorNodeData extends NodeData {
     }
 
     @Override
-    public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
+    public boolean validate(WireGraph graph, WireConnectionDataComponent connectionData, int pointIndex) {
         return graph.hasEdge(wireId.id());
     }
 

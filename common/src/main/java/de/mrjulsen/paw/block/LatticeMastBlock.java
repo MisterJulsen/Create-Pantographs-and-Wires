@@ -45,7 +45,7 @@ public class LatticeMastBlock extends AbstractMultipartPostBlock implements IWea
     }
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        this.onRandomTick(state, level, pos, random);
+        this.changeOverTime(state, level, pos, random);
     }
 
     public boolean isRandomlyTicking(BlockState state) {

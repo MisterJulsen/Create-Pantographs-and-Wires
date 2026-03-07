@@ -6,19 +6,18 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipModifier;
 
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.event.ModClientEvents;
 import de.mrjulsen.paw.event.ModCommonEvents;
 import de.mrjulsen.paw.network.ModNetworkManager;
-import de.mrjulsen.paw.registry.ModBlockEntities;
-import de.mrjulsen.paw.registry.ModBlocks;
-import de.mrjulsen.paw.registry.ModCreativeModeTab;
-import de.mrjulsen.paw.registry.ModItems;
-import de.mrjulsen.paw.registry.ModWireRegistry;
+import de.mrjulsen.paw.registry.*;
 import de.mrjulsen.wires.WiresApi;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import net.createmod.catnip.lang.FontHelper.Palette;
-import software.bernie.geckolib.GeckoLib;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 
 public final class PantographsAndWires {
@@ -36,14 +35,12 @@ public final class PantographsAndWires {
 		REGISTRATE.setTooltipModifierFactory(item -> {
 			return new ItemDescription.Modifier(item, Palette.STANDARD_CREATE)
 				.andThen(TooltipModifier.mapNull(KineticStats.create(item)));
-		});
+		}).defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
 	}
 
     public static void load() {}
 
     public static void init() {
-
-        GeckoLib.initialize();
         WiresApi.init();
 
         ModWireRegistry.init();
@@ -52,6 +49,7 @@ public final class PantographsAndWires {
         ModBlockEntities.init();
         ModCreativeModeTab.setup();
         ModNetworkManager.init();
+        ModDataComponents.init();
 
         CrossPlatform.registerConfig();
         ModCommonEvents.init();

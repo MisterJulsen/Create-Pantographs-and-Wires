@@ -20,7 +20,7 @@ public abstract class AbstractPlaceableInsulatorBlock extends AbstractRotatableW
 
     public static final String NBT_TENSION_WIRE_ATTACH_POINT = "TensionWireAttachPoint";
 
-    public static final IntegerProperty MULTIPART_SEGMENT = AbstractRotatedConnectableBlock.createMultipartSegmentsProperty();
+    public static final IntegerProperty MULTIPART_SEGMENT = AbstractRotatedConnectableBlock.MULTIPART_SEGMENT;
     protected final MapCache<Vec2, BlockState, BlockState> offsetCache = AbstractRotatedConnectableBlock.createOffsetCache();
     
     protected static record TransformationShapeKey(Direction direction, int rotation, BlockState state) {

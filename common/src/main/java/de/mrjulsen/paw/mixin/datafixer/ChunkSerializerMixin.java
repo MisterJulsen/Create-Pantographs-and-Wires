@@ -8,6 +8,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,7 +52,7 @@ public abstract class ChunkSerializerMixin {
     }
 
     @Inject(method = "read", at = @At(value = "HEAD"))
-    private static void paw$read(ServerLevel level, PoiManager poiManager, ChunkPos chunkPos, CompoundTag tag, CallbackInfoReturnable<?> cir) {
+    private static void paw$read(ServerLevel level, PoiManager poiManager, RegionStorageInfo regionStorageInfo, ChunkPos pos, CompoundTag tag, CallbackInfoReturnable<ProtoChunk> cir) {
         if (tag.getInt(PantographsAndWires.NBT_DATA_FIXER) >= PantographsAndWires.DATA_FIXER_VERSION) {
             return;
         }
@@ -156,7 +158,7 @@ public abstract class ChunkSerializerMixin {
 
             for (Map.Entry<BlockPos, CompoundTag> entry : foundBlocks.entrySet()) {
                 try {
-                    BlockPos pos = entry.getKey();
+                    BlockPos ppos = entry.getKey();
                     CompoundTag state = entry.getValue();
 
                     String name = state.getString("Name");
@@ -173,7 +175,7 @@ public abstract class ChunkSerializerMixin {
                     float catenaryHeight = width < 5 ? 1 : 2;
                     boolean showBracing = width >= 4;
 
-                    CompoundTag existing = blockEntitiesByPos.get(pos);
+                    CompoundTag existing = blockEntitiesByPos.get(ppos);
                     if (existing != null) {
                         existing.putFloat(CantileverBlockEntity.NBT_WIDTH, width);
                         existing.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, insulatorPlacement);
@@ -190,12 +192,12 @@ public abstract class ChunkSerializerMixin {
                         } else {
                             existing.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
                         }
-                        blockEntitiesByPos.put(pos, existing);
+                        blockEntitiesByPos.put(ppos, existing);
                     } else {
                         CompoundTag newEntity = new CompoundTag();
-                        newEntity.putInt("x", pos.getX());
-                        newEntity.putInt("y", pos.getY());
-                        newEntity.putInt("z", pos.getZ());
+                        newEntity.putInt("x", ppos.getX());
+                        newEntity.putInt("y", ppos.getY());
+                        newEntity.putInt("z", ppos.getZ());
                         newEntity.putString("id", PantographsAndWires.MOD_ID + ":" + "cantilever_block_entity");
                         newEntity.putFloat(CantileverBlockEntity.NBT_WIDTH, width);
                         newEntity.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, insulatorPlacement);
@@ -212,7 +214,7 @@ public abstract class ChunkSerializerMixin {
                         } else {
                             newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
                         }
-                        blockEntitiesByPos.put(pos, newEntity);
+                        blockEntitiesByPos.put(ppos, newEntity);
                     }
                 } catch (Exception e) {
                     PantographsAndWires.LOGGER.error("Unable to convert cantilever.", e);

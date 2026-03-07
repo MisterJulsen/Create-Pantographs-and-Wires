@@ -37,8 +37,8 @@ public class BlockItemMixin {
         BlockState clickedState = level.getBlockState(clickedBlockPos);
         Block thisBlock = self().getBlock();
 
-        contextExtension.setPlacedOnPos(clickedBlockPos);
-        contextExtension.setPlacedOnState(clickedState);
+        contextExtension.paw$setPlacedOnPos(clickedBlockPos);
+        contextExtension.paw$setPlacedOnState(clickedState);
         canModifyPos = context.getClickedFace().getAxis().isHorizontal() && clickedState.getBlock() instanceof IRotatableBlock;
         if (canModifyPos) {
             IRotatableBlock supportRot = (IRotatableBlock)clickedState.getBlock();

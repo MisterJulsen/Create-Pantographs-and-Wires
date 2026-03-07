@@ -1,0 +1,35 @@
+{
+  "type": "create:mechanical_crafting",
+  "pattern": [
+    "GGG",
+    "RMR",
+    " B ",
+    "IMI",
+    "N N"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:ingots/graphite"
+    },
+    "R": {
+      "tag": "c:rods/iron"
+    },
+    "B": {
+      "item": "pantographsandwires:iron_rod_bundle"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "N": {
+      "item": "pantographsandwires:insulator_brown"
+    },
+    "M": {
+      "tag": "c:nuggets/iron"
+    }
+  },
+  "result": {
+    "id": "pantographsandwires:pantograph",
+    "count": 1
+  },
+  "accept_mirrored": true
+}

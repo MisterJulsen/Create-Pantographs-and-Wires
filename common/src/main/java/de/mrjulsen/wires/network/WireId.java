@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
+
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -37,7 +39,7 @@ public record WireId(UUID id, String name, IWireType type) {
     }
 
     public static Optional<WireId> fromNbt(CompoundTag nbt) {
-        ResourceLocation type = new ResourceLocation(nbt.getString(NBT_TYPE));
+        ResourceLocation type = DLUtils.resourceLocation(nbt.getString(NBT_TYPE));
         if (!WireTypeRegistry.has(type)) {
             return Optional.empty();
         }

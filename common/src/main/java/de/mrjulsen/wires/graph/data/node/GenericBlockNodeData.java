@@ -3,6 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -77,7 +78,7 @@ public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
     }
 
     @Override
-    public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
+    public boolean validate(WireGraph graph, WireConnectionDataComponent connectionData, int pointIndex) {
         return !graph.getLevel().isLoaded(pos) || !graph.getLevel().getBlockState(pos).isAir();
     }
 

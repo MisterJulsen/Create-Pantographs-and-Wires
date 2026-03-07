@@ -1,7 +1,5 @@
 package de.mrjulsen.paw.client.gui.widgets;
 
-import com.simibubi.create.foundation.gui.element.ScreenElement;
-
 import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.CursorType;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
@@ -9,6 +7,7 @@ import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.math.Rectangle;
+import net.createmod.catnip.gui.element.ScreenElement;
 
 public class CreateButton extends DLButton {
 

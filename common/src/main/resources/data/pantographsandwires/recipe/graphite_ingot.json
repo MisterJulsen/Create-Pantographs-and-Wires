@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:graphite_block"
+    }
+  ],
+  "result": {
+    "id": "pantographsandwires:graphite_ingot",
+    "count": 9
+  }
+}

@@ -1,10 +1,14 @@
 package de.mrjulsen.wires.item;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.BiConsumer;
 
+import de.mrjulsen.paw.components.WireAmountComponent;
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
+import de.mrjulsen.paw.registry.ModDataComponents;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3f;
 
@@ -24,8 +28,6 @@ import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.graph.registry.IStaticRegisterable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
@@ -37,9 +39,6 @@ import net.minecraft.world.phys.HitResult;
 
 
 public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPawWireItemBase>, IIconRepresentable, ITranslatable {
-    
-    public static final int WIRE_LENGTH = 400;
-    public static final String NBT_WIRE_LENGTH = "WireLength";
 
     @Override
     default void removeWireItem(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, int length) {
@@ -49,13 +48,13 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
     }
 
     @Override
-    default DLStatus testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points, NodeData nodeData) {
-        DLStatus result = IWireItemBase.super.testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, nodeData);
+    default DLStatus testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, WireConnectionDataComponent connectionData, List<CompoundTag> points, NodeData nodeData) {
+        DLStatus result = IWireItemBase.super.testPoint(level, player, hand, hit, metadata, stack, connectionData, points, nodeData);
         if (result.flag() != DLStatus.FLAG_OK) {
             return result;
         }
 
-        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));        
+        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(connectionData));
         if (!points.isEmpty()) {
             NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
             int distance = (int)previousNode.toWorldPos(graph).distance(nodeData.toWorldPos(graph));
@@ -67,8 +66,7 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
     }
     
     public static int getRemainingWire(ItemStack stack) {
-        CompoundTag nbt = stack.getOrCreateTag();
-        return nbt.contains(NBT_WIRE_LENGTH) ? nbt.getInt(NBT_WIRE_LENGTH) : WIRE_LENGTH;
+        return ModDataComponents.getOrSetComponent(stack, ModDataComponents.WIRE_AMOUNT, WireAmountComponent::empty).wireAmount();
     }
     
     
@@ -83,49 +81,45 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
      * @return The amount of wire that has fallen below or exceeded the limit.
      */
     public static int updateWireAmount(Player player, ItemStack stack, int length) {
-        CompoundTag nbt = stack.getOrCreateTag();
-        int current = getRemainingWire(stack);
+        int current = ModDataComponents.getOrSetComponent(stack, ModDataComponents.WIRE_AMOUNT, WireAmountComponent::empty).wireAmount();
         int newValue = current + length;
-        int cleanValue = MathUtils.clamp(newValue, 0, WIRE_LENGTH);
+        int cleanValue = MathUtils.clamp(newValue, 0, WireAmountComponent.MAX_WIRE);
         if (newValue <= 0) {
             if (player == null || (!player.isCreative() && !player.isSpectator())) {
                 stack.shrink(1);
             }
             player.getInventory().add(ModItems.EMPTY_WIRE_COIL.asStack());
         } else {
-            nbt.putInt(NBT_WIRE_LENGTH, cleanValue);
-            stack.setTag(nbt);
+            ModDataComponents.setComponent(stack, ModDataComponents.WIRE_AMOUNT, new WireAmountComponent(cleanValue));
         }
         return newValue - cleanValue;
     }
 
     public static void setWireAmount(Player player, ItemStack stack, int newValue) {
-        CompoundTag nbt = stack.getOrCreateTag();
         if (newValue <= 0) {
             if (player == null || (!player.isCreative() && !player.isSpectator())) {
                 stack.shrink(1);
             }
             player.getInventory().add(ModItems.EMPTY_WIRE_COIL.asStack());
         } else {
-            nbt.putInt(NBT_WIRE_LENGTH, newValue);
-            stack.setTag(nbt);
+            ModDataComponents.setComponent(stack, ModDataComponents.WIRE_AMOUNT, new WireAmountComponent(newValue));
         }
     }
 
     @Override
     default Component createHudInfoText(ItemStack stack, Player player, HitResult hit) {
-        if (!stack.hasTag() || !stack.getTag().contains(NBT_ROOT)) {
+        if (!ModDataComponents.hasComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA)) {
             return null;
         }
         
-        CompoundTag itemData = IWireItemBase.getNbt(stack);
-        ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
-        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(itemData));
-        if (graph == null || list.isEmpty()) {
+        WireConnectionDataComponent connectionData = ModDataComponents.getComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, WireConnectionDataComponent::empty);
+        List<CompoundTag> points = new ArrayList<>(connectionData.customPointData());
+        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(connectionData));
+        if (graph == null || points.isEmpty()) {
             return null;
         }
 
-        CompoundTag lastPointData = (CompoundTag)list.get(list.size() - 1);
+        CompoundTag lastPointData = points.getLast();
         NodeData node = WiresApi.NODE_DATA_REGISTRY.load(lastPointData);
         Vector3f pos = node.toWorldPos(graph);
 
@@ -167,13 +161,13 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
                 freeSlots++;
             } else if (ModItems.EMPTY_WIRE_COIL.is(stack.getItem())) {
                 availableEmptyCoils += stack.getCount();
-            } else if (ModItems.WIRE.is(stack.getItem()) && IPawWireItemBase.getRemainingWire(stack) < IPawWireItemBase.WIRE_LENGTH) {
+            } else if (ModItems.WIRE.is(stack.getItem()) && IPawWireItemBase.getRemainingWire(stack) < WireAmountComponent.MAX_WIRE) {
                 wireCoilStacks.add(stack);
             }
         }
 
-        boolean mainHandFull = IPawWireItemBase.getRemainingWire(player.getMainHandItem()) >= IPawWireItemBase.WIRE_LENGTH;
-        boolean offhandFull = IPawWireItemBase.getRemainingWire(player.getOffhandItem()) >= IPawWireItemBase.WIRE_LENGTH;
+        boolean mainHandFull = IPawWireItemBase.getRemainingWire(player.getMainHandItem()) >= WireAmountComponent.MAX_WIRE;
+        boolean offhandFull = IPawWireItemBase.getRemainingWire(player.getOffhandItem()) >= WireAmountComponent.MAX_WIRE;
         while (remaining.intValue() > 0 && (!mainHandFull || !offhandFull || !wireCoilStacks.isEmpty() || (availableEmptyCoils > 0 && freeSlots > 0))) {
             if (!mainHandFull) {
                 ItemStack stack = player.getMainHandItem();
@@ -192,7 +186,7 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
                 wireCoilStacks.remove();
             } else {
                 ItemStack stack = ModItems.WIRE.asStack();
-                int a = Math.min(remaining.intValue(), IPawWireItemBase.WIRE_LENGTH);
+                int a = Math.min(remaining.intValue(), WireAmountComponent.MAX_WIRE);
                 IPawWireItemBase.setWireAmount(player, stack, a);
                 remaining.subtract(a);
                 player.getInventory().add(stack);

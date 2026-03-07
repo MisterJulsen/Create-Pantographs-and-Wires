@@ -31,7 +31,7 @@ public class GameRendererMixin {
 
         Vec3 from = viewEntity.getEyePosition(partialTicks);
         Vec3 look = viewEntity.getViewVector(partialTicks);
-        Vec3 to = from.add(look.scale(Minecraft.getInstance().gameMode.getPickRange()));
+        Vec3 to = from.add(look.scale(5)); // TODO Minecraft.getInstance().gameMode.getPlayerMode().pickRange));
 
         Optional<RaycastHitResult> result = RaycastUtils.rayTrace(
             new Vector3f((float)from.x, (float)from.y, (float)from.z),

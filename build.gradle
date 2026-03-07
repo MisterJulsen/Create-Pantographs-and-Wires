@@ -2,6 +2,7 @@ plugins {
     id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id "net.mrjulsen.mod-build-tools" version "1.0.5"
 }
 
 architectury {
@@ -24,8 +25,7 @@ subprojects {
 
     repositories {
         maven { url = "file://${System.getProperty('user.home')}/.m2/github/modsrepo/maven" } // Local
-        //maven { url = "https://raw.githubusercontent.com/MisterJulsen/modsrepo/main/maven" } // DragonLib
-        maven { url = "https://maven.mrjulsen.net" } // DragonLib
+        maven { url = 'https://maven.neoforged.net/releases' } // NeoForge
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
@@ -59,6 +59,7 @@ subprojects {
         }
         maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
         maven { url = "https://maven.tterrag.com" } // Registrate
+        maven { url = "https://maven.mrjulsen.net" } // DragonLib
     }
 
     dependencies {
@@ -85,21 +86,19 @@ subprojects {
             "discord": rootProject.discord,
             "next_unsupported_minecraft_version": rootProject.next_unsupported_minecraft_version,
             "dragonlib_version": "$rootProject.minecraft_version-$rootProject.dragonlib_version",
-            "forge_dependency_version": rootProject.forge_dependency_version,
-            "forge_loader_version": rootProject.forge_loader_version,
+            "neoforge_dependency_version": rootProject.neoforge_dependency_version,
+            "neoforge_loader_version": rootProject.neoforge_loader_version,
             "fabric_loader_version": rootProject.fabric_loader_version,
             "java_version": rootProject.java_version,
             "maven_group": rootProject.maven_group,
-            "create_forge_version": rootProject.create_forge_version,
-            "create_forge_dependency_version": rootProject.create_forge_dependency_version,
-            "create_fabric_version": rootProject.create_fabric_version,
-            "create_fabric_dependency_version": rootProject.create_fabric_dependency_version,
+            "create_neoforge_version": rootProject.create_neoforge_version,
+            "create_neoforge_dependency_version": rootProject.create_neoforge_dependency_version,
             "main_class_name": rootProject.main_class_name,
             "geckolib_minecraft_version": rootProject.geckolib_minecraft_version,
             "geckolib_fabric_version": rootProject.geckolib_fabric_version,
-            "geckolib_forge_version": rootProject.geckolib_forge_version
+            "geckolib_neoforge_version": rootProject.geckolib_neoforge_version
         ]
-        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'pantographsandwires.mixins.json']) {
+        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/neoforge.mods.toml', 'pantographsandwires.mixins.json']) {
             expand expandProps
         }
         inputs.properties(expandProps)
@@ -110,28 +109,56 @@ subprojects {
         withSourcesJar()
         withJavadocJar()
 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     tasks.withType(JavaCompile).configureEach {
-        it.options.release = 17
+        it.options.release = 21
     }
 
-    // Configure Maven publishing.
+    jar {
+        manifest {
+            attributes([
+                    "Specification-Title"     : "${rootProject.display_name}",
+                    "Specification-Vendor"    : "${rootProject.authors}",
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : project.jar.archiveVersion,
+                    "Implementation-Vendor"   : "${rootProject.authors}",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
+        }
+    }
+
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                artifactId = rootProject.archives_name + "-" + project.name             
+                artifactId = base.archivesName.get()
                 from components.java
             }
         }
+    }
+}
 
-        repositories {
-            maven {
-                name "GitHub"
-                url "file://${System.getProperty('user.home')}/.m2/github/modsrepo/maven"
-            }
-        }
+modBuildTools {
+    publish {
+        localRepoDir = "${System.getProperty('user.home')}/.m2/github/modsrepo/maven"
+        s3Bucket = "maven"
+        endpointEnv = "MAVEN_ENDPOINT"
+        accessKeyEnv = "MAVEN_ACCESS_KEY"
+        secretKeyEnv = "MAVEN_SECRET_KEY"
+        publishCommon = false
+    }
+    javadoc {
+        title = "Create Pantographs and Wires ${release_channel}-${mod_version}"
+        tags = [
+                "apiNote:a:API Note:",
+                "implNote:a:Impl Note:",
+                "implSpec:a:Impl Spec:",
+                "related:a:Related:",
+                "example:a:Examples:",
+                "side:a:Valid on side:"
+        ]
     }
 }

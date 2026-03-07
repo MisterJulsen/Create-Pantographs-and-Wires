@@ -5,35 +5,28 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
-    "sodium.ChunkBuilderMeshingTaskMixin",
-    "sodium.RenderSectionManagerMixin",
-    "sodium.WorldSliceMixin",
-    
-    "client.RebuildTaskMixin",
-    "client.CompiledChunkAccess",
-    "client.CompiledChunkMixin",
-    "client.RenderChunkAccess",
+    "client.CompiledSectionMixin",
+    "client.GameRendererMixin",
     "client.LevelRendererMixin",
-    "client.RenderRegionCacheMixin",
-    "client.ParticleEngineMixin",
-    "client.MultiPlayerGameModeMixin",
     "client.MinecraftMixin",
-    "client.GameRendererMixin"
+    "client.MultiPlayerGameModeMixin",
+    "client.ParticleEngineMixin",
+    "client.RenderSectionMixin",
+    "client.SectionCompilerMixin"
   ],
   "mixins": [
     "AbstractBlockStateMixin",
-    "LevelChunkMixin",
-    "ChunkMapMixin",
     "BlockGetterMixin",
     "BlockItemMixin",
-    "LevelMixin",
-    "BlockStateBaseMixin",
     "BlockPlaceContextMixin",
-    "ServerLevelMixin",
-    "HitResultTypesMixin",
-    "DimensionDataStorageAccessor",
+    "BlockStateBaseMixin",
+    "ChunkMapMixin",
     "ContraptionAccessor",
-
+    "DimensionDataStorageAccessor",
+    "HitResultTypesMixin",
+    "LevelChunkMixin",
+    "LevelMixin",
+    "ServerLevelMixin",
     "datafixer.ChunkSerializerMixin"
   ],
   "injectors": {

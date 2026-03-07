@@ -1,0 +1,17 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    {
+      "tag": "c:plates/copper"
+    },
+    {
+      "tag": "c:tools/shear"
+    }
+  ],
+  "results": [
+    {
+      "id": "pantographsandwires:copper_wire",
+      "count": 2
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 package de.mrjulsen.paw.block.model;
 
 import java.util.Optional;
+
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -82,7 +84,7 @@ public class CantileverModel extends DLModel {
             
             int cantileversCount = subCantilevers.length;
             if (cantileversCount > 1 || mastConnection != ECantileverMastConnection.NONE) {
-                final TextureAtlasSprite METAL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal"));
+                final TextureAtlasSprite METAL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal"));
                 final CantileverData data = subCantilevers[0];
                 final float w = Math.max(0.5f, data.spacing() * (cantileversCount - 1));
                 CubeMesh mastBracketTop = null;
@@ -146,9 +148,9 @@ public class CantileverModel extends DLModel {
      */
     private Mesh createCantilever(RandomSource random, float xOffset, float yOffset, float zOffset, float width, float height, EInsulatorType insulatorType, ECantileverInsulatorsPlacement insulators, float frontOffset, ECantileverRegistrationArmType registrationArmType, float wireOffsetY, float registrationArmAngle, float steadyArmLength, float steadyArmOffset, boolean showBracing) {
 
-        final TextureAtlasSprite TEXTURE = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation(PantographsAndWires.MOD_ID, "block/cantilever"));
-        final TextureAtlasSprite METAL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal"));
-        final TextureAtlasSprite ANVIL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation(PantographsAndWires.MOD_ID, "block/anvil"));
+        final TextureAtlasSprite TEXTURE = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/cantilever"));
+        final TextureAtlasSprite METAL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal"));
+        final TextureAtlasSprite ANVIL = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/anvil"));
 
         final float bracketTubeThickness = DragonLib.BLOCK_PIXEL * 1f;
         final float thickness = DragonLib.BLOCK_PIXEL * 1f;

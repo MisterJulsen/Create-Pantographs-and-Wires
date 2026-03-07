@@ -3,7 +3,6 @@ package de.mrjulsen.paw.network.packets;
 import de.mrjulsen.mcdragonlib.data.DLStatus;
 import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
 import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
-import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.item.MultiWireItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -29,10 +28,10 @@ public class ClearWireConnectionPacketData extends NetworkPacketData {
     public static void handle(ClearWireConnectionPacketData packet, NetworkPacketContext contextSupplier) {
         contextSupplier.queue(() -> {
             Player player = contextSupplier.getPlayer();
-            if (player.getMainHandItem().getItem() instanceof MultiWireItem) {
-                IWireItemBase.clear(player.getMainHandItem());
-            } else if (player.getOffhandItem().getItem() instanceof MultiWireItem) {
-                IWireItemBase.clear(player.getOffhandItem());
+            if (player.getMainHandItem().getItem() instanceof MultiWireItem itm) {
+                itm.clear(player.getMainHandItem());
+            } else if (player.getOffhandItem().getItem() instanceof MultiWireItem itm) {
+                itm.clear(player.getOffhandItem());
             }
         });
     }

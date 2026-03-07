@@ -3,6 +3,7 @@ package de.mrjulsen.paw.event;
 import java.io.IOException;
 import java.util.Optional;
 
+import net.minecraft.util.datafix.DataFixTypes;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.config.ModCommonConfig;
@@ -26,7 +27,7 @@ public final class ModCommonEvents {
             WireGraphManager.build(level);
             if (ModCommonConfig.CONVERT_WIRE_NETWORK.get()) {
                 try {
-                    CompoundTag nbt = level.getDataStorage().readTagFromDisk("wiresapi_wire_network", 0);
+                    CompoundTag nbt = level.getDataStorage().readTagFromDisk("wiresapi_wire_network", DataFixTypes.SAVED_DATA_SCOREBOARD, 0);
                     WireGraphManager.get(level, WiresApi.PAW_CATENARY_WIRES).upgrade(nbt.getCompound("data"));
                     level.getDataStorage().save();
                     ((DimensionDataStorageAccessor)level.getDataStorage()).paw$getDataFile("wiresapi_wire_network").delete();

@@ -1,0 +1,18 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "tag": "c:nuggets/zinc"
+    },
+    {
+      "item": "pantographsandwires:cantilever_bracket"
+    }
+  ],
+  "results": [
+    {
+      "id": "pantographsandwires:cantilever_bracket_galvanized",
+      "count": 1
+    }
+  ]
+}

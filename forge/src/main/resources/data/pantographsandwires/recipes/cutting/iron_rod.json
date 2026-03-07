@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 2,
-  "ingredient": {
-    "item": "pantographsandwires:iron_strip"
-  },
-  "result": "pantographsandwires:iron_rod"
-}

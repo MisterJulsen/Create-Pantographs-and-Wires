@@ -29,7 +29,7 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
     }
 
     public static final int DEFAULT_SEGMENT = 1;
-    public static final IntegerProperty MULTIPART_SEGMENT = createMultipartSegmentsProperty();
+    public static final IntegerProperty MULTIPART_SEGMENT = IntegerProperty.create("multipart_segment", DEFAULT_SEGMENT, AbstractRotatableBlock.ROTATIONS);
     
 
     private final MapCache<Vec2, BlockState, BlockState> offsetCache = createOffsetCache();
@@ -58,10 +58,6 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
             return Objects.hash(state.getValues().values().toArray(Object[]::new));
         }, ECachingPriority.ALWAYS);
     }
-
-    public static IntegerProperty createMultipartSegmentsProperty() {
-        return IntegerProperty.create("multipart_segment", DEFAULT_SEGMENT, AbstractRotatableBlock.ROTATIONS);
-    }
     
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
@@ -81,10 +77,10 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
         BlockState state = super.getStateForPlacement(context);
-        BlockState clickedOnState = ctxExt.getPlacedOnState();
+        BlockState clickedOnState = ctxExt.paw$getPlacedOnState();
         Direction clickedFace = context.getClickedFace();
         
-        if (canConnect(context.getLevel(), state, context.getClickedPos(), clickedOnState, ctxExt.getPlacedOnPos()) && clickedOnState.getValue(FACING).getAxis() == clickedFace.getAxis()) {
+        if (canConnect(context.getLevel(), state, context.getClickedPos(), clickedOnState, ctxExt.paw$getPlacedOnPos()) && clickedOnState.getValue(FACING).getAxis() == clickedFace.getAxis()) {
             int rotationIndex = maxSegments(clickedOnState);
             state = state
                 .setValue(MULTIPART_SEGMENT, clickedFace == clickedOnState.getValue(FACING) ? 

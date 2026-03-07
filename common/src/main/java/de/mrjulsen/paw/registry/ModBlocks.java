@@ -21,6 +21,7 @@ import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import de.mrjulsen.paw.PantographsAndWires;
@@ -65,7 +66,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class ModBlocks {	
 
 	private static TagKey<Block> createTag(String name) {
-		return TagKey.create(Registries.BLOCK, new ResourceLocation(PantographsAndWires.MOD_ID, name));
+		return TagKey.create(Registries.BLOCK, DLUtils.resourceLocation(PantographsAndWires.MOD_ID, name));
 	}
 
 	private static final int CANTILEVER_CONNECTION_PIXELS = 16;
@@ -88,6 +89,11 @@ public class ModBlocks {
 		return 16;
     }
 
+	public static final Map<EInsulatorType, BlockEntry<? extends AbstractCantileverBlock>> CANTILEVERS = new HashMap<>();
+	public static final Collection<NonNullSupplier<? extends Block>> CANTILEVER_BLOCK_ENTITY_BLOCKS = new ArrayList<>();
+	public static final Collection<NonNullSupplier<? extends Block>> WIRE_CONNECTORS = new ArrayList<>();
+	public static final Map<EInsulatorType, ItemEntry<CantileverBlockItem<CantileverBlock>>> CANTILEVER_ITEMS = new HashMap<>();
+
 	public static final TagKey<Block> TAG_CANTILEVER_CONNECTABLE = createTag("cantilever_connectable");
 	public static final TagKey<Block> TAG_CANTILEVER_MAST_BRACKET_FITTING = createTag("cantilever_mast_bracket_fitting");
 	public static final TagKey<Block> TAG_CANTILEVER_MAST_HINGE = createTag("cantilever_mast_hinge");
@@ -109,7 +115,7 @@ public class ModBlocks {
 		.onRegister(MovingInteractionBehaviour.interactionBehaviour(new PantographInteractionBehaviour()))
 		.register();
 		
-	public static final ImmutableMap<WeatherState, BlockEntry<LatticeMastBlock>> LATTICE_MAST = registerOxidizingBlock("lattice_mast", LatticeMastBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<LatticeMastBlock>> LATTICE_MAST = registerOxidizingBlock("lattice_mast", LatticeMastBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.item()
@@ -117,7 +123,7 @@ public class ModBlocks {
 		.build()
 	);
 
-	public static final ImmutableMap<WeatherState, BlockEntry<FlatLatticeMastBlock>> FLAT_LATTICE_MAST = registerOxidizingBlock("flat_lattice_mast", FlatLatticeMastBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<FlatLatticeMastBlock>> FLAT_LATTICE_MAST = registerOxidizingBlock("flat_lattice_mast", FlatLatticeMastBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.item()
@@ -125,7 +131,7 @@ public class ModBlocks {
 		.build()
 	);
 
-	public static final ImmutableMap<WeatherState, BlockEntry<FlatLatticeMastBlock>> FLAT_LATTICE_MAST_DIAGONAL = registerOxidizingBlock("flat_lattice_mast_diagonal", FlatLatticeMastBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<FlatLatticeMastBlock>> FLAT_LATTICE_MAST_DIAGONAL = registerOxidizingBlock("flat_lattice_mast_diagonal", FlatLatticeMastBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.item()
@@ -133,7 +139,7 @@ public class ModBlocks {
 		.build()
 	);		
 
-	public static final ImmutableMap<WeatherState, BlockEntry<HBeamMastBlock>> H_BEAM_MAST = registerOxidizingBlock("h_beam_mast", HBeamMastBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<HBeamMastBlock>> H_BEAM_MAST = registerOxidizingBlock("h_beam_mast", HBeamMastBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.item()
@@ -141,7 +147,7 @@ public class ModBlocks {
 		.build()
 	);
 
-	public static final ImmutableMap<WeatherState, BlockEntry<ConcretePillarBlock>> CONCRETE_POST = registerOxidizingBlock("concrete_post", (properties, weatherState, next) -> new ConcretePillarBlock(properties, weatherState, next, false), Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/concrete_post")), false, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<ConcretePillarBlock>> CONCRETE_POST = registerOxidizingBlock("concrete_post", (properties, weatherState, next) -> new ConcretePillarBlock(properties, weatherState, next, false), Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/concrete_post")), false, builder -> builder
 		.initialProperties(() -> Blocks.SMOOTH_STONE)
 		.transform(TagGen.pickaxeOnly())
 		.item()
@@ -149,7 +155,7 @@ public class ModBlocks {
 		.build()
 	);
 
-	public static final ImmutableMap<WeatherState, BlockEntry<ConcretePillarBlock>> CONCRETE_PILLAR = registerOxidizingBlock("concrete_pillar", (properties, weatherState, next) -> new ConcretePillarBlock(properties, weatherState, next, true), Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/concrete_post")), false, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<ConcretePillarBlock>> CONCRETE_PILLAR = registerOxidizingBlock("concrete_pillar", (properties, weatherState, next) -> new ConcretePillarBlock(properties, weatherState, next, true), Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/concrete_post")), false, builder -> builder
 		.initialProperties(() -> Blocks.SMOOTH_STONE)
 		.transform(TagGen.pickaxeOnly())
 		.item()
@@ -173,25 +179,25 @@ public class ModBlocks {
 		.register();
 
 
-	public static final ImmutableMap<WeatherState, BlockEntry<CantileverBracketBlock>> CANTILEVER_BRACKET = registerOxidizingBlock("cantilever_bracket", CantileverBracketBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<CantileverBracketBlock>> CANTILEVER_BRACKET = registerOxidizingBlock("cantilever_bracket", CantileverBracketBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.item()
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
 	);
-	public static final ImmutableMap<WeatherState, BlockEntry<CantileverBracketVerticalBlock>> CANTILEVER_BRACKET_VERTICAL = registerOxidizingBlock("cantilever_bracket_vertical", CantileverBracketVerticalBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<CantileverBracketVerticalBlock>> CANTILEVER_BRACKET_VERTICAL = registerOxidizingBlock("cantilever_bracket_vertical", CantileverBracketVerticalBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 	);
-	public static final ImmutableMap<WeatherState, BlockEntry<CantileverBracketPostConnectionBlock>> CANTILEVER_BRACKET_AT_POST = registerOxidizingBlock("cantilever_bracket_at_post", CantileverBracketPostConnectionBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<CantileverBracketPostConnectionBlock>> CANTILEVER_BRACKET_AT_POST = registerOxidizingBlock("cantilever_bracket_at_post", CantileverBracketPostConnectionBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 	);
 
 
 		
-	public static final ImmutableMap<WeatherState, BlockEntry<PowerLineBracketBlock>> POWER_LINE_BRACKET = registerOxidizingBlock("power_line_bracket", PowerLineBracketBlock::new, Set.of(new ResourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
+	public static final ImmutableMap<WeatherState, BlockEntry<PowerLineBracketBlock>> POWER_LINE_BRACKET = registerOxidizingBlock("power_line_bracket", PowerLineBracketBlock::new, Set.of(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "block/metal")), true, builder -> builder
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.item()
@@ -200,15 +206,15 @@ public class ModBlocks {
 	);
 
 		
-	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("v_insulator_brown", VInsulatorBlock::new)
+	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_BROWN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("v_insulator_brown", VInsulatorBlock::new)
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
-		.register();		
-	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_GREEN = PantographsAndWires.REGISTRATE.block("v_insulator_green", VInsulatorBlock::new)
+		.register());
+	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_GREEN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("v_insulator_green", VInsulatorBlock::new)
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
@@ -216,17 +222,17 @@ public class ModBlocks {
 		.item()
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
-		.register();
+		.register());
 		
-	public static final BlockEntry<InsulatorBlock> INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("insulator_brown", InsulatorBlock::new)
+	public static final BlockEntry<InsulatorBlock> INSULATOR_BROWN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("insulator_brown", InsulatorBlock::new)
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
-		.register();
-	public static final BlockEntry<InsulatorBlock> INSULATOR_GREEN = PantographsAndWires.REGISTRATE.block("insulator_green", InsulatorBlock::new)
+		.register());
+	public static final BlockEntry<InsulatorBlock> INSULATOR_GREEN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("insulator_green", InsulatorBlock::new)
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
@@ -234,9 +240,9 @@ public class ModBlocks {
 		.item()
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
-		.register();
+		.register());
 
-	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_GREEN = PantographsAndWires.REGISTRATE.block("u_insulator_green", UInsulatorBlock::new)
+	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_GREEN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("u_insulator_green", UInsulatorBlock::new)
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
@@ -244,15 +250,15 @@ public class ModBlocks {
 		.item()
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
-		.register();		
-	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("u_insulator_brown", UInsulatorBlock::new)
+		.register());
+	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_BROWN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("u_insulator_brown", UInsulatorBlock::new)
 		.initialProperties(SharedProperties::softMetal)
 		.transform(TagGen.pickaxeOnly())
 		.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 		.item()
 		.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 		.build()
-		.register();
+		.register());
 
 	public static final BlockEntry<Block> GRAPHITE_BLOCK = PantographsAndWires.REGISTRATE.block("graphite_block", Block::new)
 		.initialProperties(SharedProperties::softMetal)
@@ -274,10 +280,6 @@ public class ModBlocks {
     public static void init() {
 		registerCantilevers();
 	}
-
-	public static final Map<EInsulatorType, BlockEntry<? extends AbstractCantileverBlock>> CANTILEVERS = new HashMap<>();
-	public static final Collection<NonNullSupplier<? extends Block>> CANTILEVER_BLOCK_ENTITY_BLOCKS = new ArrayList<>();
-	public static final Map<EInsulatorType, ItemEntry<CantileverBlockItem<CantileverBlock>>> CANTILEVER_ITEMS = new HashMap<>();
 
 	public static BlockEntry<? extends AbstractCantileverBlock> getCantilever(EInsulatorType type) {
 		return CANTILEVERS.get(type);
@@ -307,6 +309,11 @@ public class ModBlocks {
 				CANTILEVER_ITEMS.put(type, item);
 			});
 		}
+	}
+
+	private static <T extends Block> BlockEntry<T> registerWireConnectors(BlockEntry<T> block) {
+		WIRE_CONNECTORS.add(block);
+		return block;
 	}
 
 	@FunctionalInterface

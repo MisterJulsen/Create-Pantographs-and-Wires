@@ -2,6 +2,7 @@ package de.mrjulsen.wires.graph.data.node;
 
 import java.util.Optional;
 
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.data.INBTSerializable;
@@ -74,7 +75,7 @@ public abstract class NodeData implements INBTSerializable {
      */
     public abstract Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex);
 
-    public abstract boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex);
+    public abstract boolean validate(WireGraph graph, WireConnectionDataComponent connectionData, int pointIndex);
 
     public void onRemove(Level level, Vector3f breakPosition, Optional<Player> player) {}
 }

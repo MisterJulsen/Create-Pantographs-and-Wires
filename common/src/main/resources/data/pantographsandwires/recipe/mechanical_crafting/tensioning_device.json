@@ -1,0 +1,29 @@
+{
+  "type": "create:mechanical_crafting",
+  "pattern": [
+    "ACC",
+    "AWW",
+    " WW",
+    " SS",
+    "ASS"
+  ],
+  "key": {
+    "A": {
+      "item": "pantographsandwires:iron_strip"
+    },
+    "C": {
+      "item": "create:cogwheel"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    },
+    "S": {
+      "tag": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "id": "pantographsandwires:tensioning_device",
+    "count": 1
+  },
+  "accept_mirrored": true
+}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
+import net.minecraft.core.HolderLookup;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -26,13 +27,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.molang.MolangParser;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockEntity  {
@@ -113,26 +115,26 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
     }
 
     @Override
-    public void writeSafe(CompoundTag tag) {
-        tag.putBoolean(NBT_EXPANDABLE, expandable);
-        super.writeSafe(tag);
-    }
-
-    @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    public void writeSafe(CompoundTag tag, HolderLookup.Provider registries) {
+        super.writeSafe(tag, registries);
         tag.putBoolean(NBT_EXPANDABLE, expandable);
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
+        tag.putBoolean(NBT_EXPANDABLE, expandable);
+    }
+
+    @Override
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
         setExpandable(tag.getBoolean(NBT_EXPANDABLE));
     }
 
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, state -> {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<GeoAnimatable>(this, state -> {
             if (state.getController().getCurrentRawAnimation() == null && isExpanded()) {
                 state.setAnimation(ANIM_WIRE_CONTACT);
             }
@@ -203,15 +205,15 @@ public class PantographBlockEntity extends SmartBlockEntity implements GeoBlockE
     }
     
     public void applyMolangVariables() {
-        MolangParser.INSTANCE.setValue("query.height_percentage", () -> {
+        MathParser.setVariable("query.height_percentage", () -> {
             double p = 1D / DELTA_HEIGHT * animationTransition.getValue(AnimationTickHolder.getPartialTicks(level));
             return p;
         });
-        MolangParser.INSTANCE.setValue("query.func", () -> {            
-            double p = MolangParser.INSTANCE.getVariable("query.height_percentage").get();
+        MathParser.setVariable("query.func", () -> {
+            double p = MathParser.getVariableFor("query.height_percentage").get();
             return getArmAngle(p);
         });
-        MolangParser.INSTANCE.setMemoizedValue("query.head_rotation", () -> {
+        MathParser.setVariable("query.head_rotation", () -> {
             return 0;//calculateWireContactSlope(currentPos, upVec, rightVec);
         });
     } 

@@ -4,7 +4,7 @@ import de.mrjulsen.wires.graph.WireNode;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 
 /**
- * This object stores and manages access to all nodes in the {@link WireGraph}. In cases where a node needs to be accessed from an
+ * This object stores and manages access to all nodes in the {@link de.mrjulsen.wires.graph.IWireGraph}. In cases where a node needs to be accessed from an
  * independent object without the two sides knowing each other, this accessor can be used via the wire graph to retrieve
  * nodes from outside without requiring a direct reference.
  * <p><b>Example use case:</b> A node is assigned to a block. Any vanilla Minecraft block doesn't know that the node is bound

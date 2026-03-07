@@ -45,7 +45,7 @@ public class ModBlockEntities {
 
 		WIRE_CONNECTOR_BLOCK_ENTITY = PantographsAndWires.REGISTRATE
 			.blockEntity("wire_connector_block_entity", WireConnectorBlockEntity::new)
-			.validBlocks(makeArray(ModBlocks.CANTILEVER_BLOCK_ENTITY_BLOCKS))
+			.validBlocks(makeArray(ModBlocks.WIRE_CONNECTORS))
 			.register();
 		
 		ModBlocks.CANTILEVER_BLOCK_ENTITY_BLOCKS.clear();	

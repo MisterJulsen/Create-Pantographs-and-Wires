@@ -27,7 +27,7 @@ public class MultiPlayerGameModeMixin {
         this.player = player;
     }
 
-    @ModifyVariable(method = "useItemOn", at = @At(value = "HEAD", ordinal = 1))
+    @ModifyVariable(method = "useItemOn", at = @At(value = "HEAD"))
     private BlockHitResult modifyHitResult(BlockHitResult hitResult) {
         if (hitResult.getDirection().getAxis() == Axis.Y) {
             return hitResult;

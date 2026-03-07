@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:coal_coke_block"
+    }
+  ],
+  "result": {
+    "id": "pantographsandwires:coal_coke",
+    "count": 9
+  }
+}

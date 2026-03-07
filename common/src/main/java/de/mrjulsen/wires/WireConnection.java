@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import org.joml.Vector3f;
 
 import com.google.common.collect.Multimap;
@@ -19,7 +20,6 @@ import de.mrjulsen.wires.decoration.WireDecorationData;
 import de.mrjulsen.wires.decoration.IWireDecoration;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.network.WireConnectionSyncData;
-import de.mrjulsen.wires.util.Utils;
 import de.mrjulsen.mcdragonlib.util.Cache;
 import de.mrjulsen.mcdragonlib.util.NbtUtils;
 import net.minecraft.core.BlockPos;
@@ -90,7 +90,7 @@ public class WireConnection {
     }
 
     public static Optional<WireConnection> fromNbt(CompoundTag nbt) {
-        ResourceLocation wireTypeId = Utils.resLoc(nbt.getString(NBT_WIRE_TYPE));
+        ResourceLocation wireTypeId = DLUtils.resourceLocation(nbt.getString(NBT_WIRE_TYPE));
         if (WireTypeRegistry.has(wireTypeId)) {
             WireConnection connection = new WireConnection(
                 nbt.getUUID(NBT_ID),

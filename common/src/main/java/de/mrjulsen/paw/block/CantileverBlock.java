@@ -21,7 +21,9 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class CantileverBlock extends AbstractCantileverBlock {
@@ -36,8 +38,8 @@ public class CantileverBlock extends AbstractCantileverBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_ITEMS.get(insulatorType));
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+        return new ItemStack(ModBlocks.CANTILEVER_ITEMS.get(insulatorType).get());
     }
 
     public EInsulatorType getInsulatorType() {

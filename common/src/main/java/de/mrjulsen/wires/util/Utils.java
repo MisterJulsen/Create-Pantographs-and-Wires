@@ -6,18 +6,9 @@ import org.joml.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 
 public final class Utils {
-
-    public static ResourceLocation resLoc(String namespace, String path) {
-        return new ResourceLocation(namespace, path);
-    }
-
-    public static ResourceLocation resLoc(String path) {
-        return new ResourceLocation(path);
-    }
 
     public static void putNbtBlockPos(CompoundTag compound, String name, BlockPos pos) {
         CompoundTag nbt = new CompoundTag();

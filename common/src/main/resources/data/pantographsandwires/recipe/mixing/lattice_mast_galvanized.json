@@ -1,0 +1,18 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "tag": "c:nuggets/zinc"
+    },
+    {
+      "item": "pantographsandwires:lattice_mast"
+    }
+  ],
+  "results": [
+    {
+      "id": "pantographsandwires:lattice_mast_galvanized",
+      "count": 1
+    }
+  ]
+}

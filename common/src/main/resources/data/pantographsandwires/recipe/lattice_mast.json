@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "item": "pantographsandwires:iron_strip"
+      },
+      "B": {
+        "tag": "c:rods/iron"
+      }
+    },
+    "pattern": [
+      "ABA",
+      "ABA",
+      "ABA"
+    ],
+    "result": {
+      "count": 6,
+      "id": "pantographsandwires:lattice_mast"
+    }
+  }

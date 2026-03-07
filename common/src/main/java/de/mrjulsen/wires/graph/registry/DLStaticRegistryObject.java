@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.google.common.base.Supplier;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,7 +19,7 @@ public final record DLStaticRegistryObject<T>(ResourceLocation id, Supplier<T> f
     }
     
     public static <T> T load(CompoundTag tag, Function<ResourceLocation, DLStaticRegistryObject<T>> registryGetter) {
-        ResourceLocation typeId = new ResourceLocation(tag.getString(NBT_ID));
+        ResourceLocation typeId = DLUtils.resourceLocation(tag.getString(NBT_ID));
         DLStaticRegistryObject<T> type = registryGetter.apply(typeId);
         if (type == null) return null;
         return type.get();

@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -45,10 +47,10 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
         this.registerDefaultState(defaultBlockState()
             .setValue(DIRECTION, Direction.DOWN)
         );
-    }    
+    }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
         return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(weatherState).get());
     }
     
@@ -62,7 +64,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
         BlockState state = super.getStateForPlacement(context);
-        BlockState clickedOnState = ctxExt.getPlacedOnState();
+        BlockState clickedOnState = ctxExt.paw$getPlacedOnState();
         Direction clickedFace = context.getClickedFace();
         
         if (clickedOnState.is(this) && clickedFace.getAxis().isVertical()) {
@@ -116,7 +118,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     }
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        this.onRandomTick(state, level, pos, random);
+        this.changeOverTime(state, level, pos, random);
     }
 
     public boolean isRandomlyTicking(BlockState state) {

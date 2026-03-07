@@ -26,6 +26,7 @@ public class ClientSetup implements ClientModInitializer {
         });
         
 
+        /*
         if (PantographsAndWires.isSodiumLoaded()) {
             SodiumCompatEvent.init();
 
@@ -35,5 +36,6 @@ public class ClientSetup implements ClientModInitializer {
                 });
             }
         }
+            */
     }
 }
