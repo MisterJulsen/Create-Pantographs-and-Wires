@@ -28,7 +28,7 @@ public final class PantographsAndWires {
 
     public static final String NBT_DATA_FIXER = MOD_ID + "_datafixer_version";
     public static final int DATA_FIXER_VERSION = 2;
-    
+
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
     static {
