@@ -6,7 +6,6 @@
     "mc/1.20.1"
   ],
   "modules": [
-    "fabric",
     "neoforge"
   ],
   "changelog_categories": [
