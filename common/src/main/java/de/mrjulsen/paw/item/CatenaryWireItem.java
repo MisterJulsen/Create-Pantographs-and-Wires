@@ -89,30 +89,33 @@ public class CatenaryWireItem implements IPawWireItemBase {
             player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(5)),
             level,
             AbstractCantileverBlock.MAX_WIDTH,
-            DragonLib.BLOCK_PIXEL,
-            (lvl, pos, rayOrigin, rayDirection) -> {
-                if (!(lvl.getBlockState(pos).getBlock() instanceof CantileverBlock && lvl.getBlockEntity(pos) instanceof CantileverBlockEntity be)) 
-                    return Optional.empty();
+                (lvl, pos, rayOrigin, rayDirection) -> {
+                    if (!(lvl.getBlockState(pos).getBlock() instanceof CantileverBlock && lvl.getBlockEntity(pos) instanceof CantileverBlockEntity be))
+                        return Optional.empty();
 
-                for (int i = 0; i < be.getCantileversCount(); i++) {
-                    final int k = i;                    
-                    CantileverShapeData shapeData = be.getCantileverInteractionShape(k);
-                    LineShape[] shapes = new LineShape[] {
-                        new LineShape(shapeData.stayTubeRoot(), shapeData.front(), DragonLib.BLOCK_PIXEL * 2),
-                        new LineShape(shapeData.bracketTubeRoot(), shapeData.front(), DragonLib.BLOCK_PIXEL * 2)
-                    };
+                    RaycastHitResult closest = null;
 
-                    for (LineShape shape : shapes) {
-                        Optional<Vector3f> oHit = shape.intersects(rayOrigin, rayDirection);
-                        if (oHit.isPresent()) {
-                            Vector3f hit = oHit.get();
-                            return Optional.of(new RaycastHitResult(new Vec3(hit), pos, new Vector3f(hit).sub(rayOrigin).length(), k));
+                    for (int i = 0; i < be.getCantileversCount(); i++) {
+                        CantileverShapeData shapeData = be.getCantileverInteractionShape(i);
+                        LineShape[] shapes = new LineShape[] {
+                                new LineShape(shapeData.stayTubeRoot(), shapeData.front(), DragonLib.BLOCK_PIXEL * 2),
+                                new LineShape(shapeData.bracketTubeRoot(), shapeData.front(), DragonLib.BLOCK_PIXEL * 2)
+                        };
+
+                        for (LineShape shape : shapes) {
+                            Optional<Vector3f> oHit = shape.intersects(rayOrigin, rayDirection);
+                            if (oHit.isPresent()) {
+                                Vector3f hit = oHit.get();
+                                float dist = new Vector3f(hit).sub(rayOrigin).length();
+                                if (closest == null || dist < closest.getDistance()) {
+                                    closest = new RaycastHitResult(new Vec3(hit), pos, dist, i);
+                                }
+                            }
                         }
                     }
+
+                    return Optional.ofNullable(closest);
                 }
-                
-                return Optional.empty();
-            }
         );
 
         result.ifPresent(x -> {
