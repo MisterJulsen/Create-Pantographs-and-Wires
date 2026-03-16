@@ -31,7 +31,7 @@
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
-    "minecraft": "~${minecraft_version}",
+    "minecraft": ">=${minecraft_version} <${next_unsupported_minecraft_version}",
     "java": ">=${java_version}",
     "dragonlib": ">=${dragonlib_version}",
     "geckolib": ">=${geckolib_fabric_version}",

@@ -1,5 +1,7 @@
 package de.mrjulsen.paw.fabric.client;
 
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.fabric.client.model.loaders.MultipartObjLoader;
 import de.mrjulsen.paw.fabric.compat.sodium.IncompatabilityScreen;
@@ -30,9 +32,7 @@ public class ClientSetup implements ClientModInitializer {
             SodiumCompatEvent.init();
 
             if (!PantographsAndWires.isIndiumLoaded()) {
-                ClientGuiEvent.SET_SCREEN.register((screen) -> {
-                    return CompoundEventResult.interruptTrue(new IncompatabilityScreen());
-                });
+                throw new IllegalStateException("Sodium is installed, but Indium is not! This mod does not work when Sodium is installed without Indium. Blocks have visual glitches and the wires cause crashes which makes the game unplayable. Please install Indium and restart the game.");
             }
         }
     }
