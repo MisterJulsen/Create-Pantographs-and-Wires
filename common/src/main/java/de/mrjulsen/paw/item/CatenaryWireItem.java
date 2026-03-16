@@ -77,18 +77,19 @@ public class CatenaryWireItem implements IPawWireItemBase {
         }
         return InteractionResult.CONSUME;
     }
-    
+
     @Override
     public InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
         if (level.isClientSide) {
             return InteractionResultHolder.consume(player.getItemInHand(usedHand));
         }
 
+        float maxReach = 5f;
         Optional<RaycastHitResult> result = RaycastUtils.rayTrace(
-            player.getEyePosition().toVector3f(),
-            player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(5)),
-            level,
-            AbstractCantileverBlock.MAX_WIDTH,
+                player.getEyePosition().toVector3f(),
+                player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(maxReach)),
+                level,
+                AbstractCantileverBlock.MAX_WIDTH,
                 (lvl, pos, rayOrigin, rayDirection) -> {
                     if (!(lvl.getBlockState(pos).getBlock() instanceof CantileverBlock && lvl.getBlockEntity(pos) instanceof CantileverBlockEntity be))
                         return Optional.empty();
@@ -107,6 +108,7 @@ public class CatenaryWireItem implements IPawWireItemBase {
                             if (oHit.isPresent()) {
                                 Vector3f hit = oHit.get();
                                 float dist = new Vector3f(hit).sub(rayOrigin).length();
+                                if (dist > maxReach) continue;
                                 if (closest == null || dist < closest.getDistance()) {
                                     closest = new RaycastHitResult(new Vec3(hit), pos, dist, i);
                                 }
@@ -131,7 +133,7 @@ public class CatenaryWireItem implements IPawWireItemBase {
     public InteractionResult interactWithWire(Level level, Player player, InteractionHand hand, WireHitResult hit) {
         return placeWire(level, player, hand, hit, (a, b) -> {});
     }
-    
+
 
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
