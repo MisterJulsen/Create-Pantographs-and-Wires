@@ -1,10 +1,4 @@
 {
-    "itemGroup.pantographsandwires.tab": "Create: Pantographs & Wires",
-    
-    "gui.pantographsandwires.sodium_error.title": "Create: Pantographs & Wires",
-    "gui.pantographsandwires.sodium_error.subtitle": "Sodium is installed, but Indium is not!",
-    "gui.pantographsandwires.sodium_error.description": "This mod does not work when Sodium is installed without Indium. Some blocks are not loaded and the wires cause crashes which makes the game unplayable. Please install Indium and restart the game.",
-    
     "block.pantographsandwires.pantograph": "Pantograph",
     "block.pantographsandwires.tensioning_device": "Tensioning Device",
     "block.pantographsandwires.lattice_mast": "Lattice Mast",

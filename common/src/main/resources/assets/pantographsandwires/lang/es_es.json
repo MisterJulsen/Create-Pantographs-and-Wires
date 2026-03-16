@@ -1,8 +1,4 @@
 {
-    "itemGroup.pantographsandwires.tab": "Create: Pantographs & Wires",
-    "gui.pantographsandwires.sodium_error.title": "Create: Pantographs & Wires",
-    "gui.pantographsandwires.sodium_error.subtitle": "¡Sodium está instalado, pero Indium no!",
-    "gui.pantographsandwires.sodium_error.description": "Este mod no funciona cuando Sodium está instalado sin Indium. Algunos bloques no se cargan y los cables provocan fallos que hacen el juego inestable. Por favor, instala Indium y reinicia el juego.",
     "block.pantographsandwires.pantograph": "Pantógrafo",
     "block.pantographsandwires.tensioning_device": "Dispositivo de tensado",
     "block.pantographsandwires.lattice_mast": "Poste de celosía",
