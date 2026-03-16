@@ -1,7 +1,11 @@
 package de.mrjulsen.paw.util.collision;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.util.HashSet;
@@ -12,12 +16,21 @@ import java.util.Set;
 public class RaycastUtils {
 
     public static Optional<RaycastHitResult> rayTrace(Vector3f start, Vector3f end, Level level, float radius, ICollisionProvider collisionProvider) {
+
         Vector3f dir = new Vector3f(end).sub(start);
         float totalLength = dir.length();
         if (totalLength < 1e-6f) return Optional.empty();
 
         Vector3f normal = new Vector3f(dir).normalize();
         int iRadius = (int) Math.ceil(radius);
+
+        Vec3 startVec = new Vec3(start.x(), start.y(), start.z());
+        Vec3 endVec   = new Vec3(end.x(),   end.y(),   end.z());
+        BlockHitResult blockHit = level.clip(new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
+
+        float maxFreeDistance = (blockHit.getType() == HitResult.Type.BLOCK)
+                ? (float) blockHit.getLocation().distanceTo(startVec)
+                : totalLength;
 
         int x = (int) Math.floor(start.x());
         int y = (int) Math.floor(start.y());
@@ -52,7 +65,9 @@ public class RaycastUtils {
                         Optional<RaycastHitResult> hit =
                                 collisionProvider.tryHit(level, pos, start, normal);
                         if (hit.isPresent()) {
-                            return hit;
+                            if (hit.get().getDistance() <= maxFreeDistance) {
+                                return hit;
+                            }
                         }
                     }
                 }
