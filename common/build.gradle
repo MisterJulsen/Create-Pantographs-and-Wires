@@ -28,4 +28,7 @@ dependencies {
     
     modImplementation(include("software.bernie.geckolib:geckolib-neoforge-${rootProject.geckolib_minecraft_version}:${rootProject.geckolib_neoforge_version}"))
     modImplementation(include("com.eliotlash.mclib:mclib:20"))
+
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixin_extras_version}"))
+    implementation("io.github.llamalad7:mixinextras-fabric:${rootProject.mixin_extras_version}")
 }

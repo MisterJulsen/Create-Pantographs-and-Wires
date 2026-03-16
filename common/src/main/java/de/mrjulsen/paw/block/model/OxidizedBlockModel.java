@@ -7,7 +7,6 @@ import de.mrjulsen.mcdragonlib.client.model.ModelContext;
 import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Face;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
-import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock.WeatherState;
 import net.minecraft.client.Minecraft;
@@ -36,13 +35,13 @@ public class OxidizedBlockModel extends AbstractRotatableBlockModel {
             HashMap<ResourceLocation, TextureAtlasSprite> oxidizedTextures = new HashMap<>(oxidizingTextures.size());
             for (ResourceLocation texture : oxidizingTextures) {
                 oxidizedTextures.computeIfAbsent(texture, tex -> {
-                    ResourceLocation newLocation = DLUtils.resourceLocation(tex.getNamespace(), tex.getPath() + (ws.getname().isBlank() ? "" : "_" + ws.getname()));
+                    ResourceLocation newLocation = new ResourceLocation(tex.getNamespace(), tex.getPath() + (ws.getname().isBlank() ? "" : "_" + ws.getname()));
                     return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(newLocation);
                 });
             }
 
             mesh.getFaces().forEach(x -> {
-                ResourceLocation location = x.getSprite().get().contents().name();
+                ResourceLocation location = x.getTextureLocation();
                 if (oxidizedTextures.containsKey(location)) {
                     x.setTexture(oxidizedTextures.get(location));
                 }
