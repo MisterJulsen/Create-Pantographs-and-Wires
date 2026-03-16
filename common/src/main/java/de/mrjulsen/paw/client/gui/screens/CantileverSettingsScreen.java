@@ -132,7 +132,7 @@ public class CantileverSettingsScreen extends DLWindow {
         this.insulatorPlacement = CantileverBlockItem.getInsulatorPlacement(stack);
         this.showBracing = CantileverBlockItem.getShowBracing(stack);
 
-        addEventListener(DLGuiStandardEvents.LayoutUpdateEvent.class, (s, e) -> {
+        addEventListener(DLGuiStandardEvents.ScreenLayoutUpdatedEvent.class, (s, e) -> {
             setPosition(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - width() / 2, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2 - height() / 2);
             return false;
         });

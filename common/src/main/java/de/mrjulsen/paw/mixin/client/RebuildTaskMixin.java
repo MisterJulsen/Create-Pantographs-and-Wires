@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.world.level.BlockAndTintGetter;
 
-/** @see ImmersiveEngineering */
+/** see ImmersiveEngineering */
 @Mixin(targets = "net.minecraft.client.renderer.chunk.ChunkRenderDispatcher$RenderChunk$RebuildTask")
 public class RebuildTaskMixin {
 

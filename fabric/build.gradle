@@ -43,6 +43,8 @@ dependencies {
     modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric:${rootProject.jei_version}")
     
     modImplementation("com.simibubi.create:create-fabric-${rootProject.minecraft_version}:${rootProject.create_fabric_version}")
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixin_extras_version}"))
+    implementation("io.github.llamalad7:mixinextras-fabric:${rootProject.mixin_extras_version}")
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

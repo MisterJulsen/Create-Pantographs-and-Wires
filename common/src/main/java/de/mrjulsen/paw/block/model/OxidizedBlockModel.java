@@ -41,7 +41,7 @@ public class OxidizedBlockModel extends AbstractRotatableBlockModel {
             }
 
             mesh.getFaces().forEach(x -> {
-                ResourceLocation location = x.getTexture().contents().name();
+                ResourceLocation location = x.getTextureLocation();
                 if (oxidizedTextures.containsKey(location)) {
                     x.setTexture(oxidizedTextures.get(location));
                 }
