@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.WiresApi;
@@ -30,7 +31,7 @@ public class WireNode {
     private IWireGraph graph;
     private final UUID id;
     private final NodeData data;
-    private Vector3f pos;
+    private Vector3d pos;
     private Set<UUID> connectedWires = new HashSet<>();
 
     public WireNode(WireGraph graph, NodeData data) {
@@ -47,7 +48,7 @@ public class WireNode {
         CompoundTag nbt = new CompoundTag();
         nbt.putUUID(NBT_ID, id);
         nbt.put(NBT_DATA, data.getRegistryType().wrap(data));
-        Utils.putNbtVector3f(nbt, NBT_POS, pos);
+        Utils.putNbtVector3d(nbt, NBT_POS, pos);
         ListTag connectionsList = new ListTag();
         for (UUID cId : connectedWires) {
             connectionsList.add(NbtUtils.createUUID(cId));
@@ -60,7 +61,7 @@ public class WireNode {
         try {
             List<UUID> connections = nbt.getList(NBT_CONNECTIONS, Tag.TAG_INT_ARRAY).stream().map(x -> NbtUtils.loadUUID(x)).toList();
             WireNode node = new WireNode(graph, WiresApi.NODE_DATA_REGISTRY.load(nbt.getCompound(NBT_DATA)), nbt.getUUID(NBT_ID)); // TODO
-            node.pos = Utils.getNbtVector3f(nbt, NBT_POS);
+            node.pos = Utils.getNbtVector3d(nbt, NBT_POS); // TODO
             node.connectedWires.addAll(connections);
             return Optional.of(node);
         } catch (Exception e) {
@@ -94,12 +95,12 @@ public class WireNode {
         return id;
     }
 
-    public Vector3f getPos() {
-        return new Vector3f(pos);
+    public Vector3d getPos() {
+        return new Vector3d(pos);
     }
 
-    public void setPos(Vector3f pos) {
-        this.pos = new Vector3f(pos);
+    public void setPos(Vector3d pos) {
+        this.pos = new Vector3d(pos);
     }
 
     public void addConnection(UUID id) {
@@ -111,7 +112,7 @@ public class WireNode {
         return !connectedWires.isEmpty();
     }
 
-    public void onRemove(Level level, Vector3f breakPosition, Optional<Player> player) {
+    public void onRemove(Level level, Vector3d breakPosition, Optional<Player> player) {
         getData().onRemove(level, breakPosition, player);
     }
 

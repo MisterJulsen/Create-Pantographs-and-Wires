@@ -5,6 +5,7 @@ import de.mrjulsen.wires.util.NodeId;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
@@ -58,7 +59,7 @@ public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBloc
 		super.setRemoved();
         if (!wasUnloaded() && !level.isClientSide) {
             if (nodeId != null) {
-                WireGraphManager.get(level, nodeId.graphId()).removeNode(nodeId.id(), new Vector3f(getBlockPos().getX() + 0.5f, getBlockPos().getY() + 0.5f, getBlockPos().getZ() + 0.5f), Optional.empty());
+                WireGraphManager.get(level, nodeId.graphId()).removeNode(nodeId.id(), new Vector3d(getBlockPos().getX() + 0.5f, getBlockPos().getY() + 0.5f, getBlockPos().getZ() + 0.5f), Optional.empty());
             }
         }
         wasUnloaded = false;

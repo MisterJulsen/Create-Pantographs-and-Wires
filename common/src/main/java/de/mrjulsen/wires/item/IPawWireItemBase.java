@@ -6,6 +6,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.data.DLStatus;
@@ -127,15 +128,15 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
 
         CompoundTag lastPointData = (CompoundTag)list.get(list.size() - 1);
         NodeData node = WiresApi.NODE_DATA_REGISTRY.load(lastPointData);
-        Vector3f pos = node.toWorldPos(graph);
+        Vector3d pos = node.toWorldPos(graph);
 
         int maxLength = getWireType(stack).getMaxLength();
         int availableLength = getConextRemainingWire(stack);
         int distance;
         if (hit instanceof BlockHitResult r) {
-            distance = (int)pos.distance(r.getLocation().toVector3f());
+            distance = (int)pos.distance(new Vector3d(r.getLocation().x(), r.getLocation().y(), r.getLocation().z()));
         } else {
-            distance = (int)pos.distance(player.getEyePosition().toVector3f());
+            distance = (int)pos.distance(new Vector3d(player.getEyePosition().x(), player.getEyePosition().y(), player.getEyePosition().z()));
         }
         MutableComponent text = TextUtils.empty().withStyle(ChatFormatting.WHITE)
             .append(TextUtils.text(String.format("X: %s, Y: %s, Z: %s", (int)pos.x(), (int)pos.y(), (int)pos.z())).withStyle(ChatFormatting.WHITE))

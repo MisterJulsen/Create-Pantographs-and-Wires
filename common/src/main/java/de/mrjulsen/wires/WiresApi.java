@@ -1,5 +1,6 @@
 package de.mrjulsen.wires;
 
+import org.joml.Vector3d;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -45,8 +46,8 @@ public class WiresApi {
     public static final NodeDataRegistryObject<CatenaryHeadspanConnectionNodeData, GenericWireNodeAccessor<CatenaryHeadspanConnectionNodeData>> CATENARY_HEADSPAN = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanConnectionNodeData::new, GenericWireNodeAccessor::new);
 
     public static final DLRegistryObject<BasicConnectorDataProvider.Empty> EMPTY_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "empty_wire_connector"), ConnectorDataProvider.Empty::new);
-    public static final DLRegistryObject<BasicConnectorDataProvider> BASIC_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "basic_wire_connector"), () -> new BasicConnectorDataProvider(null));
-    public static final DLRegistryObject<CantileverConnectorDataProvider> CANTILEVER_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "cantilever_wire_connector"), () -> new CantileverConnectorDataProvider(null, null));
+    public static final DLRegistryObject<BasicConnectorDataProvider> BASIC_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "basic_wire_connector"), () -> new BasicConnectorDataProvider((Vector3d) null));
+    public static final DLRegistryObject<CantileverConnectorDataProvider> CANTILEVER_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "cantilever_wire_connector"), () -> new CantileverConnectorDataProvider((Vector3d)null, (Vector3d)null));
 
     public static final GraphId PAW_CATENARY_WIRES = WireGraphManager.register("paw_catenary", WireGraph::new, WireGraphClient::new);
 

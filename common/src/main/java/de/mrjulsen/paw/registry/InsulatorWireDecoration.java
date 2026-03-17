@@ -3,6 +3,7 @@ package de.mrjulsen.paw.registry;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.google.common.base.Suppliers;
@@ -60,7 +61,7 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
     }   
 
     @Override
-    public void onBreak(Level level, Vector3f position, Optional<Player> player) {
+    public void onBreak(Level level, Vector3d position, Optional<Player> player) {
         if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
             ItemEntity itementity = new ItemEntity(level, position.x(), position.y(), position.z(), stack);
             itementity.setDefaultPickUpDelay();
@@ -110,7 +111,7 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
         }
 
         @Override
-        public void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f directio, int light) {
+        public void render(PoseStack poseStack, VertexConsumer consumer, Vector3d pos, Vector3d directio, int light) {
             if (!(decoration.stack.getItem() instanceof BlockItem blockitem)) {
                 return;
             }

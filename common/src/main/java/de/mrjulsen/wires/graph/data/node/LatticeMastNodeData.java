@@ -3,6 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.registry.ModBlocks;
@@ -54,7 +55,7 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
     @Override
     public WireNode getOrCreateNode(WireGraph graph) {
         if (graph.getLevel().isLoaded(pos) && graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
-            return graph.createNode(this, getBlockPos().getCenter().toVector3f());
+            return graph.createNode(this, new Vector3d(getBlockPos().getCenter().x(), getBlockPos().getCenter().y(), getBlockPos().getCenter().z()));
         }
         return null;
     }
@@ -65,8 +66,8 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
     }
 
     @Override
-    public Vector3f toWorldPos(IWireGraph graph) {
-        return new Vector3f(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+    public Vector3d toWorldPos(IWireGraph graph) {
+        return new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
     }
 
     @Override

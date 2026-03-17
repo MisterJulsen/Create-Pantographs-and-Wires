@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.google.common.collect.Multimap;
@@ -51,7 +52,7 @@ public class WireConnection {
     private CompoundTag connectionBNbt; // ConnectorA data
     private final CompoundTag customData; // = itemData: Additional data from the item when the wire was created.
 
-    private final Map<String, TreeMap<Float, WireDecorationData>> decorations = new HashMap<>();
+    private final Map<String, TreeMap<Double, WireDecorationData>> decorations = new HashMap<>();
 
     // Server
     private WireCollision collisionRef;
@@ -110,12 +111,12 @@ public class WireConnection {
     }
     
 
-    public boolean addDecoration(Vector3f pos, String wireName, IWireDecoration<?> element) {
-        float d = collisionRef.worldPosToWirePos(wireName, pos);
+    public boolean addDecoration(Vector3d pos, String wireName, IWireDecoration<?> element) {
+        double d = collisionRef.worldPosToWirePos(wireName, pos);
         if (decorations.containsKey(wireName)) {
-            TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
-            Map.Entry<Float, WireDecorationData> lower = map.lowerEntry(d);
-            Map.Entry<Float, WireDecorationData> upper = map.ceilingEntry(d);
+            TreeMap<Double, WireDecorationData> map = decorations.get(wireName);
+            Map.Entry<Double, WireDecorationData> lower = map.lowerEntry(d);
+            Map.Entry<Double, WireDecorationData> upper = map.ceilingEntry(d);
             if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius(null) > d - element.getRadius(null)) ||
                 (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius(null) < d + element.getRadius(null))) {
                     return false;
@@ -130,12 +131,12 @@ public class WireConnection {
         this.decorations.computeIfAbsent(decoration.getWireName(), x -> new TreeMap<>()).put(decoration.getPos(), decoration);
     }
 
-    public List<WireDecorationData> getDecorationsAt(Vector3f pos, String wireName) {
-        float d = collisionRef.worldPosToWirePos(wireName, pos);
+    public List<WireDecorationData> getDecorationsAt(Vector3d pos, String wireName) {
+        double d = collisionRef.worldPosToWirePos(wireName, pos);
         if (!decorations.containsKey(wireName)) {
             return List.of();
         }
-        TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
+        TreeMap<Double, WireDecorationData> map = decorations.get(wireName);
         List<WireDecorationData> decoResult = new ArrayList<>(2);
         for (WireDecorationData decoration : map.values()) {
             if (decoration.getPos() + decoration.getDecoration().getRadius(null) >= d && decoration.getPos() - decoration.getDecoration().getRadius(null) <= d) {
@@ -147,7 +148,7 @@ public class WireConnection {
 
     public void removeDecorations(Level level, Optional<Player> player, String wireName, List<WireDecorationData> decorations) {
         if (this.decorations.containsKey(wireName)) {
-            TreeMap<Float, WireDecorationData> map = this.decorations.get(wireName);
+            TreeMap<Double, WireDecorationData> map = this.decorations.get(wireName);
             map.values().removeAll(decorations);
             for (WireDecorationData deco : decorations) {
                 deco.getDecoration().onBreak(level, collisionRef.wirePosToWorldPos(wireName, deco.getPos()), player);
@@ -185,7 +186,7 @@ public class WireConnection {
 
     public Collection<WireDecorationData> getDecorations() {
         Collection<WireDecorationData> decorations = new ArrayList<>();
-        for (TreeMap<Float, WireDecorationData> decor : this.decorations.values()) {
+        for (TreeMap<Double, WireDecorationData> decor : this.decorations.values()) {
             for (WireDecorationData d : decor.values()) {
                 decorations.add(d);
             }
@@ -265,7 +266,7 @@ public class WireConnection {
     }
 
     public void onRemove(Level level, Vector3f breakPosition, Optional<Player> player) {
-        for (TreeMap<Float, WireDecorationData> e : decorations.values()) {
+        for (TreeMap<Double, WireDecorationData> e : decorations.values()) {
             for (WireDecorationData decoration : e.values()) {
                 decoration.getDecoration().onBreak(level, collisionRef.wirePosToWorldPos(decoration.getWireName(), decoration.getPos()), player);
             }

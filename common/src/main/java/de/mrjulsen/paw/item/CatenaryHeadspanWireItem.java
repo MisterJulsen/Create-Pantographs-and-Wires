@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
@@ -125,10 +126,10 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                         }
                         customDataNbt.putFloat(NBT_UPPER_WIRE_HEIGHT, d);
                     } else if (!customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
-                        float p = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT);
-                        float min = p + calcSupportWireMinHeightDifference(new Vector3f(nA.getBlockPos().getX(), nA.getBlockPos().getY(), nA.getBlockPos().getZ()), new Vector3f(nB.getBlockPos().getX(), nB.getBlockPos().getY(), nB.getBlockPos().getZ()));
-                        float max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
-                        float d = h.getBlockPos().getY() - nB.getBlockPos().getY() - p;                        
+                        double p = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT);
+                        double min = p + calcSupportWireMinHeightDifference(new Vector3d(nA.getBlockPos().getX(), nA.getBlockPos().getY(), nA.getBlockPos().getZ()), new Vector3d(nB.getBlockPos().getX(), nB.getBlockPos().getY(), nB.getBlockPos().getZ()));
+                        double max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
+                        double d = h.getBlockPos().getY() - nB.getBlockPos().getY() - p;
                         if (d < min) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_SMALL, min, max).withStyle(ChatFormatting.RED), true);
                             IWireItemBase.clear(stack);
@@ -138,7 +139,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                             IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         }
-                        customDataNbt.putFloat(NBT_TOP_WIRE_HEIGHT, d);
+                        customDataNbt.putDouble(NBT_TOP_WIRE_HEIGHT, d); // TODO was float
                     }
                 }
             }
@@ -190,12 +191,12 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
         CompoundTag endPointData = (CompoundTag)list.get(1);
         NodeData nodeA = WiresApi.NODE_DATA_REGISTRY.load(startPointData);
         NodeData nodeB = WiresApi.NODE_DATA_REGISTRY.load(endPointData);
-        Vector3f pos = nodeB.toWorldPos(graph);
-        Vector3f targetPos;
+        Vector3d pos = nodeB.toWorldPos(graph);
+        Vector3d targetPos;
         if (hit instanceof BlockHitResult r) {
-            targetPos = r.getLocation().toVector3f();
+            targetPos = new Vector3d(r.getLocation().x(), r.getLocation().y(), r.getLocation().z());
         } else {
-            targetPos = player.getEyePosition().toVector3f();
+            targetPos = new Vector3d(player.getEyePosition().x(), player.getEyePosition().y(), player.getEyePosition().z());
         }
 
         if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT)) {
@@ -210,8 +211,8 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                 .append(TextUtils.text(String.format("%sm [%sm - %sm]", diff, min, max)).withStyle(diff < min || diff > max ? ChatFormatting.RED : ChatFormatting.GREEN))
             ;
         } else if (!customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
-            float min = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT) + calcSupportWireMinHeightDifference(nodeA.toWorldPos(graph), nodeB.toWorldPos(graph));
-            float max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
+            double min = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT) + calcSupportWireMinHeightDifference(nodeA.toWorldPos(graph), nodeB.toWorldPos(graph));
+            double max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
             int diff = (int)(Math.floor(targetPos.y()) - pos.y() - min);
             return TextUtils.empty().withStyle(ChatFormatting.WHITE)
                 .append(TextUtils.text(String.format("Y: %s", (int)pos.y())).withStyle(ChatFormatting.WHITE))
@@ -225,7 +226,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
         return TextUtils.empty();
     }
 
-    public static int calcSupportWireMinHeightDifference(Vector3f a, Vector3f b) {
+    public static int calcSupportWireMinHeightDifference(Vector3d a, Vector3d b) {
         return (int)(Math.floor(a.distance(b) / 16f));
     }
 }

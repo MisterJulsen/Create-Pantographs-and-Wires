@@ -1,6 +1,8 @@
 package de.mrjulsen.paw.mixin.client;
 
 import java.util.Optional;
+
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,8 +36,8 @@ public class GameRendererMixin {
         Vec3 to = from.add(look.scale(Minecraft.getInstance().gameMode.getPickRange()));
 
         Optional<RaycastHitResult> result = RaycastUtils.rayTrace(
-            new Vector3f((float)from.x, (float)from.y, (float)from.z),
-            new Vector3f((float)to.x, (float)to.y, (float)to.z),
+            new Vector3d(from.x, from.y, from.z),
+            new Vector3d(to.x, to.y, to.z),
             mc.level,
             DragonLib.BLOCK_PIXEL * 4,
             WireId::checkCollision
@@ -52,7 +54,7 @@ public class GameRendererMixin {
                     return;
                 }
                 
-                float posOnWire = c.getCollision().worldPosToWirePos(c.getWireName(), hit.getLocation().toVector3f());
+                double posOnWire = c.getCollision().worldPosToWirePos(c.getWireName(), new Vector3d(hit.getLocation().x(), hit.getLocation().y(), hit.getLocation().z()));
                 mc.hitResult = new WireHitResult(
                     new Vec3(hit.getLocation().x(), hit.getLocation().y(), hit.getLocation().z()),
                     posOnWire,

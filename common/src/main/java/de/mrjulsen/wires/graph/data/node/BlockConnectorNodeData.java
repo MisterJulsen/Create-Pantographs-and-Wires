@@ -3,6 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.PantographsAndWires;
@@ -69,7 +70,7 @@ public class BlockConnectorNodeData extends NodeData {
         if (graph.getLevel().isLoaded(getPos()) && graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity be && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector) {
             WireNode node = null;
             if (be.getNodeId() == null || !graph.hasNode(be.getNodeId().id())) {
-                node = graph.createNode(this, new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ()));
+                node = graph.createNode(this, new Vector3d(getPos().getX(), getPos().getY(), getPos().getZ()));
                 be.setNodeId(new NodeId(node.getId(), graph.getId()));
             } else {
                 node = graph.getNode(be.getNodeId().id());
@@ -77,7 +78,7 @@ public class BlockConnectorNodeData extends NodeData {
             return node;
         }
         pending = true;
-        return graph.createNode(this, new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ()));
+        return graph.createNode(this, new Vector3d(getPos().getX(), getPos().getY(), getPos().getZ()));
     }
 
     public boolean isTest() {
@@ -92,7 +93,7 @@ public class BlockConnectorNodeData extends NodeData {
             if (graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity be && graph.getLevel().getBlockState(getPos()).getBlock() instanceof IWireConnector) {
                 WireNode newNode = null;
                 if (be.getNodeId() == null || !graph.hasNode(be.getNodeId().id())) {
-                    newNode = graph.createNode(this, new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ()));
+                    newNode = graph.createNode(this, new Vector3d(getPos().getX(), getPos().getY(), getPos().getZ()));
                     be.setNodeId(new NodeId(newNode.getId(), graph.getId()));
                     if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]        - Create new node: " + newNode.getId());
                 } else {
@@ -115,8 +116,8 @@ public class BlockConnectorNodeData extends NodeData {
     }
 
     @Override
-    public Vector3f toWorldPos(IWireGraph graph) {
-        return new Vector3f(getPos().getX(), getPos().getY(), getPos().getZ());
+    public Vector3d toWorldPos(IWireGraph graph) {
+        return new Vector3d(getPos().getX(), getPos().getY(), getPos().getZ());
     }
 
     @Override

@@ -2,6 +2,7 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
@@ -70,18 +71,18 @@ public class CatenaryWireType extends PAWWireType {
 			return WireBatch.of();
 		}
 
-		Vector3f start = nodeA.getPos();
-		Vector3f end = nodeB.getPos();
-		Vector3f contactWireAttachPointA = dataA.getAttachOffset();
-		Vector3f contactWireAttachPointB = dataB.getAttachOffset();
-		Vector3f tensionWireAttachPointA = dataA.getTensionWireAttachOffset();
-		Vector3f tensionWireAttachPointB = dataB.getTensionWireAttachOffset();
-		float maxHang = Math.min(tensionWireAttachPointA.y() - contactWireAttachPointA.y(), tensionWireAttachPointB.y() - contactWireAttachPointB.y());
-		float length = (float)Math.abs(new Vector3f(end).sub(start).length());
-		float hang = Math.min(customData.customData().getCommonData().getBoolean(NBT_SUPER_TIGHTENED) ? 0.5f : HANG_FAC * length, maxHang - 0.25f);
+		Vector3d start = nodeA.getPos();
+		Vector3d end = nodeB.getPos();
+		Vector3d contactWireAttachPointA = dataA.getAttachOffset();
+		Vector3d contactWireAttachPointB = dataB.getAttachOffset();
+		Vector3d tensionWireAttachPointA = dataA.getTensionWireAttachOffset();
+		Vector3d tensionWireAttachPointB = dataB.getTensionWireAttachOffset();
+		double maxHang = Math.min(tensionWireAttachPointA.y() - contactWireAttachPointA.y(), tensionWireAttachPointB.y() - contactWireAttachPointB.y());
+		double length = Math.abs(new Vector3d(end).sub(start).length());
+		double hang = Math.min(customData.customData().getCommonData().getBoolean(NBT_SUPER_TIGHTENED) ? 0.5f : HANG_FAC * length, maxHang - 0.25f);
 		
-		Wire tensionWire = WireBuilder.createWire(WIRE_TENSION, context, new Vector3f(start).add(tensionWireAttachPointA), new Vector3f(end).add(tensionWireAttachPointB), CableType.TENSION, THICKNESS * 0.75f, hang, SegmentControl.create(Config.fixed((int)(length / 5f)), Config.fixed(2)));
-		Wire contactWire = WireBuilder.createWire(WIRE_CONTACT, context, new Vector3f(start).add(contactWireAttachPointA), new Vector3f(end).add(contactWireAttachPointB), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.fixed((int)(length / 5f)), Config.fixed(2)));
+		Wire tensionWire = WireBuilder.createWire(WIRE_TENSION, context, new Vector3d(start).add(tensionWireAttachPointA), new Vector3d(end).add(tensionWireAttachPointB), CableType.TENSION, THICKNESS * 0.75f, hang, SegmentControl.create(Config.fixed((int)(length / 5f)), Config.fixed(2)));
+		Wire contactWire = WireBuilder.createWire(WIRE_CONTACT, context, new Vector3d(start).add(contactWireAttachPointA), new Vector3d(end).add(contactWireAttachPointB), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.fixed((int)(length / 5f)), Config.fixed(2)));
 		WireBatch batch = WireBatch.of(contactWire, tensionWire);
 
 		if (context.renderingRequired() && tensionWire.getRenderData().isPresent() && contactWire.getRenderData().isPresent()) {
@@ -101,9 +102,10 @@ public class CatenaryWireType extends PAWWireType {
 		if (!level.isClientSide) {
 			WireGraph network = WireGraphManager.get(level, getGraphId(null));
 			WireEdge a = network.getEdge(hitResult.getWireId().id());
+			Vector3d hitPos = new Vector3d(hitResult.getLocation().x(), hitResult.getLocation().y(), hitResult.getLocation().z());
 
 			if (player.getItemInHand(hand).is(Items.SHEARS)) {
-				network.removeEdge(hitResult.getWireId().id(), hitResult.getLocation().toVector3f(), Optional.of(player));
+				network.removeEdge(hitResult.getWireId().id(), hitPos, Optional.of(player));
 			} else if (player.getItemInHand(hand).is(ModItems.TAG_INSULATORS) && player.getItemInHand(hand).getItem() instanceof BlockItem) {
 				ItemStack stack = player.getItemInHand(hand);
 				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(1));
@@ -113,8 +115,8 @@ public class CatenaryWireType extends PAWWireType {
 					return InteractionResult.FAIL;
 				}
 				if (a.canPlaceDecoration(hitResult.getPosOnWire(), WIRE_TENSION, element) && a.canPlaceDecoration(hitResult.getPosOnWire(), WIRE_CONTACT, element)) { 
-					a.addDecoration(hitResult.getLocation().toVector3f(), WIRE_TENSION, element);
-					a.addDecoration(hitResult.getLocation().toVector3f(), WIRE_CONTACT, element);
+					a.addDecoration(hitPos, WIRE_TENSION, element);
+					a.addDecoration(hitPos, WIRE_CONTACT, element);
 					if (player == null || (!player.isCreative() && !player.isSpectator())) {
 						stack.shrink(2);
 					}

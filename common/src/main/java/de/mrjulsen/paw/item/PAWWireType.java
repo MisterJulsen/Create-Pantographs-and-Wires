@@ -2,6 +2,7 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -24,7 +25,7 @@ public abstract class PAWWireType extends AbstractWireType {
     }
     
     @Override
-    public void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {        
+    public void onBreak(Level level, Vector3d breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {
 		int length = getWireLength(edge.length());
 		boolean enableDrops = !player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator());
 

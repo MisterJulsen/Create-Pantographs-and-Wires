@@ -2,6 +2,7 @@ package de.mrjulsen.wires;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.data.WireHitResult;
@@ -73,13 +74,13 @@ public interface IWireType {
      * @param breakPosition The position where this wire was broken.
      * @param player The player who is responsible for the destruction.
      */
-    void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge);
+    void onBreak(Level level, Vector3d breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge);
 
     /**
      * Called when another wire attempts to connect to this wire. This method then generates the appropriate {@link NodeData} for this wire type.
      * By default, {@code null} is returned, which prevents a connection to this wire type. If a connection to this wire should be allowed, a
      * corresponding {@link NodeData} instance must be returned. NOTE: {@code null} does not completely prevent a connection to this wire!
-     * Other {@link WireType}s can implement their own logic to create a connection according to their own rules.
+     * Other {@link IWireType}s can implement their own logic to create a connection according to their own rules.
      * @param level The current level.
      * @param player The player who clicked on the wire.
      * @param hand The used hand.

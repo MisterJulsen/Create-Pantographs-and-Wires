@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -121,25 +122,27 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
             return Optional.empty();
         }
 
-        Vector3f headspanDirection = new Vector3f(tensionWirePoints.vertices()[tensionWirePoints.vertices().length - 1]).sub(tensionWirePoints.vertices()[0]).normalize();
+        Vector3d vert1 = tensionWirePoints.vertices()[tensionWirePoints.vertices().length - 1];
+        Vector3d vert2 = tensionWirePoints.vertices()[0];
+        Vector3f headspanDirection = new Vector3f((float)vert1.x(), (float)vert1.y(), (float)vert1.z()).sub(new Vector3f((float)vert2.x(), (float)vert2.y(), (float)vert2.z())).normalize();
         Vector3f offset = new Vector3f(registrationArm.map(x -> (x.getVariant() == State.NORMAL_CENTERED || x.getVariant() == State.ABOVE_CENTERED) ? 0 : (x.isMirrored() ? 0.25f : -0.25f)).orElse(0f), 0, 0);
         Vector3f offsetVec = ModMath.rotateToDirection(offset, headspanDirection);
 
         return Optional.of(new CantileverConnectorDataProvider(
-            new Vector3f(offsetVec.x(), registrationArm.map(x -> x.getVariant().isAbove() ? DragonLib.BLOCK_PIXEL * 4 : DragonLib.BLOCK_PIXEL * -6).orElse(0f), offsetVec.z()),
-            new Vector3f(dropperWirePoints.vertices()[dropperWirePoints.vertices().length - 1]).sub(node.getPos()).add(0, b ? -InsulatorWireDecoration.RADIUS * 2 : 0, 0)
+            new Vector3d(offsetVec.x(), registrationArm.map(x -> x.getVariant().isAbove() ? DragonLib.BLOCK_PIXEL * 4 : DragonLib.BLOCK_PIXEL * -6).orElse(0f), offsetVec.z()),
+            new Vector3d(dropperWirePoints.vertices()[dropperWirePoints.vertices().length - 1]).sub(node.getPos()).add(0, b ? -InsulatorWireDecoration.RADIUS * 2 : 0, 0)
         ));
     }       
 
     @Override
-    public Vector3f toWorldPos(IWireGraph graph) {
+    public Vector3d toWorldPos(IWireGraph graph) {
         if (wireId == null) {
-            return new Vector3f();
+            return new Vector3d();
         }
         WireEdge edge = graph.getEdge(wireId.id());
         NewWireCollision collision = (graph instanceof WireGraph g) ? g.getCollisionById(wireId.id()).orElse(null) : ((graph instanceof WireGraphClient gc) ? gc.getCollisionById(wireId.id()).orElse(null) : null);
         if (edge == null || collision == null) {
-            return new Vector3f();
+            return new Vector3d();
         }
         WireNode originNode = graph.getNode(edge.getNodeAId());
         return originNode.getPos();

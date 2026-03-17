@@ -2,6 +2,7 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.config.ModServerConfig;
@@ -59,10 +60,10 @@ public class PowerWireType extends PAWWireType {
 			return WireBatch.of();
 		}
 
-		Vector3f a = new Vector3f(nodeA.getPos()).add(dataA.getAttachOffset());
-		Vector3f b = new Vector3f(nodeB.getPos()).add(dataB.getAttachOffset());
+		Vector3d a = new Vector3d(nodeA.getPos()).add(dataA.getAttachOffset());
+		Vector3d b = new Vector3d(nodeB.getPos()).add(dataB.getAttachOffset());
 
-		float length = a.distance(b);
+		double length = a.distance(b);
 		Wire wire = WireBuilder.createWire("main", context, a, b, CableType.HANGING, THICKNESS, HANG_FAC * length, SegmentControl.create(Config.auto(), Config.fixed(1)));
 		WireBatch batch = WireBatch.of(wire);
 		return batch;
@@ -73,13 +74,14 @@ public class PowerWireType extends PAWWireType {
 		if (!level.isClientSide) {
 			WireGraph network = WireGraphManager.get(level, getGraphId(null));
 			WireEdge a = network.getEdge(hitResult.getWireId().id());
+			Vector3d hitPos = new Vector3d(hitResult.getLocation().x(), hitResult.getLocation().y(), hitResult.getLocation().z());
 
 			if (player.getItemInHand(hand).is(Items.SHEARS)) {
-				network.removeEdge(hitResult.getWireId().id(), hitResult.getLocation().toVector3f(), Optional.of(player));
+				network.removeEdge(hitResult.getWireId().id(), hitPos, Optional.of(player));
 			} else if (player.getItemInHand(hand).is(ModItems.TAG_INSULATORS) && player.getItemInHand(hand).getItem() instanceof BlockItem) {
 				ItemStack stack = player.getItemInHand(hand);
 				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(1));
-				if (a.addDecoration(hitResult.getLocation().toVector3f(), "main", element)) {
+				if (a.addDecoration(hitPos, "main", element)) {
 					if (player == null || (!player.isCreative() && !player.isSpectator())) {
 						stack.shrink(1);
 					}

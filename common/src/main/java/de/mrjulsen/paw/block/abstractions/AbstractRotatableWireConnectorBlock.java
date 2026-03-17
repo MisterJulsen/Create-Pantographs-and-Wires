@@ -36,7 +36,6 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
      * @param pos The position of the connector
      * @param state The connector state
      * @param itemData Additional item data
-     * @param firstPoint Whether this is the first connector
      * @param func The function for the raw attach point calculation
      * @return The transformed vector of the given function
      */
@@ -65,7 +64,6 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
      * @param pos The pos of the connector block.
      * @param state The state of the connector block.
      * @param itemData Additional data stored in the wire item created while placing it.
-     * @param firstPoint Whether this is the first or second connector block
      * @return The relative coordinates from the block's center.
      */
     protected abstract Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index);

@@ -5,8 +5,10 @@ import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -44,7 +46,8 @@ public class WireDebugRenderer {
             return;
         }
 
-        Vector3f cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().toVector3f();
+        Vec3 camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        Vector3d cameraPos = new Vector3d(camPos.x(), camPos.y(), camPos.z());
         Entity entity = Minecraft.getInstance().gameRenderer.getMainCamera().getEntity();
         ChunkPos chunkPos = entity.chunkPosition();
   
@@ -89,9 +92,9 @@ public class WireDebugRenderer {
             synchronized (nodes) {                
                 for (WireNode node : nodes) {
                     if (node.getPos().distance(cameraPos) > 256) continue;
-                    renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0.25f, 0, 0), new Vector3f(node.getPos()).add(0.25f, 0, 0), 1, 1, 0, 1);
-                    renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0, 0.25f, 0), new Vector3f(node.getPos()).add(0, 0.25f, 0), 1, 1, 0, 1);
-                    renderDebugLine(poseStack, buffer, new Vector3f(node.getPos()).sub(0, 0, 0.25f), new Vector3f(node.getPos()).add(0, 0, 0.25f), 1, 1, 0, 1);
+                    renderDebugLine(poseStack, buffer, new Vector3d(node.getPos()).sub(0.25f, 0, 0), new Vector3d(node.getPos()).add(0.25f, 0, 0), 1, 1, 0, 1);
+                    renderDebugLine(poseStack, buffer, new Vector3d(node.getPos()).sub(0, 0.25f, 0), new Vector3d(node.getPos()).add(0, 0.25f, 0), 1, 1, 0, 1);
+                    renderDebugLine(poseStack, buffer, new Vector3d(node.getPos()).sub(0, 0, 0.25f), new Vector3d(node.getPos()).add(0, 0, 0.25f), 1, 1, 0, 1);
                 }
             }            
             Collection<WireEdge> edges = graph.getEdges();
@@ -109,7 +112,7 @@ public class WireDebugRenderer {
                     for (NewWireCollision collision : graph.getCollisionsInChunk(relPos)) {
                         if (collision == null) continue;
                         for (NewWireCollision.WireBlockCollision c : collision.getAllCollisions()) {
-                            renderDebugLine(poseStack, buffer, new Vector3f((float)c.getAbsoluteInVector().x(), (float)c.getAbsoluteInVector().y() + 0.01f, (float)c.getAbsoluteInVector().z()), new Vector3f((float)c.getAbsoluteOutVector().x(), (float)c.getAbsoluteOutVector().y() + 0.01f, (float)c.getAbsoluteOutVector().z()), 1f, 0f, 0f, 1f);
+                            renderDebugLine(poseStack, buffer, new Vector3d(c.getAbsoluteInVector().x(), c.getAbsoluteInVector().y() + 0.01, c.getAbsoluteInVector().z()), new Vector3d(c.getAbsoluteOutVector().x(), c.getAbsoluteOutVector().y() + 0.01, c.getAbsoluteOutVector().z()), 1f, 0f, 0f, 1f);
                         }
                     }
                 }
@@ -117,7 +120,7 @@ public class WireDebugRenderer {
 
             while (!highlightedWires.isEmpty()) {
                 Pair<Vector3f, Vector3f> p = highlightedWires.pollFirst();
-                renderDebugLine(poseStack, buffer, new Vector3f(p.getFirst()).sub(0, 0.01f, 0), new Vector3f(p.getSecond()).sub(0, 0.01f, 0), 0f, 1f, 0f, 1f);
+                renderDebugLine(poseStack, buffer, new Vector3d(p.getFirst()).sub(0, 0.01, 0), new Vector3d(p.getSecond()).sub(0, 0.01, 0), 0f, 1f, 0f, 1f);
             }         
         }
 
@@ -129,14 +132,14 @@ public class WireDebugRenderer {
         highlightedWires.addLast(Pair.of(a, b));
     }
 
-    public static void renderDebugLine(PoseStack poseStack, VertexConsumer consumer, Vector3f from, Vector3f to, float r, float g, float b, float a) {
+    public static void renderDebugLine(PoseStack poseStack, VertexConsumer consumer, Vector3d from, Vector3d to, float r, float g, float b, float a) {
         Matrix4f matrix4f = poseStack.last().pose();
         Matrix3f matrix3f = poseStack.last().normal();
 
-        float dx = to.x() - from.x();
-        float dy = to.y() - from.y();
-        float dz = to.z() - from.z();
-        float length = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+        double dx = to.x() - from.x();
+        double dy = to.y() - from.y();
+        double dz = to.z() - from.z();
+        double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
         if (length > 0) {
             dx /= length;
@@ -144,18 +147,18 @@ public class WireDebugRenderer {
             dz /= length;
         }
 
-        consumer.vertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).color(r, g, b, a).normal(matrix3f, dx, dy, dz).endVertex();
-        consumer.vertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).color(r, g, b, a).normal(matrix3f, dx, dy, dz).endVertex();
+        consumer.vertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).color(r, g, b, a).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
+        consumer.vertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).color(r, g, b, a).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
     }
     
-    public static void renderDebugLineGradient(PoseStack poseStack, VertexConsumer consumer, Vector3f from, Vector3f to, float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
+    public static void renderDebugLineGradient(PoseStack poseStack, VertexConsumer consumer, Vector3d from, Vector3d to, float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
         Matrix4f matrix4f = poseStack.last().pose();
         Matrix3f matrix3f = poseStack.last().normal();
 
-        float dx = to.x() - from.x();
-        float dy = to.y() - from.y();
-        float dz = to.z() - from.z();
-        float length = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+        double dx = to.x() - from.x();
+        double dy = to.y() - from.y();
+        double dz = to.z() - from.z();
+        double length = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
 
         if (length > 0) {
             dx /= length;
@@ -163,12 +166,13 @@ public class WireDebugRenderer {
             dz /= length;
         }
 
-        consumer.vertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).color(r1, g1, b1, a1).normal(matrix3f, dx, dy, dz).endVertex();
-        consumer.vertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).color(r2, g2, b2, a2).normal(matrix3f, dx, dy, dz).endVertex();
+        consumer.vertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).color(r1, g1, b1, a1).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
+        consumer.vertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).color(r2, g2, b2, a2).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
     }
 
-    protected static void renderNameTag(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Vector3f pos, float yOffset, List<Component> text) {
-        if (Minecraft.getInstance().getCameraEntity().position().toVector3f().distance(pos) > 64) {
+    protected static void renderNameTag(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Vector3d pos, float yOffset, List<Component> text) {
+        Vec3 cameraPos = Minecraft.getInstance().getCameraEntity().position();
+        if (new Vector3d(cameraPos.x(), cameraPos.y(), cameraPos.z()).distance(pos) > 64) {
             return;
         }
         final float lineHeight = Minecraft.getInstance().font.lineHeight * 1.5f;

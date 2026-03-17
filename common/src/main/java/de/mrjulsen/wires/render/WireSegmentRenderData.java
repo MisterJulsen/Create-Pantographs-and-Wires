@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.joml.Quaternionf;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -24,33 +25,33 @@ public class WireSegmentRenderData {
     
     private final List<WireRenderPoint> points;
     private final List<WireDecorationRenderData> decorations;
-    private float length;
+    private double length;
 
     public WireSegmentRenderData() {
         this.points = new ArrayList<>();
         this.decorations = new ArrayList<>();
     }
 
-    public float finish(TreeMap<Float, WireDecorationData> decorations, float lengthOffset) {      
+    public double finish(TreeMap<Double, WireDecorationData> decorations, double lengthOffset) {
         this.decorations.clear();
 
-        float oldLength = 0;
+        double oldLength = 0;
         this.length = 0;
-        Vector3f a = new Vector3f(points.get(0).vertex(VertexCorner.CENTER));
+        Vector3d a = new Vector3d(points.get(0).vertex(VertexCorner.CENTER));
         
         for (int i = 1; i < count(); i++) {
-            Vector3f b = new Vector3f(points.get(i).vertex(VertexCorner.CENTER));
-            Vector3f normal = new Vector3f(b).sub(a).normalize();
+            Vector3d b = new Vector3d(points.get(i).vertex(VertexCorner.CENTER));
+            Vector3d normal = new Vector3d(b).sub(a).normalize();
             oldLength = length;
             this.length += a.distance(b);
             
-            Map.Entry<Float, WireDecorationData> entry = null;
+            Map.Entry<Double, WireDecorationData> entry = null;
             while (decorations != null && (entry = decorations.firstEntry()) != null) {
-                float decoPos = entry.getKey() - lengthOffset;
+                double decoPos = entry.getKey() - lengthOffset;
                 if (decoPos > oldLength && decoPos <= this.length) {
                     WireDecorationData deco = decorations.pollFirstEntry().getValue();
-                    float localPos = decoPos - oldLength;
-                    this.decorations.add(new WireDecorationRenderData(new Vector3f(a).add(new Vector3f(normal).mul(localPos)), normal, deco));
+                    double localPos = decoPos - oldLength;
+                    this.decorations.add(new WireDecorationRenderData(new Vector3d(a).add(new Vector3d(normal).mul(localPos)), normal, deco));
                 } else {
                     break;
                 }
@@ -86,10 +87,10 @@ public class WireSegmentRenderData {
         WireRenderPoint lastVertices = points.get(0);
         for (int i = 1; i < points.size(); i++) {
             WireRenderPoint vertices = points.get(i);
-            Vector3f center = vertices.vertex(VertexCorner.CENTER);
+            Vector3d center = vertices.vertex(VertexCorner.CENTER);
             int light = getLight(originPos.offset((int)center.x(), (int)center.y(), (int)center.z()), level);
-            
-            Vector3f vertex;
+
+            Vector3d vertex;
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_LEFT);
             vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(color).uv(u0, v0).uv2(light).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 0, 0).endVertex();
             vertex = lastVertices.vertex(VertexCorner.TOP_RIGHT);
@@ -160,8 +161,8 @@ public class WireSegmentRenderData {
 
     
 
-	public static Quaternionf getYawPitchQuaternion(Vector3f direction) {
-		Vector3f dir = new Vector3f(direction).normalize();
+	public static Quaternionf getYawPitchQuaternion(Vector3d direction) {
+        Vector3d dir = new Vector3d(direction).normalize();
 		float yaw = (float) Math.atan2(-dir.x, -dir.z);
 		float pitch = (float) Math.asin(dir.y);
 		return new Quaternionf().rotateY(yaw).rotateX(pitch);

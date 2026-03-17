@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.UUID;
+
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.eliotlash.mclib.utils.MathUtils;
@@ -97,33 +99,33 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 
 	@Override
 	public WireBatch buildWire(WireCreationContext context, BlockAndTintGetter level, WireConnectionData customData, WireEdge edge, WireNode nodeA, WireNode nodeB) {
-		Vector3f start = nodeA.getPos();
-		Vector3f end = nodeB.getPos();
+		Vector3d start = nodeA.getPos();
+		Vector3d end = nodeB.getPos();
 
-		float upperWireHeight = customData.customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_UPPER_WIRE_HEIGHT);
-		float topWireHeight = upperWireHeight + customData.customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_TOP_WIRE_HEIGHT) + 0.4f;
-		float wireLength = new Vector3f(end).sub(start).length();
+		double upperWireHeight = customData.customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_UPPER_WIRE_HEIGHT);
+		double topWireHeight = upperWireHeight + customData.customData().getCommonData().getFloat(CatenaryHeadspanWireItem.NBT_TOP_WIRE_HEIGHT) + 0.4f;
+		double wireLength = new Vector3d(end).sub(start).length();
 		
 		int subSegments = (int)(wireLength / 2);
 		List<Dropper> droppers = customData.customData().getCommonData().getList(NBT_DROPPERS, Tag.TAG_COMPOUND).stream().map(x -> Dropper.fromNbt((CompoundTag)x)).sorted(Dropper::compareTo).toList();
-		float[] dropperDistances = new float[droppers.size()];
-		float lastDropperDistance = 0;
+		double[] dropperDistances = new double[droppers.size()];
+		double lastDropperDistance = 0;
 		for (int i = 0; i < droppers.size(); i++) {
 			dropperDistances[i] = wireLength * (droppers.get(i).pos() - lastDropperDistance);
 			lastDropperDistance = droppers.get(i).pos();
 		}
 
-		Vector3f direction = new Vector3f(end).sub(start);
-		direction = new Vector3f(direction.x(), 0, direction.z());
-		Vector3f rightVec = new Vector3f(direction.z(), 0, -direction.x()).normalize();
+		Vector3d direction = new Vector3d(end).sub(start);
+		direction = new Vector3d(direction.x(), 0, direction.z());
+		Vector3d rightVec = new Vector3d(direction.z(), 0, -direction.x()).normalize();
 		direction.absolute().normalize();
-        Vector3f offsetA = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * 2);
-        Vector3f offsetB = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * -2);
+		Vector3d offsetA = new Vector3d(rightVec).mul(DragonLib.BLOCK_PIXEL * 2);
+		Vector3d offsetB = new Vector3d(rightVec).mul(DragonLib.BLOCK_PIXEL * -2);
 
-		Wire topWire1 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 1, context, new Vector3f(start).add(offsetA.x(), topWireHeight, offsetA.z()), new Vector3f(end).add(offsetA.x(), topWireHeight, offsetA.z()), CableType.HANGING, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
-		Wire topWire2 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 2, context, new Vector3f(start).add(offsetB.x(), topWireHeight, offsetB.z()), new Vector3f(end).add(offsetB.x(), topWireHeight, offsetB.z()), CableType.TENSION, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
-		Wire upperWire = WireBuilder.createWire(WIRE_UPPER_TENSION, context, new Vector3f(start).add(0, upperWireHeight, 0), new Vector3f(end).add(0, upperWireHeight, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
-		Wire lowerWire = WireBuilder.createWire(WIRE_LOWER_TENSION, context, new Vector3f(start).add(0, DragonLib.BLOCK_PIXEL * -2, 0), new Vector3f(end).add(0, DragonLib.BLOCK_PIXEL * -2, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire topWire1 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 1, context, new Vector3d(start).add(offsetA.x(), topWireHeight, offsetA.z()), new Vector3d(end).add(offsetA.x(), topWireHeight, offsetA.z()), CableType.HANGING, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire topWire2 = WireBuilder.createWire(WIRE_TOP_SUPPORT_WIRE + 2, context, new Vector3d(start).add(offsetB.x(), topWireHeight, offsetB.z()), new Vector3d(end).add(offsetB.x(), topWireHeight, offsetB.z()), CableType.TENSION, THICKNESS, topWireHeight - upperWireHeight - 1, SegmentControl.create(dropperDistances.length <= 0 ? Config.auto() : Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire upperWire = WireBuilder.createWire(WIRE_UPPER_TENSION, context, new Vector3d(start).add(0, upperWireHeight, 0), new Vector3d(end).add(0, upperWireHeight, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
+		Wire lowerWire = WireBuilder.createWire(WIRE_LOWER_TENSION, context, new Vector3d(start).add(0, DragonLib.BLOCK_PIXEL * -2, 0), new Vector3d(end).add(0, DragonLib.BLOCK_PIXEL * -2, 0), CableType.TIGHT, THICKNESS, 0, SegmentControl.create(Config.custom(dropperDistances, false), Config.maxLength(3)));
 		WireBatch batch = WireBatch.of(lowerWire, upperWire, topWire1, topWire2);
 
 		if (dropperDistances.length > 0 && upperWire.getCollisionData().isPresent() && lowerWire.getCollisionData().isPresent() && topWire1.getCollisionData().isPresent() && topWire2.getCollisionData().isPresent()) {			
@@ -236,7 +238,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 			
 			// --- REMOVE WIRES ---
 			} else if (player.getItemInHand(hand).is(Items.SHEARS)) {
-				network.removeEdge(hitResult.getWireId().id(), hitResult.getLocation().toVector3f(), Optional.of(player));
+				network.removeEdge(hitResult.getWireId().id(), new Vector3d(hitResult.getLocation().x(), hitResult.getLocation().y(), hitResult.getLocation().z()), Optional.of(player));
 
 			// --- CREATE DROPPERS ---
 			} else if (player.getItemInHand(hand).is(ModItems.TAG_WRENCH)) {
@@ -247,12 +249,12 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 					}
 
 					NewWireCollision collision = collisionOpt.get();
-					float pos = (float)ModMath.snapNearest(hitResult.getPosOnWire(), DECORATION_GRID_SIZE);
-					float posPercentage = MathUtils.clamp(1F / collision.length(hitResult.getWireId().name()) * pos, 0F, 1F);
+					double pos = ModMath.snapNearest(hitResult.getPosOnWire(), DECORATION_GRID_SIZE);
+					double posPercentage = MathUtils.clamp(1F / collision.length(hitResult.getWireId().name()) * pos, 0F, 1F);
 
 					CompoundTag nbt = edge.getWireConnectionData().customData().getCommonData();
 					Map<UUID, Dropper> pointsById = new HashMap<>();
-					TreeSet<Float> pointsByLocation = new TreeSet<>();
+					TreeSet<Double> pointsByLocation = new TreeSet<>();
 					for (Tag tag : nbt.getList(NBT_DROPPERS, Tag.TAG_COMPOUND)) {
 						Dropper dropper = Dropper.fromNbt((CompoundTag)tag);
 						pointsById.put(dropper.id(), dropper);
@@ -263,9 +265,9 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 						player.displayClientMessage(TextUtils.translate(KEY_INVALID_DROPPER_LOCATION).withStyle(ChatFormatting.RED), true);
 						return InteractionResult.FAIL;
 					}
-					
-					Float ceil = pointsByLocation.ceiling(pos);
-					Float floor = pointsByLocation.floor(pos);
+
+					Double ceil = pointsByLocation.ceiling(pos);
+					Double floor = pointsByLocation.floor(pos);
 					if ((ceil != null && Math.abs(ceil - pos) < DECORATION_GRID_SIZE / 2) || (floor != null && Math.abs(pos - floor) < DECORATION_GRID_SIZE / 2)) {
 						player.displayClientMessage(TextUtils.translate(KEY_DROPPER_EXISTS).withStyle(ChatFormatting.RED), true);
 						return InteractionResult.FAIL;
@@ -317,8 +319,8 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 				}
 
 				boolean centered = CantileverBlockItem.getCantileverType(stack) == ECantileverRegistrationArmType.CENTER;
-				float pos = collision.worldPosToWirePos(WIRE_LOWER_TENSION, collision.getWirePointsOf(WIRE_DROPPER_L + dropperId).vertices()[0]);
-				boolean front = isFront(network.getNode(edge.getNodeAId()).getPos(), network.getNode(edge.getNodeBId()).getPos(), player.getViewVector(0).toVector3f()) ^ CantileverBlockItem.getCantileverType(stack) == ECantileverRegistrationArmType.OUTER;
+				double pos = collision.worldPosToWirePos(WIRE_LOWER_TENSION, collision.getWirePointsOf(WIRE_DROPPER_L + dropperId).vertices()[0]);
+				boolean front = isFront(network.getNode(edge.getNodeAId()).getPos(), network.getNode(edge.getNodeBId()).getPos(), new Vector3d(player.getViewVector(0).x(), player.getViewVector(0).y(), player.getViewVector(0).z())) ^ CantileverBlockItem.getCantileverType(stack) == ECantileverRegistrationArmType.OUTER;
 				RegistrationArmBlock.State state = centered ? State.NORMAL_CENTERED : State.NORMAL;
 				float offset = front ? 1 : 0;
 				offset += (centered ? DragonLib.BLOCK_PIXEL * -0.5f : DragonLib.BLOCK_PIXEL * 3.5f) * (front ? 1 : -1);
@@ -401,12 +403,12 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 		return InteractionResult.SUCCESS;
 	}
 
-	public static boolean isFront(Vector3f A, Vector3f B, Vector3f D) {		
-        float abx = B.x - A.x;
-        float abz = B.z - A.z;
-        float dx = D.x;
-        float dz = D.z;
-        float cross = abx * dz - abz * dx;
+	public static boolean isFront(Vector3d A, Vector3d B, Vector3d D) {
+        double abx = B.x - A.x;
+		double abz = B.z - A.z;
+		double dx = D.x;
+		double dz = D.z;
+		double cross = abx * dz - abz * dx;
         return cross > 0;
     }
 
@@ -446,7 +448,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 		return Optional.empty();
 	}
 
-	public static record Dropper(UUID id, float pos) implements Comparable<Dropper> {
+	public static record Dropper(UUID id, double pos) implements Comparable<Dropper> {
 
 		private static final String NBT_ID = "Id";
 		private static final String NBT_POS = "Pos";
@@ -454,17 +456,17 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 		public CompoundTag toNbt() {
 			CompoundTag nbt = new CompoundTag();
 			nbt.putUUID(NBT_ID, id);
-			nbt.putFloat(NBT_POS, pos);
+			nbt.putDouble(NBT_POS, pos);
 			return nbt;
 		}
 
 		public static Dropper fromNbt(CompoundTag nbt) {
-			return new Dropper(nbt.getUUID(NBT_ID), nbt.getFloat(NBT_POS));
+			return new Dropper(nbt.getUUID(NBT_ID), (nbt.getTagType(NBT_POS) == Tag.TAG_FLOAT) ? nbt.getFloat(NBT_POS) : nbt.getDouble(NBT_POS));
 		}
 
 		@Override
 		public int compareTo(Dropper o) {
-			return Float.compare(pos(), o.pos());
+			return Double.compare(pos(), o.pos());
 		}
 	}
 }
