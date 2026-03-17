@@ -2,6 +2,7 @@ package de.mrjulsen.paw.util.collision;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 public interface IRayTraceShape {
@@ -11,6 +12,6 @@ public interface IRayTraceShape {
      * @param rayDirection Normalisierter Richtungsvektor
      * @return Optional mit HitPosition (in Weltkoordinaten) wenn getroffen
      */
-    Optional<Vector3f> intersects(Vector3f rayOrigin, Vector3f rayDirection);
+    Optional<Vector3d> intersects(Vector3d rayOrigin, Vector3d rayDirection);
 }
 

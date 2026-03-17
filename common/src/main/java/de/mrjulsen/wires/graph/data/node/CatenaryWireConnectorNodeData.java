@@ -3,7 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.mrjulsen.paw.components.WireConnectionDataComponent;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.WiresApi;
@@ -66,9 +66,9 @@ public class CatenaryWireConnectorNodeData extends NodeData {
             return null;
         }
 
-        float length = collision.length(wireId.name());
-        float posOnWire = length * posPercentage;
-        Vector3f pos = collision.wirePosToWorldPos(wireId.name(), posOnWire);
+        double length = collision.length(wireId.name());
+        double posOnWire = length * posPercentage;
+        Vector3d pos = collision.wirePosToWorldPos(wireId.name(), posOnWire);
         return graph.createNode(this, pos);
     }
 
@@ -82,32 +82,32 @@ public class CatenaryWireConnectorNodeData extends NodeData {
         NewWireCollision collision = graph.getCollisionById(wireId.id()).orElse(null);
         if (edge == null || collision == null) {
             return null;
-        }  
-        float length = collision.length(wireId.name());
-        float posOnWire = length * posPercentage;
+        }
+        double length = collision.length(wireId.name());
+        double posOnWire = length * posPercentage;
         node.setPos(collision.wirePosToWorldPos(wireId.name(), posOnWire));
         return node;
     }
     
     @Override
     public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
-        return Optional.of(new CantileverConnectorDataProvider(new Vector3f(0, 0, 0), new Vector3f(0)));
+        return Optional.of(new CantileverConnectorDataProvider(new Vector3d(0, 0, 0), new Vector3d(0)));
     }       
 
     @Override
-    public Vector3f toWorldPos(IWireGraph graph) {
+    public Vector3d toWorldPos(IWireGraph graph) {
         WireEdge edge = graph.getEdge(wireId.id());
         NewWireCollision collision = (graph instanceof WireGraph g) ? g.getCollisionById(wireId.id()).orElse(null) : ((graph instanceof WireGraphClient gc) ? gc.getCollisionById(wireId.id()).orElse(null) : null);
         if (edge == null || collision == null) {
-            return new Vector3f(0);
+            return new Vector3d(0);
         }  
-        float length = collision.length(wireId.name());
-        float posOnWire = length * posPercentage;
+        double length = collision.length(wireId.name());
+        double posOnWire = length * posPercentage;
         return collision.wirePosToWorldPos(wireId.name(), posOnWire);
     }
 
     @Override
-    public boolean validate(WireGraph graph, WireConnectionDataComponent connectionData, int pointIndex) {
+    public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
         return graph.hasEdge(wireId.id());
     }
 

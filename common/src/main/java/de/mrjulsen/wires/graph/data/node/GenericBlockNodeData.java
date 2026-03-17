@@ -3,7 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.mrjulsen.paw.components.WireConnectionDataComponent;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -64,21 +64,21 @@ public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
     
     @Override
     public WireNode getOrCreateNode(WireGraph graph) {
-        return graph.createNode(this, new Vector3f(pos.getX(), pos.getY(), pos.getZ()));
+        return graph.createNode(this, new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
     }
     
     @Override
     public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
-        return Optional.of(new BasicConnectorDataProvider(new Vector3f(attachPoint)));
+        return Optional.of(new BasicConnectorDataProvider(new Vector3d(attachPoint)));
     }
 
     @Override
-    public Vector3f toWorldPos(IWireGraph graph) {
-        return new Vector3f(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()).add(getAttachPoint());
+    public Vector3d toWorldPos(IWireGraph graph) {
+        return new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()).add(getAttachPoint());
     }
 
     @Override
-    public boolean validate(WireGraph graph, WireConnectionDataComponent connectionData, int pointIndex) {
+    public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
         return !graph.getLevel().isLoaded(pos) || !graph.getLevel().getBlockState(pos).isAir();
     }
 

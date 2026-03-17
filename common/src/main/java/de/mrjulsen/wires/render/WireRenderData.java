@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.decoration.WireDecorationData;
@@ -30,9 +31,9 @@ public class WireRenderData {
         return points.length;
     }
 
-    public Map<SectionPos, WireSegmentRenderData> splitInChunkSections(TreeMap<Float, WireDecorationData> decorations) {
+    public Map<SectionPos, WireSegmentRenderData> splitInChunkSections(TreeMap<Double, WireDecorationData> decorations) {
         Map<SectionPos, WireSegmentRenderData> result = new LinkedHashMap<>();
-        Vector3f v = points[0].vertex(VertexCorner.CENTER);
+        Vector3d v = points[0].vertex(VertexCorner.CENTER);
 
         SectionPos lastSection = SectionPos.of(new BlockPos((int)v.x, (int)v.y, (int)v.z));
         WireRenderPoint lastVertices = points[0].offset(lastSection);

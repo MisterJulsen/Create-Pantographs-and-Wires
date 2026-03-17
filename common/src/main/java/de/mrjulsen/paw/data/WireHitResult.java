@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
 
 public class WireHitResult extends HitResult {
 
@@ -26,11 +27,11 @@ public class WireHitResult extends HitResult {
     private static final String NBT_WIRE = "Wire";
 
     private final BlockPos blockPos;
-    private final float posOnWire;
+    private final double posOnWire;
     private final GraphId graphId;
     private final WireId wire;
 
-    public WireHitResult(Vec3 location, float posOnWire, BlockPos pos, GraphId graphId, WireId wire) {
+    public WireHitResult(Vec3 location, double posOnWire, BlockPos pos, GraphId graphId, WireId wire) {
         super(location);
         this.blockPos = pos;
         this.posOnWire = posOnWire;
@@ -42,7 +43,7 @@ public class WireHitResult extends HitResult {
         return blockPos;
     }
 
-    public float getPosOnWire() {
+    public double getPosOnWire() {
         return posOnWire;
     }
 
@@ -54,12 +55,12 @@ public class WireHitResult extends HitResult {
         return graphId;
     }
 
-    public float getWireLength(Level level) {
-        return getCollision(level).map(x -> x.length(getWireId().name())).orElse(0F);
+    public double getWireLength(Level level) {
+        return getCollision(level).map(x -> x.length(getWireId().name())).orElse(0D);
     }
 
-    public float getPosPercentage(Level level) {
-        return getCollision(level).map(x -> MathUtils.clamp(1F / x.length(getWireId().name()) * getPosOnWire(), 0F, 1F)).orElse(0F);
+    public double getPosPercentage(Level level) {
+        return getCollision(level).map(x -> MathUtils.clamp(1D / x.length(getWireId().name()) * getPosOnWire(), 0D, 1D)).orElse(0D);
     }
 
     public Optional<NewWireCollision> getCollision(Level level) {        
@@ -81,8 +82,8 @@ public class WireHitResult extends HitResult {
 
     public CompoundTag toNbt() {
         CompoundTag nbt = new CompoundTag();
-        Utils.putNbtVector3f(nbt, NBT_VECTOR, getLocation().toVector3f());
-        nbt.putFloat(NBT_WIRE_POS, posOnWire);
+        Utils.putNbtVector3d(nbt, NBT_VECTOR, new Vector3d(getLocation().x(), getLocation().y(), getLocation().z()));
+        nbt.putDouble(NBT_WIRE_POS, posOnWire);
         nbt.putString(NBT_GRAPH_ID, graphId.id());
         Utils.putNbtBlockPos(nbt, NBT_POS, blockPos);
         nbt.put(NBT_WIRE, wire.toNbt());
@@ -90,9 +91,10 @@ public class WireHitResult extends HitResult {
     }
 
     public static Optional<WireHitResult> fromNbt(CompoundTag nbt) {
+        Vector3d pos = Utils.getNbtVector3d(nbt, NBT_VECTOR);
         return WireId.fromNbt(nbt.getCompound(NBT_WIRE)).map(x -> new WireHitResult(
-            new Vec3(Utils.getNbtVector3f(nbt, NBT_VECTOR)), 
-            nbt.getFloat(NBT_WIRE_POS),
+            new Vec3(pos.x(), pos.y(), pos.z()),
+            nbt.getDouble(NBT_WIRE_POS),
             Utils.getNbtBlockPos(nbt, NBT_POS),
             new GraphId(nbt.getString(NBT_GRAPH_ID)),
             x

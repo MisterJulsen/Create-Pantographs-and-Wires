@@ -1,6 +1,8 @@
 package de.mrjulsen.wires;
 
+import org.joml.Vector2d;
 import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.util.ClientUtils;
@@ -23,11 +25,11 @@ public final class SegmentControl {
     public static final class Config {
         private final SegmentationMode mode;
         private final int fixedCount;
-        private final float maxLength;
-        private final float[] customLengths;
+        private final double maxLength;
+        private final double[] customLengths;
         private final boolean useArc;
 
-        private Config(SegmentationMode mode, int fixedCount, float maxLength, float[] customLengths, boolean useArc) {
+        private Config(SegmentationMode mode, int fixedCount, double maxLength, double[] customLengths, boolean useArc) {
             this.mode = mode;
             this.fixedCount = fixedCount;
             this.maxLength = maxLength;
@@ -65,7 +67,7 @@ public final class SegmentControl {
          * @param maxLength the maximum allowed length for each segment. Must be a positive float. The wire is segmented into as many parts as necessary so that no segment exceeds maxLength.
          * @return a Config instance with maximum length segmentation (MAX_LENGTH)
          */
-        public static Config maxLength(float maxLength) {
+        public static Config maxLength(double maxLength) {
             return new Config(SegmentationMode.MAX_LENGTH, 0, maxLength, null, false);
         }
 
@@ -76,7 +78,7 @@ public final class SegmentControl {
          * If the sum is less than the cable length, an extra segment is added.
          * @return a Config instance with custom segmentation (CUSTOM)
          */
-        public static Config custom(float[] customLengths, boolean useArc) {
+        public static Config custom(double[] customLengths, boolean useArc) {
             return new Config(SegmentationMode.CUSTOM, 0, 0f, customLengths, useArc);
         }
 
@@ -89,7 +91,7 @@ public final class SegmentControl {
          * @param maxLength the maximum allowed length for each segment. 
          * @return a Config instance with custom segmentation and maximum length constraints (CUSTOM_MAX)
          */
-        public static Config customMax(float[] customLengths, float maxLength, boolean useArc) {
+        public static Config customMax(double[] customLengths, double maxLength, boolean useArc) {
             return new Config(SegmentationMode.CUSTOM_MAX, 0, maxLength, customLengths, useArc);
         }
 
@@ -101,11 +103,11 @@ public final class SegmentControl {
             return fixedCount;
         }
 
-        public float getMaxLength() {
+        public double getMaxLength() {
             return maxLength;
         }
 
-        public float[] getCustomLengths() {
+        public double[] getCustomLengths() {
             return customLengths;
         }
 
@@ -156,7 +158,7 @@ public final class SegmentControl {
      * @param maxLength the maximum allowed length for each segment. Must be {@code > 0}.
      * @return the SegmentControl instance
      */
-    public static SegmentControl maxLength(float maxLength) {
+    public static SegmentControl maxLength(double maxLength) {
         if (maxLength <= 0) {
             throw new IllegalArgumentException("Max Segment Length cannot be less or equal 0.");
         }
@@ -171,7 +173,7 @@ public final class SegmentControl {
      * @param customLengths an array of floats for the length of each wire segment. The amount of values in the array is the amount of segments for the wire.
      * @return the SegmentControl instance
      */
-    public static SegmentControl custom(float[] customLengths, boolean useArc) {
+    public static SegmentControl custom(double[] customLengths, boolean useArc) {
         return new SegmentControl(Config.custom(customLengths, useArc), Config.single());
     }
 
@@ -186,7 +188,7 @@ public final class SegmentControl {
      * @param maxLength the maximum allowed length for each segment
      * @return the SegmentControl instance
      */
-    public static SegmentControl customMax(float[] customLengths, float maxLength, boolean useArc) {
+    public static SegmentControl customMax(double[] customLengths, double maxLength, boolean useArc) {
         return new SegmentControl(Config.customMax(customLengths, maxLength, useArc), Config.single());
     }
 
@@ -212,9 +214,9 @@ public final class SegmentControl {
         return new SegmentControl(mainConfig, subConfig);
     }
 
-    int computeSegmentCount(Vector3f start, Vector3f end, WireBuilder.CableType type, float hangFac, boolean rendering) {
-        Vector3f diff = new Vector3f(end).sub(start);
-        float linearLength = diff.length();
+    int computeSegmentCount(Vector3d start, Vector3d end, WireBuilder.CableType type, double hangFac, boolean rendering) {
+        Vector3d diff = new Vector3d(end).sub(start);
+        double linearLength = diff.length();
         if (type == WireBuilder.CableType.TIGHT) {
             if (mainConfig.mode == SegmentationMode.CUSTOM || mainConfig.mode == SegmentationMode.CUSTOM_MAX) {
                 return getCustomSegmentCount(linearLength, mainConfig.getCustomLengths(), mainConfig.getMaxLength(), mainConfig.mode == SegmentationMode.CUSTOM_MAX);
@@ -230,12 +232,12 @@ public final class SegmentControl {
             }
         } else {
             // For HANGING and TENSION, use arc length.
-            Vector2f p1 = new Vector2f(0, 0);
-            Vector2f p2 = new Vector2f(linearLength / 2f, diff.y / 2f - Math.min(hangFac, linearLength / 2f));
-            Vector2f p3 = new Vector2f(linearLength, diff.y);
-            Vector2f center = circumcenter(p1, p2, p3);
-            float rad = radius(center, p1);
-            float arcLen = arcLength(center, p1, p3, rad);
+            Vector2d p1 = new Vector2d(0, 0);
+            Vector2d p2 = new Vector2d(linearLength / 2f, diff.y / 2f - Math.min(hangFac, linearLength / 2f));
+            Vector2d p3 = new Vector2d(linearLength, diff.y);
+            Vector2d center = circumcenter(p1, p2, p3);
+            double rad = radius(center, p1);
+            double arcLen = arcLength(center, p1, p3, rad);
             if (mainConfig.mode == SegmentationMode.CUSTOM || mainConfig.mode == SegmentationMode.CUSTOM_MAX) {
                 return getCustomSegmentCount(arcLen, mainConfig.getCustomLengths(), mainConfig.getMaxLength(), mainConfig.mode == SegmentationMode.CUSTOM_MAX);
             }
@@ -251,7 +253,7 @@ public final class SegmentControl {
         }
     }
 
-    int computeSubSegmentCount(float segmentLength) {
+    int computeSubSegmentCount(double segmentLength) {
         if (subConfig.mode == SegmentationMode.CUSTOM || subConfig.mode == SegmentationMode.CUSTOM_MAX) {
             return getCustomSegmentCount(segmentLength, subConfig.getCustomLengths(), subConfig.getMaxLength(), subConfig.mode == SegmentationMode.CUSTOM_MAX);
         }
@@ -262,7 +264,7 @@ public final class SegmentControl {
                 return Math.max(1, (int) Math.ceil(segmentLength / subConfig.maxLength));
             case AUTO:
             default:
-                float multiplier = 1f;
+                double multiplier = 1f;
                 if (Platform.getEnvironment() == Env.CLIENT) {
                     multiplier = ClientUtils.getMultiplierByGraphicsMode();
                 }
@@ -270,17 +272,17 @@ public final class SegmentControl {
         }
     }
     
-    private int getCustomSegmentCount(float totalLength, float[] custom, float maxLength, boolean useMax) {
+    private int getCustomSegmentCount(double totalLength, double[] custom, double maxLength, boolean useMax) {
         if (custom == null || custom.length == 0) {
             return 1;
         }
         int count = 0;
-        float cum = 0f;
-        for (float len : custom) {
+        double cum = 0f;
+        for (double len : custom) {
             if (cum >= totalLength) break;
             if (useMax && len > maxLength) {
                 int n = (int) Math.ceil(len / maxLength);
-                float subLen = len / n;
+                double subLen = len / n;
                 for (int i = 0; i < n; i++) {
                     if (cum + subLen > totalLength) {
                         count++;
@@ -303,7 +305,7 @@ public final class SegmentControl {
             }
         }
         if (cum < totalLength) {
-            float fill = totalLength - cum;
+            double fill = totalLength - cum;
             if (useMax && fill > maxLength) {
                 count += (int) Math.ceil(fill / maxLength);
             } else {
@@ -315,66 +317,66 @@ public final class SegmentControl {
 
     // Static helper methods for arc computations
 
-    static Vector2f circumcenter(Vector2f a, Vector2f b, Vector2f c) {
-        float d = 2 * (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
-        if (Math.abs(d) < 1e-6f) return new Vector2f(0, 0);
-        float ax2ay2 = a.x * a.x + a.y * a.y;
-        float bx2by2 = b.x * b.x + b.y * b.y;
-        float cx2cy2 = c.x * c.x + c.y * c.y;
-        float ux = (ax2ay2 * (b.y - c.y) + bx2by2 * (c.y - a.y) + cx2cy2 * (a.y - b.y)) / d;
-        float uy = (ax2ay2 * (c.x - b.x) + bx2by2 * (a.x - c.x) + cx2cy2 * (b.x - a.x)) / d;
-        return new Vector2f(ux, uy);
+    static Vector2d circumcenter(Vector2d a, Vector2d b, Vector2d c) {
+        double d = 2 * (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
+        if (Math.abs(d) < 1e-6f) return new Vector2d(0, 0);
+        double ax2ay2 = a.x * a.x + a.y * a.y;
+        double bx2by2 = b.x * b.x + b.y * b.y;
+        double cx2cy2 = c.x * c.x + c.y * c.y;
+        double ux = (ax2ay2 * (b.y - c.y) + bx2by2 * (c.y - a.y) + cx2cy2 * (a.y - b.y)) / d;
+        double uy = (ax2ay2 * (c.x - b.x) + bx2by2 * (a.x - c.x) + cx2cy2 * (b.x - a.x)) / d;
+        return new Vector2d(ux, uy);
     }
 
-    static float radius(Vector2f center, Vector2f p) {
-        return (float) Math.hypot(center.x - p.x, center.y - p.y);
+    static double radius(Vector2d center, Vector2d p) {
+        return Math.hypot(center.x - p.x, center.y - p.y);
     }
 
-    static float arcLength(Vector2f center, Vector2f a, Vector2f b, float radius) {
-        float dot = (a.x - center.x) * (b.x - center.x) + (a.y - center.y) * (b.y - center.y);
-        float angle = (float) Math.acos(dot / (radius * radius));
+    static double arcLength(Vector2d center, Vector2d a, Vector2d b, double radius) {
+        double dot = (a.x - center.x) * (b.x - center.x) + (a.y - center.y) * (b.y - center.y);
+        double angle = (float) Math.acos(dot / (radius * radius));
         return radius * angle;
     }
 
-    static Vector2f[] equallyDistributedPointsOnArc(Vector2f center, Vector2f start, Vector2f end, float radius, int segments) {
-        Vector2f[] points = new Vector2f[segments];
-        float startAngle = (float) Math.atan2(start.y - center.y, start.x - center.x);
-        float endAngle = (float) Math.atan2(end.y - center.y, end.x - center.x);
+    static Vector2d[] equallyDistributedPointsOnArc(Vector2d center, Vector2d start, Vector2d end, double radius, int segments) {
+        Vector2d[] points = new Vector2d[segments];
+        double startAngle = Math.atan2(start.y - center.y, start.x - center.x);
+        double endAngle = Math.atan2(end.y - center.y, end.x - center.x);
         if (endAngle < startAngle) {
             endAngle += 2 * Math.PI;
         }
-        float angleStep = (endAngle - startAngle) / (segments - 1);
+        double angleStep = (endAngle - startAngle) / (segments - 1);
         for (int i = 0; i < segments; i++) {
-            float angle = startAngle + i * angleStep;
-            float x = (float) (center.x + radius * Math.cos(angle));
-            float y = (float) (center.y + radius * Math.sin(angle));
-            points[i] = new Vector2f(x, y);
+            double angle = startAngle + i * angleStep;
+            double x = (center.x + radius * Math.cos(angle));
+            double y = (center.y + radius * Math.sin(angle));
+            points[i] = new Vector2d(x, y);
         }
         return points;
     }
 
-    static Vector2f[] equallyDistributedPointsOnX(Vector2f center, Vector2f start, Vector2f end, float radius, int segments) {
-        Vector2f[] points = new Vector2f[segments];
-        float startX = start.x;
-        float endX = end.x;
-        float stepX = (endX - startX) / (segments - 1);
+    static Vector2d[] equallyDistributedPointsOnX(Vector2d center, Vector2d start, Vector2d end, double radius, int segments) {
+        Vector2d[] points = new Vector2d[segments];
+        double startX = start.x;
+        double endX = end.x;
+        double stepX = (endX - startX) / (segments - 1);
         for (int i = 0; i < segments; i++) {
-            float x = startX + i * stepX;
-            float dx = x - center.x;
-            float dySquared = radius * radius - dx * dx;
-            float y;
+            double x = startX + i * stepX;
+            double dx = x - center.x;
+            double dySquared = radius * radius - dx * dx;
+            double y;
             if (dySquared >= 0) {
-                float dy = (float) Math.sqrt(dySquared);
-                float candidateY = center.y + dy;
-                float candidateY2 = center.y - dy;
-                float startAngle = (float) Math.atan2(start.y - center.y, start.x - center.x);
-                float candidateAngle = (float) Math.atan2(candidateY - center.y, x - center.x);
+                double dy = Math.sqrt(dySquared);
+                double candidateY = center.y + dy;
+                double candidateY2 = center.y - dy;
+                double startAngle = Math.atan2(start.y - center.y, start.x - center.x);
+                double candidateAngle = Math.atan2(candidateY - center.y, x - center.x);
                 y = (candidateAngle >= startAngle && candidateAngle <= Math.atan2(end.y - center.y, end.x - center.x))
                         ? candidateY : candidateY2;
             } else {
                 y = center.y;
             }
-            points[i] = new Vector2f(x, y);
+            points[i] = new Vector2d(x, y);
         }
         return points;
     }
@@ -384,11 +386,11 @@ public final class SegmentControl {
         return mainConfig.mode;
     }
 
-    float[] getMainCustomLengths() {
+    double[] getMainCustomLengths() {
         return mainConfig.customLengths;
     }
 
-    float getMainMaxLength() {
+    double getMainMaxLength() {
         return mainConfig.maxLength;
     }
 

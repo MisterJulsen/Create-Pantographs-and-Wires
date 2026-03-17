@@ -2,6 +2,7 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -48,18 +49,18 @@ public class SupportWireType extends PAWWireType {
 	
 	@Override
 	public WireBatch buildWire(WireCreationContext context, BlockAndTintGetter level, WireConnectionData customData, WireEdge edge, WireNode nodeA, WireNode nodeB) {
-		Vector3f a = new Vector3f(nodeA.getPos());
-		Vector3f b = new Vector3f(nodeB.getPos());
+		Vector3d a = new Vector3d(nodeA.getPos());
+		Vector3d b = new Vector3d(nodeB.getPos());
 
-		Vector3f direction = new Vector3f(b).sub(a);
-		direction = new Vector3f(direction.x(), 0, direction.z());
-		Vector3f rightVec = new Vector3f(direction.z(), 0, -direction.x()).normalize();
+		Vector3d direction = new Vector3d(b).sub(a);
+		direction = new Vector3d(direction.x(), 0, direction.z());
+		Vector3d rightVec = new Vector3d(direction.z(), 0, -direction.x()).normalize();
 		direction.absolute().normalize();
-        Vector3f offsetA = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * 2);
-        Vector3f offsetB = new Vector3f(rightVec).mul(DragonLib.BLOCK_PIXEL * -2);
+		Vector3d offsetA = new Vector3d(rightVec).mul(DragonLib.BLOCK_PIXEL * 2);
+		Vector3d offsetB = new Vector3d(rightVec).mul(DragonLib.BLOCK_PIXEL * -2);
 
-		Wire wire1 = WireBuilder.createWire("main1", context, new Vector3f(a).add(offsetA.x(), 0, offsetA.z()), new Vector3f(b).add(offsetA.x(), 0, offsetA.z()), CableType.TIGHT, THICKNESS, 0, SegmentControl.createAuto());
-		Wire wire2 = WireBuilder.createWire("main2", context, new Vector3f(a).add(offsetB.x(), 0, offsetB.z()), new Vector3f(b).add(offsetB.x(), 0, offsetB.z()), CableType.TIGHT, THICKNESS, 0, SegmentControl.createAuto());
+		Wire wire1 = WireBuilder.createWire("main1", context, new Vector3d(a).add(offsetA.x(), 0, offsetA.z()), new Vector3d(b).add(offsetA.x(), 0, offsetA.z()), CableType.TIGHT, THICKNESS, 0, SegmentControl.createAuto());
+		Wire wire2 = WireBuilder.createWire("main2", context, new Vector3d(a).add(offsetB.x(), 0, offsetB.z()), new Vector3d(b).add(offsetB.x(), 0, offsetB.z()), CableType.TIGHT, THICKNESS, 0, SegmentControl.createAuto());
 		
 		WirePoints topRenderData1 = wire1.collisionData();
 		WirePoints topRenderData2 = wire2.collisionData();
@@ -75,8 +76,10 @@ public class SupportWireType extends PAWWireType {
 		if (!level.isClientSide) {
 			WireGraph network = WireGraphManager.get(level, getGraphId(null));
 			WireEdge a = network.getEdge(hitResult.getWireId().id());
+			Vector3d hitPos = new Vector3d(hitResult.getLocation().x(), hitResult.getLocation().y(), hitResult.getLocation().z());
+
 			if (player.getItemInHand(hand).is(Items.SHEARS)) {
-				network.removeEdge(hitResult.getWireId().id(), hitResult.getLocation().toVector3f(), Optional.of(player));
+				network.removeEdge(hitResult.getWireId().id(), hitPos, Optional.of(player));
 			}
 		}
 		return InteractionResult.SUCCESS;

@@ -3,7 +3,7 @@ package de.mrjulsen.paw.event;
 import java.io.IOException;
 import java.util.Optional;
 
-import net.minecraft.util.datafix.DataFixTypes;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.config.ModCommonConfig;
@@ -27,7 +27,7 @@ public final class ModCommonEvents {
             WireGraphManager.build(level);
             if (ModCommonConfig.CONVERT_WIRE_NETWORK.get()) {
                 try {
-                    CompoundTag nbt = level.getDataStorage().readTagFromDisk("wiresapi_wire_network", DataFixTypes.SAVED_DATA_SCOREBOARD, 0);
+                    CompoundTag nbt = level.getDataStorage().readTagFromDisk("wiresapi_wire_network", 0);
                     WireGraphManager.get(level, WiresApi.PAW_CATENARY_WIRES).upgrade(nbt.getCompound("data"));
                     level.getDataStorage().save();
                     ((DimensionDataStorageAccessor)level.getDataStorage()).paw$getDataFile("wiresapi_wire_network").delete();
@@ -47,7 +47,7 @@ public final class ModCommonEvents {
             for (WireGraph graph : WireGraphManager.getAll(level)) {
                 WiresApi.GENERIC_BLOCK.getAccessor(graph).ifPresent(x -> {
                     for (WireNode node : x.get(pos)) {
-                        graph.removeNode(node.getId(), new Vector3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f), Optional.of(player));
+                        graph.removeNode(node.getId(), new Vector3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Optional.of(player));
                     }
                 });                
             }

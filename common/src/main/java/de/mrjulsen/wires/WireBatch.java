@@ -106,7 +106,7 @@ public class WireBatch {
         Map<SectionPos, WireSegmentRenderDataBatch> result = new HashMap<>();
 
         // Cache
-        Map<String, TreeMap<Float, WireDecorationData>> decorationsMapped = new HashMap<>();
+        Map<String, TreeMap<Double, WireDecorationData>> decorationsMapped = new HashMap<>();
         for (WireDecorationData deco : decorations) {
             decorationsMapped.computeIfAbsent(deco.getWireName(), name -> new TreeMap<>()).put(deco.getPos(), deco);
         }
@@ -114,7 +114,7 @@ public class WireBatch {
         for (Map.Entry<String, Wire> wireData : subWires.entrySet()) {
             Wire wire = wireData.getValue();
             String wireName = wireData.getKey();
-            TreeMap<Float, WireDecorationData> wireDecor = decorationsMapped.get(wireName);
+            TreeMap<Double, WireDecorationData> wireDecor = decorationsMapped.get(wireName);
 
             Optional<WireRenderData> data = wire.getRenderData();
             if (!data.isPresent()) continue;

@@ -6,10 +6,10 @@ import net.minecraft.world.phys.Vec3;
 
 public class RaycastHitResult extends HitResult implements Comparable<RaycastHitResult> {
     private final BlockPos blockPos;
-    private final float distance;
+    private final double distance;
     private final Object hitData;
 
-    public RaycastHitResult(Vec3 location, BlockPos blockPos, float distance, Object hitData) {
+    public RaycastHitResult(Vec3 location, BlockPos blockPos, double distance, Object hitData) {
         super(location);
         this.blockPos = blockPos;
         this.distance = distance;
@@ -20,7 +20,7 @@ public class RaycastHitResult extends HitResult implements Comparable<RaycastHit
         return blockPos;
     }
 
-    public float getDistance() {
+    public double getDistance() {
         return distance;
     }
 
@@ -30,7 +30,7 @@ public class RaycastHitResult extends HitResult implements Comparable<RaycastHit
 
     @Override
     public int compareTo(RaycastHitResult other) {
-        return Float.compare(getDistance(), other.getDistance());
+        return Double.compare(getDistance(), other.getDistance());
     }
 
     @Override

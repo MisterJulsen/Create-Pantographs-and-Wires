@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.graph.data.provider;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.WiresApi;
@@ -11,22 +12,28 @@ public class BasicConnectorDataProvider extends ConnectorDataProvider {
 
     public static final String NBT_WIRE_ATTACH_POINT = "WireAttachPoint";
 
-    protected Vector3f attachOffset;
+    protected Vector3d attachOffset;
 
+
+    @Deprecated
     public BasicConnectorDataProvider(Vector3f attachOffset) {
+        this(new Vector3d(attachOffset.x(), attachOffset.y(), attachOffset.z()));
+    }
+
+    public BasicConnectorDataProvider(Vector3d attachOffset) {
         this.attachOffset = attachOffset;
     }
 
     @Override
     public CompoundTag serializeNbt() {
         CompoundTag nbt = new CompoundTag();
-        Utils.putNbtVector3f(nbt, NBT_WIRE_ATTACH_POINT, attachOffset);
+        Utils.putNbtVector3d(nbt, NBT_WIRE_ATTACH_POINT, attachOffset);
         return nbt;
     }
 
     @Override
     public void deserializeNbt(CompoundTag nbt) {
-        this.attachOffset = Utils.getNbtVector3f(nbt, NBT_WIRE_ATTACH_POINT);
+        this.attachOffset = Utils.getNbtVector3d(nbt, NBT_WIRE_ATTACH_POINT); // TODO
     }
 
     @Override
@@ -35,8 +42,8 @@ public class BasicConnectorDataProvider extends ConnectorDataProvider {
     }
 
 
-    public Vector3f getAttachOffset() {
-        return new Vector3f(attachOffset);
+    public Vector3d getAttachOffset() {
+        return new Vector3d(attachOffset);
     }
 
     @Override

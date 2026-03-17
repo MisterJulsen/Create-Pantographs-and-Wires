@@ -1,6 +1,7 @@
 package de.mrjulsen.paw.util;
 
 import org.joml.Quaternionf;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -15,7 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ModMath {
 
-	public static final Vector3f CENTER_OF_ORIGIN = new Vector3f(0.5f, 0.5f, 0.5f);
+	public static final Vector3d CENTER_OF_ORIGIN = new Vector3d(0.5f, 0.5f, 0.5f);
 
     public static Vec2 rotateY(Vec2 vec, double deg) {
 		if (deg == 0)
@@ -224,54 +225,54 @@ public class ModMath {
     }
 
     
-    public static Vector3f rotate(Vector3f vec, Vector3f rotationVec) {
+    public static Vector3d rotate(Vector3d vec, Vector3d rotationVec) {
 		return rotate(vec, rotationVec.x, rotationVec.y, rotationVec.z);
 	}
 
-	public static Vector3f rotate(Vector3f vec, double xRot, double yRot, double zRot) {
+	public static Vector3d rotate(Vector3d vec, double xRot, double yRot, double zRot) {
 		return rotate(rotate(rotate(vec, xRot, Axis.X), yRot, Axis.Y), zRot, Axis.Z);
 	}
 
-	public static Vector3f rotateCentered(Vector3f vec, double deg, Axis axis) {
-		Vector3f shift = getCenterOf(new Vector3i());
-		return rotate(new Vector3f(vec).sub(shift), deg, axis).add(shift);
+	public static Vector3d rotateCentered(Vector3d vec, double deg, Axis axis) {
+        Vector3d shift = getCenterOf(new Vector3i());
+		return rotate(new Vector3d(vec).sub(shift), deg, axis).add(shift);
 	}
 
-	public static Vector3f rotate(Vector3f vec, double deg, Axis axis) {
+	public static Vector3d rotate(Vector3d vec, double deg, Axis axis) {
 		if (deg == 0)
 			return vec;
 
-		float angle = (float) (deg / 180f * Math.PI);
-		float sin = Mth.sin(angle);
-		float cos = Mth.cos(angle);
-		float x = vec.x;
-		float y = vec.y;
-		float z = vec.z;
+        float angle = (float)(deg / 180f * Math.PI);
+        double sin = Mth.sin(angle);
+        double cos = Mth.cos(angle);
+		double x = vec.x;
+        double y = vec.y;
+        double z = vec.z;
 
 		if (axis == Axis.X)
-			return new Vector3f(x, y * cos - z * sin, z * cos + y * sin);
+			return new Vector3d(x, y * cos - z * sin, z * cos + y * sin);
 		if (axis == Axis.Y)
-			return new Vector3f(x * cos + z * sin, y, z * cos - x * sin);
+			return new Vector3d(x * cos + z * sin, y, z * cos - x * sin);
 		if (axis == Axis.Z)
-			return new Vector3f(x * cos - y * sin, y * cos + x * sin, z);
+			return new Vector3d(x * cos - y * sin, y * cos + x * sin, z);
 		return vec;
 	}
 
-	public static Vector3f getCenterOf(Vector3i pos) {
+	public static Vector3d getCenterOf(Vector3i pos) {
 		if (pos.equals(new Vector3i()))
 			return CENTER_OF_ORIGIN;
-		return new Vector3f(pos).add(.5f, .5f, .5f);
+		return new Vector3d(pos).add(.5, .5, .5);
 	}
 
 
-    public static Vector3f centerOf(Vector3f... points) {
+    public static Vector3d centerOf(Vector3d... points) {
         if (points == null || points.length == 0) {
             return null;
         }
 
-        Vector3f sum = new Vector3f(0, 0, 0);
+        Vector3d sum = new Vector3d(0, 0, 0);
 
-        for (Vector3f v : points) {
+        for (Vector3d v : points) {
             sum.add(v);
         }
 

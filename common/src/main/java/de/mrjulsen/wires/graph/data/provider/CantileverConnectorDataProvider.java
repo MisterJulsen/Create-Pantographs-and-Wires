@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.graph.data.provider;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.WiresApi;
@@ -11,9 +12,15 @@ public class CantileverConnectorDataProvider extends BasicConnectorDataProvider 
 
     public static final String NBT_TENSION_ATTACH_POINT = "TensionWireAttachPoint";
 
-    protected Vector3f tensionWireAttachPoint;
+    protected Vector3d tensionWireAttachPoint;
 
+    @Deprecated
     public CantileverConnectorDataProvider(Vector3f contactWireAttachOffset, Vector3f tensionWireAttachPoint) {
+        super(contactWireAttachOffset);
+        this.tensionWireAttachPoint = new Vector3d(tensionWireAttachPoint.x(), tensionWireAttachPoint.y(), tensionWireAttachPoint.z());
+    }
+
+    public CantileverConnectorDataProvider(Vector3d contactWireAttachOffset, Vector3d tensionWireAttachPoint) {
         super(contactWireAttachOffset);
         this.tensionWireAttachPoint = tensionWireAttachPoint;
     }
@@ -21,14 +28,14 @@ public class CantileverConnectorDataProvider extends BasicConnectorDataProvider 
     @Override
     public CompoundTag serializeNbt() {
         CompoundTag nbt = super.serializeNbt();
-        Utils.putNbtVector3f(nbt, NBT_TENSION_ATTACH_POINT, tensionWireAttachPoint);
+        Utils.putNbtVector3d(nbt, NBT_TENSION_ATTACH_POINT, tensionWireAttachPoint);
         return nbt;
     }
 
     @Override
     public void deserializeNbt(CompoundTag nbt) {
         super.deserializeNbt(nbt);
-        this.tensionWireAttachPoint = Utils.getNbtVector3f(nbt, NBT_TENSION_ATTACH_POINT);
+        this.tensionWireAttachPoint = Utils.getNbtVector3d(nbt, NBT_TENSION_ATTACH_POINT); // TODO
     }
 
     @Override
@@ -36,8 +43,8 @@ public class CantileverConnectorDataProvider extends BasicConnectorDataProvider 
         return (DLRegistryObject<ConnectorDataProvider>)(Object)WiresApi.CANTILEVER_WIRE_CONNECTOR;
     }
 
-    public Vector3f getTensionWireAttachOffset() {
-        return new Vector3f(tensionWireAttachPoint);
+    public Vector3d getTensionWireAttachOffset() {
+        return new Vector3d(tensionWireAttachPoint);
     }
 
     @Override

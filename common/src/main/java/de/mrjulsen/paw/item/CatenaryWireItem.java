@@ -1,6 +1,8 @@
 package de.mrjulsen.paw.item;
 
 import java.util.Optional;
+
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -84,10 +86,11 @@ public class CatenaryWireItem implements IPawWireItemBase {
             return InteractionResultHolder.consume(player.getItemInHand(usedHand));
         }
 
-        float maxReach = 5f;
+        double maxReach = 5D;
+        Vector3d eyePos = new Vector3d(player.getEyePosition().x(), player.getEyePosition().y(), player.getEyePosition().z());
         Optional<RaycastHitResult> result = RaycastUtils.rayTrace(
-                player.getEyePosition().toVector3f(),
-                player.getEyePosition().toVector3f().add(player.getLookAngle().toVector3f().normalize().mul(maxReach)),
+                eyePos,
+                new Vector3d(eyePos).add(new Vector3d(player.getLookAngle().x(), player.getLookAngle().y(), player.getLookAngle().z()).normalize().mul(maxReach)),
                 level,
                 AbstractCantileverBlock.MAX_WIDTH,
                 (lvl, pos, rayOrigin, rayDirection) -> {
@@ -104,13 +107,13 @@ public class CatenaryWireItem implements IPawWireItemBase {
                         };
 
                         for (LineShape shape : shapes) {
-                            Optional<Vector3f> oHit = shape.intersects(rayOrigin, rayDirection);
+                            Optional<Vector3d> oHit = shape.intersects(rayOrigin, rayDirection);
                             if (oHit.isPresent()) {
-                                Vector3f hit = oHit.get();
-                                float dist = new Vector3f(hit).sub(rayOrigin).length();
+                                Vector3d hit = oHit.get();
+                                double dist = new Vector3d(hit).sub(rayOrigin).length();
                                 if (dist > maxReach) continue;
                                 if (closest == null || dist < closest.getDistance()) {
-                                    closest = new RaycastHitResult(new Vec3(hit), pos, dist, i);
+                                    closest = new RaycastHitResult(new Vec3(hit.x(), hit.y(), hit.z()), pos, dist, i);
                                 }
                             }
                         }

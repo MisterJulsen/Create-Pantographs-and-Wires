@@ -11,7 +11,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import de.mrjulsen.mcdragonlib.util.DLUtils;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.IWireType;
@@ -49,7 +49,7 @@ public class WireEdge {
     private UUID nodeA;
     private UUID nodeB;
     private final WireEdgeHash hash;
-    private final Map<String, TreeMap<Float, WireDecorationData>> decorations = new HashMap<>();
+    private final Map<String, TreeMap<Double, WireDecorationData>> decorations = new HashMap<>();
 
     public WireEdge(WireGraph graph, IWireType type, WireConnectionData customData, UUID nodeA, UUID nodeB, WireEdgeHash hash) {
         this(graph, graph.createNewEdgeId(), type, customData, nodeA, nodeB, hash);
@@ -106,7 +106,7 @@ public class WireEdge {
             WireEdge edge = new WireEdge(
                 graph,
                 nbt.getUUID(NBT_ID),
-                WireTypeRegistry.get(DLUtils.resourceLocation(nbt.getString(NBT_WIRE_TYPE))),
+                WireTypeRegistry.get(new ResourceLocation(nbt.getString(NBT_WIRE_TYPE))),
                 customData,
                 nodeAId,
                 nodeBId,
@@ -123,16 +123,16 @@ public class WireEdge {
         return Optional.empty();
     }
 
-    public boolean addDecoration(Vector3f pos, String wireName, IWireDecoration<?> element) {
+    public boolean addDecoration(Vector3d pos, String wireName, IWireDecoration<?> element) {
         if (!(getGraph() instanceof WireGraph graph)) {
             return false;
         }
 
-        float d = graph.getCollisionById(id).map(x -> x.worldPosToWirePos(wireName, pos)).orElse(0F);
+        double d = graph.getCollisionById(id).map(x -> x.worldPosToWirePos(wireName, pos)).orElse(0D);
         return addDecoration(d, wireName, element);
     }
 
-    public boolean addDecoration(float posOnWire, String wireName, IWireDecoration<?> element) {
+    public boolean addDecoration(double posOnWire, String wireName, IWireDecoration<?> element) {
         if (!(getGraph() instanceof WireGraph graph)) {
             return false;
         }
@@ -147,15 +147,15 @@ public class WireEdge {
         return true;
     }
 
-    public boolean canPlaceDecoration(float posOnWire, String wireName, IWireDecoration<?> element) {
+    public boolean canPlaceDecoration(double posOnWire, String wireName, IWireDecoration<?> element) {
         return !isOccupied(posOnWire, wireName, element.getRadius(element));
     }
     
-    public boolean isOccupied(float posOnWire, String wireName, float radius) {
+    public boolean isOccupied(double posOnWire, String wireName, double radius) {
         if (decorations.containsKey(wireName)) {
-            TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
-            Map.Entry<Float, WireDecorationData> lower = map.lowerEntry(posOnWire);
-            Map.Entry<Float, WireDecorationData> upper = map.ceilingEntry(posOnWire);
+            TreeMap<Double, WireDecorationData> map = decorations.get(wireName);
+            Map.Entry<Double, WireDecorationData> lower = map.lowerEntry(posOnWire);
+            Map.Entry<Double, WireDecorationData> upper = map.ceilingEntry(posOnWire);
             if ((lower != null && lower.getKey() + lower.getValue().getDecoration().getRadius(null) > posOnWire - radius) ||
                 (upper != null && upper.getKey() - upper.getValue().getDecoration().getRadius(null) < posOnWire + radius)) {
                     return true;
@@ -172,17 +172,17 @@ public class WireEdge {
         }
     }
 
-    public List<WireDecorationData> getDecorationsAt(Vector3f pos, String wireName) {        
+    public List<WireDecorationData> getDecorationsAt(Vector3d pos, String wireName) {
         if (!(getGraph() instanceof WireGraph graph)) {
             return List.of();
         }
 
 
-        float d = graph.getCollisionById(id).map(x -> x.worldPosToWirePos(wireName, pos)).orElse(0F);
+        double d = graph.getCollisionById(id).map(x -> x.worldPosToWirePos(wireName, pos)).orElse(0D);
         if (!decorations.containsKey(wireName)) {
             return List.of();
         }
-        TreeMap<Float, WireDecorationData> map = decorations.get(wireName);
+        TreeMap<Double, WireDecorationData> map = decorations.get(wireName);
         List<WireDecorationData> decoResult = new ArrayList<>(2);
         for (WireDecorationData decoration : map.values()) {
             if (decoration.getPos() + decoration.getDecoration().getRadius(null) >= d && decoration.getPos() - decoration.getDecoration().getRadius(null) <= d) {
@@ -198,10 +198,10 @@ public class WireEdge {
         }
 
         if (this.decorations.containsKey(wireName)) {
-            TreeMap<Float, WireDecorationData> map = this.decorations.get(wireName);
+            TreeMap<Double, WireDecorationData> map = this.decorations.get(wireName);
             map.values().removeAll(decorations);
             for (WireDecorationData deco : decorations) {
-                deco.getDecoration().onBreak(level, graph.getCollisionById(id).map(x -> x.wirePosToWorldPos(wireName, deco.getPos())).orElse(new Vector3f()), player);
+                deco.getDecoration().onBreak(level, graph.getCollisionById(id).map(x -> x.wirePosToWorldPos(wireName, deco.getPos())).orElse(new Vector3d()), player);
             }
             if (map.isEmpty()) {
                 this.decorations.remove(wireName);
@@ -216,7 +216,7 @@ public class WireEdge {
 
     public Collection<WireDecorationData> getDecorations(Predicate<WireDecorationData> condition) {
         Collection<WireDecorationData> decorations = new ArrayList<>();
-        for (TreeMap<Float, WireDecorationData> decor : this.decorations.values()) {
+        for (TreeMap<Double, WireDecorationData> decor : this.decorations.values()) {
             for (WireDecorationData d : decor.values()) {
                 if (condition.test(d)) {
                     decorations.add(d);
@@ -227,7 +227,7 @@ public class WireEdge {
     }
 
     public void queryDecorations(Predicate<WireDecorationData> condition, Consumer<WireDecorationData> callback) {
-        for (TreeMap<Float, WireDecorationData> decor : this.decorations.values()) {
+        for (TreeMap<Double, WireDecorationData> decor : this.decorations.values()) {
             for (WireDecorationData d : decor.values()) {
                 if (condition.test(d)) {
                     callback.accept(d);
@@ -238,9 +238,9 @@ public class WireEdge {
 
     
 
-    public void onRemove(Level level, Vector3f breakPosition, Optional<Player> player) {           
+    public void onRemove(Level level, Vector3d breakPosition, Optional<Player> player) {
         if (getGraph() instanceof WireGraph graph) {
-            for (TreeMap<Float, WireDecorationData> e : decorations.values()) {
+            for (TreeMap<Double, WireDecorationData> e : decorations.values()) {
                 for (WireDecorationData decoration : e.values()) {
                     decoration.getDecoration().onBreak(level, graph.getCollisionById(id).map(x -> x.wirePosToWorldPos(decoration.getWireName(), decoration.getPos())).orElse(breakPosition), player);
                 }
@@ -262,14 +262,14 @@ public class WireEdge {
         
     }
 
-    public Vector3f getCenterPos() {
-        Collection<Vector3f> vectors = List.of(graph.getNode(getNodeAId()).getPos(), graph.getNode(getNodeBId()).getPos());
+    public Vector3d getCenterPos() {
+        Collection<Vector3d> vectors = List.of(graph.getNode(getNodeAId()).getPos(), graph.getNode(getNodeBId()).getPos());
         if (vectors == null || vectors.isEmpty()) {
             return null;
         }
 
-        Vector3f summe = new Vector3f(0, 0, 0);
-        for (Vector3f v : vectors) {
+        Vector3d summe = new Vector3d(0, 0, 0);
+        for (Vector3d v : vectors) {
             summe.add(v);
         }
 

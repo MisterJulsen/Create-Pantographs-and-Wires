@@ -16,6 +16,7 @@ import java.util.function.BiConsumer;
 
 import net.minecraft.core.component.DataComponentType;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.data.DLStatus;
@@ -222,14 +223,14 @@ public interface IWireItemBase extends IWireInteractableItem {
 
         CompoundTag lastPointData = points.getLast();
         NodeData node = WiresApi.NODE_DATA_REGISTRY.load(lastPointData);
-        Vector3f pos = node.toWorldPos(graph);
+        Vector3d pos = node.toWorldPos(graph);
 
         int maxLength = getWireType(stack).getMaxLength();
         int distance;
         if (hit instanceof BlockHitResult r) {
-            distance = (int)pos.distance(r.getLocation().toVector3f());
+            distance = (int)pos.distance(new Vector3d(r.getLocation().x(), r.getLocation().y(), r.getLocation().z()));
         } else {
-            distance = (int)pos.distance(player.getEyePosition().toVector3f());
+            distance = (int)pos.distance(new Vector3d(player.getEyePosition().x(), player.getEyePosition().y(), player.getEyePosition().z()));
         }
         return TextUtils.empty().withStyle(ChatFormatting.WHITE)
             .append(TextUtils.text(String.format("X: %s, Y: %s, Z: %s", (int)pos.x(), (int)pos.y(), (int)pos.z())).withStyle(ChatFormatting.WHITE))

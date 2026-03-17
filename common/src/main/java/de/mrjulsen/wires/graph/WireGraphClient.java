@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.google.common.collect.Multimap;
@@ -35,7 +36,7 @@ import net.minecraft.world.level.Level;
 
 public class WireGraphClient implements IWireGraph {
 
-    public static record DebugWireData(String name, Vector3f centerPos) {}
+    public static record DebugWireData(String name, Vector3d centerPos) {}
 
     private final GraphId id;
     private final Level level;

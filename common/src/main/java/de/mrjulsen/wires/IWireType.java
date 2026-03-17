@@ -2,7 +2,7 @@ package de.mrjulsen.wires;
 
 import java.util.Optional;
 
-import de.mrjulsen.paw.components.WireConnectionDataComponent;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.data.WireHitResult;
@@ -49,11 +49,11 @@ public interface IWireType {
 
     /**
      * The ID of the registered wire graph in which this wire type should be used. Typically, a wire type can only be used in
-     * one graph, but the {@code connectionData} allows for the use of different graphs based on the item metadata.
-     * @param connectionData The item metadata.
+     * one graph, but the {@code itemData} allows for the use of different graphs based on the item metadata.
+     * @param itemData The item metadata.
      * @return The {@link GraphId}.
      */
-    GraphId getGraphId(WireConnectionDataComponent connectionData);
+    GraphId getGraphId(CompoundTag itemData);
 
     /**
      * Called when a player interacts with a wire of this type. Features such as adding decorations, destroying the wire, and more can be implemented here.
@@ -74,7 +74,7 @@ public interface IWireType {
      * @param breakPosition The position where this wire was broken.
      * @param player The player who is responsible for the destruction.
      */
-    void onBreak(Level level, Vector3f breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge);
+    void onBreak(Level level, Vector3d breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge);
 
     /**
      * Called when another wire attempts to connect to this wire. This method then generates the appropriate {@link NodeData} for this wire type.

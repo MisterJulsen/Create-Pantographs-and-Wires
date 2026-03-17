@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import de.mrjulsen.paw.components.WireConnectionDataComponent;
-import de.mrjulsen.paw.registry.ModDataComponents;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
@@ -91,19 +90,22 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
         }
 
         // --- Decode Item data ---
-        WireConnectionDataComponent connectionData = ModDataComponents.getComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, WireConnectionDataComponent::empty);
-        CompoundTag customDataNbt = connectionData.customData();
-        List<CompoundTag> points = new ArrayList<>(connectionData.customPointData());
+        CompoundTag itemData = IWireItemBase.getNbt(stack);
+        CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
+        List<CompoundTag> points = new ArrayList<>();        
+        if (itemData.contains(NBT_POINTS)) {
+            points.addAll(itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList());
+        }
 
         // --- Set data ---
         if (points.size() < 2) {
-            if (!addNewPoint(level, player, hand, hit, metadata, stack, connectionData, points)) {
-                clear(stack);
+            if (!addNewPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points)) {
+                IWireItemBase.clear(stack);
                 return InteractionResult.FAIL;
             }
         } else if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) || !customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
-            CompoundTag startPointData = points.getFirst();
-            CompoundTag endPointData = points.get(1);
+            CompoundTag startPointData = (CompoundTag)points.get(0);
+            CompoundTag endPointData = (CompoundTag)points.get(1);
             NodeData nodeA = WiresApi.NODE_DATA_REGISTRY.load(startPointData);
             NodeData nodeB = WiresApi.NODE_DATA_REGISTRY.load(endPointData);
 
@@ -115,81 +117,86 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                         float d = h.getBlockPos().getY() - nB.getBlockPos().getY();
                         if (d < min) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_SMALL, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         } else if (d > max) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_LARGE, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         }
                         customDataNbt.putFloat(NBT_UPPER_WIRE_HEIGHT, d);
                     } else if (!customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
-                        float p = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT);
-                        float min = p + calcSupportWireMinHeightDifference(new Vector3f(nA.getBlockPos().getX(), nA.getBlockPos().getY(), nA.getBlockPos().getZ()), new Vector3f(nB.getBlockPos().getX(), nB.getBlockPos().getY(), nB.getBlockPos().getZ()));
-                        float max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
-                        float d = h.getBlockPos().getY() - nB.getBlockPos().getY() - p;                        
+                        double p = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT);
+                        double min = p + calcSupportWireMinHeightDifference(new Vector3d(nA.getBlockPos().getX(), nA.getBlockPos().getY(), nA.getBlockPos().getZ()), new Vector3d(nB.getBlockPos().getX(), nB.getBlockPos().getY(), nB.getBlockPos().getZ()));
+                        double max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
+                        double d = h.getBlockPos().getY() - nB.getBlockPos().getY() - p;
                         if (d < min) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_SMALL, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         } else if (d > max) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_LARGE, min, max).withStyle(ChatFormatting.RED), true);
-                            clear(stack);
+                            IWireItemBase.clear(stack);
                             return InteractionResult.FAIL;
                         }
-                        customDataNbt.putFloat(NBT_TOP_WIRE_HEIGHT, d);
+                        customDataNbt.putDouble(NBT_TOP_WIRE_HEIGHT, d); // TODO was float
                     }
                 }
             }
         }
 
         // --- Save data ---
-        connectionData = new WireConnectionDataComponent(points, customDataNbt);
-        ModDataComponents.setComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, connectionData);
+        ListTag pointsList = new ListTag();
+        for (CompoundTag p : points) {
+            pointsList.add(p);
+        }
+        itemData.put(NBT_POINTS, pointsList);
+        itemData.put(NBT_CUSTOM_DATA, customDataNbt);
+        IWireItemBase.setNbt(stack, itemData);
 
         // --- Create wire ---
-        if (canCreateWire(level, player, hand, hit, stack, connectionData, points)) {
-            createWire(level, player, hand, hit, stack, connectionData, points);
+        if (canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
+            createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
         }
         
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, WireConnectionDataComponent connectionData, List<CompoundTag> points) {
-        return IPawWireItemBase.super.canCreateWire(level, player, hand, hit, stack, connectionData, points) && connectionData.customData().contains(NBT_UPPER_WIRE_HEIGHT) && connectionData.customData().contains(NBT_TOP_WIRE_HEIGHT);
+    public boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        return IPawWireItemBase.super.canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points) && customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) && customDataNbt.contains(NBT_TOP_WIRE_HEIGHT);
     }
 
     @Override
     public Component createHudInfoText(ItemStack stack, Player player, HitResult hit) {
-        if (!ModDataComponents.hasComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA)) {
+        if (!stack.hasTag()) {
             return null;
         }
-
-        WireConnectionDataComponent connectionData = ModDataComponents.getComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, WireConnectionDataComponent::empty);
-        List<CompoundTag> points = new ArrayList<>(connectionData.customPointData());
-        if (points.size() < 2) {
+        
+        CompoundTag itemData = IWireItemBase.getNbt(stack);
+        ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
+        if (list.size() < 2) {
             return IPawWireItemBase.super.createHudInfoText(stack, player, hit);
         }
 
-        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(connectionData));
-        if (graph == null) {
+        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(itemData));
+        if (graph == null || list.isEmpty()) {
             return null;
         }
 
         
 
-        CompoundTag customDataNbt = connectionData.customData();
-        CompoundTag startPointData = points.getFirst();
-        CompoundTag endPointData = points.get(1);
+        CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
+        CompoundTag startPointData = (CompoundTag)list.get(0);
+        CompoundTag endPointData = (CompoundTag)list.get(1);
         NodeData nodeA = WiresApi.NODE_DATA_REGISTRY.load(startPointData);
         NodeData nodeB = WiresApi.NODE_DATA_REGISTRY.load(endPointData);
-        Vector3f pos = nodeB.toWorldPos(graph);
-        Vector3f targetPos;
+        Vector3d pos = nodeB.toWorldPos(graph);
+        Vector3d targetPos;
         if (hit instanceof BlockHitResult r) {
-            targetPos = r.getLocation().toVector3f();
+            targetPos = new Vector3d(r.getLocation().x(), r.getLocation().y(), r.getLocation().z());
         } else {
-            targetPos = player.getEyePosition().toVector3f();
+            targetPos = new Vector3d(player.getEyePosition().x(), player.getEyePosition().y(), player.getEyePosition().z());
         }
 
         if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT)) {
@@ -204,8 +211,8 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                 .append(TextUtils.text(String.format("%sm [%sm - %sm]", diff, min, max)).withStyle(diff < min || diff > max ? ChatFormatting.RED : ChatFormatting.GREEN))
             ;
         } else if (!customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
-            float min = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT) + calcSupportWireMinHeightDifference(nodeA.toWorldPos(graph), nodeB.toWorldPos(graph));
-            float max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
+            double min = customDataNbt.getFloat(NBT_UPPER_WIRE_HEIGHT) + calcSupportWireMinHeightDifference(nodeA.toWorldPos(graph), nodeB.toWorldPos(graph));
+            double max = min + ModServerConfig.CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE.get();
             int diff = (int)(Math.floor(targetPos.y()) - pos.y() - min);
             return TextUtils.empty().withStyle(ChatFormatting.WHITE)
                 .append(TextUtils.text(String.format("Y: %s", (int)pos.y())).withStyle(ChatFormatting.WHITE))
@@ -219,7 +226,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
         return TextUtils.empty();
     }
 
-    public static int calcSupportWireMinHeightDifference(Vector3f a, Vector3f b) {
+    public static int calcSupportWireMinHeightDifference(Vector3d a, Vector3d b) {
         return (int)(Math.floor(a.distance(b) / 16f));
     }
 }

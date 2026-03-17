@@ -2,6 +2,7 @@ package de.mrjulsen.wires.decoration;
 
 import java.util.Optional;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.paw.data.WireHitResult;
@@ -15,7 +16,7 @@ public interface IWireDecoration<T extends IWireDecoration<T>> extends IRegister
     
     default void onPlace(Level level, Player player) {}
 
-    default void onBreak(Level level, Vector3f position, Optional<Player> player) {}
+    default void onBreak(Level level, Vector3d position, Optional<Player> player) {}
 
     default InteractionResult use(Level level, Player player, InteractionHand hand, WireHitResult hit) {
         return InteractionResult.PASS;

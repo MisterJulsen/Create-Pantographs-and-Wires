@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import net.minecraft.core.RegistryAccess;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.google.common.base.Suppliers;
@@ -75,7 +75,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
     }   
 
     @Override
-    public void onBreak(Level level, Vector3f position, Optional<Player> player) {
+    public void onBreak(Level level, Vector3d position, Optional<Player> player) {
         if (!player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator()) || ModServerConfig.DROP_WIRE_ITEMS_IN_CREATIVE.get()) {
             ItemEntity itementity = new ItemEntity(level, position.x(), position.y(), position.z(), stack);
             itementity.setDefaultPickUpDelay();
@@ -107,7 +107,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
     @Override
     public CompoundTag serializeNbt() {
         CompoundTag nbt = new CompoundTag();
-        nbt.put(NBT_ITEM, stack.save(RegistryAccess.EMPTY));
+        nbt.put(NBT_ITEM, stack.save(new CompoundTag()));
         nbt.putBoolean(NBT_MIRRORED, mirrored);
         nbt.putByte(NBT_VARIANT, variant == null ? 0 : variant.getId());
         nbt.putUUID(NBT_DROPPER_ID, dropperId);
@@ -116,7 +116,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
 
     @Override
     public void deserializeNbt(CompoundTag nbt) {
-        this.stack = ItemStack.parseOptional(RegistryAccess.EMPTY, nbt.getCompound(NBT_ITEM));
+        this.stack = ItemStack.of(nbt.getCompound(NBT_ITEM));
         this.mirrored = nbt.getBoolean(NBT_MIRRORED);
         this.variant = RegistrationArmBlock.State.getById(nbt.getByte(NBT_VARIANT));
         this.dropperId = nbt.getUUID(NBT_DROPPER_ID);
@@ -153,7 +153,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
         }
 
         @Override
-        public void render(PoseStack poseStack, VertexConsumer consumer, Vector3f pos, Vector3f direction, int light) {
+        public void render(PoseStack poseStack, VertexConsumer consumer, Vector3d pos, Vector3d direction, int light) {
             model.get().render(poseStack.last(), consumer, ModelType.BLOCK, ModBlocks.REGISTRATION_ARM.getDefaultState(), ModelContext.EMPTY, DLColor.WHITE, light, OverlayTexture.NO_OVERLAY);
         }
         

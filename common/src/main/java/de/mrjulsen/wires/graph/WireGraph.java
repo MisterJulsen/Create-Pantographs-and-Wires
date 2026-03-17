@@ -15,9 +15,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-import de.mrjulsen.paw.components.WireConnectionDataComponent;
-import net.minecraft.core.HolderLookup;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.google.common.collect.ImmutableList;
@@ -128,7 +127,7 @@ public class WireGraph extends SavedData implements IWireGraph {
 
 
     @Override
-    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
+    public CompoundTag save(CompoundTag nbt) {
         ListTag nodes = new ListTag();
         for (WireNode node : this.nodes.values()) {
             nodes.add(node.toNbt());
@@ -243,7 +242,7 @@ public class WireGraph extends SavedData implements IWireGraph {
       * @param pos The world position of the node.
       * @return The newly created node.
       */
-    public WireNode createNode(NodeData data, Vector3f pos) {
+    public WireNode createNode(NodeData data, Vector3d pos) {
         WireNode node = new WireNode(this, data);
         node.setPos(pos);
         setNode(node);
@@ -268,7 +267,7 @@ public class WireGraph extends SavedData implements IWireGraph {
      * @param breakPos The break position or {@code null} to disable drops
      * @param player
      */
-    public void removeNode(UUID id, Vector3f breakPos, Optional<Player> player) {
+    public void removeNode(UUID id, Vector3d breakPos, Optional<Player> player) {
         if (!nodes.containsKey(id)) {
             return;
         }
@@ -301,7 +300,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     }
 
     /**
-     * Creates a new edge but doesn't add it to the graph.
+     * Creates a new edge but doesn't add it to the graph. For this, use {@link WireGraph#setAndUpdateEdge(WireEdge, boolean)}.
      */
     public CreateEdgeResult createEdge(IWireType type, CustomData customData, NodeData nodeDataA, NodeData nodeDataB, MutableInt pointStartIndex, boolean sendToPlayers) {
         WireEdgeHash hash = new WireEdgeHash(customData, nodeDataA, nodeDataB);
@@ -385,7 +384,7 @@ public class WireGraph extends SavedData implements IWireGraph {
     }
 
 
-    public void removeEdge(UUID id, Vector3f removePosition, Optional<Player> player) {
+    public void removeEdge(UUID id, Vector3d removePosition, Optional<Player> player) {
         if (!edges.containsKey(id)) {
             return;
         }
@@ -568,8 +567,8 @@ public class WireGraph extends SavedData implements IWireGraph {
             for (UUID connection : connections) {
                 Collection<WireBlockCollision> collisions = collisionById.get(connection).collisionsInBlock(pos);
                 for (WireBlockCollision collision : collisions) {
-                    Vector3f vecA = collision.getInVector();
-                    Vector3f vecB = collision.getOutVector();
+                    Vector3d vecA = collision.getInVector();
+                    Vector3d vecB = collision.getOutVector();
                     BlockPos dropPos = pos;
                     if (NewWireCollision.isConnectionBlocked(level, pos, newState, vecA, vecB)) {
                         for (Direction d : Direction.values()) {
@@ -588,7 +587,7 @@ public class WireGraph extends SavedData implements IWireGraph {
             // TODO Drop wire item
 
             for (UUID connection : connectionsToBreak) {
-                removeEdge(connection, new Vector3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f), player);
+                removeEdge(connection, new Vector3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), player);
             }
 
             ChunkPos chunk = new ChunkPos(pos);            
@@ -645,7 +644,7 @@ public class WireGraph extends SavedData implements IWireGraph {
                 WireNode node = updateNodeData(getNode(nodeId));
                 if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER] - NODE " + nodeId + ": " + node.getPos().x + ", " + node.getPos().y + ", " + node.getPos().z);
 
-                if (!node.getData().validate(this, WireConnectionDataComponent.empty(), 0)) {
+                if (!node.getData().validate(this, new CompoundTag(), 0)) {
                     removeNode(nodeId, null, null);
                     PantographsAndWires.LOGGER.warn("Removed wire node with id {} and type {} at {}, because it is no longer valid.", node.getId(), node.getData().getClass().getSimpleName(), node.getPos());
                     continue;

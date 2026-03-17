@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.core.HolderLookup;
 import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -266,9 +267,10 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         Vec2 rotPivot = rot.rotatedPivotPoint(state);
         Vec2 offset = rot.getOffset(state);
         UnaryOperator<Vector3f> transformFunc = (vec) -> {
-            return ModMath.rotate(new Vector3f(vec).sub(pivot.x, 0, pivot.y), rot.getYRotation(state), Axis.Y)
+            Vector3d v = ModMath.rotate(new Vector3d(vec).sub(pivot.x, 0, pivot.y), rot.getYRotation(state), Axis.Y)
                 .add(rotPivot.x, 0, rotPivot.y)
                 .add(offset.x, 0, offset.y);
+            return new Vector3f((float)v.x(), (float)v.y(), (float)v.z());
         };
 
         return new CantileverShapeData(
