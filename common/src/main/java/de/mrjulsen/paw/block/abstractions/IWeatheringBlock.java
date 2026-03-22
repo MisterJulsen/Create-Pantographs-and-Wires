@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import de.mrjulsen.paw.config.ModServerConfig;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChangeOverTimeBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,6 +50,9 @@ public interface IWeatheringBlock<T extends Block & IWeatheringBlock<T>> extends
     }
 
     default float getChanceModifier() {
+        if (!ModServerConfig.USE_OXIDATION.get()) {
+            return 0;
+        }
         return this.getAge() == WeatherState.UNAFFECTED ? 0.3F : 0.4F;
     }
 }
