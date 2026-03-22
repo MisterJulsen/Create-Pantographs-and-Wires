@@ -104,8 +104,8 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                 return InteractionResult.FAIL;
             }
         } else if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) || !customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
-            CompoundTag startPointData = (CompoundTag)points.get(0);
-            CompoundTag endPointData = (CompoundTag)points.get(1);
+            CompoundTag startPointData = points.get(0);
+            CompoundTag endPointData = points.get(1);
             NodeData nodeA = WiresApi.NODE_DATA_REGISTRY.load(startPointData);
             NodeData nodeB = WiresApi.NODE_DATA_REGISTRY.load(endPointData);
 
@@ -156,7 +156,10 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
 
         // --- Create wire ---
         if (canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
-            createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
+            WireGraph.CreateEdgeResult result = createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
+            if (result.success()) {
+                removeWireItem(level, player, hand, hit, stack, result.edge().get().length());
+            }
         }
         
         return InteractionResult.SUCCESS;
