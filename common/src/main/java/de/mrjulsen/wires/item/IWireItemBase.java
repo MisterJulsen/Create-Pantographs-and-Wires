@@ -235,7 +235,7 @@ public interface IWireItemBase extends IWireInteractableItem {
         return TextUtils.empty().withStyle(ChatFormatting.WHITE)
             .append(TextUtils.text(String.format("X: %s, Y: %s, Z: %s", (int)pos.x(), (int)pos.y(), (int)pos.z())).withStyle(ChatFormatting.WHITE))
             .append(TextUtils.text(" \u25A0 ").withStyle(ChatFormatting.GRAY))
-            .append(TextUtils.text(String.format("%sm / %sm", (int)distance, getWireType(stack).getMaxLength())).withStyle(distance == maxLength ? ChatFormatting.GOLD : (distance < maxLength ? ChatFormatting.GREEN : ChatFormatting.RED)))
+            .append(TextUtils.text(String.format("%sm / %sm", distance, getWireType(stack).getMaxLength())).withStyle(distance == maxLength ? ChatFormatting.GOLD : (distance < maxLength ? ChatFormatting.GREEN : ChatFormatting.RED)))
         ;
     }
 

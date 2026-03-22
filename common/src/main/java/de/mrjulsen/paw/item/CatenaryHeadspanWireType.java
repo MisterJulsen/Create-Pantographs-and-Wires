@@ -93,8 +93,8 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 	}
 	
 	@Override
-	public int getWireLength(int connectionLength) {
-		return connectionLength * 4;
+	public double getWireConsumptionMultiplier(int connectionLength) {
+		return 4.0;
 	}
 
 	@Override

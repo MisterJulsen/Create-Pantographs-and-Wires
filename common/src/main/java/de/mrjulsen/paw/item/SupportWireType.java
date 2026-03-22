@@ -43,8 +43,8 @@ public class SupportWireType extends PAWWireType {
 	}
 
 	@Override
-	public int getWireLength(int connectionLength) {
-		return connectionLength;
+	public double getWireConsumptionMultiplier(int connectionLength) {
+		return 1.0;
 	}
 	
 	@Override

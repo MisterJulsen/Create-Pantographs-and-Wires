@@ -11,7 +11,6 @@ import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import de.mrjulsen.paw.registry.ModDataComponents;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.data.DLStatus;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
@@ -44,7 +43,10 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
     @Override
     default void removeWireItem(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, int length) {
         if (!player.isCreative() && !player.isSpectator() && stack.getItem() instanceof MultiWireItem) {
-            updateWireAmount(player, stack, -(getWireType(stack) instanceof PAWWireType paw ? paw.getWireLength(length) : length));
+            if (getWireType(stack) instanceof PAWWireType paw) {
+                length = (int)((double)length * paw.getWireConsumptionMultiplier(length));
+            }
+            updateWireAmount(player, stack, -length);
         }
     }
 
@@ -59,7 +61,7 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
         if (!points.isEmpty()) {
             NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
             int distance = (int)previousNode.toWorldPos(graph).distance(nodeData.toWorldPos(graph));
-            if (getWireType(stack) instanceof PAWWireType paw &&  paw.getWireLength(distance) > getRemainingWire(stack)) {
+            if (getWireType(stack) instanceof PAWWireType paw &&  paw.getWireConsumptionMultiplier(distance) > getRemainingWire(stack)) {
                 return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + PantographsAndWires.MOD_ID + ".wire.not_enough_wire");
             }
         }
@@ -71,8 +73,12 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
     }
     
     
-    default int getConextRemainingWire(ItemStack stack) {
-        return getWireType(stack) instanceof PAWWireType paw ? paw.getWireLength(getRemainingWire(stack)) : 0;
+    default int getContextRemainingWire(ItemStack stack) {
+        int remaining = getRemainingWire(stack);
+        if (getWireType(stack) instanceof PAWWireType paw) {
+            remaining = (int)((double)remaining / paw.getWireConsumptionMultiplier(remaining));
+        }
+        return remaining;
     }
 
     /**
@@ -125,7 +131,7 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
         Vector3d pos = node.toWorldPos(graph);
 
         int maxLength = getWireType(stack).getMaxLength();
-        int availableLength = getConextRemainingWire(stack);
+        int availableLength = getContextRemainingWire(stack);
         int distance;
         if (hit instanceof BlockHitResult r) {
             distance = (int)pos.distance(new Vector3d(r.getLocation().x(), r.getLocation().y(), r.getLocation().z()));
@@ -139,11 +145,11 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
             if (availableLength < maxLength) {
                 int ml = Math.min(maxLength, availableLength);
                 text = text
-                    .append(TextUtils.text(String.format("%sm / ", (int)distance)).withStyle(distance == ml ? ChatFormatting.GOLD : (distance < ml ? ChatFormatting.GREEN : ChatFormatting.RED)))
-                    .append(TextUtils.text(String.format("%sm", (int)maxLength)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.STRIKETHROUGH))
-                    .append(TextUtils.text(String.format(" %sm", (int)availableLength)).withStyle(distance == ml ? ChatFormatting.GOLD : (distance < ml ? ChatFormatting.GREEN : ChatFormatting.RED)));
+                    .append(TextUtils.text(String.format("%sm / ", distance)).withStyle(distance == ml ? ChatFormatting.GOLD : (distance < ml ? ChatFormatting.GREEN : ChatFormatting.RED)))
+                    .append(TextUtils.text(String.format("%sm", maxLength)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.STRIKETHROUGH))
+                    .append(TextUtils.text(String.format(" %sm", availableLength)).withStyle(distance == ml ? ChatFormatting.GOLD : (distance < ml ? ChatFormatting.GREEN : ChatFormatting.RED)));
             } else {
-                text = text.append(String.format("%sm / %sm", (int)distance, getWireType(stack).getMaxLength())).withStyle(distance == maxLength ? ChatFormatting.GOLD : (distance < maxLength ? ChatFormatting.GREEN : ChatFormatting.RED));
+                text = text.append(String.format("%sm / %sm", distance, getWireType(stack).getMaxLength())).withStyle(distance == maxLength ? ChatFormatting.GOLD : (distance < maxLength ? ChatFormatting.GREEN : ChatFormatting.RED));
             }
 
             return text;
