@@ -1,9 +1,11 @@
 package de.mrjulsen.wires.graph.data.node;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import de.mrjulsen.mcdragonlib.util.Cache;
+import de.mrjulsen.mcdragonlib.util.DataCache;
+import net.minecraft.nbt.Tag;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -140,12 +142,25 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
             return new Vector3d();
         }
         WireEdge edge = graph.getEdge(wireId.id());
-        NewWireCollision collision = (graph instanceof WireGraph g) ? g.getCollisionById(wireId.id()).orElse(null) : ((graph instanceof WireGraphClient gc) ? gc.getCollisionById(wireId.id()).orElse(null) : null);
+
+        NewWireCollision collision = null;
+        if (graph instanceof WireGraph g) {
+            collision = g.getCollisionById(wireId.id()).orElse(null);
+        } else if (graph instanceof WireGraphClient gc) {
+            collision = gc.getCollisionById (wireId.id()).orElse(null);
+        }
+
         if (edge == null || collision == null) {
             return new Vector3d();
         }
-        WireNode originNode = graph.getNode(edge.getNodeAId());
-        return originNode.getPos();
+
+        Map<UUID, CatenaryHeadspanWireType.Dropper> droppers = edge.getWireConnectionData().customData().getCommonData().getList(CatenaryHeadspanWireType.NBT_DROPPERS, Tag.TAG_COMPOUND).stream().map(x -> CatenaryHeadspanWireType.Dropper.fromNbt((CompoundTag)x)).collect(Collectors.toMap(x -> x.id(), x -> x));
+        WireNode a = graph.getNode(edge.getNodeAId());
+        WireNode b = graph.getNode(edge.getNodeBId());
+        Vector3d dir = new Vector3d(b.getPos()).sub(a.getPos()).mul(droppers.get(CatenaryHeadspanWireType.toDropperId(wireId.name()).orElse(null)).pos());
+        Vector3d p = new Vector3d(a.getPos()).add(dir);
+        //Vector3d pos = collision.getWirePointsOf(wireId.name()).vertices()[0];
+        return p;
     }
 
     @Override

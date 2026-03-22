@@ -2,10 +2,14 @@ package de.mrjulsen.paw.event;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
-import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.mcdragonlib.util.Cache;
+import de.mrjulsen.mcdragonlib.util.DataCache;
+import de.mrjulsen.mcdragonlib.util.Holder;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.model.CantileverModel;
@@ -20,6 +24,8 @@ import de.mrjulsen.wires.util.ClientUtils;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +37,7 @@ import net.minecraft.world.phys.HitResult;
 
 public final class ModClientEvents {
 
-    public static final ResourceLocation WIRE_TEXTURE = DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/block/wire.png");
+    public static final ResourceLocation WIRE_TEXTURE = new ResourceLocation(PantographsAndWires.MOD_ID, "textures/block/wire.png");
 
     private ModClientEvents() {}
 
@@ -88,22 +94,34 @@ public final class ModClientEvents {
             WireGraphManager.clearClient();
         });
 
-        ClientGuiEvent.RENDER_HUD.register((graphics, ticks) -> {
-            Player player = Minecraft.getInstance().player;
+        Holder.MutableHolder<Component> wireHudText = new Holder.MutableHolder<>(null);
+        ClientTickEvent.CLIENT_POST.register((mc) -> {
+            Player player = mc.player;
+            if (player == null) {
+                return;
+            }
+
             for (InteractionHand hand : InteractionHand.values()) {
                 ItemStack stack = player.getItemInHand(hand);
 
                 if (stack.getItem() instanceof IWireItemBase item) {
-                    HitResult lookingAt = Minecraft.getInstance().hitResult;
-                    Component text = item.createHudInfoText(stack, Minecraft.getInstance().player, lookingAt);
-                    if (text == null) {
-                        continue;
-                    }                    
-                    int scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-                    int scaledHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
-                    graphics.drawCenteredString(Minecraft.getInstance().font, text, scaledWidth / 2, scaledHeight - 100, 0xFFFFFFFF);
-                    break;
+                    HitResult lookingAt = mc.hitResult;
+                    Component text = item.createHudInfoText(stack, mc.player, lookingAt);
+                    wireHudText.set(text);
+                    if (text != null) {
+                        break;
+                    }
+
                 }
+            }
+        });
+
+        ClientGuiEvent.RENDER_HUD.register((graphics, ticks) -> {
+            if (wireHudText.get() != null) {
+                Minecraft mc = Minecraft.getInstance();
+                int scaledWidth = mc.getWindow().getGuiScaledWidth();
+                int scaledHeight = mc.getWindow().getGuiScaledHeight();
+                graphics.drawCenteredString(mc.font, wireHudText.get(), scaledWidth / 2, scaledHeight - 100, 0xFFFFFFFF);
             }
         });
 
@@ -113,7 +131,7 @@ public final class ModClientEvents {
 
             if (!PantographsAndWires.isIndiumLoaded()) {
                 ClientGuiEvent.SET_SCREEN.register((screen) -> {
-                    DLScreen<?> wrapper = new DLScreen<>(null, IncompatabilityScreen::new);
+                    DLScreenWrapper<?> wrapper = new DLScreenWrapper<>(null, IncompatabilityScreen::new);
                     return CompoundEventResult.interruptTrue(wrapper);
                 });
             }
