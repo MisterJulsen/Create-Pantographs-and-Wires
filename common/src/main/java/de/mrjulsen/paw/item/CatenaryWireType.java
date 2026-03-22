@@ -59,8 +59,8 @@ public class CatenaryWireType extends PAWWireType {
 	}
 	
 	@Override
-	public int getWireLength(int connectionLength) {
-		return connectionLength * 2;
+	public double getWireConsumptionMultiplier(int connectionLength) {
+		return 2.0;
 	}
 	
 	@Override

@@ -3,7 +3,6 @@ package de.mrjulsen.paw.item;
 import java.util.Optional;
 
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.paw.registry.ModItems;
@@ -26,7 +25,7 @@ public abstract class PAWWireType extends AbstractWireType {
     
     @Override
     public void onBreak(Level level, Vector3d breakPosition, Optional<Player> player, IWireGraph graph, WireEdge edge) {
-		int length = getWireLength(edge.length());
+		int length = (int)((double)edge.length() * getWireConsumptionMultiplier(edge.length()));
 		boolean enableDrops = !player.isPresent() || (!player.get().isCreative() && !player.get().isSpectator());
 
 		if (player.map(p -> {
@@ -56,5 +55,5 @@ public abstract class PAWWireType extends AbstractWireType {
 		return WiresApi.PAW_CATENARY_WIRES;
 	}
 
-    public abstract int getWireLength(int connectionLength);
+    public abstract double getWireConsumptionMultiplier(int connectionLength);
 }
