@@ -1,7 +1,5 @@
 package de.mrjulsen.paw.block;
 
-import java.util.function.Supplier;
-
 import de.mrjulsen.paw.block.abstractions.AbstractMultipartPostBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import net.minecraft.core.BlockPos;
@@ -15,6 +13,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class ConcretePillarBlock extends AbstractMultipartPostBlock implements IWeatheringBlock<ConcretePillarBlock> {
 
@@ -22,14 +21,20 @@ public class ConcretePillarBlock extends AbstractMultipartPostBlock implements I
     private static final VoxelShape SHAPE_THICK = Block.box(4, 0, 4, 12, 16, 12);
 
     private final boolean thick;
-    private final WeatherState weatherState;
-    private final Supplier<ConcretePillarBlock> nextOxidationState;
+    private final WeatheringData<ConcretePillarBlock> weatheringData;
 
-    public ConcretePillarBlock(Properties properties, WeatherState weatherState, Supplier<ConcretePillarBlock> nextOxidationState, boolean thick) {
+    public ConcretePillarBlock(Properties properties, WeatheringData<ConcretePillarBlock> weatheringData, boolean thick) {
         super(properties.mapColor(MapColor.METAL));
         this.thick = thick;
-        this.weatherState = weatherState;
-        this.nextOxidationState = nextOxidationState;
+        this.weatheringData = weatheringData;
+    }
+
+    public static ConcretePillarBlock tickPillar(Properties properties, WeatheringData<ConcretePillarBlock> weatheringData) {
+        return new  ConcretePillarBlock(properties, weatheringData, true);
+    }
+
+    public static ConcretePillarBlock post(Properties properties, WeatheringData<ConcretePillarBlock> weatheringData) {
+        return new  ConcretePillarBlock(properties, weatheringData, false);
     }
 
     public boolean isThick() {
@@ -56,16 +61,17 @@ public class ConcretePillarBlock extends AbstractMultipartPostBlock implements I
     }
 
     public boolean isRandomlyTicking(BlockState state) {
-        return getNext(state.getBlock()).isPresent();
+        return getNext().isPresent();
     }
 
     @Override
-    public WeatherState getAge() {
-        return weatherState;
+    public @NotNull WeatheringData<ConcretePillarBlock> getWeatheringData() {
+        return weatheringData;
     }
 
     @Override
-    public Supplier<ConcretePillarBlock> getNextState() {
-        return nextOxidationState;
+    public float getChanceModifier() {
+        if (getWeatheringData().isWaxed()) return 0;
+        return IWeatheringBlock.super.getChanceModifier();
     }
 }

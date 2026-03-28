@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class CantileverBracketVerticalBlock extends AbstractRotatableBlock implements IHorizontalExtensionConnectable, IWeatheringBlock<CantileverBracketVerticalBlock> {
 
@@ -33,23 +34,22 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
 
     public static final DirectionProperty DIRECTION = BlockStateProperties.VERTICAL_DIRECTION;
     
-    private final WeatherState weatherState;
-    private final Supplier<CantileverBracketVerticalBlock> nextOxidationState;
+    private final WeatheringData<CantileverBracketVerticalBlock> weatheringData;
 
-    public CantileverBracketVerticalBlock(Properties properties, WeatherState weatherState, Supplier<CantileverBracketVerticalBlock> nextOxidationState) {
+    public CantileverBracketVerticalBlock(Properties properties, WeatheringData<CantileverBracketVerticalBlock> weatheringData) {
         super(properties.mapColor(MapColor.METAL));
 
-        this.weatherState = weatherState;
-        this.nextOxidationState = nextOxidationState;
+        this.weatheringData = weatheringData;
 
         this.registerDefaultState(defaultBlockState()
             .setValue(DIRECTION, Direction.DOWN)
         );
+
     }    
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(weatherState).get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(getWeatheringData().weatherState()).get());
     }
     
     @Override
@@ -120,16 +120,17 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     }
 
     public boolean isRandomlyTicking(BlockState state) {
-        return getNext(state.getBlock()).isPresent();
+        return getNext().isPresent();
     }
 
     @Override
-    public WeatherState getAge() {
-        return weatherState;
+    public @NotNull WeatheringData<CantileverBracketVerticalBlock> getWeatheringData() {
+        return weatheringData;
     }
 
     @Override
-    public Supplier<CantileverBracketVerticalBlock> getNextState() {
-        return nextOxidationState;
+    public float getChanceModifier() {
+        if (getWeatheringData().isWaxed()) return 0;
+        return IWeatheringBlock.super.getChanceModifier();
     }
 }

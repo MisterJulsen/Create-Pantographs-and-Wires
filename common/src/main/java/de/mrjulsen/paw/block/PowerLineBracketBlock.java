@@ -36,6 +36,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock implements IWeatheringBlock<PowerLineBracketBlock> {
 
@@ -106,17 +107,15 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
     public static final EnumProperty<EPostType> POST_TYPE = EnumProperty.create("post_type", EPostType.class);
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     
-    private final WeatherState weatherState;
-    private final Supplier<PowerLineBracketBlock> nextOxidationState;
+    private final WeatheringData<PowerLineBracketBlock> weatheringData;
 
     
-    public PowerLineBracketBlock(Properties properties, WeatherState weatherState, Supplier<PowerLineBracketBlock> nextOxidationState) {
+    public PowerLineBracketBlock(Properties properties, WeatheringData<PowerLineBracketBlock> weatheringData) {
         super(properties
             .noOcclusion()
         );
 
-        this.weatherState = weatherState;
-        this.nextOxidationState = nextOxidationState;
+        this.weatheringData = weatheringData;
 
         this.registerDefaultState(this.defaultBlockState()
             .setValue(POST_TYPE, EPostType.NONE)
@@ -222,16 +221,17 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
     }
 
     public boolean isRandomlyTicking(BlockState state) {
-        return getNext(state.getBlock()).isPresent();
+        return getNext().isPresent();
     }
 
     @Override
-    public WeatherState getAge() {
-        return weatherState;
+    public @NotNull WeatheringData<PowerLineBracketBlock> getWeatheringData() {
+        return weatheringData;
     }
 
     @Override
-    public Supplier<PowerLineBracketBlock> getNextState() {
-        return nextOxidationState;
+    public float getChanceModifier() {
+        if (getWeatheringData().isWaxed()) return 0;
+        return IWeatheringBlock.super.getChanceModifier();
     }
 }

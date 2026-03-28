@@ -15,18 +15,17 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class HBeamMastBlock extends AbstractSimplePostBlock implements IWeatheringBlock<HBeamMastBlock> {
 
     private static final VoxelShape SHAPE = Block.box(5, 0, 5, 11, 16, 11);
 
-    private final WeatherState weatherState;
-    private final Supplier<HBeamMastBlock> nextOxidationState;
+    private final WeatheringData<HBeamMastBlock> weatheringData;
 
-    public HBeamMastBlock(Properties properties, WeatherState weatherState, Supplier<HBeamMastBlock> nextOxidationState) {
+    public HBeamMastBlock(Properties properties, WeatheringData<HBeamMastBlock> weatheringData) {
         super(properties.mapColor(MapColor.METAL));
-        this.weatherState = weatherState;
-        this.nextOxidationState = nextOxidationState;
+        this.weatheringData = weatheringData;
     }
 
     @Override
@@ -49,16 +48,17 @@ public class HBeamMastBlock extends AbstractSimplePostBlock implements IWeatheri
     }
 
     public boolean isRandomlyTicking(BlockState state) {
-        return getNext(state.getBlock()).isPresent();
+        return getNext().isPresent();
     }
 
     @Override
-    public WeatherState getAge() {
-        return weatherState;
+    public @NotNull WeatheringData<HBeamMastBlock> getWeatheringData() {
+        return weatheringData;
     }
 
     @Override
-    public Supplier<HBeamMastBlock> getNextState() {
-        return nextOxidationState;
+    public float getChanceModifier() {
+        if (getWeatheringData().isWaxed()) return 0;
+        return IWeatheringBlock.super.getChanceModifier();
     }
 }

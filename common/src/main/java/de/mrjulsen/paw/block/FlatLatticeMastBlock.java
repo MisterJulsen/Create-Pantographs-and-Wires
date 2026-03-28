@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements IWeatheringBlock<FlatLatticeMastBlock> {
 
@@ -29,8 +30,7 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements 
     protected static final VoxelShape SHAPE_FOUNDATION_Z = Block.box(4, -4, 2, 12, 4, 14);
     protected static final VoxelShape SHAPE_FOUNDATION_X = Block.box(2, -4, 4, 14, 4, 12);
 
-    private final WeatherState weatherState;
-    private final Supplier<FlatLatticeMastBlock> nextOxidationState;
+    private final WeatheringData<FlatLatticeMastBlock> weatheringData;
 
     protected static record ShapeKey(Direction direction, boolean isFoundation) {
         @Override
@@ -55,13 +55,12 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements 
         return shape;
     }, ShapeKey::hashCode);
     
-    public FlatLatticeMastBlock(Properties properties, WeatherState weatherState, Supplier<FlatLatticeMastBlock> nextOxidationState) {
+    public FlatLatticeMastBlock(Properties properties, WeatheringData<FlatLatticeMastBlock> weatheringData) {
         super(properties
             .mapColor(MapColor.METAL)
         );
 
-        this.weatherState = weatherState;
-        this.nextOxidationState = nextOxidationState;
+        this.weatheringData = weatheringData;
     }
 
     @Override
@@ -85,16 +84,17 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements 
     }
 
     public boolean isRandomlyTicking(BlockState state) {
-        return getNext(state.getBlock()).isPresent();
+        return getNext().isPresent();
     }
 
     @Override
-    public WeatherState getAge() {
-        return weatherState;
+    public @NotNull WeatheringData<FlatLatticeMastBlock> getWeatheringData() {
+        return weatheringData;
     }
 
     @Override
-    public Supplier<FlatLatticeMastBlock> getNextState() {
-        return nextOxidationState;
+    public float getChanceModifier() {
+        if (getWeatheringData().isWaxed()) return 0;
+        return IWeatheringBlock.super.getChanceModifier();
     }
 }
