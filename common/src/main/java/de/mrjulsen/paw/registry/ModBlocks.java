@@ -201,57 +201,6 @@ public class ModBlocks {
 					.build()
 	);
 
-	public static final ImmutableMap<OxidizingKey, BlockEntry<ConcretePillarBlock>> CONCRETE_POST = registerOxidizingBlock(
-			"concrete_post",
-			ConcretePillarBlock::post,
-			"Concrete Post",
-			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.CONCRETE, "block/concrete_post", "base"),
-			(weatherState) -> new TagKey[] { ModTags.TAG_CONCRETE_MASTS, ModTags.TAG_CANTILEVER_CONNECTABLE_12PX },
-			false,
-			builder -> builder
-					.initialProperties(() -> Blocks.SMOOTH_STONE)
-					.transform(TagGen.pickaxeOnly())
-					.item()
-					.model((ctx, p) -> DataGen.oxidizingItemModel(ctx, p, "", "block/concrete_post"))
-					.tab(ModCreativeModeTab.MAIN_TAB.getKey())
-					.build()
-	);
-
-	public static final ImmutableMap<OxidizingKey, BlockEntry<ConcretePillarBlock>> CONCRETE_PILLAR = registerOxidizingBlock(
-			"concrete_pillar",
-			ConcretePillarBlock::tickPillar,
-			"Concrete Pillar",
-			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.CONCRETE, "block/concrete_pillar", "base"),
-			(weatherState) -> new TagKey[] { ModTags.TAG_CONCRETE_PILLARS, ModTags.TAG_CANTILEVER_CONNECTABLE_12PX },
-			false,
-			builder -> builder
-					.initialProperties(() -> Blocks.SMOOTH_STONE)
-					.transform(TagGen.pickaxeOnly())
-					.item()
-					.model((ctx, p) -> DataGen.oxidizingItemModel(ctx, p, "", "block/concrete_pillar"))
-					.tab(ModCreativeModeTab.MAIN_TAB.getKey())
-					.build()
-	);
-
-
-
-	public static final BlockEntry<RegistrationArmBlock> REGISTRATION_ARM = PantographsAndWires.REGISTRATE.block("registration_arm", RegistrationArmBlock::new)
-			.blockstate((ctx, p) -> DataGen.registrationArm(ctx, p, "block/registration_arm"))
-			.register();
-
-	public static final BlockEntry<TensioningDeviceBlock> TENSIONING_DEVICE = PantographsAndWires.REGISTRATE.block("tensioning_device", TensioningDeviceBlock::new)
-			.initialProperties(() -> Blocks.SMOOTH_STONE)
-			.transform(TagGen.pickaxeOnly())
-			.lang("Tensioning Device")
-			.blockstate((c, p) -> DataGen.tensioningDeviceBlock(c, p, "block/tensioning_device"))
-			.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
-			.item()
-			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
-			.properties(p -> p.stacksTo(16))
-			.transform(customItemModel())
-			.register();
-
-
 	public static final ImmutableMap<OxidizingKey, BlockEntry<CantileverBracketBlock>> CANTILEVER_BRACKET = registerOxidizingBlock(
 			"cantilever_bracket",
 			CantileverBracketBlock::new,
@@ -290,8 +239,6 @@ public class ModBlocks {
 					.transform(TagGen.pickaxeOnly())
 	);
 
-
-		
 	public static final ImmutableMap<OxidizingKey, BlockEntry<PowerLineBracketBlock>> POWER_LINE_BRACKET = registerOxidizingBlock(
 			"power_line_bracket",
 			PowerLineBracketBlock::new,
@@ -308,7 +255,67 @@ public class ModBlocks {
 					.build()
 	);
 
-		
+	public static final BlockEntry<Block> GRAPHITE_BLOCK = PantographsAndWires.REGISTRATE.block("graphite_block", Block::new)
+			.initialProperties(SharedProperties::softMetal)
+			.transform(TagGen.pickaxeOnly())
+			.item()
+			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+			.build()
+			.register();
+
+	public static final ImmutableMap<OxidizingKey, BlockEntry<ConcretePillarBlock>> CONCRETE_POST = registerOxidizingBlock(
+			"concrete_post",
+			ConcretePillarBlock::post,
+			"Concrete Post",
+			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.CONCRETE, "block/concrete_post", "base"),
+			(weatherState) -> new TagKey[] { ModTags.TAG_CONCRETE_MASTS, ModTags.TAG_CANTILEVER_CONNECTABLE_12PX },
+			false,
+			builder -> builder
+					.initialProperties(() -> Blocks.SMOOTH_STONE)
+					.transform(TagGen.pickaxeOnly())
+					.item()
+					.model((ctx, p) -> DataGen.oxidizingItemModel(ctx, p, "", "block/concrete_post"))
+					.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+					.build()
+	);
+
+	public static final BlockEntry<Block> COAL_COKE_BLOCK = PantographsAndWires.REGISTRATE.block("coal_coke_block", Block::new)
+			.initialProperties(() -> Blocks.DEEPSLATE)
+			.transform(TagGen.pickaxeOnly())
+			.item(FuelBlockItem::new)
+			.onRegister((item) -> item.setBurnTime(32000))
+			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+			.build()
+			.register();
+
+	public static final ImmutableMap<OxidizingKey, BlockEntry<ConcretePillarBlock>> CONCRETE_PILLAR = registerOxidizingBlock(
+			"concrete_pillar",
+			ConcretePillarBlock::tickPillar,
+			"Concrete Pillar",
+			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.CONCRETE, "block/concrete_pillar", "base"),
+			(weatherState) -> new TagKey[] { ModTags.TAG_CONCRETE_PILLARS, ModTags.TAG_CANTILEVER_CONNECTABLE_12PX },
+			false,
+			builder -> builder
+					.initialProperties(() -> Blocks.SMOOTH_STONE)
+					.transform(TagGen.pickaxeOnly())
+					.item()
+					.model((ctx, p) -> DataGen.oxidizingItemModel(ctx, p, "", "block/concrete_pillar"))
+					.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+					.build()
+	);
+
+	public static final BlockEntry<TensioningDeviceBlock> TENSIONING_DEVICE = PantographsAndWires.REGISTRATE.block("tensioning_device", TensioningDeviceBlock::new)
+			.initialProperties(() -> Blocks.SMOOTH_STONE)
+			.transform(TagGen.pickaxeOnly())
+			.lang("Tensioning Device")
+			.blockstate((c, p) -> DataGen.tensioningDeviceBlock(c, p, "block/tensioning_device"))
+			.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
+			.item()
+			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+			.properties(p -> p.stacksTo(16))
+			.transform(customItemModel())
+			.register();
+
 	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("v_insulator_brown", VInsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
@@ -381,21 +388,8 @@ public class ModBlocks {
 			.build()
 			.register();
 
-	public static final BlockEntry<Block> GRAPHITE_BLOCK = PantographsAndWires.REGISTRATE.block("graphite_block", Block::new)
-			.initialProperties(SharedProperties::softMetal)
-			.transform(TagGen.pickaxeOnly())
-			.item()
-			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
-			.build()
-			.register();
-
-	public static final BlockEntry<Block> COAL_COKE_BLOCK = PantographsAndWires.REGISTRATE.block("coal_coke_block", Block::new)
-			.initialProperties(() -> Blocks.DEEPSLATE)
-			.transform(TagGen.pickaxeOnly())
-			.item(FuelBlockItem::new)
-			.onRegister((item) -> item.setBurnTime(32000))
-			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
-			.build()
+	public static final BlockEntry<RegistrationArmBlock> REGISTRATION_ARM = PantographsAndWires.REGISTRATE.block("registration_arm", RegistrationArmBlock::new)
+			.blockstate((ctx, p) -> DataGen.registrationArm(ctx, p, "block/registration_arm"))
 			.register();
 		
     public static void init() {
