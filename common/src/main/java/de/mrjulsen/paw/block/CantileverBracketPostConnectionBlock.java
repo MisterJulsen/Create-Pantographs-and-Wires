@@ -29,7 +29,7 @@ public class CantileverBracketPostConnectionBlock extends CantileverBracketBaseB
             boolean supportIsPost = supportState.getBlock() instanceof IHorizontalExtensionConnectable conn && conn.postConnectionType(level, supportState, supportPos, state, currentPos) == EPostType.LATTICE;
             
             if (!supportIsPost) {
-                state = ModBlocks.CANTILEVER_BRACKET.get(getWeatheringData().weatherState()).getDefaultState()
+                state = ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).getDefaultState()
                     .setValue(FACING, state.getValue(FACING))
                     .setValue(ROTATION, state.getValue(ROTATION))
                     .setValue(MULTIPART_SEGMENT, state.getValue(MULTIPART_SEGMENT))

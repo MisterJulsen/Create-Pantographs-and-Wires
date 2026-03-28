@@ -49,7 +49,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(getWeatheringData().weatherState()).get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).get());
     }
     
     @Override
