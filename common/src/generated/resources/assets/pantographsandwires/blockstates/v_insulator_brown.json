@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=east,multipart_segment=1,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=east,multipart_segment=1,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=east,multipart_segment=1,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=east,multipart_segment=1,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=east,multipart_segment=2,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=east,multipart_segment=2,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=east,multipart_segment=2,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=east,multipart_segment=2,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 90
+    },
+    "facing=north,multipart_segment=1,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=north,multipart_segment=1,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=north,multipart_segment=1,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=north,multipart_segment=1,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=north,multipart_segment=2,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=north,multipart_segment=2,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=north,multipart_segment=2,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=north,multipart_segment=2,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown"
+    },
+    "facing=south,multipart_segment=1,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=south,multipart_segment=1,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=south,multipart_segment=1,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=south,multipart_segment=1,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=south,multipart_segment=2,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=south,multipart_segment=2,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=south,multipart_segment=2,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=south,multipart_segment=2,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 180
+    },
+    "facing=west,multipart_segment=1,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    },
+    "facing=west,multipart_segment=1,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    },
+    "facing=west,multipart_segment=1,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    },
+    "facing=west,multipart_segment=1,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    },
+    "facing=west,multipart_segment=2,rotation=0": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    },
+    "facing=west,multipart_segment=2,rotation=1": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    },
+    "facing=west,multipart_segment=2,rotation=2": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    },
+    "facing=west,multipart_segment=2,rotation=3": {
+      "model": "pantographsandwires:block/insulator/v_insulator_brown",
+      "y": 270
+    }
+  }
+}

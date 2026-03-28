@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:lattice_mast_galvanized",
+    "pantographsandwires:flat_lattice_mast_galvanized",
+    "pantographsandwires:flat_lattice_mast_diagonal_galvanized",
+    "pantographsandwires:h_beam_mast_galvanized",
+    "pantographsandwires:cantilever_bracket_galvanized",
+    "pantographsandwires:cantilever_bracket_vertical_galvanized",
+    "pantographsandwires:cantilever_bracket_at_post_galvanized",
+    "pantographsandwires:power_line_bracket_galvanized"
+  ]
+}

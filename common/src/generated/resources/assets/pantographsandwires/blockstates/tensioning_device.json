@@ -1,0 +1,604 @@
+{
+  "variants": {
+    "connection=12px,facing=east,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=east,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=east,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=east,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=east,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=east,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=east,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=east,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 90
+    },
+    "connection=12px,facing=north,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=north,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=north,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=north,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=north,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=north,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=north,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=north,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px"
+    },
+    "connection=12px,facing=south,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=south,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=south,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=south,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=south,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=south,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=south,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=south,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 180
+    },
+    "connection=12px,facing=west,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=12px,facing=west,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=12px,facing=west,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=12px,facing=west,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=12px,facing=west,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=12px,facing=west,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=12px,facing=west,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=12px,facing=west,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/12px",
+      "y": 270
+    },
+    "connection=16px,facing=east,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=east,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=east,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=east,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=east,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=east,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=east,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=east,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 90
+    },
+    "connection=16px,facing=north,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=north,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=north,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=north,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=north,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=north,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=north,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=north,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px"
+    },
+    "connection=16px,facing=south,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=south,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=south,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=south,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=south,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=south,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=south,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=south,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 180
+    },
+    "connection=16px,facing=west,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=16px,facing=west,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=16px,facing=west,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=16px,facing=west,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=16px,facing=west,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=16px,facing=west,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=16px,facing=west,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=16px,facing=west,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/16px",
+      "y": 270
+    },
+    "connection=4px,facing=east,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=east,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=east,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=east,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=east,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=east,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=east,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=east,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 90
+    },
+    "connection=4px,facing=north,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=north,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=north,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=north,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=north,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=north,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=north,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=north,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px"
+    },
+    "connection=4px,facing=south,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=south,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=south,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=south,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=south,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=south,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=south,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=south,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 180
+    },
+    "connection=4px,facing=west,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=4px,facing=west,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=4px,facing=west,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=4px,facing=west,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=4px,facing=west,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=4px,facing=west,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=4px,facing=west,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=4px,facing=west,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/4px",
+      "y": 270
+    },
+    "connection=5px,facing=east,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=east,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=east,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=east,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=east,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=east,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=east,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=east,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 90
+    },
+    "connection=5px,facing=north,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=north,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=north,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=north,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=north,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=north,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=north,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=north,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px"
+    },
+    "connection=5px,facing=south,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=south,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=south,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=south,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=south,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=south,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=south,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=south,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 180
+    },
+    "connection=5px,facing=west,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=5px,facing=west,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=5px,facing=west,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=5px,facing=west,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=5px,facing=west,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=5px,facing=west,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=5px,facing=west,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=5px,facing=west,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/5px",
+      "y": 270
+    },
+    "connection=8px,facing=east,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=east,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=east,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=east,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=east,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=east,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=east,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=east,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 90
+    },
+    "connection=8px,facing=north,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=north,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=north,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=north,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=north,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=north,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=north,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=north,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px"
+    },
+    "connection=8px,facing=south,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=south,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=south,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=south,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=south,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=south,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=south,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=south,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 180
+    },
+    "connection=8px,facing=west,helper=false,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    },
+    "connection=8px,facing=west,helper=false,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    },
+    "connection=8px,facing=west,helper=false,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    },
+    "connection=8px,facing=west,helper=false,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    },
+    "connection=8px,facing=west,helper=true,rotation=0": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    },
+    "connection=8px,facing=west,helper=true,rotation=1": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    },
+    "connection=8px,facing=west,helper=true,rotation=2": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    },
+    "connection=8px,facing=west,helper=true,rotation=3": {
+      "model": "pantographsandwires:block/tensioning_device/8px",
+      "y": 270
+    }
+  }
+}

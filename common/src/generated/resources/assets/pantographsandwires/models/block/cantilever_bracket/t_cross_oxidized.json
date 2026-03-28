@@ -1,0 +1,7 @@
+{
+  "parent": "pantographsandwires:block/cantilever_bracket/t_cross",
+  "textures": {
+    "base": "pantographsandwires:block/metal_oxidized",
+    "particle": "pantographsandwires:block/metal_oxidized"
+  }
+}

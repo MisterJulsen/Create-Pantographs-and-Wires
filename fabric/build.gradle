@@ -22,10 +22,27 @@ configurations {
     }
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    runs {
+        data {
+            client()
+
+            name = "Minecraft Data"
+            vmArg("-Dfabric-api.datagen")
+            vmArg("-Dfabric-api.datagen.modid=${mod_id}")
+            vmArg("-Dfabric-api.datagen.output-dir=${project(":common").file("src/generated/resources")}")
+            vmArg("-Dporting_lib.datagen.existing_resources=${project(":common").file("src/main/resources")}")
+            vmArg("-Dsodium.checks.issue2561=false")
+
+            environmentVariable("DATAGEN", "TRUE")
+        }
+    }
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
     modImplementation("dev.architectury:architectury-fabric:${rootProject.architectury_api_version}")

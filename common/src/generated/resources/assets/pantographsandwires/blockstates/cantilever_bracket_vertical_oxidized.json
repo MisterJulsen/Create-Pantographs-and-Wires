@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=east,rotation=0,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=east,rotation=0,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=east,rotation=1,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=east,rotation=1,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=east,rotation=2,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=east,rotation=2,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=east,rotation=3,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=east,rotation=3,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 90
+    },
+    "facing=north,rotation=0,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=north,rotation=0,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=north,rotation=1,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=north,rotation=1,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=north,rotation=2,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=north,rotation=2,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=north,rotation=3,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=north,rotation=3,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized"
+    },
+    "facing=south,rotation=0,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=south,rotation=0,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=south,rotation=1,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=south,rotation=1,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=south,rotation=2,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=south,rotation=2,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=south,rotation=3,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=south,rotation=3,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 180
+    },
+    "facing=west,rotation=0,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    },
+    "facing=west,rotation=0,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    },
+    "facing=west,rotation=1,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    },
+    "facing=west,rotation=1,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    },
+    "facing=west,rotation=2,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    },
+    "facing=west,rotation=2,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    },
+    "facing=west,rotation=3,vertical_direction=down": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    },
+    "facing=west,rotation=3,vertical_direction=up": {
+      "model": "pantographsandwires:block/cantilever_bracket_vertical/oxidized",
+      "y": 270
+    }
+  }
+}

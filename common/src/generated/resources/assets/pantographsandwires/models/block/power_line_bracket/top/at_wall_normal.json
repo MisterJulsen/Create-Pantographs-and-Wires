@@ -1,0 +1,7 @@
+{
+  "parent": "pantographsandwires:block/power_line_bracket/top/power_line_bracket_at_wall",
+  "textures": {
+    "base": "pantographsandwires:block/metal",
+    "particle": "pantographsandwires:block/metal"
+  }
+}

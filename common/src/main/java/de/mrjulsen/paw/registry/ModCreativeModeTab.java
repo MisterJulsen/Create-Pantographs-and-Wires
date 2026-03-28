@@ -16,7 +16,7 @@ public class ModCreativeModeTab {
     public static final RegistrySupplier<CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register(
         "tab", // Tab ID
         () -> CreativeTabRegistry.create(
-                TextUtils.translate("itemGroup." + PantographsAndWires.MOD_ID + ".tab"), // Tab Name
+                TextUtils.text("Create: Pantographs & Wires"), // Tab Name
                 () -> new ItemStack(ModItems.MOD_ICON.get()) // Icon
         )
     );

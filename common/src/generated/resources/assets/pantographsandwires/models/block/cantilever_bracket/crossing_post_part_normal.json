@@ -1,0 +1,7 @@
+{
+  "parent": "pantographsandwires:block/cantilever_bracket/crossing_post_part",
+  "textures": {
+    "base": "pantographsandwires:block/metal",
+    "particle": "pantographsandwires:block/metal"
+  }
+}

@@ -1,5 +1,5 @@
 # Made in Blockbench 4.11.2
 newmtl m_3645e058-ead4-6e5e-8fbf-15616b16a48e
 forge_TintIndex -1000
-map_Kd pantographsandwires:block/metal
+map_Kd #base
 newmtl none

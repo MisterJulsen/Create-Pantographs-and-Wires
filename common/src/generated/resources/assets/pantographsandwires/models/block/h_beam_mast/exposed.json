@@ -1,0 +1,7 @@
+{
+  "parent": "pantographsandwires:block/h_beam_mast/base",
+  "textures": {
+    "base": "pantographsandwires:block/metal_exposed",
+    "particle": "pantographsandwires:block/metal_exposed"
+  }
+}

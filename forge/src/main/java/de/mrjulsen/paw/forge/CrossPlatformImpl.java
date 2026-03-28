@@ -2,6 +2,8 @@ package de.mrjulsen.paw.forge;
 
 import com.simibubi.create.content.contraptions.Contraption;
 
+import com.tterrag.registrate.builders.BlockBuilder;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.config.ModClientConfig;
 import de.mrjulsen.paw.config.ModCommonConfig;
@@ -10,6 +12,7 @@ import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.ModLoadingContext;

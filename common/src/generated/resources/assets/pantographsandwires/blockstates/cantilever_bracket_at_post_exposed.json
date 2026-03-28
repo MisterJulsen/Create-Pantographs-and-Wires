@@ -1,0 +1,74 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_at_post_exposed"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_at_post_exposed",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_at_post_exposed",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_at_post_exposed",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/bracket_at_post_exposed"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/bracket_at_post_exposed",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/bracket_at_post_exposed",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/bracket_at_post_exposed",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    }
+  ]
+}
