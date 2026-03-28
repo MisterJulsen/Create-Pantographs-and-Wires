@@ -35,7 +35,7 @@ public class OxidizedBlockModel extends AbstractRotatableBlockModel {
             HashMap<ResourceLocation, TextureAtlasSprite> oxidizedTextures = new HashMap<>(oxidizingTextures.size());
             for (ResourceLocation texture : oxidizingTextures) {
                 oxidizedTextures.computeIfAbsent(texture, tex -> {
-                    ResourceLocation newLocation = new ResourceLocation(tex.getNamespace(), tex.getPath() + (ws.getname().isBlank() ? "" : "_" + ws.getname()));
+                    ResourceLocation newLocation = new ResourceLocation(tex.getNamespace(), tex.getPath() + (ws.getName().isBlank() ? "" : "_" + ws.getName()));
                     return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(newLocation);
                 });
             }

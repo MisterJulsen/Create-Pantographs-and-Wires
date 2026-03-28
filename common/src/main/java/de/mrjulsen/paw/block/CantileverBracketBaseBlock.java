@@ -14,17 +14,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBaseBlock<T>> extends AbstractRotatedConnectableBlock implements IWeatheringBlock<T> {
     
@@ -32,18 +30,16 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
 
     private final MapCache<VoxelShape, BlockState, ShapeContext> shapeContext = new MapCache<>(c -> makeShape(c), (state) -> Objects.hash(state.getValues().values().toArray(Object[]::new)), ECachingPriority.ALWAYS);
     
-    protected final WeatherState weatherState;
-    protected final Supplier<T> nextOxidationState;
+    protected final WeatheringData<T> weatheringData;
 
-    public CantileverBracketBaseBlock(Properties properties, WeatherState weatherState, Supplier<T> nextOxidationState) {
+    public CantileverBracketBaseBlock(Properties properties, WeatheringData<T> weatheringData) {
         super(properties);
-        this.weatherState = weatherState;
-        this.nextOxidationState = nextOxidationState;
+        this.weatheringData = weatheringData;
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(weatherState).get());
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(getWeatheringData().weatherState()).get());
     }
 
     protected VoxelShape makeShape(ShapeContext c) {      
@@ -61,11 +57,11 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
         BlockState state = super.getStateForPlacement(context);
-        BlockState clickedOnState = ctxExt.paw$getPlacedOnState();
+        BlockState clickedOnState = ctxExt.getPlacedOnState();
         Direction clickedFace = context.getClickedFace();
         
         if ((clickedOnState.getBlock() instanceof CantileverBracketBaseBlock || clickedOnState.getBlock() instanceof CantileverBracketVerticalBlock) && clickedFace.getAxis().isVertical()) {
-            state = ModBlocks.CANTILEVER_BRACKET_VERTICAL.get(weatherState).getDefaultState()
+            state = ModBlocks.CANTILEVER_BRACKET_VERTICAL.get(getWeatheringData().weatherState()).getDefaultState()
                 .setValue(CantileverBracketVerticalBlock.DIRECTION, clickedFace)
                 .setValue(FACING, clickedOnState.getValue(FACING))
                 .setValue(ROTATION, clickedOnState.getValue(ROTATION))
@@ -91,20 +87,21 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
     }
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        this.changeOverTime(state, level, pos, random);
+        this.onRandomTick(state, level, pos, random);
     }
 
     public boolean isRandomlyTicking(BlockState state) {
-        return getNext(state.getBlock()).isPresent();
+        return getNext().isPresent();
     }
 
     @Override
-    public WeatherState getAge() {
-        return weatherState;
+    public @NotNull WeatheringData<T> getWeatheringData() {
+        return weatheringData;
     }
 
     @Override
-    public Supplier<T> getNextState() {
-        return nextOxidationState;
+    public float getChanceModifier() {
+        if (getWeatheringData().isWaxed()) return 0;
+        return IWeatheringBlock.super.getChanceModifier();
     }
 }

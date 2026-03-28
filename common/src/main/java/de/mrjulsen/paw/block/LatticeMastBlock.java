@@ -16,22 +16,21 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class LatticeMastBlock extends AbstractMultipartPostBlock implements IWeatheringBlock<LatticeMastBlock> {
 
     private final VoxelShape BASE_SHAPE = Block.box(2, 0, 2, 14, 16, 14);
     private final VoxelShape FOUNDATION_SHAPE = Shapes.or(BASE_SHAPE, Block.box(0.5d, -5, 0.5d, 15.5d, 4, 15.5d));
 
-    private final WeatherState weatherState;
-    private final Supplier<LatticeMastBlock> nextOxidationState;
+    private final WeatheringData<LatticeMastBlock> weatheringData;
 
-    public LatticeMastBlock(Properties properties, WeatherState weatherState, Supplier<LatticeMastBlock> nextOxidationState) {
+    public LatticeMastBlock(Properties properties, WeatheringData<LatticeMastBlock> weatheringData) {
         super(properties
             .mapColor(MapColor.METAL)
         );
 
-        this.weatherState = weatherState;
-        this.nextOxidationState = nextOxidationState;
+        this.weatheringData = weatheringData;
     }
     
     @Override
@@ -49,16 +48,17 @@ public class LatticeMastBlock extends AbstractMultipartPostBlock implements IWea
     }
 
     public boolean isRandomlyTicking(BlockState state) {
-        return getNext(state.getBlock()).isPresent();
+        return getNext().isPresent();
     }
 
     @Override
-    public WeatherState getAge() {
-        return weatherState;
+    public @NotNull WeatheringData<LatticeMastBlock> getWeatheringData() {
+        return weatheringData;
     }
 
     @Override
-    public Supplier<LatticeMastBlock> getNextState() {
-        return nextOxidationState;
+    public float getChanceModifier() {
+        if (getWeatheringData().isWaxed()) return 0;
+        return IWeatheringBlock.super.getChanceModifier();
     }
 }

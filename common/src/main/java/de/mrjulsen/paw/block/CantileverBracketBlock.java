@@ -4,22 +4,20 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable;
 import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable.EPostType;
+import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -27,9 +25,9 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
     
     public static final BooleanProperty UP = BooleanProperty.create("up");
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
-    
-    public CantileverBracketBlock(Properties properties, WeatherState weatherState, Supplier<CantileverBracketBlock> nextOxidationState) {
-        super(properties.mapColor(MapColor.METAL), weatherState, nextOxidationState);
+
+    public CantileverBracketBlock(Properties properties, WeatheringData<CantileverBracketBlock> weatheringData) {
+        super(properties.mapColor(MapColor.METAL), weatheringData);
 
         this.registerDefaultState(defaultBlockState()
             .setValue(DOWN, false)
@@ -38,8 +36,8 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(weatherState).get());
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(getWeatheringData().weatherState()).get());
     }
 
     @Override
@@ -69,7 +67,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
         boolean supportIsPost = supportState.getBlock() instanceof IHorizontalExtensionConnectable conn && conn.postConnectionType(context.getLevel(), supportState, supportPos, state, context.getClickedPos()) == EPostType.LATTICE && context.getClickedFace().getAxis() != Axis.Y;
         
         if (supportIsPost) {
-            state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(weatherState).getDefaultState()
+            state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(getWeatheringData().weatherState()).getDefaultState()
                 .setValue(FACING, context.getClickedFace())
                 .setValue(ROTATION, supportState.getValue(ROTATION))
                 .setValue(MULTIPART_SEGMENT, maxSegments(supportState))
@@ -91,7 +89,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
             int segment = state.getValue(MULTIPART_SEGMENT);
             
             if (supportIsPost && supportState.getValue(ROTATION) == rotation) {
-                state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(weatherState).getDefaultState()
+                state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(getWeatheringData().weatherState()).getDefaultState()
                     .setValue(FACING, facing)
                     .setValue(ROTATION, rotation)
                     .setValue(MULTIPART_SEGMENT, segment)

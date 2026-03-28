@@ -4,14 +4,21 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.config.ModServerConfig;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChangeOverTimeBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public interface IWeatheringBlock<T extends Block & IWeatheringBlock<T>> extends ChangeOverTimeBlock<IWeatheringBlock.WeatherState> {
 
-    public enum WeatherState {
+    record WeatheringData<T extends Block & IWeatheringBlock<T>>(WeatherState weatherState, Supplier<T> nextState, boolean isWaxed) {}
+
+    enum WeatherState {
         UNAFFECTED("", true),
         EXPOSED("exposed", true),
         WEATHERED("weathered", true),
@@ -23,12 +30,12 @@ public interface IWeatheringBlock<T extends Block & IWeatheringBlock<T>> extends
 
         final static WeatherState[] oxidationStates = Arrays.stream(values()).filter(x -> x.canOxidize).toArray(WeatherState[]::new);
 
-        private WeatherState(String name, boolean canOxidize) {
+        WeatherState(String name, boolean canOxidize) {
             this.name = name;
             this.canOxidize = canOxidize;
         }
 
-        public String getname() {
+        public String getName() {
             return name;
         }
 
@@ -36,17 +43,21 @@ public interface IWeatheringBlock<T extends Block & IWeatheringBlock<T>> extends
             return oxidationStates;
         }
     }
-    
-    Supplier<T> getNextState();
 
-    default Optional<T> getNext(Block block) {        
-        return Optional.ofNullable(getNextState() == null ? null : getNextState().get());
+    @Override
+    default @NotNull WeatherState getAge() {
+        return getWeatheringData().weatherState();
     }
 
-    default Optional<BlockState> getNext(BlockState state) {
-        return getNext(state.getBlock()).map((arg2) -> {
-            return arg2.withPropertiesOf(state);
-        });
+    @NotNull WeatheringData<T> getWeatheringData();
+
+    default Optional<Block> getNext() {
+        Supplier<T> nextState = getWeatheringData().nextState();
+        return Optional.ofNullable(nextState == null ? null : nextState.get());
+    }
+
+    default @NotNull Optional<BlockState> getNext(@NotNull BlockState state) {
+        return getNext().map((block) -> block.withPropertiesOf(state));
     }
 
     default float getChanceModifier() {
