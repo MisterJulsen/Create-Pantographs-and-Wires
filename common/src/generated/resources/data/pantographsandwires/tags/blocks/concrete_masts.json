@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:concrete_post_oxidized",
+    "pantographsandwires:concrete_post_weathered",
+    "pantographsandwires:concrete_post_exposed",
+    "pantographsandwires:concrete_post",
+    "pantographsandwires:waxed_concrete_post_oxidized",
+    "pantographsandwires:waxed_concrete_post_weathered",
+    "pantographsandwires:waxed_concrete_post_exposed",
+    "pantographsandwires:waxed_concrete_post"
+  ]
+}

@@ -5,14 +5,20 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
-    "client.CompiledSectionMixin",
+    "client.CompiledChunkAccess",
+    "client.CompiledChunkMixin",
     "client.GameRendererMixin",
+    "client.GuiGraphicsMixin",
     "client.LevelRendererMixin",
     "client.MinecraftMixin",
     "client.MultiPlayerGameModeMixin",
     "client.ParticleEngineMixin",
-    "client.RenderSectionMixin",
-    "client.SectionCompilerMixin"
+    "client.RebuildTaskMixin",
+    "client.RenderChunkAccess",
+    "client.RenderRegionCacheMixin",
+    "sodium.ChunkBuilderMeshingTaskMixin",
+    "sodium.RenderSectionManagerMixin",
+    "sodium.WorldSliceMixin"
   ],
   "mixins": [
     "AbstractBlockStateMixin",

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:flat_lattice_mast_diagonal_galvanized",
+    "pantographsandwires:flat_lattice_mast_diagonal_oxidized",
+    "pantographsandwires:flat_lattice_mast_diagonal_weathered",
+    "pantographsandwires:flat_lattice_mast_diagonal_exposed",
+    "pantographsandwires:flat_lattice_mast_diagonal",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_oxidized",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_weathered",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_exposed",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal"
+  ]
+}

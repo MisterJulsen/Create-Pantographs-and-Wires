@@ -1,0 +1,7 @@
+{
+  "parent": "pantographsandwires:block/concrete_post/base_top",
+  "textures": {
+    "base": "pantographsandwires:block/concrete_post_oxidized",
+    "particle": "pantographsandwires:block/concrete_post_oxidized"
+  }
+}

@@ -6,6 +6,12 @@ loom {
     accessWidenerPath = file("src/main/resources/pantographsandwires.accesswidener")
 }
 
+sourceSets {
+    main {
+        resources.srcDir file("src/generated/resources")
+    }
+}
+
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"

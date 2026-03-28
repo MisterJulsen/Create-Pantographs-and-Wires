@@ -1,0 +1,32 @@
+{
+  "variants": {
+    "mirrored=false,registration_arm=above": {
+      "model": "pantographsandwires:block/registration_arm_above"
+    },
+    "mirrored=false,registration_arm=above_centered": {
+      "model": "pantographsandwires:block/registration_arm"
+    },
+    "mirrored=false,registration_arm=centered": {
+      "model": "pantographsandwires:block/registration_arm"
+    },
+    "mirrored=false,registration_arm=normal": {
+      "model": "pantographsandwires:block/registration_arm"
+    },
+    "mirrored=true,registration_arm=above": {
+      "model": "pantographsandwires:block/registration_arm_above",
+      "y": 180
+    },
+    "mirrored=true,registration_arm=above_centered": {
+      "model": "pantographsandwires:block/registration_arm",
+      "y": 180
+    },
+    "mirrored=true,registration_arm=centered": {
+      "model": "pantographsandwires:block/registration_arm",
+      "y": 180
+    },
+    "mirrored=true,registration_arm=normal": {
+      "model": "pantographsandwires:block/registration_arm",
+      "y": 180
+    }
+  }
+}

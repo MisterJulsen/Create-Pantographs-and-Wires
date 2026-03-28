@@ -1,0 +1,7 @@
+{
+  "parent": "pantographsandwires:block/cantilever_bracket_vertical/base",
+  "textures": {
+    "base": "pantographsandwires:block/metal",
+    "particle": "pantographsandwires:block/metal"
+  }
+}

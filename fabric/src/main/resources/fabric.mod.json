@@ -24,6 +24,9 @@
     ],
     "client": [
       "${maven_group}.fabric.client.ClientSetup"
+    ],
+    "fabric-datagen": [
+      "${maven_group}.fabric.DataGenEntry"
     ]
   },
   "mixins": [

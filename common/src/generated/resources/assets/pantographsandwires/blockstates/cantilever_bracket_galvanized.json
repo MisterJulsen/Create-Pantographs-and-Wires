@@ -1,0 +1,189 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_galvanized"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_galvanized",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_galvanized",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/base_galvanized",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/crossing_post_part_galvanized"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/crossing_post_part_galvanized",
+        "x": 180
+      },
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized"
+      },
+      "when": {
+        "down": "true",
+        "facing": "north",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized",
+        "y": 90
+      },
+      "when": {
+        "down": "true",
+        "facing": "east",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized",
+        "y": 180
+      },
+      "when": {
+        "down": "true",
+        "facing": "south",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized",
+        "y": 270
+      },
+      "when": {
+        "down": "true",
+        "facing": "west",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized",
+        "x": 180
+      },
+      "when": {
+        "down": "false",
+        "facing": "north",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized",
+        "x": 180,
+        "y": 90
+      },
+      "when": {
+        "down": "false",
+        "facing": "east",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized",
+        "x": 180,
+        "y": 180
+      },
+      "when": {
+        "down": "false",
+        "facing": "south",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/t_cross_galvanized",
+        "x": 180,
+        "y": 270
+      },
+      "when": {
+        "down": "false",
+        "facing": "west",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/cross_galvanized"
+      },
+      "when": {
+        "down": "true",
+        "facing": "north",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/cross_galvanized",
+        "y": 90
+      },
+      "when": {
+        "down": "true",
+        "facing": "east",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/cross_galvanized",
+        "y": 180
+      },
+      "when": {
+        "down": "true",
+        "facing": "south",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pantographsandwires:block/cantilever_bracket/cross_galvanized",
+        "y": 270
+      },
+      "when": {
+        "down": "true",
+        "facing": "west",
+        "up": "true"
+      }
+    }
+  ]
+}

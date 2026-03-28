@@ -1,0 +1,26 @@
+{
+  "loader": "dragonlib:multipart_obj",
+  "automatic_culling": true,
+  "shade_quads": true,
+  "flip_v": true,
+  "emissive_ambient": false,
+  "model": "pantographsandwires:models/block/insulator/i_insulator_ceiling.obj",
+  "textures": {
+    "particle": "pantographsandwires:block/metal"
+  },
+  "add": [
+    {
+      "model": "pantographsandwires:models/block/insulator/base/brown_insulator.obj",
+      "rotation": [
+        90.0,
+        0.0,
+        0.0
+      ],
+      "offset": [
+        8.0,
+        8.75,
+        8.0
+      ]
+    }
+  ]
+}

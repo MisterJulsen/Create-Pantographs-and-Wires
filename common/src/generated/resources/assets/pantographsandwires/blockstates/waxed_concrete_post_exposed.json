@@ -1,0 +1,184 @@
+{
+  "variants": {
+    "facing=east,part=bottom,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 90
+    },
+    "facing=east,part=bottom,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 90
+    },
+    "facing=east,part=bottom,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 90
+    },
+    "facing=east,part=bottom,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 90
+    },
+    "facing=east,part=in_between,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 90
+    },
+    "facing=east,part=in_between,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 90
+    },
+    "facing=east,part=in_between,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 90
+    },
+    "facing=east,part=in_between,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 90
+    },
+    "facing=east,part=top,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 90
+    },
+    "facing=east,part=top,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 90
+    },
+    "facing=east,part=top,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 90
+    },
+    "facing=east,part=top,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 90
+    },
+    "facing=north,part=bottom,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom"
+    },
+    "facing=north,part=bottom,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom"
+    },
+    "facing=north,part=bottom,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom"
+    },
+    "facing=north,part=bottom,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom"
+    },
+    "facing=north,part=in_between,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed"
+    },
+    "facing=north,part=in_between,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed"
+    },
+    "facing=north,part=in_between,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed"
+    },
+    "facing=north,part=in_between,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed"
+    },
+    "facing=north,part=top,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top"
+    },
+    "facing=north,part=top,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top"
+    },
+    "facing=north,part=top,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top"
+    },
+    "facing=north,part=top,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top"
+    },
+    "facing=south,part=bottom,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 180
+    },
+    "facing=south,part=bottom,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 180
+    },
+    "facing=south,part=bottom,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 180
+    },
+    "facing=south,part=bottom,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 180
+    },
+    "facing=south,part=in_between,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 180
+    },
+    "facing=south,part=in_between,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 180
+    },
+    "facing=south,part=in_between,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 180
+    },
+    "facing=south,part=in_between,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 180
+    },
+    "facing=south,part=top,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 180
+    },
+    "facing=south,part=top,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 180
+    },
+    "facing=south,part=top,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 180
+    },
+    "facing=south,part=top,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 180
+    },
+    "facing=west,part=bottom,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 270
+    },
+    "facing=west,part=bottom,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 270
+    },
+    "facing=west,part=bottom,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 270
+    },
+    "facing=west,part=bottom,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_bottom",
+      "y": 270
+    },
+    "facing=west,part=in_between,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 270
+    },
+    "facing=west,part=in_between,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 270
+    },
+    "facing=west,part=in_between,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 270
+    },
+    "facing=west,part=in_between,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed",
+      "y": 270
+    },
+    "facing=west,part=top,rotation=0": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 270
+    },
+    "facing=west,part=top,rotation=1": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 270
+    },
+    "facing=west,part=top,rotation=2": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 270
+    },
+    "facing=west,part=top,rotation=3": {
+      "model": "pantographsandwires:block/concrete_post/exposed_top",
+      "y": 270
+    }
+  }
+}

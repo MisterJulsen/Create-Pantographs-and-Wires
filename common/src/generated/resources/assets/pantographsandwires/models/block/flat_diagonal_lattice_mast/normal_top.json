@@ -1,0 +1,7 @@
+{
+  "parent": "pantographsandwires:block/flat_diagonal_lattice_mast/base_top",
+  "textures": {
+    "base": "pantographsandwires:block/metal",
+    "particle": "pantographsandwires:block/metal"
+  }
+}

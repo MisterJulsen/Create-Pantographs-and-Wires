@@ -1,8 +1,0 @@
-{
-	"parent": "pantographsandwires:block/lattice_mast/base_foundation",
-	"textures": {
-		"base": "pantographsandwires:block/metal",
-		"foundation": "minecraft:block/smooth_stone",
-		"particle": "pantographsandwires:block/metal"
-	}
-}
