@@ -39,7 +39,7 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(getWeatheringData().weatherState()).get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).get());
     }
 
     protected VoxelShape makeShape(ShapeContext c) {      
@@ -61,7 +61,7 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
         Direction clickedFace = context.getClickedFace();
         
         if ((clickedOnState.getBlock() instanceof CantileverBracketBaseBlock || clickedOnState.getBlock() instanceof CantileverBracketVerticalBlock) && clickedFace.getAxis().isVertical()) {
-            state = ModBlocks.CANTILEVER_BRACKET_VERTICAL.get(getWeatheringData().weatherState()).getDefaultState()
+            state = ModBlocks.CANTILEVER_BRACKET_VERTICAL.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).getDefaultState()
                 .setValue(CantileverBracketVerticalBlock.DIRECTION, clickedFace)
                 .setValue(FACING, clickedOnState.getValue(FACING))
                 .setValue(ROTATION, clickedOnState.getValue(ROTATION))
