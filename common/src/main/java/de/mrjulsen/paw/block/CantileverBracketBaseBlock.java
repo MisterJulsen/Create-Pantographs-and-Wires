@@ -42,10 +42,10 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
         return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).get());
     }
 
-    protected VoxelShape makeShape(ShapeContext c) {      
+    protected VoxelShape makeShape(ShapeContext c) {
         double stretch = 16d * ((1d / Math.cos(Math.abs(Math.toRadians(getRelativeYRotation(c.state()))))) - 1d);
         double halfStretch = stretch / 2;
-        return switch (c.state().getValue(FACING)) {            
+        return switch (c.state().getValue(FACING)) {
             case SOUTH -> Block.box(6d, 6d, 0 - halfStretch, 10d, 10d, 16d + halfStretch);
             case WEST  -> Block.box(0 - halfStretch, 6d, 6d, 16d + halfStretch, 10d, 10d);
             case EAST  -> Block.box(0 - halfStretch, 6d, 6d, 16d + halfStretch, 10d, 10d);
