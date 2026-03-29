@@ -93,7 +93,7 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
         Map.entry(new ShapeKey(EPostType.LATTICE, EConnectionType.AT_POST), Shapes.or(Block.box(2, 0, 5, 14, 3, 18), Block.box(6.5, 0, 0, 9.5, 3, 5)))
     );
     private static final MapCache<VoxelShape, TransformationShapeKey, TransformationShapeKey> shapesCache = new MapCache<>((key) -> {
-        VoxelShape baseShape = key.shapeKey().postType() == EPostType.NONE || key.shapeKey().connectionType() == EConnectionType.NONE ? DEFAULT_SHAPE : BASE_SHAPES.get(key.shapeKey());        
+        VoxelShape baseShape = key.shapeKey().postType() == EPostType.NONE || key.shapeKey().connectionType() == EConnectionType.NONE ? DEFAULT_SHAPE : BASE_SHAPES.get(key.shapeKey());
         Direction direction = key.direction();
         VoxelShape shape = ModMath.rotateShape(baseShape, Axis.Y, (int)direction.getOpposite().toYRot());
         shape = ModMath.scaleShape(shape, direction.getAxis(), key.state().getBlock() instanceof IRotatableBlock rot ? rot.getScaleForRotation(key.state()) : 1, 0.5f);

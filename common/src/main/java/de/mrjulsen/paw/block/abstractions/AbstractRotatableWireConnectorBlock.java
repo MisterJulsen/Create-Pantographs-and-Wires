@@ -20,9 +20,7 @@ import net.minecraft.world.phys.Vec3;
 public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnectorBlockEntity> extends AbstractRotatableBlock implements IBE<T>, IWireConnector {
 
     public AbstractRotatableWireConnectorBlock(Properties properties) {
-        super(properties.mapColor(MapColor.METAL)
-            .noOcclusion()
-        );
+        super(properties.mapColor(MapColor.METAL).noOcclusion());
     }
 
     @Override
@@ -30,47 +28,36 @@ public abstract class AbstractRotatableWireConnectorBlock<T extends WireConnecto
         return RenderShape.MODEL;
     }
 
-    /**
-     * Rotates the wire attachment vector for the current block rotation.
-     * @param level The level the connector is in
-     * @param pos The position of the connector
-     * @param state The connector state
-     * @param itemData Additional item data
-     * @param func The function for the raw attach point calculation
-     * @return The transformed vector of the given function
-     */
     protected Vec3 transformWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index, IWireRenderDataCallback func) {
-        if (state.getBlock() instanceof IWireConnector && state.getBlock() instanceof IRotatableBlock rot) {
-            Vec2 pivot = rot.getRotationPivotPoint(state);
-            Vec2 rotPivot = rot.rotatedPivotPoint(state);
-            Vec2 offset = rot.getOffset(state);
-            Vec3 result = VecHelper.rotate(func.run(level, pos, state, itemData, index).subtract(pivot.x, 0, pivot.y), getYRotation(state), Axis.Y)
-                .add(rotPivot.x, 0, rotPivot.y)
-                .add(offset.x, 0, offset.y)
-            ;
-            return result;
+        if (!(state.getBlock() instanceof IWireConnector) || !(state.getBlock() instanceof IRotatableBlock rot)) {
+            return Vec3.ZERO;
         }
-        return Vec3.ZERO;
+
+        Vec2 pivot    = rot.getRotationPivotPoint(state);
+        Vec2 rotPivot = rot.rotatedPivotPoint(state);
+        Vec2 offset   = rot.getOffset(state);
+
+        return VecHelper.rotate(
+                        func.run(level, pos, state, itemData, index).subtract(pivot.x, 0, pivot.y),
+                        getYRotation(state),
+                        Axis.Y
+                )
+                .add(rotPivot.x, 0, rotPivot.y)
+                .add(offset.x, 0, offset.y);
     }
 
     @Override
     public ConnectorDataProvider getConnectorData(Level level, BlockPos pos, CustomData customData, int connectionPointIndex) {
-        return new BasicConnectorDataProvider(transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::defaultWireAttachPoint).toVector3f());
+        return new BasicConnectorDataProvider(
+                transformWireAttachPoint(level, pos, level.getBlockState(pos), customData, connectionPointIndex, this::defaultWireAttachPoint)
+                        .toVector3f()
+        );
     }
-    
-    /**
-     * The relative coordinates where a wire should be attached to.
-     * @param level The current level.
-     * @param pos The pos of the connector block.
-     * @param state The state of the connector block.
-     * @param itemData Additional data stored in the wire item created while placing it.
-     * @return The relative coordinates from the block's center.
-     */
+
     protected abstract Vec3 defaultWireAttachPoint(Level level, BlockPos pos, BlockState state, CustomData itemData, int index);
-    
+
     @FunctionalInterface
-    protected static interface IWireRenderDataCallback {
+    protected interface IWireRenderDataCallback {
         Vec3 run(Level level, BlockPos pos, BlockState state, CustomData itemData, int index);
     }
 }
-

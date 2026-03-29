@@ -29,36 +29,34 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
     }
 
     public static final int DEFAULT_SEGMENT = 1;
-    public static final IntegerProperty MULTIPART_SEGMENT = IntegerProperty.create("multipart_segment", DEFAULT_SEGMENT, AbstractRotatableBlock.ROTATIONS);
-    
+    public static final IntegerProperty MULTIPART_SEGMENT = createMultipartSegmentsProperty();
 
     private final MapCache<Vec2, BlockState, BlockState> offsetCache = createOffsetCache();
-    
+
     public AbstractRotatedConnectableBlock(Properties properties) {
         super(properties.mapColor(MapColor.METAL));
-
-        this.registerDefaultState(defaultBlockState()
-            .setValue(MULTIPART_SEGMENT, DEFAULT_SEGMENT)
-        );
+        this.registerDefaultState(defaultBlockState().setValue(MULTIPART_SEGMENT, DEFAULT_SEGMENT));
     }
 
     public static MapCache<Vec2, BlockState, BlockState> createOffsetCache() {
         return new MapCache<>((c) -> {
-            int rawRotationIndex = normalizedPropertyRotationIndex(c);
-            int rotationIndex = Math.abs(rawRotationIndex) + DEFAULT_SEGMENT;  
-            int currentPart = c.getValue(MULTIPART_SEGMENT);
-            float multiplier = ((1f / (float)rotationIndex) * (MathUtils.clamp(currentPart, DEFAULT_SEGMENT, rotationIndex) - DEFAULT_SEGMENT));
+            int rawRotationIndex = signedRotationIndex(c);
+            int rotationIndex    = Math.abs(rawRotationIndex) + DEFAULT_SEGMENT;
+            int currentPart      = c.getValue(MULTIPART_SEGMENT);
+            float multiplier     = (1f / (float) rotationIndex) * (MathUtils.clamp(currentPart, DEFAULT_SEGMENT, rotationIndex) - DEFAULT_SEGMENT);
             return switch (c.getValue(FACING)) {
-                case WEST  -> new Vec2(0, 1).scale(multiplier);
+                case WEST  -> new Vec2(0,  1).scale(multiplier);
                 case EAST  -> new Vec2(0, -1).scale(multiplier);
-                case SOUTH -> new Vec2(1, 0).scale(multiplier);
+                case SOUTH -> new Vec2(1,  0).scale(multiplier);
                 default    -> new Vec2(-1, 0).scale(multiplier);
             };
-        }, (state) -> {
-            return Objects.hash(state.getValues().values().toArray(Object[]::new));
-        }, ECachingPriority.ALWAYS);
+        }, (state) -> Objects.hash(state.getValues().values().toArray(Object[]::new)), ECachingPriority.ALWAYS);
     }
-    
+
+    public static IntegerProperty createMultipartSegmentsProperty() {
+        return IntegerProperty.create("multipart_segment", DEFAULT_SEGMENT, AbstractRotatableBlock.ROTATIONS);
+    }
+
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
@@ -66,7 +64,7 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
     }
 
     protected int maxSegments(BlockState state) {
-        int rotationIndex = Math.abs(normalizedPropertyRotationIndex(state)) + 1;
+        int rotationIndex = Math.abs(signedRotationIndex(state)) + 1;
         if (rotationIndex >= ROTATIONS + 1) {
             rotationIndex = 1;
         }
@@ -75,21 +73,21 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
-        BlockState state = super.getStateForPlacement(context);
-        BlockState clickedOnState = ctxExt.paw$getPlacedOnState();
-        Direction clickedFace = context.getClickedFace();
-        
-        if (canConnect(context.getLevel(), state, context.getClickedPos(), clickedOnState, ctxExt.paw$getPlacedOnPos()) && clickedOnState.getValue(FACING).getAxis() == clickedFace.getAxis()) {
+        BlockPlaceContextExtension ctxExt      = (BlockPlaceContextExtension)(Object) context;
+        BlockState                 state        = super.getStateForPlacement(context);
+        BlockState                 clickedOnState = ctxExt.getPlacedOnState();
+        Direction                  clickedFace  = context.getClickedFace();
+
+        if (canConnect(context.getLevel(), state, context.getClickedPos(), clickedOnState, ctxExt.getPlacedOnPos())
+                && clickedOnState.getValue(FACING).getAxis() == clickedFace.getAxis()) {
             int rotationIndex = maxSegments(clickedOnState);
             state = state
-                .setValue(MULTIPART_SEGMENT, clickedFace == clickedOnState.getValue(FACING) ? 
-                    (clickedOnState.getValue(MULTIPART_SEGMENT) % rotationIndex) + 1 :
-                    Math.abs((clickedOnState.getValue(MULTIPART_SEGMENT) - 2) % rotationIndex) + 1
-                )
-                .setValue(FACING, clickedOnState.getValue(FACING))
-                .setValue(ROTATION, clickedOnState.getValue(ROTATION))
-            ;
+                    .setValue(MULTIPART_SEGMENT,
+                            clickedFace == clickedOnState.getValue(FACING)
+                                    ? (clickedOnState.getValue(MULTIPART_SEGMENT) % rotationIndex) + 1
+                                    : Math.abs((clickedOnState.getValue(MULTIPART_SEGMENT) - 2) % rotationIndex) + 1)
+                    .setValue(FACING,   clickedOnState.getValue(FACING))
+                    .setValue(ROTATION, clickedOnState.getValue(ROTATION));
         }
 
         return state;
@@ -111,17 +109,19 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
 
     @Override
     public BlockModificationData onPlaceOnRotatedBlock(BlockPlaceContext context, BlockState clickedState, BlockPos clickedBlockPos) {
-        BlockModificationData value = super.onPlaceOnRotatedBlock(context, clickedState, clickedBlockPos);
-        int rotationValue = normalizedPropertyRotationIndex(clickedState);
-        Direction clickedFace = context.getClickedFace() ;
-        boolean clickedOnFront = clickedFace == clickedState.getValue(FACING);
+        BlockModificationData value        = super.onPlaceOnRotatedBlock(context, clickedState, clickedBlockPos);
+        int                   rotationValue = signedRotationIndex(clickedState);
+        Direction             clickedFace  = context.getClickedFace();
+        boolean               clickedOnFront = clickedFace == clickedState.getValue(FACING);
+
         if (value == null && clickedFace != null && rotationValue != 0) {
-            if (clickedState.getValue(MULTIPART_SEGMENT) == AbstractRotatableBlock.ROTATIONS / 2 + (clickedOnFront ^ rotationValue < 0 ? 1 : 0) && clickedFace.getAxis() == transformOnAxis(clickedState)) {
-                return new BlockModificationData(context.getClickedPos().relative(
-                    rotationValue > 0 ?
-                        clickedFace.getCounterClockWise() :
-                        clickedFace.getClockWise()
-                ), clickedFace);
+            boolean segmentCondition = clickedState.getValue(MULTIPART_SEGMENT)
+                    == AbstractRotatableBlock.ROTATIONS / 2 + (clickedOnFront ^ rotationValue < 0 ? 1 : 0);
+            if (segmentCondition && clickedFace.getAxis() == transformOnAxis(clickedState)) {
+                return new BlockModificationData(
+                        context.getClickedPos().relative(rotationValue > 0 ? clickedFace.getCounterClockWise() : clickedFace.getClockWise()),
+                        clickedFace
+                );
             }
         }
         return value;
@@ -129,8 +129,9 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
 
     @Override
     public BlockModificationData onPlaceOnOtherRotatedBlock(BlockModificationData currentModification, BlockPlaceContext context, BlockState clickedState, BlockPos clickedBlockPos) {
-        int rotationValue = normalizedPropertyRotationIndex(clickedState);
-        Direction clickedFace = context.getClickedFace() ;
+        int       rotationValue = signedRotationIndex(clickedState);
+        Direction clickedFace   = context.getClickedFace();
+
         if (clickedFace != null && rotationValue < 0 && !(clickedState.getBlock() instanceof AbstractRotatedConnectableBlock)) {
             return new BlockModificationData(context.getClickedPos().relative(clickedFace.getClockWise()), clickedFace);
         }
@@ -139,15 +140,17 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
 
     protected BlockPos relativeTo(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction direction) {
         BlockPos result = pos.relative(direction);
-        if (level.getBlockState(pos).is(state.getBlock())) {
-            int rot = normalizedPropertyRotationIndex(state);
-            if (rot >= ROTATIONS) {
-                result = result.relative(direction.getCounterClockWise());
-            } else if (rot > 0 && state.getValue(MULTIPART_SEGMENT) == AbstractRotatableBlock.ROTATIONS / 2) {
-                result = result.relative(direction.getCounterClockWise());
-            } else if (rot < 0 && state.getValue(MULTIPART_SEGMENT) == AbstractRotatableBlock.ROTATIONS / 2 + 1) {
-                result = result.relative(direction.getClockWise());
-            }
+        if (!level.getBlockState(pos).is(state.getBlock())) {
+            return result;
+        }
+
+        int rot = signedRotationIndex(state);
+        if (rot >= ROTATIONS) {
+            result = result.relative(direction.getCounterClockWise());
+        } else if (rot > 0 && state.getValue(MULTIPART_SEGMENT) == AbstractRotatableBlock.ROTATIONS / 2) {
+            result = result.relative(direction.getCounterClockWise());
+        } else if (rot < 0 && state.getValue(MULTIPART_SEGMENT) == AbstractRotatableBlock.ROTATIONS / 2 + 1) {
+            result = result.relative(direction.getClockWise());
         }
         return result;
     }

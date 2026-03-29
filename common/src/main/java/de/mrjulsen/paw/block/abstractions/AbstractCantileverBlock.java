@@ -241,11 +241,6 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
         double stretch = 16d * ((1d / Math.cos(Math.abs(Math.toRadians(getRelativeYRotation(state))))) - 1d);
         double a = 8 - 2;
         double b = 8 + 2;
-        //if (level.getBlockEntity(pos) instanceof CantileverBlockEntity be) {
-        //    double w = ((1.0f / be.getCantileversCount()) * 2) * (be.getCantileversCount() - 1) * 16;
-        //    a -= w / 2;
-        //    b += w / 2;
-        //}
         return switch (state.getValue(FACING)) {
             case SOUTH -> Block.box(a, 0, 0, b, 16d, 16d + stretch);
             case WEST  -> Block.box(-stretch, 0, a, 16d, 16d, b);

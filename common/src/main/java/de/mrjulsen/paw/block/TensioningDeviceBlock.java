@@ -57,7 +57,7 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     private static final VoxelShape DEFAULT_SHAPE = Block.box(0.5d, 0, -0.25d, 15.5d, 16, 16);
     private static final MapCache<VoxelShape, BlockState, BlockState> shapesCache = new MapCache<>((state) -> {
         VoxelShape baseShape = ModMath.moveShape(DEFAULT_SHAPE, new Vec3(0, 0, Const.PIXEL * ((float)(16 - state.getValue(CONNECTION).getIndex()) / 2f)));
-        Direction direction = state.getValue(FACING);        
+        Direction direction = state.getValue(FACING);
         VoxelShape shape = ModMath.rotateShape(baseShape, Axis.Y, (int)direction.getOpposite().toYRot());
         return shape;
     }, BlockState::hashCode, ECachingPriority.ALWAYS);
