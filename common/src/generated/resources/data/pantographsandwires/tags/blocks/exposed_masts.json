@@ -9,10 +9,6 @@
     "pantographsandwires:waxed_flat_lattice_mast_diagonal_exposed",
     "pantographsandwires:h_beam_mast_exposed",
     "pantographsandwires:waxed_h_beam_mast_exposed",
-    "pantographsandwires:concrete_post_exposed",
-    "pantographsandwires:waxed_concrete_post_exposed",
-    "pantographsandwires:concrete_pillar_exposed",
-    "pantographsandwires:waxed_concrete_pillar_exposed",
     "pantographsandwires:cantilever_bracket_exposed",
     "pantographsandwires:waxed_cantilever_bracket_exposed",
     "pantographsandwires:cantilever_bracket_vertical_exposed",
@@ -20,6 +16,10 @@
     "pantographsandwires:cantilever_bracket_at_post_exposed",
     "pantographsandwires:waxed_cantilever_bracket_at_post_exposed",
     "pantographsandwires:power_line_bracket_exposed",
-    "pantographsandwires:waxed_power_line_bracket_exposed"
+    "pantographsandwires:waxed_power_line_bracket_exposed",
+    "pantographsandwires:concrete_post_exposed",
+    "pantographsandwires:waxed_concrete_post_exposed",
+    "pantographsandwires:concrete_pillar_exposed",
+    "pantographsandwires:waxed_concrete_pillar_exposed"
   ]
 }

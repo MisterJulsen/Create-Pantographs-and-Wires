@@ -3,10 +3,9 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.mrjulsen.paw.registry.ModBlockTags;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
-import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.WireGraph;
@@ -54,7 +53,7 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
     
     @Override
     public WireNode getOrCreateNode(WireGraph graph) {
-        if (graph.getLevel().isLoaded(pos) && graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
+        if (graph.getLevel().isLoaded(pos) && graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlockTags.CATENARY_HEADSPAN_CONNECTABLE))) {
             return graph.createNode(this, new Vector3d(getBlockPos().getCenter().x(), getBlockPos().getCenter().y(), getBlockPos().getCenter().z()));
         }
         return null;
@@ -72,7 +71,7 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
 
     @Override
     public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
-        return !graph.getLevel().isLoaded(pos) || graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE));
+        return !graph.getLevel().isLoaded(pos) || graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlockTags.CATENARY_HEADSPAN_CONNECTABLE));
     }
 
     @Override

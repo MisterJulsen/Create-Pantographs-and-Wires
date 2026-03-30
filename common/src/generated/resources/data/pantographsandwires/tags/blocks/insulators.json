@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#pantographsandwires:v_shaped_insulators",
+    "#pantographsandwires:u_shaped_insulators",
+    "#pantographsandwires:i_shaped_insulators",
+    "#pantographsandwires:brown_insulators",
+    "#pantographsandwires:green_insulators"
+  ]
+}

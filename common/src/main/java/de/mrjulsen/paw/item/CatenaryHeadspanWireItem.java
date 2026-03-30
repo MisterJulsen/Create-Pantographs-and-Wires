@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import de.mrjulsen.paw.registry.ModBlockTags;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
-import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WiresApi;
@@ -73,7 +72,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
 
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {
-        if (hit instanceof BlockHitResult h && level.getBlockState(h.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
+        if (hit instanceof BlockHitResult h && level.getBlockState(h.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlockTags.CATENARY_HEADSPAN_CONNECTABLE))) {
             return new LatticeMastNodeData(h.getBlockPos());
         }
         return null;
@@ -110,7 +109,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
             NodeData nodeB = WiresApi.NODE_DATA_REGISTRY.load(endPointData);
 
             if (nodeA instanceof LatticeMastNodeData nA && nodeB instanceof LatticeMastNodeData nB) {                
-                if (hit instanceof BlockHitResult h && level.getBlockState(h.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_CATENARY_HEADSPAN_CONNECTABLE))) {
+                if (hit instanceof BlockHitResult h && level.getBlockState(h.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlockTags.CATENARY_HEADSPAN_CONNECTABLE))) {
                     if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT)) {
                         int min = ModServerConfig.CATENARY_HEADSPAN_MIN_UPPER_TENSION_WIRE.get();
                         int max = ModServerConfig.CATENARY_HEADSPAN_MAX_UPPER_TENSION_WIRE.get();

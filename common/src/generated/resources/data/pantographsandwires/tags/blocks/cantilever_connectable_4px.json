@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:cantilever_bracket_vertical_galvanized",
+    "pantographsandwires:cantilever_bracket_vertical_oxidized",
+    "pantographsandwires:cantilever_bracket_vertical_weathered",
+    "pantographsandwires:cantilever_bracket_vertical_exposed",
+    "pantographsandwires:cantilever_bracket_vertical",
+    "pantographsandwires:waxed_cantilever_bracket_vertical_oxidized",
+    "pantographsandwires:waxed_cantilever_bracket_vertical_weathered",
+    "pantographsandwires:waxed_cantilever_bracket_vertical_exposed",
+    "pantographsandwires:waxed_cantilever_bracket_vertical",
+    "#minecraft:fences"
+  ]
+}

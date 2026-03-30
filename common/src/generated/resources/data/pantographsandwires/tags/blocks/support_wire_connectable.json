@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "pantographsandwires:pantograph",
     "pantographsandwires:lattice_mast_galvanized",
     "pantographsandwires:lattice_mast_oxidized",
     "pantographsandwires:lattice_mast_weathered",
@@ -65,16 +64,6 @@
     "pantographsandwires:waxed_cantilever_bracket_at_post_weathered",
     "pantographsandwires:waxed_cantilever_bracket_at_post_exposed",
     "pantographsandwires:waxed_cantilever_bracket_at_post",
-    "pantographsandwires:power_line_bracket_galvanized",
-    "pantographsandwires:power_line_bracket_oxidized",
-    "pantographsandwires:power_line_bracket_weathered",
-    "pantographsandwires:power_line_bracket_exposed",
-    "pantographsandwires:power_line_bracket",
-    "pantographsandwires:waxed_power_line_bracket_oxidized",
-    "pantographsandwires:waxed_power_line_bracket_weathered",
-    "pantographsandwires:waxed_power_line_bracket_exposed",
-    "pantographsandwires:waxed_power_line_bracket",
-    "pantographsandwires:graphite_block",
     "pantographsandwires:concrete_post_oxidized",
     "pantographsandwires:concrete_post_weathered",
     "pantographsandwires:concrete_post_exposed",
@@ -83,7 +72,6 @@
     "pantographsandwires:waxed_concrete_post_weathered",
     "pantographsandwires:waxed_concrete_post_exposed",
     "pantographsandwires:waxed_concrete_post",
-    "pantographsandwires:coal_coke_block",
     "pantographsandwires:concrete_pillar_oxidized",
     "pantographsandwires:concrete_pillar_weathered",
     "pantographsandwires:concrete_pillar_exposed",
@@ -92,14 +80,8 @@
     "pantographsandwires:waxed_concrete_pillar_weathered",
     "pantographsandwires:waxed_concrete_pillar_exposed",
     "pantographsandwires:waxed_concrete_pillar",
-    "pantographsandwires:tensioning_device",
-    "pantographsandwires:v_insulator_brown",
-    "pantographsandwires:v_insulator_green",
-    "pantographsandwires:insulator_brown",
-    "pantographsandwires:insulator_green",
-    "pantographsandwires:u_insulator_green",
-    "pantographsandwires:u_insulator_brown",
-    "pantographsandwires:cantilever_green",
-    "pantographsandwires:cantilever_brown"
+    "#minecraft:walls",
+    "#minecraft:fences",
+    "create:metal_girder"
   ]
 }

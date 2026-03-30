@@ -1,29 +1,22 @@
 package de.mrjulsen.paw.datagen;
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateItemModelProvider;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
+import com.tterrag.registrate.providers.*;
 import de.mrjulsen.paw.PantographsAndWires;
-import de.mrjulsen.paw.block.LatticeMastBlock;
-import de.mrjulsen.paw.block.RegistrationArmBlock;
-import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.registry.MastMaterial;
+import de.mrjulsen.paw.registry.ModBlockTags;
+import de.mrjulsen.paw.registry.ModItemTags;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import io.github.fabricators_of_create.porting_lib.models.generators.ConfiguredModel;
-import io.github.fabricators_of_create.porting_lib.models.generators.ModelFile;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
+import java.util.List;
+
 public class DataGen {
     public static void register() {
-        PantographsAndWires.REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, GenTags::generateBlockTags);
+        PantographsAndWires.REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, ModBlockTags::register);
+        PantographsAndWires.REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, ModItemTags::register);
     }
 
     @ExpectPlatform
@@ -75,6 +68,11 @@ public class DataGen {
 
     @ExpectPlatform
     public static <E extends ItemLike, R extends E> void itemModel(DataGenContext<E, R> context, RegistrateItemModelProvider provider, String model) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <T> void registerTags(RegistrateTagsProvider<T> provider, List<TagEntry<T>> registry) {
         throw new AssertionError();
     }
 }

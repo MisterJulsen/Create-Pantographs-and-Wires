@@ -4,18 +4,18 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.mrjulsen.paw.registry.ModBlocks;
+import de.mrjulsen.paw.registry.ModBlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public enum ECantileverConnectionType implements StringRepresentable {
-    PX16(16, "16px", ModBlocks.TAG_CANTILEVER_CONNECTABLE_16PX),
-    PX12(12, "12px", ModBlocks.TAG_CANTILEVER_CONNECTABLE_12PX),
-    PX8(8, "8px", ModBlocks.TAG_CANTILEVER_CONNECTABLE_8PX),
-    PX5(5, "5px", ModBlocks.TAG_CANTILEVER_CONNECTABLE_5PX),
-    PX4(4, "4px", ModBlocks.TAG_CANTILEVER_CONNECTABLE_4PX);
+    PX16(16, "16px", ModBlockTags.CANTILEVER_CONNECTABLE_16PX),
+    PX12(12, "12px", ModBlockTags.CANTILEVER_CONNECTABLE_12PX),
+    PX8(8, "8px", ModBlockTags.CANTILEVER_CONNECTABLE_8PX),
+    PX5(5, "5px", ModBlockTags.CANTILEVER_CONNECTABLE_5PX),
+    PX4(4, "4px", ModBlockTags.CANTILEVER_CONNECTABLE_4PX);
 
     final String name;
     final int index;

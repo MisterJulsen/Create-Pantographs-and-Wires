@@ -1,9 +1,0 @@
-{
-    "replace": false,
-    "values": [
-        "pantographsandwires:concrete_pillar",
-        "pantographsandwires:concrete_pillar_exposed",
-        "pantographsandwires:concrete_pillar_weathered",
-        "pantographsandwires:concrete_pillar_oxidized"
-    ]
-}

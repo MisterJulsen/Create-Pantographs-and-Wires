@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import de.mrjulsen.paw.registry.*;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -23,10 +24,6 @@ import de.mrjulsen.paw.block.RegistrationArmBlock.State;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock.ECantileverRegistrationArmType;
 import de.mrjulsen.paw.config.ModServerConfig;
 import de.mrjulsen.paw.data.WireHitResult;
-import de.mrjulsen.paw.registry.InsulatorWireDecoration;
-import de.mrjulsen.paw.registry.ModItems;
-import de.mrjulsen.paw.registry.ModWireRegistry;
-import de.mrjulsen.paw.registry.RegistrationArmWireDecoration;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.graph.NewWireCollision;
 import de.mrjulsen.wires.graph.WireEdge;
@@ -198,7 +195,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 			}
 
 			// --- REMOVE DROPPERS ---
-			if ((player.getItemInHand(hand).is(Items.SHEARS) || player.getItemInHand(hand).is(ModItems.TAG_WRENCH)) && (hitResult.getWireId().name().startsWith(WIRE_DROPPER_L) || hitResult.getWireId().name().startsWith(WIRE_DROPPER_U))) {
+			if ((player.getItemInHand(hand).is(Items.SHEARS) || player.getItemInHand(hand).is(ModItemTags.WRENCHES)) && (hitResult.getWireId().name().startsWith(WIRE_DROPPER_L) || hitResult.getWireId().name().startsWith(WIRE_DROPPER_U))) {
 
 				UUID dropperId;
 				try {
@@ -241,7 +238,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 				network.removeEdge(hitResult.getWireId().id(), new Vector3d(hitResult.getLocation().x(), hitResult.getLocation().y(), hitResult.getLocation().z()), Optional.of(player));
 
 			// --- CREATE DROPPERS ---
-			} else if (player.getItemInHand(hand).is(ModItems.TAG_WRENCH)) {
+			} else if (player.getItemInHand(hand).is(ModItemTags.WRENCHES)) {
 				if (edge != null) {
 					Optional<NewWireCollision> collisionOpt = hitResult.getCollision(level);
 					if (!collisionOpt.isPresent()) {
@@ -291,7 +288,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 
 
 			// --- PLACE REGISTRATION ARMS ---
-			} else if (player.getItemInHand(hand).is(ModItems.TAG_CANTILEVERS) && (hitResult.getWireId().name().startsWith(WIRE_DROPPER_L) || hitResult.getWireId().name().startsWith(WIRE_DROPPER_U))) {
+			} else if (player.getItemInHand(hand).is(ModItemTags.CANTILEVERS) && (hitResult.getWireId().name().startsWith(WIRE_DROPPER_L) || hitResult.getWireId().name().startsWith(WIRE_DROPPER_U))) {
 				ItemStack stack = player.getItemInHand(hand);
 				RegistrationArmWireDecoration element;
 				
@@ -342,7 +339,7 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 
 
 			// --- PLACE INSULATORS ---
-			} else if (player.getItemInHand(hand).is(ModItems.TAG_INSULATORS)) {
+			} else if (player.getItemInHand(hand).is(ModItemTags.INSULATORS)) {
 				InsulatorWireDecoration element;
 				ItemStack stack = player.getItemInHand(hand);
 				Optional<NewWireCollision> collisionOpt = network.getCollisionById(edge.getId());

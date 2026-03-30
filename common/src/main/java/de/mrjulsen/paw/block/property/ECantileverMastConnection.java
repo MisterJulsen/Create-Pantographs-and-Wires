@@ -2,7 +2,7 @@ package de.mrjulsen.paw.block.property;
 
 import java.util.Arrays;
 
-import de.mrjulsen.paw.registry.ModBlocks;
+import de.mrjulsen.paw.registry.ModBlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public enum ECantileverMastConnection implements StringRepresentable {
     NONE((byte)0, "none", null),
-    BRACKET((byte)1, "bracket", ModBlocks.TAG_CANTILEVER_MAST_BRACKET_FITTING),
-    HINGE((byte)2, "hinge", ModBlocks.TAG_CANTILEVER_MAST_HINGE);
+    BRACKET((byte)1, "bracket", ModBlockTags.CANTILEVER_MAST_BRACKET_FITTING),
+    HINGE((byte)2, "hinge", ModBlockTags.CANTILEVER_MAST_HINGE);
 
     final String name;
     final byte index;

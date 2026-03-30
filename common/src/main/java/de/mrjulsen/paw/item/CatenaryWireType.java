@@ -2,6 +2,7 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import de.mrjulsen.paw.registry.ModItemTags;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -106,7 +107,7 @@ public class CatenaryWireType extends PAWWireType {
 
 			if (player.getItemInHand(hand).is(Items.SHEARS)) {
 				network.removeEdge(hitResult.getWireId().id(), hitPos, Optional.of(player));
-			} else if (player.getItemInHand(hand).is(ModItems.TAG_INSULATORS) && player.getItemInHand(hand).getItem() instanceof BlockItem) {
+			} else if (player.getItemInHand(hand).is(ModItemTags.INSULATORS) && player.getItemInHand(hand).getItem() instanceof BlockItem) {
 				ItemStack stack = player.getItemInHand(hand);
 				InsulatorWireDecoration element = new InsulatorWireDecoration(stack.copyWithCount(1));
 				
