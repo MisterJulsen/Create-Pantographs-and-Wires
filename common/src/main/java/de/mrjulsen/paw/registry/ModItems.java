@@ -17,33 +17,11 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
 public class ModItems {
-    
-	private static TagKey<Item> createTag(String name) {
-		return TagKey.create(Registries.ITEM, new ResourceLocation(PantographsAndWires.MOD_ID, name));
-	}
 
-    
-	public static final TagKey<Item> TAG_CANTILEVERS = createTag("cantilevers");
-	public static final TagKey<Item> TAG_INSULATORS = createTag("insulators");
-	public static final TagKey<Item> TAG_WRENCH = TagKey.create(Registries.ITEM, new ResourceLocation(Platform.isFabric() ? "c:wrenches" : "forge:tools/wrench"));
 
-    public static final ItemEntry<MultiWireItem> WIRE = PantographsAndWires.REGISTRATE.item("wire_coil", p -> new MultiWireItem(p))
+    public static final ItemEntry<MultiWireItem> WIRE = PantographsAndWires.REGISTRATE.item("wire_coil", MultiWireItem::new)
         .tab(ModCreativeModeTab.MAIN_TAB.getKey())
         .register();
-
-    /*
-    public static final ItemEntry<CatenaryWireItem> CATENARY_WIRE_COIL = PantographsAndWires.REGISTRATE.item("catenary_wire_coil", p -> new CatenaryWireItem(p, ModWireRegistry.CATENARY_WIRE))
-        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
-        .register();
-
-    public static final ItemEntry<FeederWireItem> COPPER_WIRE_COIL = PantographsAndWires.REGISTRATE.item("copper_wire_coil", p -> new FeederWireItem(p, ModWireRegistry.ENERGY_WIRE))
-        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
-        .register();
-
-    public static final ItemEntry<CatenaryHeadspanWireItem> CATENARY_HEADSPAN_WIRE = PantographsAndWires.REGISTRATE.item("catenary_headspan", p -> new CatenaryHeadspanWireItem(p, ModWireRegistry.CATENARY_HEADSPAN))
-        .tab(ModCreativeModeTab.MAIN_TAB.getKey())
-        .register();
-        */
 
     public static final ItemEntry<PantographItem> PANTOGRAPH = PantographsAndWires.REGISTRATE.item("pantograph", p -> PantographItem.create(ModBlocks.PANTOGRAPH.get(), p, false))
             .properties(p -> p)

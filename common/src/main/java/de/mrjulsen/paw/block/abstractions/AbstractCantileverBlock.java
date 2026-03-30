@@ -6,7 +6,7 @@ import de.mrjulsen.paw.blockentity.CantileverBlockEntity;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.client.gui.widgets.IIconRepresentable;
 import de.mrjulsen.paw.registry.ModBlockEntities;
-import de.mrjulsen.paw.registry.ModBlocks;
+import de.mrjulsen.paw.registry.ModBlockTags;
 import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
 import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
 import de.mrjulsen.wires.item.CustomData;
@@ -20,7 +20,6 @@ import org.joml.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -233,7 +232,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     }
 
     protected TagKey<Block> getSupportBlockTag() {
-        return ModBlocks.TAG_CANTILEVER_CONNECTABLE;
+        return ModBlockTags.CANTILEVER_CONNECTABLE;
     }
 
     @Override

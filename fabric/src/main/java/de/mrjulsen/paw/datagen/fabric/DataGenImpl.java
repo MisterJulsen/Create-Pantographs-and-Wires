@@ -3,6 +3,7 @@ package de.mrjulsen.paw.datagen.fabric;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.RegistrateItemModelProvider;
+import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.*;
@@ -11,6 +12,8 @@ import de.mrjulsen.paw.block.abstractions.IHorizontalExtensionConnectable;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.property.ECantileverConnectionType;
 import de.mrjulsen.paw.block.property.EPostPart;
+import de.mrjulsen.paw.datagen.ITagAppender;
+import de.mrjulsen.paw.datagen.TagEntry;
 import de.mrjulsen.paw.registry.MastMaterial;
 import io.github.fabricators_of_create.porting_lib.models.generators.ConfiguredModel;
 import io.github.fabricators_of_create.porting_lib.models.generators.ModelFile;
@@ -22,9 +25,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Half;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class DataGenImpl {
+
+
+    public static <T> void registerTags(RegistrateTagsProvider<T> provider, List<TagEntry<T>> registry) {
+        for (TagEntry<T> entry : registry) {
+            ITagAppender<T> appender = new TagAppender<>(provider.addTag(entry.key()));
+            entry.populator().accept(appender);
+        }
+    }
 
     public static <T extends Block> void simpleHorizontalBlock(DataGenContext<Block, T> context, RegistrateBlockstateProvider provider, String existingModelPath) {
         provider.horizontalBlock(

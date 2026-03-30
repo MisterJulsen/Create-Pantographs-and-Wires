@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:flat_lattice_mast_galvanized",
+    "pantographsandwires:flat_lattice_mast_oxidized",
+    "pantographsandwires:flat_lattice_mast_weathered",
+    "pantographsandwires:flat_lattice_mast_exposed",
+    "pantographsandwires:flat_lattice_mast",
+    "pantographsandwires:waxed_flat_lattice_mast_oxidized",
+    "pantographsandwires:waxed_flat_lattice_mast_weathered",
+    "pantographsandwires:waxed_flat_lattice_mast_exposed",
+    "pantographsandwires:waxed_flat_lattice_mast",
+    "pantographsandwires:flat_lattice_mast_diagonal_galvanized",
+    "pantographsandwires:flat_lattice_mast_diagonal_oxidized",
+    "pantographsandwires:flat_lattice_mast_diagonal_weathered",
+    "pantographsandwires:flat_lattice_mast_diagonal_exposed",
+    "pantographsandwires:flat_lattice_mast_diagonal",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_oxidized",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_weathered",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_exposed",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal",
+    "pantographsandwires:concrete_pillar_oxidized",
+    "pantographsandwires:concrete_pillar_weathered",
+    "pantographsandwires:concrete_pillar_exposed",
+    "pantographsandwires:concrete_pillar",
+    "pantographsandwires:waxed_concrete_pillar_oxidized",
+    "pantographsandwires:waxed_concrete_pillar_weathered",
+    "pantographsandwires:waxed_concrete_pillar_exposed",
+    "pantographsandwires:waxed_concrete_pillar",
+    "#minecraft:walls",
+    "create:metal_girder"
+  ]
+}

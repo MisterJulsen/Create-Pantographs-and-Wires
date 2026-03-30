@@ -9,7 +9,7 @@ import de.mrjulsen.paw.block.abstractions.IMultiblock;
 import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
 import de.mrjulsen.paw.block.property.ECantileverConnectionType;
 import de.mrjulsen.paw.registry.ModBlockEntities;
-import de.mrjulsen.paw.registry.ModBlocks;
+import de.mrjulsen.paw.registry.ModBlockTags;
 import de.mrjulsen.paw.util.Const;
 import de.mrjulsen.paw.util.ModMath;
 import de.mrjulsen.wires.graph.data.provider.CantileverConnectorDataProvider;
@@ -157,7 +157,7 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
 
     @Override
     protected TagKey<Block> getSupportBlockTag() {
-        return ModBlocks.TAG_TENSIONING_DEVICE_CONNECTABLE;
+        return ModBlockTags.TENSIONING_DEVICE_CONNECTABLE;
     }
 
     @Override

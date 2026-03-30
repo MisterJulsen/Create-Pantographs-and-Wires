@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:power_line_bracket_galvanized",
+    "pantographsandwires:power_line_bracket_oxidized",
+    "pantographsandwires:power_line_bracket_weathered",
+    "pantographsandwires:power_line_bracket_exposed",
+    "pantographsandwires:power_line_bracket",
+    "pantographsandwires:waxed_power_line_bracket_oxidized",
+    "pantographsandwires:waxed_power_line_bracket_weathered",
+    "pantographsandwires:waxed_power_line_bracket_exposed",
+    "pantographsandwires:waxed_power_line_bracket"
+  ]
+}

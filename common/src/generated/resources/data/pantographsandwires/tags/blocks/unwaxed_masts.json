@@ -21,14 +21,6 @@
     "pantographsandwires:h_beam_mast_weathered",
     "pantographsandwires:h_beam_mast_exposed",
     "pantographsandwires:h_beam_mast",
-    "pantographsandwires:concrete_post_oxidized",
-    "pantographsandwires:concrete_post_weathered",
-    "pantographsandwires:concrete_post_exposed",
-    "pantographsandwires:concrete_post",
-    "pantographsandwires:concrete_pillar_oxidized",
-    "pantographsandwires:concrete_pillar_weathered",
-    "pantographsandwires:concrete_pillar_exposed",
-    "pantographsandwires:concrete_pillar",
     "pantographsandwires:cantilever_bracket_galvanized",
     "pantographsandwires:cantilever_bracket_oxidized",
     "pantographsandwires:cantilever_bracket_weathered",
@@ -48,6 +40,14 @@
     "pantographsandwires:power_line_bracket_oxidized",
     "pantographsandwires:power_line_bracket_weathered",
     "pantographsandwires:power_line_bracket_exposed",
-    "pantographsandwires:power_line_bracket"
+    "pantographsandwires:power_line_bracket",
+    "pantographsandwires:concrete_post_oxidized",
+    "pantographsandwires:concrete_post_weathered",
+    "pantographsandwires:concrete_post_exposed",
+    "pantographsandwires:concrete_post",
+    "pantographsandwires:concrete_pillar_oxidized",
+    "pantographsandwires:concrete_pillar_weathered",
+    "pantographsandwires:concrete_pillar_exposed",
+    "pantographsandwires:concrete_pillar"
   ]
 }

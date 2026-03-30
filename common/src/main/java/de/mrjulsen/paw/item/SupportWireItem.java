@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
-import de.mrjulsen.paw.registry.ModBlocks;
+import de.mrjulsen.paw.registry.ModBlockTags;
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.graph.data.node.MastNodeData;
@@ -47,7 +47,7 @@ public class SupportWireItem implements IPawWireItemBase {
 
     @Override
     public NodeData createNodeData(Level level, Player player, InteractionHand hand, HitResult hit) {        
-        if (hit instanceof BlockHitResult blockHit && level.getBlockState(blockHit.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlocks.TAG_SUPPORT_WIRE_CONNECTABLE))) {
+        if (hit instanceof BlockHitResult blockHit && level.getBlockState(blockHit.getBlockPos()).getTags().anyMatch(x -> x.equals(ModBlockTags.SUPPORT_WIRE_CONNECTABLE))) {
             //BlockPos pos = blockHit.getBlockPos();
             //BlockState state = level.getBlockState(blockHit.getBlockPos());
             //VoxelShape shape = state.getVisualShape(level, blockHit.getBlockPos(), CollisionContext.empty());
