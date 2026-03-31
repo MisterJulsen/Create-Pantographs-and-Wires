@@ -16,6 +16,7 @@ import com.simibubi.create.foundation.data.*;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -48,10 +49,12 @@ import de.mrjulsen.paw.client.model.RotatedBlockModel;
 import de.mrjulsen.paw.datagen.DataGen;
 import de.mrjulsen.paw.item.CantileverBlockItem;
 import de.mrjulsen.paw.item.FuelBlockItem;
+import de.mrjulsen.paw.util.Utils;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -60,6 +63,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
@@ -95,6 +104,8 @@ public class ModBlocks {
 
 	public static final BlockEntry<PantographBlock> PANTOGRAPH = PantographsAndWires.REGISTRATE.block("pantograph", PantographBlock::new)
 			.initialProperties(SharedProperties::softMetal)
+			.lang("Pantograph")
+			.blockstate((c, p) -> DataGen.simpleHorizontalBlock(c, p, "block/pantograph"))
 			.transform(TagGen.pickaxeOnly())
 			.onRegister(MovementBehaviour.movementBehaviour(new PantographMovementBehaviour()))
 			.onRegister(MovingInteractionBehaviour.interactionBehaviour(new PantographInteractionBehaviour()))
@@ -104,6 +115,7 @@ public class ModBlocks {
 			"lattice_mast",
 			LatticeMastBlock::new,
 			"Lattice Mast",
+			MastMaterial.METAL,
 			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.METAL, "block/lattice_mast", "base"),
 			(weatherState) -> new TagKey[] {
 					ModBlockTags.LATTICE_MASTS,
@@ -127,6 +139,7 @@ public class ModBlocks {
 			"flat_lattice_mast",
 			FlatLatticeMastBlock::new,
 			"Flat Lattice Mast",
+			MastMaterial.METAL,
 			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.METAL, "block/flat_lattice_mast", "base"),
 			(weatherState) -> new TagKey[] { ModBlockTags.FLAT_LATTICE_MASTS, ModBlockTags.CANTILEVER_CONNECTABLE_8PX, ModBlockTags.SUPPORT_WIRE_CONNECTABLE },
 			true,
@@ -143,6 +156,7 @@ public class ModBlocks {
 			"flat_lattice_mast_diagonal",
 			FlatLatticeMastBlock::new,
 			"Flat Diagonal Lattice Mast",
+			MastMaterial.METAL,
 			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.METAL, "block/flat_diagonal_lattice_mast", "base"),
 			(weatherState) -> new TagKey[] { ModBlockTags.FLAT_DIAGONAL_LATTICE_MASTS, ModBlockTags.CANTILEVER_CONNECTABLE_8PX, ModBlockTags.SUPPORT_WIRE_CONNECTABLE },
 			true,
@@ -159,6 +173,7 @@ public class ModBlocks {
 			"h_beam_mast",
 			HBeamMastBlock::new,
 			"H-Beam Mast",
+			MastMaterial.METAL,
 			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.METAL, "block/h_beam_mast", "base"),
 			(weatherState) -> new TagKey[] {
 					ModBlockTags.H_BEAM_MASTS,
@@ -180,6 +195,7 @@ public class ModBlocks {
 			"cantilever_bracket",
 			CantileverBracketBlock::new,
 			"Cantilever Bracket",
+			MastMaterial.METAL,
 			DataGen::cantileverBracket,
 			(weatherState) -> new TagKey[] { ModBlockTags.CANTILEVER_BRACKETS, ModBlockTags.SUPPORT_WIRE_CONNECTABLE },
 			true,
@@ -195,6 +211,7 @@ public class ModBlocks {
 			"cantilever_bracket_vertical",
 			CantileverBracketVerticalBlock::new,
 			"Vertical Cantilever Bracket",
+			MastMaterial.METAL,
 			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.METAL, "block/cantilever_bracket_vertical", "base"),
 			(weatherState) -> new TagKey[] { ModBlockTags.CANTILEVER_BRACKETS, ModBlockTags.CANTILEVER_CONNECTABLE_4PX, ModBlockTags.SUPPORT_WIRE_CONNECTABLE },
 			true,
@@ -205,7 +222,8 @@ public class ModBlocks {
 	public static final ImmutableMap<OxidizingKey, BlockEntry<CantileverBracketPostConnectionBlock>> CANTILEVER_BRACKET_AT_POST = registerOxidizingBlock(
 			"cantilever_bracket_at_post",
 			CantileverBracketPostConnectionBlock::new,
-			"Cantilever Bracket At Post",
+			"Cantilever Bracket (At Post)",
+			MastMaterial.METAL,
 			DataGen::cantileverBracketAtPost,
 			(weatherState) -> new TagKey[] { ModBlockTags.CANTILEVER_BRACKETS, ModBlockTags.SUPPORT_WIRE_CONNECTABLE },
 			true,
@@ -218,6 +236,7 @@ public class ModBlocks {
 			"power_line_bracket",
 			PowerLineBracketBlock::new,
 			"Power Line Bracket",
+			MastMaterial.METAL,
 			(ctx, p) -> DataGen.powerLineBracketBlock(ctx, p, "block/power_line_bracket"),
 			(weatherState) -> new TagKey[] { ModBlockTags.POWER_LINE_BRACKETS },
 			true,
@@ -233,6 +252,7 @@ public class ModBlocks {
 	public static final BlockEntry<Block> GRAPHITE_BLOCK = PantographsAndWires.REGISTRATE.block("graphite_block", Block::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
+			.lang("Graphite Block")
 			.item()
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.build()
@@ -242,6 +262,7 @@ public class ModBlocks {
 			"concrete_post",
 			ConcretePillarBlock::post,
 			"Concrete Post",
+			MastMaterial.CONCRETE,
 			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.CONCRETE, "block/concrete_post", "base"),
 			(weatherState) -> new TagKey[] {
 					ModBlockTags.CONCRETE_POSTS,
@@ -262,6 +283,7 @@ public class ModBlocks {
 	public static final BlockEntry<Block> COAL_COKE_BLOCK = PantographsAndWires.REGISTRATE.block("coal_coke_block", Block::new)
 			.initialProperties(() -> Blocks.DEEPSLATE)
 			.transform(TagGen.pickaxeOnly())
+			.lang("Coal Coke Block")
 			.item(FuelBlockItem::new)
 			.onRegister((item) -> item.setBurnTime(32000))
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
@@ -272,6 +294,7 @@ public class ModBlocks {
 			"concrete_pillar",
 			ConcretePillarBlock::tickPillar,
 			"Concrete Pillar",
+			MastMaterial.CONCRETE,
 			(ctx, p) -> DataGen.oxidizingMastBlock(ctx, p, MastMaterial.CONCRETE, "block/concrete_pillar", "base"),
 			(weatherState) -> new TagKey[] {
 					ModBlockTags.CONCRETE_PILLARS,
@@ -296,11 +319,25 @@ public class ModBlocks {
 			.transform(TagGen.pickaxeOnly())
 			.lang("Tensioning Device")
 			.blockstate((c, p) -> DataGen.tensioningDeviceBlock(c, p, "block/tensioning_device"))
+			.loot((table, block) -> table.add(block, LootTable.lootTable()
+					.withPool(LootPool.lootPool()
+							.setRolls(ConstantValue.exactly(1.0f))
+							.when(ExplosionCondition.survivesExplosion())
+							.add(LootItem.lootTableItem(block)
+									.when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+											.setProperties(StatePropertiesPredicate.Builder.properties()
+													.hasProperty(TensioningDeviceBlock.HELPER, false)
+											)
+									)
+							)
+					)
+			))
 			.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
 			.item()
+			.model((c, p) -> DataGen.existingItemModel(c, p, "item/tensioning_device"))
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.properties(p -> p.stacksTo(16))
-			.transform(customItemModel())
+			.build()
 			.register();
 
 	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("v_insulator_brown", VInsulatorBlock::new)
@@ -407,10 +444,11 @@ public class ModBlocks {
 		for (EInsulatorType type : EInsulatorType.values()) {
 			final EInsulatorType t = type;
 			BlockEntry<CantileverBlock> cantileverBlock = registerBlockEntityBlock(CANTILEVER_BLOCK_ENTITY_BLOCKS, PantographsAndWires.REGISTRATE.block(String.format("cantilever_%s", type.getSerializedName()), p -> new CantileverBlock(p, t))
-				.initialProperties(SharedProperties::softMetal)
-				.transform(TagGen.pickaxeOnly())
-				.addLayer(() -> () -> RenderType.translucent())
-				.register()
+					.initialProperties(SharedProperties::softMetal)
+					.lang("Cantilever")
+					.transform(TagGen.pickaxeOnly())
+					.addLayer(() -> () -> RenderType.translucent())
+					.register()
 			);
 			CANTILEVERS.put(t, cantileverBlock);
 
@@ -418,6 +456,7 @@ public class ModBlocks {
 				final BlockEntry<CantileverBlock> y = x;
 				ItemEntry<CantileverBlockItem<CantileverBlock>> item = PantographsAndWires.REGISTRATE.item(String.format("cantilever_%s", type.getSerializedName()), p -> new CantileverBlockItem<>(y.get(), type, p))
 						.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+						.lang("Cantilever")
 						.tag(ModItemTags.CANTILEVERS)
 						.register()
 				;
@@ -436,6 +475,7 @@ public class ModBlocks {
 			String baseId,
 			IOxidizingBlockFactory<T> factory,
 			String baseName,
+			MastMaterial material,
 			NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> blockStateGen,
 			Function<WeatherState, TagKey<Block>[]> tagsFactory,
 			boolean addGalvanizedState,
@@ -468,8 +508,9 @@ public class ModBlocks {
 						(isWaxed ? ModBlockTags.WAXED_MASTS : ModBlockTags.UNWAXED_MASTS)
 				};
 
+				String materialName = material.getWeatherStateName(s);
 				BlockEntry<T> block = commonBuilder.apply(PantographsAndWires.REGISTRATE.block(id, p -> factory.create(p, new IWeatheringBlock.WeatheringData<>(s, () -> prev == null ? null : prev.get(), isWaxed))))
-						.lang((isWaxed ? "Waxed " : "") + s.getName() + baseName)
+						.lang((isWaxed ? "Waxed " : "") + (!materialName.isBlank() ? materialName + " " : "") + baseName)
 						.blockstate(blockStateGen)
 						.tag(tags)
 						.tag(tagsFactory.apply(s))

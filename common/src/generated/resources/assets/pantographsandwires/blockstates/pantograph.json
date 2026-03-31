@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=east": {
+      "model": "pantographsandwires:block/pantograph",
+      "y": 90
+    },
+    "facing=north": {
       "model": "pantographsandwires:block/pantograph"
+    },
+    "facing=south": {
+      "model": "pantographsandwires:block/pantograph",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pantographsandwires:block/pantograph",
+      "y": 270
     }
   }
 }

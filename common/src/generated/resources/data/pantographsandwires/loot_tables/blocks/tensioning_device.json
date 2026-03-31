@@ -11,6 +11,15 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "pantographsandwires:tensioning_device",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "helper": "false"
+              }
+            }
+          ],
           "name": "pantographsandwires:tensioning_device"
         }
       ],
