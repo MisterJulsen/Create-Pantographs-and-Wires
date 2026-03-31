@@ -49,6 +49,10 @@ public class DataGenImpl {
         );
     }
 
+    public static <E extends ItemLike, R extends E> void existingItemModel(DataGenContext<E, R> context, RegistrateItemModelProvider provider, String model) {
+        provider.getExistingFile(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, model));
+    }
+
     public static <E extends ItemLike, R extends E> void itemModel(DataGenContext<E, R> context, RegistrateItemModelProvider provider, String model) {
         provider.getBuilder(context.getName()).parent(new ModelFile.UncheckedModelFile(provider.modLoc(model)));
     }

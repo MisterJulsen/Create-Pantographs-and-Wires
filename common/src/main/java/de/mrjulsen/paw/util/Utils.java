@@ -16,4 +16,9 @@ public final class Utils {
         CompoundTag nbt = compound.getCompound(name);
         return new Vec3(nbt.getDouble("X"), nbt.getDouble("Y"), nbt.getDouble("Z"));
     }
+
+    public static String capitalize(String s) {
+        if (s == null || s.isEmpty()) return s;
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
 }

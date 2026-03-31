@@ -1,6 +1,7 @@
 package de.mrjulsen.paw.datagen;
 
 import com.tterrag.registrate.providers.*;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.registry.MastMaterial;
 import de.mrjulsen.paw.registry.ModBlockTags;
@@ -63,6 +64,11 @@ public class DataGen {
 
     @ExpectPlatform
     public static void oxidizingItemModel(DataGenContext<Item, BlockItem> context, RegistrateItemModelProvider provider, String prefix, String modelPath) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <E extends ItemLike, R extends E> void existingItemModel(DataGenContext<E, R> context, RegistrateItemModelProvider provider, String model) {
         throw new AssertionError();
     }
 
