@@ -153,6 +153,7 @@
     "item.pantographsandwires.wire.connection_exists": "Connection already exists or one connection point is invalid.",
     "item.pantographsandwires.wire.cannot_create": "Connection already exists or one connection point is invalid.",
     "item.pantographsandwires.wire.not_enough_wire": "You don't have enough wire on your coil.",
+    "item.pantographsandwires.wire.clear_settings": "All connection data cleared.",
     
     "item.pantographsandwires.catenary_headspan.dropper_missing_registration_arm": "Add a registration arm to a dropper to connect catenary wires to it.",
     "item.pantographsandwires.catenary_headspan.dropper_has_registration_arm": "This dropper already has a registration arm attached to it.",
