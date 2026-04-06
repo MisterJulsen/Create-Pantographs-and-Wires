@@ -9,11 +9,7 @@ import com.simibubi.create.foundation.item.TooltipModifier;
 import de.mrjulsen.paw.event.ModClientEvents;
 import de.mrjulsen.paw.event.ModCommonEvents;
 import de.mrjulsen.paw.network.ModNetworkManager;
-import de.mrjulsen.paw.registry.ModBlockEntities;
-import de.mrjulsen.paw.registry.ModBlocks;
-import de.mrjulsen.paw.registry.ModCreativeModeTab;
-import de.mrjulsen.paw.registry.ModItems;
-import de.mrjulsen.paw.registry.ModWireRegistry;
+import de.mrjulsen.paw.registry.*;
 import de.mrjulsen.wires.WiresApi;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
@@ -52,6 +48,7 @@ public final class PantographsAndWires {
         ModBlockEntities.init();
         ModCreativeModeTab.setup();
         ModNetworkManager.init();
+        ModRecipes.init();
 
         CrossPlatform.registerConfig();
         ModCommonEvents.init();

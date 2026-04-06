@@ -2,6 +2,7 @@ package de.mrjulsen.wires.item;
 
 import java.util.List;
 
+import com.simibubi.create.foundation.recipe.ItemCopyingRecipe;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.data.WireSettingsData;
@@ -19,7 +20,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
-public class MultiWireItem extends AbstractWireItemBase {
+public class MultiWireItem extends AbstractWireItemBase implements ItemCopyingRecipe.SupportsItemCopying {
 
     public static final String NBT_TYPE = "SelectedSubtype";
 
