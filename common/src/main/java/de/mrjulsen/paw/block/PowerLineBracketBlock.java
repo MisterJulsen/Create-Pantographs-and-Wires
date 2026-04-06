@@ -106,11 +106,11 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
     public static final EnumProperty<EConnectionType> CONNECTION_TYPE = EnumProperty.create("connection_type", EConnectionType.class);
     public static final EnumProperty<EPostType> POST_TYPE = EnumProperty.create("post_type", EPostType.class);
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
-    
-    private final WeatheringData<PowerLineBracketBlock> weatheringData;
+
+    private final IWeatheringBlock.WeatherData<PowerLineBracketBlock> weatheringData;
 
     
-    public PowerLineBracketBlock(Properties properties, WeatheringData<PowerLineBracketBlock> weatheringData) {
+    public PowerLineBracketBlock(Properties properties, IWeatheringBlock.WeatherData<PowerLineBracketBlock> weatheringData) {
         super(properties
             .noOcclusion()
         );
@@ -225,7 +225,7 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
     }
 
     @Override
-    public @NotNull WeatheringData<PowerLineBracketBlock> getWeatheringData() {
+    public @NotNull IWeatheringBlock.WeatherData<PowerLineBracketBlock> getWeatheringData() {
         return weatheringData;
     }
 

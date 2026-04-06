@@ -34,9 +34,9 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
 
     public static final DirectionProperty DIRECTION = BlockStateProperties.VERTICAL_DIRECTION;
     
-    private final WeatheringData<CantileverBracketVerticalBlock> weatheringData;
+    private final IWeatheringBlock.WeatherData<CantileverBracketVerticalBlock> weatheringData;
 
-    public CantileverBracketVerticalBlock(Properties properties, WeatheringData<CantileverBracketVerticalBlock> weatheringData) {
+    public CantileverBracketVerticalBlock(Properties properties, IWeatheringBlock.WeatherData<CantileverBracketVerticalBlock> weatheringData) {
         super(properties.mapColor(MapColor.METAL));
 
         this.weatheringData = weatheringData;
@@ -49,7 +49,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).get());
     }
     
     @Override
@@ -124,7 +124,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     }
 
     @Override
-    public @NotNull WeatheringData<CantileverBracketVerticalBlock> getWeatheringData() {
+    public @NotNull IWeatheringBlock.WeatherData<CantileverBracketVerticalBlock> getWeatheringData() {
         return weatheringData;
     }
 

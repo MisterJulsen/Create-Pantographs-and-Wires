@@ -21,19 +21,19 @@ public class ConcretePillarBlock extends AbstractMultipartPostBlock implements I
     private static final VoxelShape SHAPE_THICK = Block.box(4, 0, 4, 12, 16, 12);
 
     private final boolean thick;
-    private final WeatheringData<ConcretePillarBlock> weatheringData;
+    private final IWeatheringBlock.WeatherData<ConcretePillarBlock> weatheringData;
 
-    public ConcretePillarBlock(Properties properties, WeatheringData<ConcretePillarBlock> weatheringData, boolean thick) {
+    public ConcretePillarBlock(Properties properties, IWeatheringBlock.WeatherData<ConcretePillarBlock> weatheringData, boolean thick) {
         super(properties.mapColor(MapColor.METAL));
         this.thick = thick;
         this.weatheringData = weatheringData;
     }
 
-    public static ConcretePillarBlock tickPillar(Properties properties, WeatheringData<ConcretePillarBlock> weatheringData) {
+    public static ConcretePillarBlock tickPillar(Properties properties, IWeatheringBlock.WeatherData<ConcretePillarBlock> weatheringData) {
         return new  ConcretePillarBlock(properties, weatheringData, true);
     }
 
-    public static ConcretePillarBlock post(Properties properties, WeatheringData<ConcretePillarBlock> weatheringData) {
+    public static ConcretePillarBlock post(Properties properties, IWeatheringBlock.WeatherData<ConcretePillarBlock> weatheringData) {
         return new  ConcretePillarBlock(properties, weatheringData, false);
     }
 
@@ -65,7 +65,7 @@ public class ConcretePillarBlock extends AbstractMultipartPostBlock implements I
     }
 
     @Override
-    public @NotNull WeatheringData<ConcretePillarBlock> getWeatheringData() {
+    public @NotNull IWeatheringBlock.WeatherData<ConcretePillarBlock> getWeatheringData() {
         return weatheringData;
     }
 

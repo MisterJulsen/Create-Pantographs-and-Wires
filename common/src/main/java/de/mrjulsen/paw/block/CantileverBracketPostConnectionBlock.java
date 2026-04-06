@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.MapColor;
 
 public class CantileverBracketPostConnectionBlock extends CantileverBracketBaseBlock<CantileverBracketPostConnectionBlock> {
 
-    public CantileverBracketPostConnectionBlock(Properties properties, WeatheringData<CantileverBracketPostConnectionBlock> weatheringData) {
+    public CantileverBracketPostConnectionBlock(Properties properties, IWeatheringBlock.WeatherData<CantileverBracketPostConnectionBlock> weatheringData) {
         super(properties.mapColor(MapColor.METAL), weatheringData);
 
         this.registerDefaultState(defaultBlockState()
@@ -29,7 +29,7 @@ public class CantileverBracketPostConnectionBlock extends CantileverBracketBaseB
             boolean supportIsPost = supportState.getBlock() instanceof IHorizontalExtensionConnectable conn && conn.postConnectionType(level, supportState, supportPos, state, currentPos) == EPostType.LATTICE;
             
             if (!supportIsPost) {
-                state = ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).getDefaultState()
+                state = ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).getDefaultState()
                     .setValue(FACING, state.getValue(FACING))
                     .setValue(ROTATION, state.getValue(ROTATION))
                     .setValue(MULTIPART_SEGMENT, state.getValue(MULTIPART_SEGMENT))

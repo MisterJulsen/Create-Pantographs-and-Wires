@@ -21,9 +21,9 @@ public class HBeamMastBlock extends AbstractSimplePostBlock implements IWeatheri
 
     private static final VoxelShape SHAPE = Block.box(5, 0, 5, 11, 16, 11);
 
-    private final WeatheringData<HBeamMastBlock> weatheringData;
+    private final IWeatheringBlock.WeatherData<HBeamMastBlock> weatheringData;
 
-    public HBeamMastBlock(Properties properties, WeatheringData<HBeamMastBlock> weatheringData) {
+    public HBeamMastBlock(Properties properties, IWeatheringBlock.WeatherData<HBeamMastBlock> weatheringData) {
         super(properties.mapColor(MapColor.METAL));
         this.weatheringData = weatheringData;
     }
@@ -52,7 +52,7 @@ public class HBeamMastBlock extends AbstractSimplePostBlock implements IWeatheri
     }
 
     @Override
-    public @NotNull WeatheringData<HBeamMastBlock> getWeatheringData() {
+    public @NotNull IWeatheringBlock.WeatherData<HBeamMastBlock> getWeatheringData() {
         return weatheringData;
     }
 

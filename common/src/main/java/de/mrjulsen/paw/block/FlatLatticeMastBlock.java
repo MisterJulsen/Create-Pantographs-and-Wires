@@ -30,7 +30,7 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements 
     protected static final VoxelShape SHAPE_FOUNDATION_Z = Block.box(4, -4, 2, 12, 4, 14);
     protected static final VoxelShape SHAPE_FOUNDATION_X = Block.box(2, -4, 4, 14, 4, 12);
 
-    private final WeatheringData<FlatLatticeMastBlock> weatheringData;
+    private final IWeatheringBlock.WeatherData<FlatLatticeMastBlock> weatheringData;
 
     protected static record ShapeKey(Direction direction, boolean isFoundation) {
         @Override
@@ -55,7 +55,7 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements 
         return shape;
     }, ShapeKey::hashCode);
     
-    public FlatLatticeMastBlock(Properties properties, WeatheringData<FlatLatticeMastBlock> weatheringData) {
+    public FlatLatticeMastBlock(Properties properties, IWeatheringBlock.WeatherData<FlatLatticeMastBlock> weatheringData) {
         super(properties
             .mapColor(MapColor.METAL)
         );
@@ -88,7 +88,7 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements 
     }
 
     @Override
-    public @NotNull WeatheringData<FlatLatticeMastBlock> getWeatheringData() {
+    public @NotNull IWeatheringBlock.WeatherData<FlatLatticeMastBlock> getWeatheringData() {
         return weatheringData;
     }
 

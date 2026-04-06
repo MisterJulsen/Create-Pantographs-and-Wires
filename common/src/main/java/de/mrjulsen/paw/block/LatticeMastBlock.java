@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.paw.block.abstractions.AbstractMultipartPostBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
+import de.mrjulsen.paw.block.abstractions.weathering.IAgingBlock;
 import de.mrjulsen.paw.block.property.EPostPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -23,9 +24,9 @@ public class LatticeMastBlock extends AbstractMultipartPostBlock implements IWea
     private final VoxelShape BASE_SHAPE = Block.box(2, 0, 2, 14, 16, 14);
     private final VoxelShape FOUNDATION_SHAPE = Shapes.or(BASE_SHAPE, Block.box(0.5d, -5, 0.5d, 15.5d, 4, 15.5d));
 
-    private final WeatheringData<LatticeMastBlock> weatheringData;
+    private final WeatherData<LatticeMastBlock> weatheringData;
 
-    public LatticeMastBlock(Properties properties, WeatheringData<LatticeMastBlock> weatheringData) {
+    public LatticeMastBlock(Properties properties, WeatherData<LatticeMastBlock> weatheringData) {
         super(properties
             .mapColor(MapColor.METAL)
         );
@@ -52,7 +53,7 @@ public class LatticeMastBlock extends AbstractMultipartPostBlock implements IWea
     }
 
     @Override
-    public @NotNull WeatheringData<LatticeMastBlock> getWeatheringData() {
+    public @NotNull WeatherData<LatticeMastBlock> getWeatheringData() {
         return weatheringData;
     }
 
