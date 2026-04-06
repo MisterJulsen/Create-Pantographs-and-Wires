@@ -99,7 +99,7 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
         // --- Set data ---
         if (points.size() < 2) {
             if (!addNewPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points)) {
-                IWireItemBase.clear(stack);
+                IWireItemBase.clear(null, stack);
                 return InteractionResult.FAIL;
             }
         } else if (!customDataNbt.contains(NBT_UPPER_WIRE_HEIGHT) || !customDataNbt.contains(NBT_TOP_WIRE_HEIGHT)) {
@@ -116,11 +116,11 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                         float d = h.getBlockPos().getY() - nB.getBlockPos().getY();
                         if (d < min) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_SMALL, min, max).withStyle(ChatFormatting.RED), true);
-                            IWireItemBase.clear(stack);
+                            IWireItemBase.clear(null, stack);
                             return InteractionResult.FAIL;
                         } else if (d > max) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_LARGE, min, max).withStyle(ChatFormatting.RED), true);
-                            IWireItemBase.clear(stack);
+                            IWireItemBase.clear(null, stack);
                             return InteractionResult.FAIL;
                         }
                         customDataNbt.putFloat(NBT_UPPER_WIRE_HEIGHT, d);
@@ -131,11 +131,11 @@ public class CatenaryHeadspanWireItem implements IPawWireItemBase {
                         double d = h.getBlockPos().getY() - nB.getBlockPos().getY() - p;
                         if (d < min) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_SMALL, min, max).withStyle(ChatFormatting.RED), true);
-                            IWireItemBase.clear(stack);
+                            IWireItemBase.clear(null, stack);
                             return InteractionResult.FAIL;
                         } else if (d > max) { 
                             player.displayClientMessage(TextUtils.translate(KEY_HEIGHT_DIFFERENCE_TOO_LARGE, min, max).withStyle(ChatFormatting.RED), true);
-                            IWireItemBase.clear(stack);
+                            IWireItemBase.clear(null, stack);
                             return InteractionResult.FAIL;
                         }
                         customDataNbt.putDouble(NBT_TOP_WIRE_HEIGHT, d); // TODO was float

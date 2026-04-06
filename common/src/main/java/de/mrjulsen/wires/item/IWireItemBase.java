@@ -1,7 +1,6 @@
 package de.mrjulsen.wires.item;
 
-import de.mrjulsen.paw.components.WireConnectionDataComponent;
-import de.mrjulsen.paw.registry.ModDataComponents;
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
@@ -13,9 +12,8 @@ import de.mrjulsen.wires.WiresApi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-
-import net.minecraft.core.component.DataComponentType;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -45,9 +43,9 @@ public interface IWireItemBase extends IWireInteractableItem {
     
     public static final String NBT_ROOT = "ConnectionData";
     public static final String NBT_POINTS = "CustomPointData";
-    //public static final String NBT_CONNECTOR_TYPE = "ConnectorType";
+    public static final String NBT_CONNECTOR_TYPE = "ConnectorType";
     public static final String NBT_POS = "Pos";
-    //public static final String NBT_WIRE_ID = "WireId";
+    public static final String NBT_WIRE_ID = "WireId";
     public static final String NBT_CUSTOM_DATA = "CustomData";
     public static final String NBT_TOTAL_POINTS_COUNT = "PointsCount";
 
@@ -63,7 +61,7 @@ public interface IWireItemBase extends IWireInteractableItem {
     
 
     default InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
-        return InteractionResultHolder.success(player.getItemInHand(usedHand));
+        return InteractionResultHolder.pass(player.getItemInHand(usedHand));
     }
 
     default InteractionResult useWireOn(UseOnContext context) {        
@@ -85,22 +83,22 @@ public interface IWireItemBase extends IWireInteractableItem {
         return placeWire(level, player, hand, hit, null);
     }
 
-    default boolean addNewPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, WireConnectionDataComponent connectionData, List<CompoundTag> points) {
+    default boolean addNewPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
         NodeData data = createNodeData(level, player, hand, hit);
         if (data == null) {
             return false;
         }
 
         // Additional checks
-        DLStatus testResult = testPoint(level, player, hand, hit, metadata, stack, connectionData, points, data);
+        DLStatus testResult = testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, data);
         if (testResult.flag() != DLStatus.FLAG_OK) {
             player.displayClientMessage(TextUtils.translate(testResult.message(), getWireType(stack).getMaxLength()).withStyle(ChatFormatting.RED), true);
-            clear(stack);
+            clear(null, stack);
             return false;
         }
 
         CompoundTag nodeMeta = new CompoundTag();
-        DLUtils.doIfNotNull(metadata, x -> x.accept(connectionData.customData(), nodeMeta));
+        DLUtils.doIfNotNull(metadata, x -> x.accept(customDataNbt, nodeMeta));
 
         CompoundTag nodeData = data.getRegistryType().wrap(data);
         nodeData.put(NBT_CUSTOM_DATA, nodeMeta);
@@ -108,8 +106,8 @@ public interface IWireItemBase extends IWireInteractableItem {
         return true;
     }
 
-    default DLStatus testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, WireConnectionDataComponent connectionData, List<CompoundTag> points, NodeData nodeData) {
-        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(connectionData));
+    default DLStatus testPoint(Level level, Player player, InteractionHand hand, HitResult hit, BiConsumer<CompoundTag, CompoundTag> metadata, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points, NodeData nodeData) {
+        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
         
         if (!points.isEmpty()) {
             NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
@@ -119,19 +117,19 @@ public interface IWireItemBase extends IWireInteractableItem {
                 return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + WiresApi.MOD_ID + ".wire.same_connector");
             }
         }
-        if (!nodeData.validate(graph, connectionData, points.size())) {
+        if (!nodeData.validate(graph, itemData, points.size())) {
             return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + WiresApi.MOD_ID + ".wire.connector_invalid");
         }
         return new DLStatus(DLStatus.FLAG_OK, 0, "");
     }
 
-    default boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, WireConnectionDataComponent connectionData, List<CompoundTag> points) {
+    default boolean canCreateWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
         return points.size() >= 2;
     }
 
     
-    default CreateEdgeResult createWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, WireConnectionDataComponent connectionData, List<CompoundTag> points) {
-        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(connectionData));
+    default CreateEdgeResult createWire(Level level, Player player, InteractionHand hand, HitResult hit, ItemStack stack, CompoundTag itemData, CompoundTag customDataNbt, List<CompoundTag> points) {
+        WireGraph graph = WireGraphManager.get(level, getWireType(stack).getGraphId(itemData));
         List<NodeData> deserializedData = new ArrayList<>(points.size());
         CompoundTag pointsMeta = new CompoundTag();
 
@@ -142,7 +140,7 @@ public interface IWireItemBase extends IWireInteractableItem {
         }
 
         CompoundTag metaCollection = new CompoundTag();
-        if (!connectionData.customData().isEmpty()) metaCollection.put(NBT_CUSTOM_DATA, connectionData.customData());
+        if (!customDataNbt.isEmpty()) metaCollection.put(NBT_CUSTOM_DATA, customDataNbt);
         if (!pointsMeta.isEmpty()) metaCollection.put(NBT_POINTS, pointsMeta);
         metaCollection.putInt(NBT_TOTAL_POINTS_COUNT, points.size());
 
@@ -156,7 +154,7 @@ public interface IWireItemBase extends IWireInteractableItem {
             };
             player.displayClientMessage(TextUtils.translate(key).withStyle(ChatFormatting.RED), true);
         }
-        clear(stack);
+        clear(null, stack);
         return result;
     }
 
@@ -176,21 +174,30 @@ public interface IWireItemBase extends IWireInteractableItem {
         }
 
         // --- Decode Item data ---
-        WireConnectionDataComponent connectionData = ModDataComponents.getComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, WireConnectionDataComponent::empty);
-        List<CompoundTag> points = new ArrayList<>(connectionData.customPointData());
+        CompoundTag itemData = getNbt(stack);
+        CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
+        List<CompoundTag> points = new ArrayList<>();        
+        if (itemData.contains(NBT_POINTS)) {
+            points.addAll(itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList());
+        }
 
         // --- Set data ---
-        if (!addNewPoint(level, player, hand, hit, metadata, stack, connectionData, points)) {
+        if (!addNewPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points)) {
             return InteractionResult.FAIL;
         }
 
         // --- Save data ---
-        connectionData = new WireConnectionDataComponent(points, connectionData.customData());
-        ModDataComponents.setComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, connectionData);
+        ListTag pointsList = new ListTag();
+        for (CompoundTag p : points) {
+            pointsList.add(p);
+        }
+        itemData.put(NBT_POINTS, pointsList);
+        itemData.put(NBT_CUSTOM_DATA, customDataNbt);
+        setNbt(stack, itemData);
 
         // --- Create wire ---
-        if (canCreateWire(level, player, hand, hit, stack, connectionData, points)) {
-            CreateEdgeResult result = createWire(level, player, hand, hit, stack, connectionData, points);
+        if (canCreateWire(level, player, hand, hit, stack, itemData, customDataNbt, points)) {
+            CreateEdgeResult result = createWire(level, player, hand, hit, stack, itemData, customDataNbt, points);
             if (result.success()) {
                 removeWireItem(level, player, hand, hit, stack, result.edge().get().length());
             }
@@ -210,18 +217,18 @@ public interface IWireItemBase extends IWireInteractableItem {
      * @return The text component which is displayed in the HUD
      */
     default Component createHudInfoText(ItemStack stack, Player player, HitResult hit) {
-        if (!ModDataComponents.hasComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA)) {
+        if (!stack.hasTag() || !stack.getTag().contains(NBT_ROOT)) {
+            return null;
+        }
+        
+        CompoundTag itemData = getNbt(stack);
+        ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
+        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(itemData));
+        if (graph == null || list.isEmpty()) {
             return null;
         }
 
-        WireConnectionDataComponent connectionData = ModDataComponents.getComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, WireConnectionDataComponent::empty);
-        List<CompoundTag> points = new ArrayList<>(connectionData.customPointData());
-        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(connectionData));
-        if (graph == null || points.isEmpty()) {
-            return null;
-        }
-
-        CompoundTag lastPointData = points.getLast();
+        CompoundTag lastPointData = (CompoundTag)list.get(list.size() - 1);
         NodeData node = WiresApi.NODE_DATA_REGISTRY.load(lastPointData);
         Vector3d pos = node.toWorldPos(graph);
 
@@ -239,7 +246,32 @@ public interface IWireItemBase extends IWireInteractableItem {
         ;
     }
 
-    default void clear(ItemStack stack) {
-        ModDataComponents.setComponent(stack, ModDataComponents.WIRE_CONNECTION_DATA, WireConnectionDataComponent.empty());
+
+    public static CompoundTag getNbt(ItemStack stack) {
+        CompoundTag nbt = stack.getOrCreateTag();
+        CompoundTag root;
+        if (!nbt.contains(NBT_ROOT)) {
+            root = new CompoundTag();
+        } else {
+            root = nbt.getCompound(NBT_ROOT);
+        }
+        if (!root.contains(NBT_POINTS)) {
+            root.put(NBT_POINTS, new ListTag());
+        }
+        nbt.put(NBT_ROOT, root);
+        return root;
+    }
+
+    public static void setNbt(ItemStack stack, CompoundTag nbt) {
+        CompoundTag itemNbt = stack.getOrCreateTag();
+        itemNbt.put(NBT_ROOT, nbt);
+        stack.setTag(itemNbt);
+    }
+
+
+    public static void clear(@Nullable Player player, ItemStack stack) {
+        stack.getOrCreateTag().remove(NBT_ROOT);
+        if (player != null)
+            player.displayClientMessage(TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".wire.clear_settings").withStyle(ChatFormatting.RED), true);
     }
 }
