@@ -46,7 +46,8 @@ public class MultiWireItem extends AbstractWireItemBase {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        return getSubType(context.getItemInHand()).useWireOn(context);
+        getSubType(context.getItemInHand()).useWireOn(context);
+        return InteractionResult.SUCCESS;
     }
 
     public static boolean setNbt(ItemStack stack, WireSettingsData data) {
@@ -59,12 +60,20 @@ public class MultiWireItem extends AbstractWireItemBase {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        if (level.isClientSide && player.isShiftKeyDown()) {
+        IPawWireItemBase item = (IPawWireItemBase)getSubType(player.getItemInHand(usedHand));
+        InteractionResultHolder<ItemStack> result = item.useWire(level, player, usedHand);
+        if (result.getResult().consumesAction()) {
+            return result;
+        }
+        if (!result.getResult().consumesAction() && player.isShiftKeyDown()) {
+            IWireItemBase.clear(player, player.getItemInHand(usedHand));
+            return InteractionResultHolder.consume(player.getItemInHand(usedHand));
+        }
+        if (level.isClientSide()) {
             ClientWrapper.showWireTypeSelectionScreen(player.getItemInHand(usedHand));
             return InteractionResultHolder.consume(player.getItemInHand(usedHand));
         }
-        IPawWireItemBase item = (IPawWireItemBase)getSubType(player.getItemInHand(usedHand));
-        return item.useWire(level, player, usedHand);
+        return result;
     }
 
     @Override

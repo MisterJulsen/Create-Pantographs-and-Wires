@@ -77,15 +77,11 @@ public class CatenaryWireItem implements IPawWireItemBase {
                 return IPawWireItemBase.super.useWireOn(context);
             }
         }
-        return InteractionResult.CONSUME;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
-        if (level.isClientSide) {
-            return InteractionResultHolder.consume(player.getItemInHand(usedHand));
-        }
-
         double maxReach = 5D;
         Vector3d eyePos = new Vector3d(player.getEyePosition().x(), player.getEyePosition().y(), player.getEyePosition().z());
         Optional<RaycastHitResult> result = RaycastUtils.rayTrace(
@@ -129,7 +125,7 @@ public class CatenaryWireItem implements IPawWireItemBase {
             });
         });
 
-        return result.isPresent() ? InteractionResultHolder.success(player.getItemInHand(usedHand)) : InteractionResultHolder.fail(player.getItemInHand(usedHand));
+        return result.isPresent() ? InteractionResultHolder.success(player.getItemInHand(usedHand)) : InteractionResultHolder.pass(player.getItemInHand(usedHand));
     }
 
     @Override

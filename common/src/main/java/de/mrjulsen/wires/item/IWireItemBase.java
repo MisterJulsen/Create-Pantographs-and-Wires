@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.item;
 
+import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -59,7 +61,7 @@ public interface IWireItemBase extends IWireInteractableItem {
     
 
     default InteractionResultHolder<ItemStack> useWire(Level level, Player player, InteractionHand usedHand) {
-        return InteractionResultHolder.success(player.getItemInHand(usedHand));
+        return InteractionResultHolder.pass(player.getItemInHand(usedHand));
     }
 
     default InteractionResult useWireOn(UseOnContext context) {        
@@ -91,7 +93,7 @@ public interface IWireItemBase extends IWireInteractableItem {
         DLStatus testResult = testPoint(level, player, hand, hit, metadata, stack, itemData, customDataNbt, points, data);
         if (testResult.flag() != DLStatus.FLAG_OK) {
             player.displayClientMessage(TextUtils.translate(testResult.message(), getWireType(stack).getMaxLength()).withStyle(ChatFormatting.RED), true);
-            clear(stack);
+            clear(null, stack);
             return false;
         }
 
@@ -152,7 +154,7 @@ public interface IWireItemBase extends IWireInteractableItem {
             };
             player.displayClientMessage(TextUtils.translate(key).withStyle(ChatFormatting.RED), true);
         }
-        clear(stack);
+        clear(null, stack);
         return result;
     }
 
@@ -267,7 +269,9 @@ public interface IWireItemBase extends IWireInteractableItem {
     }
 
 
-    public static void clear(ItemStack stack) {
+    public static void clear(@Nullable Player player, ItemStack stack) {
         stack.getOrCreateTag().remove(NBT_ROOT);
+        if (player != null)
+            player.displayClientMessage(TextUtils.translate("item." + PantographsAndWires.MOD_ID + ".wire.clear_settings").withStyle(ChatFormatting.RED), true);
     }
 }
