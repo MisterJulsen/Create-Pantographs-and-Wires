@@ -26,7 +26,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
     public static final BooleanProperty UP = BooleanProperty.create("up");
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
 
-    public CantileverBracketBlock(Properties properties, WeatheringData<CantileverBracketBlock> weatheringData) {
+    public CantileverBracketBlock(Properties properties, IWeatheringBlock.WeatherData<CantileverBracketBlock> weatheringData) {
         super(properties.mapColor(MapColor.METAL), weatheringData);
 
         this.registerDefaultState(defaultBlockState()
@@ -37,7 +37,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).get());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
         boolean supportIsPost = supportState.getBlock() instanceof IHorizontalExtensionConnectable conn && conn.postConnectionType(context.getLevel(), supportState, supportPos, state, context.getClickedPos()) == EPostType.LATTICE && context.getClickedFace().getAxis() != Axis.Y;
         
         if (supportIsPost) {
-            state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).getDefaultState()
+            state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).getDefaultState()
                 .setValue(FACING, context.getClickedFace())
                 .setValue(ROTATION, supportState.getValue(ROTATION))
                 .setValue(MULTIPART_SEGMENT, maxSegments(supportState))
@@ -89,7 +89,7 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
             int segment = state.getValue(MULTIPART_SEGMENT);
             
             if (supportIsPost && supportState.getValue(ROTATION) == rotation) {
-                state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).getDefaultState()
+                state = ModBlocks.CANTILEVER_BRACKET_AT_POST.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).getDefaultState()
                     .setValue(FACING, facing)
                     .setValue(ROTATION, rotation)
                     .setValue(MULTIPART_SEGMENT, segment)

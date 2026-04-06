@@ -30,16 +30,16 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
 
     private final MapCache<VoxelShape, BlockState, ShapeContext> shapeContext = new MapCache<>(c -> makeShape(c), (state) -> Objects.hash(state.getValues().values().toArray(Object[]::new)), ECachingPriority.ALWAYS);
     
-    protected final WeatheringData<T> weatheringData;
+    protected final IWeatheringBlock.WeatherData<T> weatheringData;
 
-    public CantileverBracketBaseBlock(Properties properties, WeatheringData<T> weatheringData) {
+    public CantileverBracketBaseBlock(Properties properties, IWeatheringBlock.WeatherData<T> weatheringData) {
         super(properties);
         this.weatheringData = weatheringData;
     }
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).get());
+        return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).get());
     }
 
     protected VoxelShape makeShape(ShapeContext c) {
@@ -61,7 +61,7 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
         Direction clickedFace = context.getClickedFace();
         
         if ((clickedOnState.getBlock() instanceof CantileverBracketBaseBlock || clickedOnState.getBlock() instanceof CantileverBracketVerticalBlock) && clickedFace.getAxis().isVertical()) {
-            state = ModBlocks.CANTILEVER_BRACKET_VERTICAL.get(new ModBlocks.OxidizingKey(getWeatheringData().weatherState(), getWeatheringData().isWaxed())).getDefaultState()
+            state = ModBlocks.CANTILEVER_BRACKET_VERTICAL.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).getDefaultState()
                 .setValue(CantileverBracketVerticalBlock.DIRECTION, clickedFace)
                 .setValue(FACING, clickedOnState.getValue(FACING))
                 .setValue(ROTATION, clickedOnState.getValue(ROTATION))
@@ -95,7 +95,7 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
     }
 
     @Override
-    public @NotNull WeatheringData<T> getWeatheringData() {
+    public @NotNull IWeatheringBlock.WeatherData<T> getWeatheringData() {
         return weatheringData;
     }
 

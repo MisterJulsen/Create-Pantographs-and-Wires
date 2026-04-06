@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableMap;
@@ -41,6 +42,7 @@ import de.mrjulsen.paw.block.VInsulatorBlock;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock;
 import de.mrjulsen.paw.block.abstractions.IWeatheringBlock.WeatherState;
+import de.mrjulsen.paw.block.abstractions.weathering.IAgingBlock;
 import de.mrjulsen.paw.block.model.BasicRotatableBlockModel;
 import de.mrjulsen.paw.block.property.EInsulatorType;
 import de.mrjulsen.paw.blockentity.PantographInteractionBehaviour;
@@ -61,6 +63,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -69,11 +72,12 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import org.jetbrains.annotations.Nullable;
 
 
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 
-public class ModBlocks {	
+public class ModBlocks {
 
 	private static TagKey<Block> createTag(String name) {
 		return TagKey.create(Registries.BLOCK, new ResourceLocation(PantographsAndWires.MOD_ID, name));
@@ -100,7 +104,7 @@ public class ModBlocks {
 		}
 
 		return 16;
-    }
+	}
 
 	public static final BlockEntry<PantographBlock> PANTOGRAPH = PantographsAndWires.REGISTRATE.block("pantograph", PantographBlock::new)
 			.initialProperties(SharedProperties::softMetal)
@@ -110,7 +114,7 @@ public class ModBlocks {
 			.onRegister(MovementBehaviour.movementBehaviour(new PantographMovementBehaviour()))
 			.onRegister(MovingInteractionBehaviour.interactionBehaviour(new PantographInteractionBehaviour()))
 			.register();
-		
+
 	public static final ImmutableMap<OxidizingKey, BlockEntry<LatticeMastBlock>> LATTICE_MAST = registerOxidizingBlock(
 			"lattice_mast",
 			LatticeMastBlock::new,
@@ -167,7 +171,7 @@ public class ModBlocks {
 					.model((ctx, p) -> DataGen.oxidizingItemModel(ctx, p, "", "block/flat_diagonal_lattice_mast"))
 					.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 					.build()
-	);		
+	);
 
 	public static final ImmutableMap<OxidizingKey, BlockEntry<HBeamMastBlock>> H_BEAM_MAST = registerOxidizingBlock(
 			"h_beam_mast",
@@ -365,7 +369,7 @@ public class ModBlocks {
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.build()
 			.register();
-		
+
 	public static final BlockEntry<InsulatorBlock> INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("insulator_brown", InsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
@@ -423,8 +427,8 @@ public class ModBlocks {
 	public static final BlockEntry<RegistrationArmBlock> REGISTRATION_ARM = PantographsAndWires.REGISTRATE.block("registration_arm", RegistrationArmBlock::new)
 			.blockstate((ctx, p) -> DataGen.registrationArm(ctx, p, "block/registration_arm"))
 			.register();
-		
-    public static void init() {
+
+	public static void init() {
 		registerCantilevers();
 	}
 
@@ -452,25 +456,24 @@ public class ModBlocks {
 			);
 			CANTILEVERS.put(t, cantileverBlock);
 
-			DLUtils.doIfNotNull(cantileverBlock, x -> {	
+			DLUtils.doIfNotNull(cantileverBlock, x -> {
 				final BlockEntry<CantileverBlock> y = x;
 				ItemEntry<CantileverBlockItem<CantileverBlock>> item = PantographsAndWires.REGISTRATE.item(String.format("cantilever_%s", type.getSerializedName()), p -> new CantileverBlockItem<>(y.get(), type, p))
 						.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 						.lang("Cantilever")
 						.tag(ModItemTags.CANTILEVERS)
 						.register()
-				;
+						;
 				CANTILEVER_ITEMS.put(type, item);
 			});
 		}
 	}
 
 	@FunctionalInterface
-	private static interface IOxidizingBlockFactory<T extends Block & IWeatheringBlock<T>> {
-		T create(Properties properties, IWeatheringBlock.WeatheringData<T> weatheringData);
+	public interface IOxidizingBlockFactory<T extends Block & IWeatheringBlock<T>> {
+		T create(BlockBehaviour.Properties properties, IWeatheringBlock.WeatherData<T> ageData);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T extends Block & IWeatheringBlock<T>> ImmutableMap<OxidizingKey, BlockEntry<T>> registerOxidizingBlock(
 			String baseId,
 			IOxidizingBlockFactory<T> factory,
@@ -481,49 +484,139 @@ public class ModBlocks {
 			boolean addGalvanizedState,
 			UnaryOperator<BlockBuilder<T, CreateRegistrate>> commonBuilder
 	) {
-		AtomicReference<BlockEntry<T>> previous = new AtomicReference<>(null);
-		Map<OxidizingKey, BlockEntry<T>> variants = new HashMap<>(WeatherState.values().length);
-		boolean[] waxedState = { false, true };
-		for (boolean waxed : waxedState) {
-			previous.set(null);
-			for (int i = WeatherState.values().length - 1; i >= 0; i--) {
-				final WeatherState s = WeatherState.values()[i];
-				if (s == WeatherState.GALVANIZED && (!addGalvanizedState || waxed)) {
-					continue;
-				}
+		Map<OxidizingKey, BlockEntry<T>> variants = new HashMap<>();
+		Map<WeatherState, AtomicReference<BlockEntry<T>>> waxRefs = new HashMap<>();
 
-				final BlockEntry<T> prev = previous.get();
-				final boolean isWaxed = waxed;
+		// Pass 1: Unwaxed
+		BlockEntry<T> nextEntry = null;
+		for (int i = WeatherState.values().length - 1; i >= 0; i--) {
+			WeatherState s = WeatherState.values()[i];
+			if (s == WeatherState.GALVANIZED && !addGalvanizedState) continue;
 
-				String id = (isWaxed ? "waxed_" : "") + baseId + (!s.getName().isBlank() ? "_" + s.getName() : "");
+			final BlockEntry<T> next = nextEntry;
+			final AtomicReference<BlockEntry<T>> waxRef = new AtomicReference<>(null);
 
-				TagKey[] tags = {
-						(switch (s) {
-							case EXPOSED -> ModBlockTags.EXPOSED_MASTS;
-							case WEATHERED -> ModBlockTags.WEATHERED_MASTS;
-							case OXIDIZED -> ModBlockTags.OXIDIZED_MASTS;
-							case GALVANIZED -> ModBlockTags.GALVANIZED_MASTS;
-							default -> ModBlockTags.RAW_MASTS;
-						}),
-						(isWaxed ? ModBlockTags.WAXED_MASTS : ModBlockTags.UNWAXED_MASTS)
-				};
+			if (s.canOxidize()) {
+				waxRefs.put(s, waxRef);
+			}
 
-				String materialName = material.getWeatherStateName(s);
-				BlockEntry<T> block = commonBuilder.apply(PantographsAndWires.REGISTRATE.block(id, p -> factory.create(p, new IWeatheringBlock.WeatheringData<>(s, () -> prev == null ? null : prev.get(), isWaxed))))
-						.lang((isWaxed ? "Waxed " : "") + (!materialName.isBlank() ? materialName + " " : "") + baseName)
-						.blockstate(blockStateGen)
-						.tag(tags)
-						.tag(tagsFactory.apply(s))
-						.register();
+			final WeatherState previousState = getPreviousWeatherState(s, addGalvanizedState);
 
-				if (Platform.getEnvironment() == Env.CLIENT) {
-					DLBlockModelRegistry.registerForBlock(block::get, BasicRotatableBlockModel::new, BasicRotatableBlockModel::new);
-				}
-				variants.put(new OxidizingKey(s, waxed), block);
-				previous.set(s == WeatherState.GALVANIZED ? null : block);
+			IWeatheringBlock.WeatherData<T> ageData = new IWeatheringBlock.WeatherData<>(
+					s,
+					new IAgingBlock.BlockTransform<>(
+							previousState == null ? null : () -> variants.get(new OxidizingKey(previousState, false)).get(),
+							next == null ? null : next::get,
+							s.canOxidize() ? () -> waxRef.get().get() : null
+					),
+					false
+			);
+
+			BlockEntry<T> block = buildBlock(baseId, factory, baseName, material, blockStateGen, tagsFactory, commonBuilder, s, false, ageData);
+
+			variants.put(new OxidizingKey(s, false), block);
+			if (s != WeatherState.GALVANIZED) {
+				nextEntry = block;
 			}
 		}
+
+		// Pass 2: Waxed (nur canOxidize-States, kein GALVANIZED)
+		BlockEntry<T> nextWaxed = null;
+		for (int i = WeatherState.oxidationStates().length - 1; i >= 0; i--) {
+			WeatherState s = WeatherState.oxidationStates()[i];
+
+			final BlockEntry<T> next = nextWaxed;
+			final BlockEntry<T> unwaxedCounterpart = variants.get(new OxidizingKey(s, false));
+			final WeatherState previousState = getPreviousOxidationState(s);
+
+			IWeatheringBlock.WeatherData<T> ageData = new IWeatheringBlock.WeatherData<>(
+					s,
+					new IAgingBlock.BlockTransform<>(
+							previousState == null ? null : () -> variants.get(new OxidizingKey(previousState, true)).get(),
+							next == null ? null : next::get,
+							unwaxedCounterpart::get
+					),
+					true
+			);
+
+			BlockEntry<T> block = buildBlock(baseId, factory, baseName, material,
+					blockStateGen, tagsFactory, commonBuilder, s, true, ageData);
+
+			waxRefs.get(s).set(block);
+
+			variants.put(new OxidizingKey(s, true), block);
+			nextWaxed = block;
+		}
+
 		return ImmutableMap.copyOf(variants);
+	}
+
+	@Nullable
+	private static WeatherState getPreviousWeatherState(WeatherState s, boolean includeGalvanized) {
+		if (s == WeatherState.GALVANIZED) {
+			return null;
+		}
+		WeatherState[] all = WeatherState.values();
+		int idx = s.ordinal();
+		for (int i = idx - 1; i >= 0; i--) {
+			WeatherState candidate = all[i];
+			if (candidate == WeatherState.GALVANIZED && !includeGalvanized) continue;
+			return candidate;
+		}
+		return null;
+	}
+
+	@Nullable
+	private static WeatherState getPreviousOxidationState(WeatherState s) {
+		WeatherState[] states = WeatherState.oxidationStates();
+		int idx = -1;
+		for (int i = 0; i < states.length; i++) {
+			if (states[i] == s) { idx = i; break; }
+		}
+		return idx <= 0 ? null : states[idx - 1];
+	}
+
+	@SuppressWarnings("all")
+	private static <T extends Block & IWeatheringBlock<T>> BlockEntry<T> buildBlock(
+			String baseId,
+			IOxidizingBlockFactory<T> factory,
+			String baseName,
+			MastMaterial material,
+			NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> blockStateGen,
+			Function<WeatherState, TagKey<Block>[]> tagsFactory,
+			UnaryOperator<BlockBuilder<T, CreateRegistrate>> commonBuilder,
+			WeatherState s,
+			boolean isWaxed,
+			IWeatheringBlock.WeatherData<T> ageData
+	) {
+		String id = (isWaxed ? "waxed_" : "") + baseId + (!s.getName().isBlank() ? "_" + s.getName() : "");
+		String materialName = material.getWeatherStateName(s);
+
+		TagKey[] tags = {
+				switch (s) {
+					case EXPOSED    -> ModBlockTags.EXPOSED_MASTS;
+					case WEATHERED  -> ModBlockTags.WEATHERED_MASTS;
+					case OXIDIZED   -> ModBlockTags.OXIDIZED_MASTS;
+					case GALVANIZED -> ModBlockTags.GALVANIZED_MASTS;
+					default         -> ModBlockTags.RAW_MASTS;
+				},
+				isWaxed ? ModBlockTags.WAXED_MASTS : ModBlockTags.UNWAXED_MASTS
+		};
+
+		BlockEntry<T> block = commonBuilder.apply(
+				PantographsAndWires.REGISTRATE.block(id, p -> factory.create(p, ageData))
+						.lang((isWaxed ? "Waxed " : "") + (!materialName.isBlank() ? materialName + " " : "") + baseName)
+						.blockstate(blockStateGen)
+						.properties(p -> (!isWaxed && s.canOxidize() && s != WeatherState.OXIDIZED) ? p.randomTicks() : p)
+						.tag(tags)
+						.tag(tagsFactory.apply(s))
+		).register();
+
+		if (Platform.getEnvironment() == Env.CLIENT) {
+			DLBlockModelRegistry.registerForBlock(block::get, BasicRotatableBlockModel::new, BasicRotatableBlockModel::new);
+		}
+
+		return block;
 	}
 
 	private static <T extends BlockEntry<? extends Block>> T registerBlockEntityBlock(Collection<NonNullSupplier<? extends Block>> mem, T e) {
