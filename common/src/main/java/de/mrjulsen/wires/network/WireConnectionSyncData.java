@@ -153,13 +153,5 @@ public class WireConnectionSyncData {
     public Collection<WireDecorationData> getDecorations() {
         return decorations;
     }
-
-    public Vector3f getWireAttachPointA() {
-        return Utils.getNbtVector3f(getConnectorAData(), IWireConnector.NBT_WIRE_ATTACH_POINT);
-    }
-
-    public Vector3f getWireAttachPointB() {
-        return Utils.getNbtVector3f(getConnectorBData(), IWireConnector.NBT_WIRE_ATTACH_POINT);
-    }
     
 }

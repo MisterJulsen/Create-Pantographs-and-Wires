@@ -21,6 +21,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -85,38 +86,6 @@ public class CantileverBlock extends AbstractCantileverBlock {
         }
         return Vec3.ZERO;
         
-    }
-
-    @Override
-    public boolean onAttachWireTo(Level level, BlockPos pos, BlockState state, Player player, Optional<UseOnContext> hit, CompoundTag pointData, int index) {
-        /*
-        WireGraph network = WireGraphManager.get(level, PantographsAndWires.WIRE_NET);
-        if (!(level.getBlockEntity(pos) instanceof CantileverBlockEntity be)) {
-            return false;
-        }
-
-        int[] connectionsCount = new int[be.getCantileversCount()];
-        Arrays.fill(connectionsCount, 0);
-        for (WireConnection connection : network.getConnectionsByBlock(pos)) {
-            WireConnectionSyncData sync = connection.getWireConnectionSyncData();
-            ListTag list = sync.getCustomData().getList(CatenaryWireItem.NBT_POINTS, Tag.TAG_COMPOUND);
-            list.forEach(x -> {
-                CompoundTag tag = (CompoundTag)x;
-                BlockPos p = Utils.getNbtBlockPos(tag, CatenaryWireItem.NBT_POS);
-                if (p.equals(pos)) {
-                    int idx = tag.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
-                    connectionsCount[idx] = connectionsCount[idx] + 1;
-                }
-            });
-        }
-        int cantileverIndex = pointData.getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
-        boolean b = connectionsCount[cantileverIndex] < 2;
-        if (!b) {
-            player.displayClientMessage(TextUtils.translate("block." + PantographsAndWires.MOD_ID + ".cantilever.too_many_connections").withStyle(ChatFormatting.RED), true);
-        }
-        return b;
-        */
-        return true;
     }
     
 	@SuppressWarnings("deprecation")
