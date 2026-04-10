@@ -17,22 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public interface IWireConnector {
 
-    @Deprecated
-    public static final String NBT_WIRE_ATTACH_POINT = "WireAttachPoint";
-
     ConnectorDataProvider getConnectorData(Level level, BlockPos pos, CustomData customData, int connectionPointIndex);
-    
-    default boolean onAttachWireTo(Level level, BlockPos pos, BlockState state, Player player, Optional<UseOnContext> hit, CompoundTag pointData, int index) {
-        return true;
-    }
-
-    default boolean beforeCreateWireConnection(Level level, BlockPos pos, BlockState state, Player player, Optional<UseOnContext> hit, CompoundTag itemData, int connectionIndex) {
-        return true;
-    }
-    
-    default boolean afterCreateWireConnection(Level level, BlockPos pos, BlockState state, Player player, Optional<UseOnContext> hit, CompoundTag itemData, int connectionIndex) {
-        return true;
-    }
 
     default boolean canConnectWire(LevelReader level, BlockPos pos, BlockState state) {
         return true;

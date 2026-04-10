@@ -2,6 +2,7 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import de.mrjulsen.paw.block.TensioningDeviceBlock;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -125,7 +126,7 @@ public class CatenaryWireItem implements IPawWireItemBase {
             });
         });
 
-        return result.isPresent() ? InteractionResultHolder.success(player.getItemInHand(usedHand)) : InteractionResultHolder.pass(player.getItemInHand(usedHand));
+        return result.isPresent() ? InteractionResultHolder.success(player.getItemInHand(usedHand)) : InteractionResultHolder.fail(player.getItemInHand(usedHand));
     }
 
     @Override
@@ -152,7 +153,10 @@ public class CatenaryWireItem implements IPawWireItemBase {
         } else if (hit instanceof RaycastHitResult h) {
             pos = h.getBlockPos();
         }
-        if (pos != null && level.getBlockEntity(pos) instanceof WireConnectorBlockEntity && level.getBlockState(pos).getBlock() instanceof ICatenaryWireConnector) {
+        if (pos != null && level.getBlockEntity(pos) instanceof WireConnectorBlockEntity && level.getBlockState(pos).getBlock() instanceof ICatenaryWireConnector connector) {
+            if (!connector.canConnectWire(level, pos, level.getBlockState(pos))) {
+                return null;
+            }
             return new BlockConnectorNodeData(pos);
         }
         return null;
