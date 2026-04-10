@@ -68,7 +68,7 @@ public class GenericBlockNodeData extends NodeData implements INodeDataBlock {
     }
     
     @Override
-    public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
+    public Optional<ConnectorDataProvider> getConnectorCustomData(IWireGraph graph, CustomData customData, int pointIndex) {
         return Optional.of(new BasicConnectorDataProvider(new Vector3d(attachPoint)));
     }
 

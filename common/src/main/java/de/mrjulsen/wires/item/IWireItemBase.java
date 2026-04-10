@@ -1,17 +1,24 @@
 package de.mrjulsen.wires.item;
 
 import de.mrjulsen.paw.PantographsAndWires;
-import de.mrjulsen.wires.graph.WireGraph;
-import de.mrjulsen.wires.graph.WireGraphClient;
-import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.paw.client.VerticalPlaneOutline;
+import de.mrjulsen.wires.graph.*;
 import de.mrjulsen.wires.graph.WireGraph.CreateEdgeResult;
+import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
+import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WiresApi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+
+import de.mrjulsen.wires.graph.data.provider.BasicConnectorDataProvider;
+import de.mrjulsen.wires.graph.data.provider.ConnectorDataProvider;
+import net.createmod.catnip.outliner.Outliner;
+import net.createmod.catnip.theme.Color;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
@@ -244,6 +251,62 @@ public interface IWireItemBase extends IWireInteractableItem {
             .append(TextUtils.text(" \u25A0 ").withStyle(ChatFormatting.GRAY))
             .append(TextUtils.text(String.format("%sm / %sm", distance, getWireType(stack).getMaxLength())).withStyle(distance == maxLength ? ChatFormatting.GOLD : (distance < maxLength ? ChatFormatting.GREEN : ChatFormatting.RED)))
         ;
+    }
+
+    default void renderHelperOutline(ItemStack stack, Player player, HitResult hit) {
+
+        if (!stack.hasTag() || !stack.getTag().contains(NBT_ROOT)) {
+            return;
+        }
+
+        CompoundTag itemData = getNbt(stack);
+        ListTag list = itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND);
+        WireGraphClient graph = WireGraphManager.getClient(player.level(), getWireType(stack).getGraphId(itemData));
+        if (graph == null || list.isEmpty()) {
+            return;
+        }
+
+        CompoundTag lastPointData = (CompoundTag)list.get(0);
+        NodeData node = WiresApi.NODE_DATA_REGISTRY.load(lastPointData);
+
+
+
+        CompoundTag customDataNbt = itemData.getCompound(NBT_CUSTOM_DATA);
+
+        CompoundTag pointsMeta = new CompoundTag();
+        List<CompoundTag> points = new ArrayList<>();
+        if (itemData.contains(NBT_POINTS)) {
+            points.addAll(itemData.getList(NBT_POINTS, Tag.TAG_COMPOUND).stream().map(x -> (CompoundTag)x).toList());
+        }
+        for (int i = 0; i < points.size(); i++) {
+            CompoundTag nodeNbt = points.get(i);
+            pointsMeta.put(String.valueOf(i), nodeNbt.getCompound(NBT_CUSTOM_DATA));
+        }
+
+
+        NodeData selectionNode = createNodeData(player.level(), player, InteractionHand.MAIN_HAND, hit);
+        if (selectionNode != null) {
+            CompoundTag nodeData = selectionNode.getRegistryType().wrap(selectionNode);
+            nodeData.put(NBT_CUSTOM_DATA, new CompoundTag());
+            points.add(nodeData);
+
+            CompoundTag metaCollection = new CompoundTag();
+            if (!customDataNbt.isEmpty()) metaCollection.put(NBT_CUSTOM_DATA, customDataNbt);
+            if (!pointsMeta.isEmpty()) metaCollection.put(NBT_POINTS, pointsMeta);
+            metaCollection.putInt(NBT_TOTAL_POINTS_COUNT, points.size());
+            CustomData data = new CustomData(metaCollection);
+            Optional<ConnectorDataProvider> connectorDataA = node.getConnectorCustomData(graph, data, 0);
+
+            Vector3d posA = node.toWorldPos(graph).add(connectorDataA.map(x -> x.getAsTypeIfMatching(BasicConnectorDataProvider.class).map(BasicConnectorDataProvider::getAttachOffset).orElse(new Vector3d())).orElse(new Vector3d()));
+
+            Optional<ConnectorDataProvider> connectorDataB = selectionNode.getConnectorCustomData(graph, data, 1);
+            Vector3d posB = selectionNode.toWorldPos(graph).add(connectorDataB.map(x -> x.getAsTypeIfMatching(BasicConnectorDataProvider.class).map(BasicConnectorDataProvider::getAttachOffset).orElse(new Vector3d())).orElse(new Vector3d()));
+
+            Outliner.getInstance().showOutline(this, new VerticalPlaneOutline(posA, posB))
+                    .colored(Color.SPRING_GREEN);
+        }
+
+
     }
 
 

@@ -79,7 +79,7 @@ public class DataGenImpl {
         Block block = context.getEntry().getBlock();
         String suffix = "normal";
         if (block instanceof IWeatheringBlock<?> weatheringBlock) {
-            IWeatheringBlock.WeatherState state = weatheringBlock.getWeatheringData().weatherState();
+            IWeatheringBlock.WeatherState state = weatheringBlock.getWeatheringData().ageState();
             suffix = state == IWeatheringBlock.WeatherState.UNAFFECTED ? suffix : state.getName();
         }
         String parentPath = modelPath + "/" + prefix + suffix;
@@ -91,7 +91,7 @@ public class DataGenImpl {
 
         IWeatheringBlock.WeatherState weatherState = IWeatheringBlock.WeatherState.UNAFFECTED;
         if (block instanceof IWeatheringBlock<?> weatheringBlock) {
-            weatherState = weatheringBlock.getWeatheringData().weatherState();
+            weatherState = weatheringBlock.getWeatheringData().ageState();
         }
         final IWeatheringBlock.WeatherState fWeatherState = weatherState;
 
@@ -136,7 +136,7 @@ public class DataGenImpl {
 
         IWeatheringBlock.WeatherState weatherState = IWeatheringBlock.WeatherState.UNAFFECTED;
         if (block instanceof IWeatheringBlock<?> weatheringBlock) {
-            weatherState = weatheringBlock.getWeatheringData().weatherState();
+            weatherState = weatheringBlock.getWeatheringData().ageState();
         }
         final IWeatheringBlock.WeatherState fWeatherState = weatherState;
 
@@ -322,7 +322,7 @@ public class DataGenImpl {
 
         IWeatheringBlock.WeatherState weatherState = IWeatheringBlock.WeatherState.UNAFFECTED;
         if (block instanceof IWeatheringBlock<?> weatheringBlock) {
-            weatherState = weatheringBlock.getWeatheringData().weatherState();
+            weatherState = weatheringBlock.getWeatheringData().ageState();
         }
         final IWeatheringBlock.WeatherState fWeatherState = weatherState;
 

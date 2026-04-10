@@ -13,11 +13,13 @@ import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.model.CantileverModel;
+import de.mrjulsen.paw.client.VerticalPlaneOutline;
 import de.mrjulsen.paw.registry.ModBlocks;
 import de.mrjulsen.wires.graph.DLStatistics;
 import de.mrjulsen.wires.graph.WireGraph;
 import de.mrjulsen.wires.graph.WireGraphClient;
 import de.mrjulsen.wires.graph.WireGraphManager;
+import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.item.IWireItemBase;
 import de.mrjulsen.wires.render.WireRenderer;
 import de.mrjulsen.wires.util.ClientUtils;
@@ -26,6 +28,7 @@ import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.event.events.common.TickEvent;
+import net.createmod.catnip.outliner.Outliner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -81,9 +84,9 @@ public final class ModClientEvents {
             }
         });
 
-        ClientLifecycleEvent.CLIENT_STARTED.register((mc) -> {        
-            if (Minecraft.getInstance() != null) {            
-                ReloadableResourceManager reloadableManager = (ReloadableResourceManager)Minecraft.getInstance().getResourceManager();
+        ClientLifecycleEvent.CLIENT_STARTED.register((mc) -> {
+            if (mc != null) {
+                ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc.getResourceManager();
                 reloadableManager.registerReloadListener(new WireRenderer());
             } else {
                 PantographsAndWires.LOGGER.error("Could not register ReloadableResourceManager.");
@@ -111,7 +114,6 @@ public final class ModClientEvents {
                     if (text != null) {
                         break;
                     }
-
                 }
             }
         });
@@ -123,6 +125,23 @@ public final class ModClientEvents {
                 int scaledHeight = mc.getWindow().getGuiScaledHeight();
                 graphics.drawCenteredString(mc.font, wireHudText.get(), scaledWidth / 2, scaledHeight - 100, 0xFFFFFFFF);
             }
+
+            /*
+            Minecraft mc = Minecraft.getInstance();
+            Player player = mc.player;
+            if (player == null) {
+                return;
+            }
+
+            for (InteractionHand hand : InteractionHand.values()) {
+                ItemStack stack = player.getItemInHand(hand);
+
+                if (stack.getItem() instanceof IWireItemBase item) {
+                    HitResult lookingAt = mc.hitResult;
+                    item.renderHelperOutline(stack, mc.player, lookingAt);
+                }
+            }
+             */
         });
 
         /*

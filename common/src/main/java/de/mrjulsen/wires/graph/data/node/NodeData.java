@@ -73,7 +73,7 @@ public abstract class NodeData implements INBTSerializable {
      *  implementation of the {@link IWireType} and can vary.
      * @return The connector data.
      */
-    public abstract Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex);
+    public abstract Optional<ConnectorDataProvider> getConnectorCustomData(IWireGraph graph, CustomData customData, int pointIndex);
 
     public abstract boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex);
 

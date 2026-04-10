@@ -314,8 +314,8 @@ public class WireGraph extends SavedData implements IWireGraph {
             return new CreateEdgeResult(false, CreateEdgeResult.INVALID_CONNECTOR, Optional.empty());
         }
 
-        Optional<ConnectorDataProvider> connectorDataA = nodeDataA.getConnectorCustomData(this, customData, nodeA, pointStartIndex.getAndIncrement());
-        Optional<ConnectorDataProvider> connectorDataB = nodeDataB.getConnectorCustomData(this, customData, nodeB, pointStartIndex.getAndIncrement());
+        Optional<ConnectorDataProvider> connectorDataA = nodeDataA.getConnectorCustomData(this, customData, pointStartIndex.getAndIncrement());
+        Optional<ConnectorDataProvider> connectorDataB = nodeDataB.getConnectorCustomData(this, customData, pointStartIndex.getAndIncrement());
         if (sendToPlayers /* pending edges */ && (connectorDataA.isEmpty() || connectorDataB.isEmpty())) {
             return new CreateEdgeResult(false, CreateEdgeResult.INVALID_CONNECTOR, Optional.empty());
         }
@@ -520,8 +520,8 @@ public class WireGraph extends SavedData implements IWireGraph {
             CustomData customData = edge.getWireConnectionData().customData();
             WireConnectionData data = new WireConnectionData(
                 customData,
-                nodeA.getData().getConnectorCustomData(this, customData, nodeA, 0).orElse(edge.getWireConnectionData().connectorA()),
-                nodeB.getData().getConnectorCustomData(this, customData, nodeB, 1).orElse(edge.getWireConnectionData().connectorB())
+                nodeA.getData().getConnectorCustomData(this, customData, 0).orElse(edge.getWireConnectionData().connectorA()),
+                nodeB.getData().getConnectorCustomData(this, customData, 1).orElse(edge.getWireConnectionData().connectorB())
             );            
             if (edge.getWireConnectionData().equals(data)) {
                 return node;

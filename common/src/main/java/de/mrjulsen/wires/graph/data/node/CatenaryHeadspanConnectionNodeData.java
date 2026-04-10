@@ -101,12 +101,17 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
     }
 
     @Override
-    public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
+    public Optional<ConnectorDataProvider> getConnectorCustomData(IWireGraph graph, CustomData customData, int pointIndex) {
         if (wireId == null) {
             return Optional.empty();
         }
         WireEdge edge = graph.getEdge(wireId.id());
-        NewWireCollision collision = graph.getCollisionById(wireId.id()).orElse(null);
+        NewWireCollision collision = null;
+        if (graph instanceof WireGraphClient g) {
+            collision = g.getCollisionById(wireId.id()).orElse(null);
+        } else if (graph instanceof WireGraph g) {
+            collision = g.getCollisionById(wireId.id()).orElse(null);
+        }
         Optional<UUID> dropperIdOpt = CatenaryHeadspanWireType.toDropperId(wireId.name());
         if (edge == null || collision == null || dropperIdOpt.isEmpty()) {
             return Optional.empty();
@@ -132,7 +137,7 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
 
         return Optional.of(new CantileverConnectorDataProvider(
             new Vector3d(offsetVec.x(), registrationArm.map(x -> x.getVariant().isAbove() ? DragonLib.BLOCK_PIXEL * 4 : DragonLib.BLOCK_PIXEL * -6).orElse(0f), offsetVec.z()),
-            new Vector3d(dropperWirePoints.vertices()[dropperWirePoints.vertices().length - 1]).sub(node.getPos()).add(0, b ? -InsulatorWireDecoration.RADIUS * 2 : 0, 0)
+            new Vector3d(dropperWirePoints.vertices()[dropperWirePoints.vertices().length - 1]).sub(dropperWirePoints.vertices()[0]).add(0, b ? -InsulatorWireDecoration.RADIUS * 2 : 0, 0)
         ));
     }       
 
