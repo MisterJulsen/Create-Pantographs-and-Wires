@@ -2,6 +2,7 @@ package de.mrjulsen.paw.item;
 
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
+import de.mrjulsen.paw.block.abstractions.ICatenaryWireConnector;
 import de.mrjulsen.paw.client.gui.ModGuiIcons;
 import de.mrjulsen.paw.data.WireHitResult;
 import de.mrjulsen.paw.registry.ModWireRegistry;
@@ -56,7 +57,7 @@ public class FeederWireItem implements IPawWireItemBase {
         } else if (hit instanceof RaycastHitResult h) {
             pos = h.getBlockPos();
         }
-        if (pos != null && level.getBlockEntity(pos) instanceof WireConnectorBlockEntity && !(level.getBlockState(pos).getBlock() instanceof AbstractCantileverBlock)) {
+        if (pos != null && level.getBlockEntity(pos) instanceof WireConnectorBlockEntity && !(level.getBlockState(pos).getBlock() instanceof ICatenaryWireConnector)) {
             return new BlockConnectorNodeData(pos);
         }
         return null;
