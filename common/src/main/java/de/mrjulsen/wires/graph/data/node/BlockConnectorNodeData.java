@@ -3,6 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+import net.minecraft.world.level.Level;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -108,7 +109,7 @@ public class BlockConnectorNodeData extends NodeData {
     }
     
     @Override
-    public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
+    public Optional<ConnectorDataProvider> getConnectorCustomData(IWireGraph graph, CustomData customData, int pointIndex) {
         if (!pending && graph.getLevel().isLoaded(getPos()) && SafeChunkUtils.getSafeBE(graph.getLevel(), getPos()) instanceof WireConnectorBlockEntity && SafeChunkUtils.getBlockState(graph.getLevel(), getPos()).getBlock() instanceof IWireConnector connector) {
             return Optional.of(connector.getConnectorData(graph.getLevel(), getPos(), customData, pointIndex));
         }
@@ -117,7 +118,8 @@ public class BlockConnectorNodeData extends NodeData {
 
     @Override
     public Vector3d toWorldPos(IWireGraph graph) {
-        return new Vector3d(getPos().getX(), getPos().getY(), getPos().getZ());
+        Vector3d v = new Vector3d(getPos().getX(), getPos().getY(), getPos().getZ());
+        return v;
     }
 
     @Override

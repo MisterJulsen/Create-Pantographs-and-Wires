@@ -51,6 +51,11 @@ public class MultiWireItem extends AbstractWireItemBase implements ItemCopyingRe
         return InteractionResult.SUCCESS;
     }
 
+    @Override
+    public void renderHelperOutline(ItemStack stack, Player player, HitResult hit) {
+        getSubType(player.getItemInHand(InteractionHand.MAIN_HAND)).renderHelperOutline(stack, player, hit);
+    }
+
     public static boolean setNbt(ItemStack stack, WireSettingsData data) {
         if (stack.getItem() instanceof MultiWireItem) {
             data.toNbt(stack.getOrCreateTag());

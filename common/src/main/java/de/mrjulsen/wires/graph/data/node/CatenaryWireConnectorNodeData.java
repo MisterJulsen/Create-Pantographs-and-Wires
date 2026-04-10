@@ -90,7 +90,7 @@ public class CatenaryWireConnectorNodeData extends NodeData {
     }
     
     @Override
-    public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
+    public Optional<ConnectorDataProvider> getConnectorCustomData(IWireGraph graph, CustomData customData, int pointIndex) {
         return Optional.of(new CantileverConnectorDataProvider(new Vector3d(0, 0, 0), new Vector3d(0)));
     }       
 

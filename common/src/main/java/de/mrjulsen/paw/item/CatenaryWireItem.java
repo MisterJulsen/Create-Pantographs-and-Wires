@@ -139,9 +139,7 @@ public class CatenaryWireItem implements IPawWireItemBase {
         if (hit instanceof WireHitResult h) {
             Pair<Boolean, WireId> result = CatenaryHeadspanWireType.canConnectCatenary(WireGraphManager.get(level, h.getGraphId()).getEdge(h.getWireId().id()), h.getWireId());
             if (result.getFirst()) {
-                NodeData res = new CatenaryHeadspanConnectionNodeData(result.getSecond());
-                Vector3d d = res.toWorldPos(WireGraphManager.get(level, h.getGraphId()));
-                return res;
+                return new CatenaryHeadspanConnectionNodeData(result.getSecond());
             } else {
                 player.displayClientMessage(txtNoRegistrationArm, true);
                 return null;

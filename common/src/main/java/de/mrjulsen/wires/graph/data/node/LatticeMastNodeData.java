@@ -60,13 +60,13 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
     }
     
     @Override
-    public Optional<ConnectorDataProvider> getConnectorCustomData(WireGraph graph, CustomData customData, WireNode node, int pointIndex) {
+    public Optional<ConnectorDataProvider> getConnectorCustomData(IWireGraph graph, CustomData customData, int pointIndex) {
         return Optional.of(new ConnectorDataProvider.Empty());
     }
 
     @Override
     public Vector3d toWorldPos(IWireGraph graph) {
-        return new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        return new Vector3d(getBlockPos().getCenter().x(), getBlockPos().getCenter().y(), getBlockPos().getCenter().z());
     }
 
     @Override
