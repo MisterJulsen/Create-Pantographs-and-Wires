@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import net.minecraft.core.HolderLookup;
+import com.google.common.collect.ImmutableList;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -39,83 +39,82 @@ import net.minecraft.world.phys.Vec2;
 
 public class CantileverBlockEntity extends WireConnectorBlockEntity implements ICustomModelBlockEntity {
 
-    public static record SubCantileverSetting(byte index, ECantileverRegistrationArmType registrationArm, boolean showBracing) {
+    public static final int VERSION = 1;
 
-        public static final SubCantileverSetting EMPTY = new SubCantileverSetting((byte)-1, ECantileverRegistrationArmType.CENTER, false);
+    public static final float DEFAULT_WIDTH = 2.5f;
+    public static final float DEFAULT_HEIGHT = 1.5f;
+    public static final float DEFAULT_Y = DragonLib.BLOCK_PIXEL * 10;
+    public static final ECantileverInsulatorsPlacement DEFAULT_INSULATOR_PLACEMENT = ECantileverInsulatorsPlacement.BACK;
+    public static final ECantileverRegistrationArmType DEFAULT_REGISTRATION_ARM_TYPE = ECantileverRegistrationArmType.CENTER;
+    public static final EInsulatorType DEFAULT_INSULATOR_TYPE = EInsulatorType.BROWN;
+    public static final boolean DEFAULT_SHOW_BRACING = false;
+    public static final float DEFAULT_CATENARY_HEIGHT = 1;
+    public static final float DEFAULT_POST_CONNECTION_OFFSET = 0;
+    public static final ECantileverMastConnection DEFAULT_MAST_CONNECTION_TYPE = ECantileverMastConnection.NONE;
+
+    public static final byte MAX_CANTILEVERS = 3;
+    public static final float Z_POS = 0.5f;
+    public static final float CANTILEVER_D = 0.5f;
+
+    public static record SubCantileverSetting(
+            ECantileverRegistrationArmType registrationArm,
+            ECantileverInsulatorsPlacement insulatorPlacement,
+            boolean showBracing
+    ) {
+        public static final SubCantileverSetting EMPTY = new SubCantileverSetting(
+                DEFAULT_REGISTRATION_ARM_TYPE,
+                DEFAULT_INSULATOR_PLACEMENT,
+                DEFAULT_SHOW_BRACING
+        );
+
         private static final String NBT_INDEX = "Index";
+        public static final String NBT_INSULATOR_PLACEMENT = "InsulatorPlacement";
+        public static final String NBT_REGISTRATION_ARM_TYPE = "RegistrationArmType";
+        public static final String NBT_SHOW_BRACING = "ShowBracing";
 
         public CompoundTag toNbt() {
             CompoundTag nbt = new CompoundTag();
-            nbt.putByte(NBT_INDEX, index);
             nbt.putInt(NBT_REGISTRATION_ARM_TYPE, registrationArm.ordinal());
+            nbt.putInt(NBT_INSULATOR_PLACEMENT, insulatorPlacement.ordinal());
             nbt.putBoolean(NBT_SHOW_BRACING, showBracing);
             return nbt;
         }
 
         public static SubCantileverSetting fromNbt(CompoundTag nbt) {
             return new SubCantileverSetting(
-                nbt.getByte(NBT_INDEX),
-                ECantileverRegistrationArmType.values()[nbt.getInt(NBT_REGISTRATION_ARM_TYPE)],
-                nbt.getBoolean(NBT_SHOW_BRACING)
+                    ECantileverRegistrationArmType.values()[nbt.getInt(NBT_REGISTRATION_ARM_TYPE)],
+                    ECantileverInsulatorsPlacement.values()[nbt.getInt(NBT_INSULATOR_PLACEMENT)],
+                    nbt.getBoolean(NBT_SHOW_BRACING)
             );
         }
     }
 
-    public static final byte MAX_CANTILEVERS = 3;
-    public static final float Z_POS = 0.5f;
-    public static final float Y_POS = DragonLib.BLOCK_PIXEL * 10;
 
-    public static final ModelProperty<Float> PROPERTY_WIDTH = new ModelProperty<>();
-    public static final ModelProperty<Float> PROPERTY_HEIGHT = new ModelProperty<>();
-    public static final ModelProperty<ECantileverInsulatorsPlacement> PROPERTY_INSULATOR_PLACEMENT = new ModelProperty<>();
-    public static final ModelProperty<ECantileverRegistrationArmType> PROPERTY_REGISTRATION_ARM = new ModelProperty<>();
-    public static final ModelProperty<Boolean> PROPERTY_SHOW_BRACING = new ModelProperty<>();
     public static final ModelProperty<EInsulatorType> PROPERTY_INSULATOR_TYPE = new ModelProperty<>();
-    public static final ModelProperty<Float> PROPERTY_CATENARY_HEIGHT = new ModelProperty<>();
-    public static final ModelProperty<Byte> PROPERTY_CANTILEVERS_COUNT = new ModelProperty<>();
     public static final ModelProperty<ECantileverMastConnection> PROPERTY_MAST_CONNECTION_TYPE = new ModelProperty<>();
+    public static final ModelProperty<Byte> PROPERTY_CANTILEVERS_COUNT = new ModelProperty<>();
     public static final ModelProperty<CantileverData[]> PROPERTY_SUB_CANTILEVER_SETTINGS = new ModelProperty<>();
 
+    public static final String NBT_VERSION = "Version";
     public static final String NBT_WIDTH = "Width";
     public static final String NBT_HEIGHT = "Height";
-    public static final String NBT_INSULATOR_PLACEMENT = "InsulatorPlacement";
-    public static final String NBT_REGISTRATION_ARM_TYPE = "RegistrationArmType";
-    public static final String NBT_SHOW_BRACING = "ShowBracing";
+    public static final String NBT_Y = "YPos";
     public static final String NBT_INSULATOR_TYPE = "InsulatorType";
     public static final String NBT_CATENARY_HEIGHT = "CatenaryHeight";
-    public static final String NBT_USE_SUPPORT_TUBE = "UseSupportTube";
     public static final String NBT_POST_CONNECTION_OFFSET = "PostConnectionOffset";
     public static final String NBT_MAST_CONNECTION_TYPE = "MastConnectionType";
-    public static final String NBT_CANTILEVERS_COUNT = "CantileversCount";
     public static final String NBT_SUB_CANTILEVER_SETTINGS = "SubCantileverSettings";
-
-    public static final float DEFAULT_WIDTH = 2.5f;
-    public static final float DEFAULT_HEIGHT = 1.5f;
-    public static final ECantileverInsulatorsPlacement DEFAULT_INSULATOR_PLACEMENT = ECantileverInsulatorsPlacement.BACK;
-    public static final ECantileverRegistrationArmType DEFAULT_REGISTRATION_ARM_TYPE = ECantileverRegistrationArmType.CENTER;
-    public static final EInsulatorType DEFAULT_INSULATOR_TYPE = EInsulatorType.BROWN;
-    public static final boolean DEFAULT_SHOW_BRACING = false;
-    public static final float DEFAULT_CATENARY_HEIGHT = 1;
-    public static final boolean DEFAULT_USE_SUPPORT_TUBE = false;
-    public static final float DEFAULT_POST_CONNECTION_OFFSET = 0;
-    public static final ECantileverMastConnection DEFAULT_MAST_CONNECTION_TYPE = ECantileverMastConnection.NONE;
-    public static final byte DEFAULT_CANTILEVERS_COUNT = 1;
 
     private float width = DEFAULT_WIDTH;
     private float height = DEFAULT_HEIGHT;
-    private ECantileverInsulatorsPlacement insulatorPlacement = DEFAULT_INSULATOR_PLACEMENT;
-    private ECantileverRegistrationArmType registrationArmType = DEFAULT_REGISTRATION_ARM_TYPE;
+    private float yPos = DEFAULT_Y;
     private EInsulatorType insulatorType = DEFAULT_INSULATOR_TYPE;
-    private boolean showBracing = DEFAULT_SHOW_BRACING;
     private float catenaryHeight = DEFAULT_CATENARY_HEIGHT;
-    private boolean useSupportTube = DEFAULT_USE_SUPPORT_TUBE;
     private float postConnectionOffset = DEFAULT_POST_CONNECTION_OFFSET;
     private ECantileverMastConnection mastConnectionType = DEFAULT_MAST_CONNECTION_TYPE;
-    private byte cantileversCount = DEFAULT_CANTILEVERS_COUNT;
-    private final SubCantileverSetting[] subCanileverSettings;
+    private final List<SubCantileverSetting> subCanileverSettings = new ArrayList<>(MAX_CANTILEVERS);
     {
-        subCanileverSettings = new SubCantileverSetting[MAX_CANTILEVERS - 1];
-        Arrays.fill(subCanileverSettings, SubCantileverSetting.EMPTY);
+        //subCanileverSettings.add(SubCantileverSetting.EMPTY);
     }
 
     private boolean doNotUpdate = false;
@@ -124,21 +123,16 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         super(type, pos, state);
     }
 
-
     @Override
-    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(CompoundTag nbt) {
+        super.saveAdditional(nbt);
         nbt.putFloat(NBT_WIDTH, width);
         nbt.putFloat(NBT_HEIGHT, height);
-        nbt.putInt(NBT_INSULATOR_PLACEMENT, insulatorPlacement.ordinal());
-        nbt.putInt(NBT_REGISTRATION_ARM_TYPE, registrationArmType.ordinal());
-        nbt.putBoolean(NBT_SHOW_BRACING, showBracing);
+        nbt.putFloat(NBT_Y, yPos);
         nbt.putFloat(NBT_INSULATOR_TYPE, insulatorType.ordinal());
         nbt.putFloat(NBT_CATENARY_HEIGHT, catenaryHeight);
         nbt.putFloat(NBT_POST_CONNECTION_OFFSET, postConnectionOffset);
         nbt.putByte(NBT_MAST_CONNECTION_TYPE, mastConnectionType.getIndex());
-        nbt.putByte(NBT_CANTILEVERS_COUNT, cantileversCount);
-        nbt.putBoolean(NBT_USE_SUPPORT_TUBE, useSupportTube);
         ListTag list = new ListTag();
         for (SubCantileverSetting s : subCanileverSettings) {
             list.add((s == null ? SubCantileverSetting.EMPTY : s).toNbt());
@@ -148,26 +142,30 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
         this.width = nbt.getFloat(NBT_WIDTH);
         this.height = nbt.getFloat(NBT_HEIGHT);
-        this.insulatorPlacement = ECantileverInsulatorsPlacement.values()[nbt.getInt(NBT_INSULATOR_PLACEMENT)];
-        this.registrationArmType = ECantileverRegistrationArmType.values()[nbt.getInt(NBT_REGISTRATION_ARM_TYPE)];
-        this.showBracing = nbt.getBoolean(NBT_SHOW_BRACING);
+        this.yPos = nbt.getFloat(NBT_Y);
         this.insulatorType = EInsulatorType.values()[nbt.getInt(NBT_INSULATOR_TYPE)];
         this.catenaryHeight = nbt.getFloat(NBT_CATENARY_HEIGHT);
         this.postConnectionOffset = nbt.getFloat(NBT_POST_CONNECTION_OFFSET);
         this.mastConnectionType = ECantileverMastConnection.getByIndex(nbt.getByte(NBT_MAST_CONNECTION_TYPE));
-        this.cantileversCount = MathUtils.clamp(nbt.getByte(NBT_CANTILEVERS_COUNT), (byte)1, MAX_CANTILEVERS);
-        this.useSupportTube = nbt.getBoolean(NBT_USE_SUPPORT_TUBE);
 
-        Arrays.fill(subCanileverSettings, SubCantileverSetting.EMPTY);
-        for (Tag tag : nbt.getList(NBT_SUB_CANTILEVER_SETTINGS, Tag.TAG_COMPOUND)) {
-            SubCantileverSetting s = SubCantileverSetting.fromNbt((CompoundTag)tag);
-            byte idx = s.index();
-            if (idx < 0 || idx >= subCanileverSettings.length) continue;
-            this.subCanileverSettings[idx] = s;
+        this.subCanileverSettings.clear();
+        if (nbt.contains(SubCantileverSetting.NBT_INSULATOR_PLACEMENT) && nbt.contains(SubCantileverSetting.NBT_REGISTRATION_ARM_TYPE)) {
+            this.subCanileverSettings.add(new SubCantileverSetting(
+                    ECantileverRegistrationArmType.values()[nbt.getInt(SubCantileverSetting.NBT_REGISTRATION_ARM_TYPE)],
+                    ECantileverInsulatorsPlacement.values()[nbt.getInt(SubCantileverSetting.NBT_INSULATOR_PLACEMENT)],
+                    nbt.getBoolean(SubCantileverSetting.NBT_SHOW_BRACING)
+            ));
+        }
+        List<Tag> tags = nbt.getList(NBT_SUB_CANTILEVER_SETTINGS, Tag.TAG_COMPOUND);
+        byte maxCount = nbt.contains("CantileversCount") ? nbt.getByte("CantileversCount") : Byte.MAX_VALUE;
+        for (int i = 0; i < tags.size() && i < maxCount - 1; i++) {
+            CompoundTag tag = (CompoundTag)tags.get(i);
+            SubCantileverSetting s = SubCantileverSetting.fromNbt(tag);
+            subCanileverSettings.add(s);
         }
         updateModel();
         cantileverDataCache.clear();
@@ -181,58 +179,83 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         return doNotUpdate;
     }
 
-    public record CantileverData(float x, float y, float z, float width, float height, float frontYOffset, ECantileverRegistrationArmType registrationArm, float catenaryHeight, float spacing, boolean showBracing) {
-        public static final CantileverData EMPTY = new CantileverData(0, 0, 0, 0, 0, 0, ECantileverRegistrationArmType.CENTER, 0, 0, false);
+    public record CantileverData(float x, float y, float z, float width, float height, float frontYOffset, float catenaryHeight, float spacing, SubCantileverSetting settings) {
+        public static final CantileverData EMPTY = of(SubCantileverSetting.EMPTY);
+
+        public static CantileverData of(SubCantileverSetting settings) {
+            return new CantileverData(0, DEFAULT_Y, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, DEFAULT_CATENARY_HEIGHT, 0, settings);
+        }
+
+        public static CantileverData simple(float y, float width, float height, float catenaryHeight, SubCantileverSetting settings) {
+            return new CantileverData(0, y, 0, width, height, 0, catenaryHeight, 0, settings);
+        }
     }
 
     private CantileverData[] calcCantilevers() {
-        CantileverData[] dataArray = new CantileverData[getCantileversCount()];
+        List<SubCantileverSetting> settings = new ArrayList<>(this.subCanileverSettings);
+        if (settings.isEmpty()) {
+            settings.add(SubCantileverSetting.EMPTY);
+        }
+        CantileverData[] dataArray = new CantileverData[settings.size()];
 
         float spacing = (1.0f / dataArray.length) * 2;
         float z = Z_POS - (spacing * (dataArray.length - 1)) / 2f;
 
         List<Float> xPool = new ArrayList<>(dataArray.length);
         List<Float> yPool = new ArrayList<>(dataArray.length);
-        for (float i = 0, x = -0.5f, y = 0.5f; i < dataArray.length; i++, x += 0.5f, y -= 0.5f) {
-            xPool.add(x);
-            yPool.add(y);
+
+        for (float i = 0; i < dataArray.length; i++) {
+            xPool.add((i - (dataArray.length - 1) / 2f) * CANTILEVER_D);
+            yPool.add((i - 1) * -CANTILEVER_D);
         }
-        final Function<ECantileverRegistrationArmType, Vector2f> getter = (reg) -> {
-            return switch (reg) {
+        final Function<ECantileverRegistrationArmType, Vector2f> getter = (reg) ->
+            switch (reg) {
                 case INNER -> new Vector2f(xPool.remove(0), yPool.remove(0));
                 case OUTER -> new Vector2f(xPool.remove(xPool.size() - 1), yPool.remove(yPool.size() - 1));
                 default -> new Vector2f(
                     xPool.remove(MathUtils.clamp((int)Math.ceil(xPool.size() / 2f), 0, xPool.size() - 1)),
                     yPool.remove(MathUtils.clamp((int)Math.ceil(yPool.size() / 2f), 0, yPool.size() - 1))
                 );
-            };
-        };
+            }
+        ;
 
-        for (int i = 0; i < dataArray.length; i++) {
-            float lw = getWidth();
+        for (byte i = 0; i < dataArray.length; i++) {
+            SubCantileverSetting setting = settings.get(i);
+            float w = getWidth();
             float dY = 0;
-            ECantileverRegistrationArmType lRegisterArm = getRegistrationArmType();
-            boolean lShowBracing = getShowBracing();
-            float lCatenaryHeight = getCatenaryHeight();
+            ECantileverRegistrationArmType registerArm = setting.registrationArm();
+            float catenaryHeight = getCatenaryHeight();
 
-            if (dataArray.length > 1 && subCanileverSettings != null) {
+            if (dataArray.length > 1) {
                 if (i <= 0) {
-                    Vector2f v = getter.apply(getRegistrationArmType());
-                    lw += v.x();
+                    Vector2f v = getter.apply(registerArm);
+                    w += v.x();
                     dY += v.y();
                 } else {
-                    lRegisterArm = subCanileverSettings[i - 1].registrationArm();
-                    lShowBracing = subCanileverSettings[i - 1].showBracing();
-                    Vector2f v = getter.apply(lRegisterArm);
-                    lw += v.x();
+                    Vector2f v = getter.apply(registerArm);
+                    w += v.x();
                     dY += v.y();
-                    if (getRegistrationArmType() != ECantileverRegistrationArmType.CENTER && subCanileverSettings[i - 1].registrationArm() == ECantileverRegistrationArmType.CENTER) {
-                        lCatenaryHeight -= 0.5f;
+                    if (registerArm == ECantileverRegistrationArmType.CENTER && settings.get(0).registrationArm() != ECantileverRegistrationArmType.CENTER) {
+                        catenaryHeight -= 0.5f;
                     }
                 }
             }
 
-            dataArray[i] = new CantileverData(DragonLib.BLOCK_PIXEL * ((16f - getPostConnectionOffset()) / 2), Y_POS, z, lw, getHeight(), dY, lRegisterArm, lCatenaryHeight, spacing, lShowBracing);
+            dataArray[i] = new CantileverData(
+                    DragonLib.BLOCK_PIXEL * ((16f - getPostConnectionOffset()) / 2),
+                    DEFAULT_Y,
+                    z,
+                    w,
+                    getHeight(),
+                    dY,
+                    catenaryHeight,
+                    spacing,
+                    new SubCantileverSetting(
+                            registerArm,
+                            setting.insulatorPlacement(),
+                            setting.showBracing()
+                    )
+            );
             z += spacing;
         }
         return dataArray;
@@ -282,20 +305,11 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
     @Override
     public ModelContext getModelContext() {
-        SubCantileverSetting[] sub = new SubCantileverSetting[subCanileverSettings.length];
-        System.arraycopy(subCanileverSettings, 0, sub, 0, subCanileverSettings.length);
         return ModelContext.builder()
-            .with(PROPERTY_WIDTH, width)
-            .with(PROPERTY_HEIGHT, height)
-            .with(PROPERTY_INSULATOR_PLACEMENT, insulatorPlacement)
-            .with(PROPERTY_REGISTRATION_ARM, registrationArmType)
-            .with(PROPERTY_SHOW_BRACING, showBracing)
-            .with(PROPERTY_INSULATOR_TYPE, insulatorType)
-            .with(PROPERTY_CATENARY_HEIGHT, catenaryHeight)
-            .with(PROPERTY_CANTILEVERS_COUNT, cantileversCount)
-            .with(PROPERTY_MAST_CONNECTION_TYPE, mastConnectionType)
-            .with(PROPERTY_SUB_CANTILEVER_SETTINGS, cantileverDataCache.get())
-            .build();
+                .with(PROPERTY_INSULATOR_TYPE, insulatorType)
+                .with(PROPERTY_MAST_CONNECTION_TYPE, mastConnectionType)
+                .with(PROPERTY_SUB_CANTILEVER_SETTINGS, cantileverDataCache.get())
+                .build();
     }
     
     @Override
@@ -328,33 +342,6 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
     public void setHeight(float height) {
         this.height = height;
-        update();
-    }
-
-    public ECantileverInsulatorsPlacement getInsulatorPlacement() {
-        return insulatorPlacement;
-    }
-
-    public void setInsulatorPlacement(ECantileverInsulatorsPlacement insulatorPlacement) {
-        this.insulatorPlacement = insulatorPlacement;
-        update();
-    }
-
-    public ECantileverRegistrationArmType getRegistrationArmType() {
-        return registrationArmType;
-    }
-
-    public void setRegistrationArmType(ECantileverRegistrationArmType registrationArmType) {
-        this.registrationArmType = registrationArmType;
-        update();
-    }    
-
-    public boolean getShowBracing() {
-        return showBracing;
-    }
-
-    public void setShowBracing(boolean b) {
-        this.showBracing = b;
         update();
     }
 
@@ -393,26 +380,8 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         this.postConnectionOffset = postConnectionOffset;
         update();
     }
-    
-    public boolean shouldUseSupportTube() {
-        return useSupportTube;
-    }
 
-    public void setUseSupportTube(boolean b) {
-        this.useSupportTube = b;
-        update();
-    }
-
-    public byte getCantileversCount() {
-        return cantileversCount;
-    }
-
-    public void setCantileversCount(byte cantileversCount) {
-        this.cantileversCount = cantileversCount;
-        update();
-    }
-
-    public SubCantileverSetting[] getSubCanileverSettings() {
+    public List<SubCantileverSetting> getSubCantileverSettings() {
         return subCanileverSettings;
     }
 

@@ -9,7 +9,6 @@ import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
-import com.simibubi.create.content.contraptions.actors.seat.SeatEntity.Render;
 import com.simibubi.create.foundation.gui.AllIcons;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -27,7 +26,6 @@ import de.mrjulsen.mcdragonlib.client.model.mesh.DLModel.ModelType;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.util.GuiUtils.TextureFillMode;
 import de.mrjulsen.mcdragonlib.data.ETextAlignment;
 import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
 import de.mrjulsen.mcdragonlib.network.NetworkDirection;
@@ -128,7 +126,7 @@ public class CantileverSettingsScreen extends DLWindow {
         this.width = CantileverBlockItem.getWidth(stack);
         this.height = CantileverBlockItem.getHeight(stack);
         this.catenaryHeight = CantileverBlockItem.getCatenaryHeight(stack);
-        this.registrationArmType = CantileverBlockItem.getCantileverType(stack);
+        this.registrationArmType = CantileverBlockItem.getRegistrationArm(stack);
         this.insulatorPlacement = CantileverBlockItem.getInsulatorPlacement(stack);
         this.showBracing = CantileverBlockItem.getShowBracing(stack);
 
@@ -162,9 +160,10 @@ public class CantileverSettingsScreen extends DLWindow {
         CreateEnumSlider<ECantileverRegistrationArmType> registrationArmSlider = new CreateEnumSlider<>(0, AREA2_Y, 50, 20, ECantileverRegistrationArmType.class);
         CreateEnumSlider<SupportTubeEnum> bracingSlider = new CreateEnumSlider<>(0, AREA2_Y, 50, 20, SupportTubeEnum.class);
 
-        CreateSlider cantileverSizeSlider = new CreateSlider(0, AREA1_Y, 60, 14, txtWidth);
-        CreateSlider cantileverHeightSlider = new CreateSlider(0, AREA1_Y, 60, 14, txtHeight);
-        CreateSlider regstrationArmHeightSlider = new CreateSlider(0, AREA1_Y, 60, 14, txtCatenaryHeight);
+        CreateSlider cantileverSizeSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtWidth);
+        CreateSlider cantileverHeightSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtHeight);
+        CreateSlider regstrationArmHeightSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtCatenaryHeight);
+        CreateSlider cantileverYPosSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtCatenaryHeight);
         
         int cbTxtW = Minecraft.getInstance().font.width(txtAdvancedOptions);
         int cbW = 16 + cbTxtW;
@@ -193,7 +192,8 @@ public class CantileverSettingsScreen extends DLWindow {
             bracingSlider.visible.set(advancedOptionCb.checked.get() && width > 1.5f);
             regstrationArmHeightSlider.visible.set(advancedOptionCb.checked.get());
             cantileverHeightSlider.visible.set(advancedOptionCb.checked.get());
-            DLGuiComponent[] area1 = { cantileverSizeSlider, cantileverHeightSlider, regstrationArmHeightSlider };
+            cantileverYPosSlider.visible.set(advancedOptionCb.checked.get());
+            DLGuiComponent[] area1 = { cantileverSizeSlider, cantileverHeightSlider, regstrationArmHeightSlider, cantileverYPosSlider };
             DLGuiComponent[] area2 = { insulatorPlacementSlider, registrationArmSlider, bracingSlider };
             distributeHorizontally(area1, width() / 2);
             distributeHorizontally(area2, width() / 2);
@@ -276,6 +276,8 @@ public class CantileverSettingsScreen extends DLWindow {
         addComponent(regstrationArmHeightSlider);
 
 
+        addComponent(cantileverYPosSlider);
+
         
         insulatorPlacementSlider.value.set((double)this.insulatorPlacement.ordinal());
         insulatorPlacementSlider.addEventListener(DLSlider.ValueChangedEvent.class, (s, e) -> {
@@ -353,13 +355,21 @@ public class CantileverSettingsScreen extends DLWindow {
     
     private void updateModelContext() {
         this.context = ModelContext.builder()
-            .with(CantileverBlockEntity.PROPERTY_WIDTH, width)
-            .with(CantileverBlockEntity.PROPERTY_HEIGHT, height)
-            .with(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT, insulatorPlacement)
-            .with(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM, registrationArmType)
-            .with(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT, catenaryHeight)
-            .with(CantileverBlockEntity.PROPERTY_SHOW_BRACING, showBracing)
-            .build();
+                .with(CantileverBlockEntity.PROPERTY_CANTILEVERS_COUNT, (byte)1)
+                .with(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS, new CantileverBlockEntity.CantileverData[] {
+                        CantileverBlockEntity.CantileverData.simple(
+                                CantileverBlockEntity.DEFAULT_Y,
+                                width,
+                                height,
+                                catenaryHeight,
+                                new CantileverBlockEntity.SubCantileverSetting(
+                                        registrationArmType,
+                                        insulatorPlacement,
+                                        showBracing
+                                )
+                        )
+                })
+                .build();
     }
             
     @Override

@@ -45,39 +45,31 @@ public class CantileverModel extends DLModel {
     
     @Override
     protected Mesh getMesh(ModelType type, BakedModel originalModel, BlockState state, RandomSource random, ModelContext context) {
-        float width = context.has(CantileverBlockEntity.PROPERTY_WIDTH) ? context.get(CantileverBlockEntity.PROPERTY_WIDTH) : 2.5f;
-        float height = context.has(CantileverBlockEntity.PROPERTY_HEIGHT) ? context.get(CantileverBlockEntity.PROPERTY_HEIGHT) : 1.5f;
-        ECantileverInsulatorsPlacement insulatorPlacement = context.has(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT) ? context.get(CantileverBlockEntity.PROPERTY_INSULATOR_PLACEMENT) : ECantileverInsulatorsPlacement.BACK;
-        ECantileverRegistrationArmType registrationArmType = context.has(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM) ? context.get(CantileverBlockEntity.PROPERTY_REGISTRATION_ARM) : ECantileverRegistrationArmType.CENTER;
-        float catenaryHeight = context.has(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) ? context.get(CantileverBlockEntity.PROPERTY_CATENARY_HEIGHT) : 1;
-        boolean showBracing = context.has(CantileverBlockEntity.PROPERTY_SHOW_BRACING) ? context.get(CantileverBlockEntity.PROPERTY_SHOW_BRACING) : false;
-        ECantileverMastConnection mastConnection = context.has(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) ? context.get(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) : ECantileverMastConnection.NONE;
-
-        CantileverData[] subCantilevers = context.has(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) ? context.get(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) : new CantileverData[] {
-            new CantileverData(0, CantileverBlockEntity.Y_POS, 0, width, height, 0, registrationArmType, catenaryHeight, 0, showBracing)
-        };
-
+        ECantileverMastConnection mastConnection = context.has(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) ? context.get(CantileverBlockEntity.PROPERTY_MAST_CONNECTION_TYPE) : CantileverBlockEntity.DEFAULT_MAST_CONNECTION_TYPE;
+        CantileverData[] subCantilevers = context.has(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) ? context.get(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS) : new CantileverData[] { CantileverData.EMPTY };
         BasicMesh mesh = new BasicMesh();
-        float steadyArmOffset = registrationArmType.getOffset();
 
         if (subCantilevers != null) {
-            for (CantileverData data : subCantilevers) {            
+            for (CantileverData data : subCantilevers) {
+                float steadyArmOffset = subCantilevers.length <= 1 ? data.settings().registrationArm().getOffset() : 0;
                 Mesh cantilever = createCantilever(
                     random,
                     data.x(),
                     data.y(),
                     data.z(),
                     data.width(),
-                    height,
+                    data.height(),
                     (state.getBlock() instanceof CantileverBlock block ? block.getInsulatorType() : EInsulatorType.BROWN),
-                    insulatorPlacement,
+                    data.settings().insulatorPlacement(),
                     data.frontYOffset(),
-                    data.registrationArm(),
+                    data.settings().registrationArm(),
                     data.catenaryHeight(),
-                    (data.registrationArm() == ECantileverRegistrationArmType.CENTER && data.catenaryHeight() == 1f && height == 1.5f && data.width() <= 1.5f) ? 12 : 3,
+                    (data.settings().registrationArm() == ECantileverRegistrationArmType.CENTER) ?
+                            ((data.catenaryHeight() == 1f && data.height() == 1.5f && data.width() <= 1.5f) ? 15 : 6)
+                            : 3,
                     0.75f,
                     steadyArmOffset,
-                    data.showBracing()
+                    data.settings().showBracing()
                 );
                 mesh.combine(false, cantilever);
             }

@@ -82,10 +82,6 @@ public class BlockConnectorNodeData extends NodeData {
         return graph.createNode(this, new Vector3d(getPos().getX(), getPos().getY(), getPos().getZ()));
     }
 
-    public boolean isTest() {
-        return (pos.getX() == 1103 && pos.getY() == 8 && pos.getZ() == -4877) || (pos.getX() == -164 && pos.getY() == 77 && pos.getZ() == -56);
-    }
-    
     @Override
     public WireNode updateWireNode(WireGraph graph, WireNode node) {
         boolean wasPending = pending;

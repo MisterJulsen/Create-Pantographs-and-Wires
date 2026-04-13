@@ -221,7 +221,7 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     public List<ItemStack> getDrops(BlockState state, Builder params) {
         BlockEntity blockEntity = (BlockEntity)params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof CantileverBlockEntity be) {
-            byte count = be.getCantileversCount();
+            int count = be.getSubCantileverSettings().size();
             List<ItemStack> items = new ArrayList<>();
             for (byte i = 0; i < count; i++) {
                 items.addAll(super.getDrops(state, params));
