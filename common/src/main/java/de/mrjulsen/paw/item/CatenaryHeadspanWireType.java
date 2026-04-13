@@ -11,7 +11,6 @@ import java.util.UUID;
 
 import de.mrjulsen.paw.registry.*;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import com.eliotlash.mclib.utils.MathUtils;
 
@@ -315,9 +314,9 @@ public class CatenaryHeadspanWireType extends PAWWireType {
 					}
 				}
 
-				boolean centered = CantileverBlockItem.getCantileverType(stack) == ECantileverRegistrationArmType.CENTER;
+				boolean centered = CantileverBlockItem.getRegistrationArm(stack) == ECantileverRegistrationArmType.CENTER;
 				double pos = collision.worldPosToWirePos(WIRE_LOWER_TENSION, collision.getWirePointsOf(WIRE_DROPPER_L + dropperId).vertices()[0]);
-				boolean front = isFront(network.getNode(edge.getNodeAId()).getPos(), network.getNode(edge.getNodeBId()).getPos(), new Vector3d(player.getViewVector(0).x(), player.getViewVector(0).y(), player.getViewVector(0).z())) ^ CantileverBlockItem.getCantileverType(stack) == ECantileverRegistrationArmType.OUTER;
+				boolean front = isFront(network.getNode(edge.getNodeAId()).getPos(), network.getNode(edge.getNodeBId()).getPos(), new Vector3d(player.getViewVector(0).x(), player.getViewVector(0).y(), player.getViewVector(0).z())) ^ CantileverBlockItem.getRegistrationArm(stack) == ECantileverRegistrationArmType.OUTER;
 				RegistrationArmBlock.State state = centered ? State.NORMAL_CENTERED : State.NORMAL;
 				float offset = front ? 1 : 0;
 				offset += (centered ? DragonLib.BLOCK_PIXEL * -0.5f : DragonLib.BLOCK_PIXEL * 3.5f) * (front ? 1 : -1);

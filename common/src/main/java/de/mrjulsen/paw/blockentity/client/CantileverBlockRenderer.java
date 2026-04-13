@@ -29,7 +29,7 @@ public class CantileverBlockRenderer extends SafeBlockEntityRenderer<CantileverB
         graphics.poseStack().pushPose();
 		VertexConsumer consumer = graphics.multiBufferSource().getBuffer(RenderType.lines());
         Vector3f blockPos = new Vector3f(graphics.blockEntity().getBlockPos().getX(), graphics.blockEntity().getBlockPos().getY(), graphics.blockEntity().getBlockPos().getZ());
-        for (int i = 0; i < graphics.blockEntity().getCantileversCount(); i++) {
+        for (int i = 0; i < graphics.blockEntity().getSubCantileverSettings().size(); i++) {
             CantileverShapeData shape = graphics.blockEntity().getCantileverInteractionShape(i);
             RenderSystem.lineWidth(5);
             ClientUtils.renderDebugLine(graphics.poseStack(), consumer, new Vector3f(shape.stayTubeRoot()).sub(blockPos), new Vector3f(shape.front()).sub(blockPos), 0, 1, 0, 1);

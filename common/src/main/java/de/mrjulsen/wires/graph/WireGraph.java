@@ -492,47 +492,46 @@ public class WireGraph extends SavedData implements IWireGraph {
      */
     protected WireNode updateNodeData(WireNode node) {
         WireNode newNode = node.getData().updateWireNode(this, node);
-        if (newNode == null) {
-            return node;
-        }
-        boolean swapNode = !node.getId().equals(newNode.getId());
+        boolean swapNode = newNode != null && !node.getId().equals(newNode.getId());
+
         if (swapNode) {
             if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER]    - NODE SWAPPED: " + node.getId() + " -> " + newNode.getId() + ", with connections: " + node.getConnections().size());
+        } else {
+            newNode = node;
         }
 
-        Iterator<UUID> ids = new ArrayList<>(node.getConnections()).iterator();
-        while (ids.hasNext()) {
-            UUID id = ids.next();
+        for (UUID id : new ArrayList<>(node.getConnections())) {
             if (!hasEdge(id)) {
                 node.removeConnection(id);
                 continue;
             }
-            
-            WireEdge edge = getEdge(id);            
+
+            WireEdge edge = getEdge(id);
             if (swapNode) {
                 replaceNodeInEdge(edge, node.getId(), newNode.getId(), true);
             }
             WireNode nodeA = getNode(edge.getNodeAId());
             WireNode nodeB = getNode(edge.getNodeBId());
-            if (nodeA == null ||nodeB == null) {
-                return node;
+            if (nodeA == null || nodeB == null) {
+                continue;
             }
+
             CustomData customData = edge.getWireConnectionData().customData();
             WireConnectionData data = new WireConnectionData(
-                customData,
-                nodeA.getData().getConnectorCustomData(this, customData, 0).orElse(edge.getWireConnectionData().connectorA()),
-                nodeB.getData().getConnectorCustomData(this, customData, 1).orElse(edge.getWireConnectionData().connectorB())
-            );            
+                    customData,
+                    nodeA.getData().getConnectorCustomData(this, customData, 0).orElse(edge.getWireConnectionData().connectorA()),
+                    nodeB.getData().getConnectorCustomData(this, customData, 1).orElse(edge.getWireConnectionData().connectorB())
+            );
             if (edge.getWireConnectionData().equals(data)) {
-                return node;
+                continue;
             }
-            edge.setWireConnectionData(data);    
+            edge.setWireConnectionData(data);
 
             if (swapNode) {
                 setAndUpdateEdge(edge, false);
             } else {
-                updateEdge(edge, false);
-            }            
+                updateEdge(edge, true);
+            }
         }
         return newNode;
     }

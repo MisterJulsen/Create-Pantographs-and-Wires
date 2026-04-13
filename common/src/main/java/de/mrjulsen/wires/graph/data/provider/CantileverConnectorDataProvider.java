@@ -54,5 +54,9 @@ public class CantileverConnectorDataProvider extends BasicConnectorDataProvider 
         }
         return false;
     }
-    
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s, %s - %s, %s, %s", attachOffset.x, attachOffset.y, attachOffset.z, tensionWireAttachPoint.x, tensionWireAttachPoint.y, tensionWireAttachPoint.z);
+    }
 }

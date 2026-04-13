@@ -22,7 +22,6 @@ public class UpdateCantileverSettingsPacketData extends NetworkPacketData {
     public UpdateCantileverSettingsPacketData(CantileverSettingsData data) {
         super(DLStatus.OK);
         this.data = data;
-
     }
 
     @Override

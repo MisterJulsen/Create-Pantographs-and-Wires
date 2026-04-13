@@ -96,7 +96,7 @@ public class CatenaryWireItem implements IPawWireItemBase {
 
                     RaycastHitResult closest = null;
 
-                    for (int i = 0; i < be.getCantileversCount(); i++) {
+                    for (int i = 0; i < be.getSubCantileverSettings().size(); i++) {
                         CantileverShapeData shapeData = be.getCantileverInteractionShape(i);
                         LineShape[] shapes = new LineShape[] {
                                 new LineShape(shapeData.stayTubeRoot(), shapeData.front(), DragonLib.BLOCK_PIXEL * 2),

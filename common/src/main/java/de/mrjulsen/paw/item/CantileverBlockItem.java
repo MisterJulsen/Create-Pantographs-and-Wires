@@ -13,6 +13,8 @@ import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -58,13 +60,12 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
+
         if (level.getBlockEntity(context.getClickedPos()) instanceof CantileverBlockEntity be) {
             byte allowedCount = AbstractCantileverBlock.additionalCantileversCheck(be.getWidth(), be.getHeight(), be.getCatenaryHeight());
-            byte currentCount = be.getCantileversCount();
+            int currentCount = be.getSubCantileverSettings().size();
             if (currentCount < allowedCount) {
-                byte count = (byte)(be.getCantileversCount() + 1);
-                be.getSubCanileverSettings()[count - 2] = new SubCantileverSetting((byte)(count - 2), getCantileverType(context.getItemInHand()), getShowBracing(context.getItemInHand()));
-                be.setCantileversCount(count);
+                be.getSubCantileverSettings().add(getSubSettings(context.getItemInHand()));
                 be.update();
                 be.setDoNotUpdate(true);
                 return true;
@@ -104,6 +105,7 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             nbt.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, MathUtils.clamp(nbt.getFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT), AbstractCantileverBlock.MIN_HEIGHT, AbstractCantileverBlock.MAX_HEIGHT));
         }
 
+        /*
         if (!nbt.contains(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE)) {
             nbt.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, CantileverBlockEntity.DEFAULT_REGISTRATION_ARM_TYPE.ordinal());
         } else {
@@ -116,6 +118,8 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             nbt.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, MathUtils.clamp(nbt.getInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT), 0, ECantileverInsulatorsPlacement.values().length - 1));
         }
 
+         */
+
         return nbt;
     }
 
@@ -125,54 +129,71 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             nbt.putFloat(CantileverBlockEntity.NBT_WIDTH, data.width());
             nbt.putFloat(CantileverBlockEntity.NBT_HEIGHT, data.height());
             nbt.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, data.catenaryHeight());
-            nbt.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, data.cantileverType().ordinal());
-            nbt.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, data.insulatorPlacement().ordinal());
-            nbt.putBoolean(CantileverBlockEntity.NBT_SHOW_BRACING, data.showBracing());
+
+            ListTag list = new ListTag();
+            list.add(new SubCantileverSetting(
+                    data.cantileverType(),
+                    data.insulatorPlacement(),
+                    data.showBracing()
+            ).toNbt());
+            nbt.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
             return true;
         } 
         return false;
+    }
+
+    private static SubCantileverSetting getSubSettings(ItemStack stack) {
+        CompoundTag nbt = getNbt(stack);
+        if (nbt.contains(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS) && nbt.getTagType(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS) == Tag.TAG_LIST) {
+            return nbt.getList(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, Tag.TAG_COMPOUND)
+                    .stream()
+                    .map(c -> SubCantileverSetting.fromNbt((CompoundTag)c))
+                    .findFirst()
+                    .orElse(SubCantileverSetting.EMPTY);
+        }
+        return SubCantileverSetting.EMPTY;
     }
 
     public static float getWidth(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
             return getNbt(stack).getFloat(CantileverBlockEntity.NBT_WIDTH);
         }
-        return AbstractCantileverBlock.MIN_WIDTH;
+        return CantileverBlockEntity.DEFAULT_WIDTH;
     }
 
     public static float getHeight(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
             return getNbt(stack).getFloat(CantileverBlockEntity.NBT_HEIGHT);
         }
-        return AbstractCantileverBlock.MIN_WIDTH;
+        return CantileverBlockEntity.DEFAULT_HEIGHT;
     }    
 
     public static boolean getShowBracing(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
-            return getNbt(stack).getBoolean(CantileverBlockEntity.NBT_SHOW_BRACING);
+            return getSubSettings(stack).showBracing();
         }
-        return false;
+        return CantileverBlockEntity.DEFAULT_SHOW_BRACING;
     }
 
     public static float getCatenaryHeight(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
             return getNbt(stack).getFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT);
         }
-        return AbstractCantileverBlock.MIN_WIDTH;
+        return CantileverBlockEntity.DEFAULT_CATENARY_HEIGHT;
     }
 
-    public static ECantileverRegistrationArmType getCantileverType(ItemStack stack) {
+    public static ECantileverRegistrationArmType getRegistrationArm(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
-            return ECantileverRegistrationArmType.values()[getNbt(stack).getInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE)];
+            return getSubSettings(stack).registrationArm();
         }
-        return ECantileverRegistrationArmType.def();
+        return CantileverBlockEntity.DEFAULT_REGISTRATION_ARM_TYPE;
     }
 
     public static ECantileverInsulatorsPlacement getInsulatorPlacement(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
-            return ECantileverInsulatorsPlacement.values()[getNbt(stack).getInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT)];
+            return getSubSettings(stack).insulatorPlacement();
         }
-        return ECantileverInsulatorsPlacement.def();
+        return CantileverBlockEntity.DEFAULT_INSULATOR_PLACEMENT;
     }
 
     @Override

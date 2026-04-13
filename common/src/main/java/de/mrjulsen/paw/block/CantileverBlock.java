@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.eliotlash.mclib.utils.MathUtils;
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.property.EInsulatorType;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.lwjgl.system.MathUtil;
 
 public class CantileverBlock extends AbstractCantileverBlock {
 
@@ -52,16 +54,19 @@ public class CantileverBlock extends AbstractCantileverBlock {
             if (customData.hasPoint(index)) {
                 idx = customData.getCustomDataForPoint(index).getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
             }
+            idx = MathUtils.clamp(idx, 0, Math.max(be.getSubCantileverSettings().size() - 1, 0));
 
             CantileverData data = be.getCantileverData()[idx];
+            int count = be.getSubCantileverSettings().size();
             float size = data.width();
             float height = data.catenaryHeight();
             float xOffset = data.z();
-            return switch (be.getRegistrationArmType()) {
-                case OUTER -> new Vec3(xOffset - 0.5f, -height, 0.25f - size);
-                case INNER -> new Vec3(xOffset - 0.5f, -height, 0.75f - size);
-                default ->    new Vec3(xOffset - 0.5f, -height, 0.5f - size);
-            };
+            float z = 0.5f - size;
+
+            if (count <= 1) {
+                z -= data.settings().registrationArm().getOffset();
+            }
+            return new Vec3(xOffset - 0.5f, -height, z);
         }
         return Vec3.ZERO;
     }
@@ -73,16 +78,21 @@ public class CantileverBlock extends AbstractCantileverBlock {
             if (customData.hasPoint(index)) {
                 idx = customData.getCustomDataForPoint(index).getInt(CatenaryWireItem.NBT_CANTILEVER_INDEX);
             }
+            idx = MathUtils.clamp(idx, 0, Math.max(be.getSubCantileverSettings().size() - 1, 0));
 
             CantileverData data = be.getCantileverData()[idx];
             float size = data.width();
             float height = DragonLib.BLOCK_PIXEL * 11f + data.frontYOffset();
             float xOffset = data.z();
+            return new Vec3(xOffset - 0.5f, height, 0.5f - size);
+            /*
             return switch (be.getRegistrationArmType()) {
                 case OUTER -> new Vec3(xOffset - 0.5f, height, 0.5f - size);
                 case INNER -> new Vec3(xOffset - 0.5f, height, 0.5f - size);
                 default ->    new Vec3(xOffset - 0.5f, height, 0.5f - size);
             };
+
+             */
         }
         return Vec3.ZERO;
         
