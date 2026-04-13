@@ -125,6 +125,7 @@
     "gui.pantographsandwires.cantilever_settings.width": "Width",
     "gui.pantographsandwires.cantilever_settings.height": "Height",
     "gui.pantographsandwires.cantilever_settings.catenary_height": "Catenary Height",
+    "gui.pantographsandwires.cantilever_settings.y_offset": "Y Offset",
     "gui.pantographsandwires.cantilever_settings.advanced_settings_option": "Show Advanced Options",
     
     "enum.pantographsandwires.cantilever_registration_arm": "Registration Arm",

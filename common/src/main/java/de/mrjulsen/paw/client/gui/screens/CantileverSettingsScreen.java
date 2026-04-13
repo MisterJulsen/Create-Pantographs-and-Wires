@@ -103,9 +103,11 @@ public class CantileverSettingsScreen extends DLWindow {
     private final MutableComponent txtWidth = TextUtils.translate("gui." + PantographsAndWires.MOD_ID + ".cantilever_settings.width");
     private final MutableComponent txtHeight = TextUtils.translate("gui." + PantographsAndWires.MOD_ID + ".cantilever_settings.height");
     private final MutableComponent txtCatenaryHeight = TextUtils.translate("gui." + PantographsAndWires.MOD_ID + ".cantilever_settings.catenary_height");
-    
+    private final MutableComponent txtYOffset = TextUtils.translate("gui." + PantographsAndWires.MOD_ID + ".cantilever_settings.y_offset");
+
     private float width = 2.5f;
     private float height = 1.5f;
+    private float yOffset = 0;
     private ECantileverRegistrationArmType registrationArmType = ECantileverRegistrationArmType.INNER;
     private ECantileverInsulatorsPlacement insulatorPlacement = ECantileverInsulatorsPlacement.BACK;
     private float catenaryHeight = 1;
@@ -125,6 +127,7 @@ public class CantileverSettingsScreen extends DLWindow {
 
         this.width = CantileverBlockItem.getWidth(stack);
         this.height = CantileverBlockItem.getHeight(stack);
+        this.yOffset = CantileverBlockItem.getYOffset(stack);
         this.catenaryHeight = CantileverBlockItem.getCatenaryHeight(stack);
         this.registrationArmType = CantileverBlockItem.getRegistrationArm(stack);
         this.insulatorPlacement = CantileverBlockItem.getInsulatorPlacement(stack);
@@ -135,7 +138,7 @@ public class CantileverSettingsScreen extends DLWindow {
             return false;
         });
         addEventListener(DLGuiStandardEvents.CloseEvent.class, (s, e) -> {            
-            CantileverSettingsData data = new CantileverSettingsData(width, height, catenaryHeight, registrationArmType, insulatorPlacement, showBracing);
+            CantileverSettingsData data = new CantileverSettingsData(width, height, yOffset, catenaryHeight, registrationArmType, insulatorPlacement, showBracing);
             CantileverBlockItem.setNbt(stack, data);
 
             ModNetworkManager.UPDATE_CANTILEVER_SETTINGS.send(NetworkDirection.toServer(), new UpdateCantileverSettingsPacketData(data));
@@ -163,7 +166,7 @@ public class CantileverSettingsScreen extends DLWindow {
         CreateSlider cantileverSizeSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtWidth);
         CreateSlider cantileverHeightSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtHeight);
         CreateSlider regstrationArmHeightSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtCatenaryHeight);
-        CreateSlider cantileverYPosSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtCatenaryHeight);
+        CreateSlider cantileverYPosSlider = new CreateSlider(0, AREA1_Y, 45, 14, txtYOffset);
         
         int cbTxtW = Minecraft.getInstance().font.width(txtAdvancedOptions);
         int cbW = 16 + cbTxtW;
@@ -276,6 +279,18 @@ public class CantileverSettingsScreen extends DLWindow {
         addComponent(regstrationArmHeightSlider);
 
 
+        cantileverYPosSlider.step.set(0.5d);
+        cantileverYPosSlider.min.set((double)AbstractCantileverBlock.MIN_Y_OFFSET);
+        cantileverYPosSlider.max.set((double)AbstractCantileverBlock.MAX_Y_OFFSET);
+        cantileverYPosSlider.value.set((double)this.yOffset);
+        cantileverYPosSlider.addEventListener(DLSlider.ValueChangedEvent.class, (s, e) -> {
+            this.yOffset = (float)e.value();
+            if (updatingValues.isFalse()) updateFunc.run();
+
+            stateCache.clear();
+            updateModelContext();
+            return false;
+        });
         addComponent(cantileverYPosSlider);
 
         
@@ -355,10 +370,9 @@ public class CantileverSettingsScreen extends DLWindow {
     
     private void updateModelContext() {
         this.context = ModelContext.builder()
-                .with(CantileverBlockEntity.PROPERTY_CANTILEVERS_COUNT, (byte)1)
                 .with(CantileverBlockEntity.PROPERTY_SUB_CANTILEVER_SETTINGS, new CantileverBlockEntity.CantileverData[] {
                         CantileverBlockEntity.CantileverData.simple(
-                                CantileverBlockEntity.DEFAULT_Y,
+                                yOffset,
                                 width,
                                 height,
                                 catenaryHeight,

@@ -127,6 +127,8 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
         if (stack.getItem() instanceof CantileverBlockItem) {
             CompoundTag nbt = getNbt(stack);
             nbt.putFloat(CantileverBlockEntity.NBT_WIDTH, data.width());
+            nbt.putFloat(CantileverBlockEntity.NBT_WIDTH, data.width());
+            nbt.putFloat(CantileverBlockEntity.NBT_Y_OFFSET, data.yOffset());
             nbt.putFloat(CantileverBlockEntity.NBT_HEIGHT, data.height());
             nbt.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, data.catenaryHeight());
 
@@ -166,7 +168,14 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             return getNbt(stack).getFloat(CantileverBlockEntity.NBT_HEIGHT);
         }
         return CantileverBlockEntity.DEFAULT_HEIGHT;
-    }    
+    }
+
+    public static float getYOffset(ItemStack stack) {
+        if (stack != null && stack.getItem() instanceof CantileverBlockItem) {
+            return getNbt(stack).getFloat(CantileverBlockEntity.NBT_Y_OFFSET);
+        }
+        return CantileverBlockEntity.DEFAULT_Y_OFFSET;
+    }
 
     public static boolean getShowBracing(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof CantileverBlockItem) {

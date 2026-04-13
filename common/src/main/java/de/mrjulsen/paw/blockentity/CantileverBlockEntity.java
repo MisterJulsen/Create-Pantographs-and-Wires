@@ -43,7 +43,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
     public static final float DEFAULT_WIDTH = 2.5f;
     public static final float DEFAULT_HEIGHT = 1.5f;
-    public static final float DEFAULT_Y = DragonLib.BLOCK_PIXEL * 10;
+    public static final float DEFAULT_Y_OFFSET = 0;
     public static final ECantileverInsulatorsPlacement DEFAULT_INSULATOR_PLACEMENT = ECantileverInsulatorsPlacement.BACK;
     public static final ECantileverRegistrationArmType DEFAULT_REGISTRATION_ARM_TYPE = ECantileverRegistrationArmType.CENTER;
     public static final EInsulatorType DEFAULT_INSULATOR_TYPE = EInsulatorType.BROWN;
@@ -53,6 +53,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     public static final ECantileverMastConnection DEFAULT_MAST_CONNECTION_TYPE = ECantileverMastConnection.NONE;
 
     public static final byte MAX_CANTILEVERS = 3;
+    public static final float Y_POS = DragonLib.BLOCK_PIXEL * 10;
     public static final float Z_POS = 0.5f;
     public static final float CANTILEVER_D = 0.5f;
 
@@ -92,13 +93,12 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
     public static final ModelProperty<EInsulatorType> PROPERTY_INSULATOR_TYPE = new ModelProperty<>();
     public static final ModelProperty<ECantileverMastConnection> PROPERTY_MAST_CONNECTION_TYPE = new ModelProperty<>();
-    public static final ModelProperty<Byte> PROPERTY_CANTILEVERS_COUNT = new ModelProperty<>();
     public static final ModelProperty<CantileverData[]> PROPERTY_SUB_CANTILEVER_SETTINGS = new ModelProperty<>();
 
     public static final String NBT_VERSION = "Version";
     public static final String NBT_WIDTH = "Width";
     public static final String NBT_HEIGHT = "Height";
-    public static final String NBT_Y = "YPos";
+    public static final String NBT_Y_OFFSET = "YOffset";
     public static final String NBT_INSULATOR_TYPE = "InsulatorType";
     public static final String NBT_CATENARY_HEIGHT = "CatenaryHeight";
     public static final String NBT_POST_CONNECTION_OFFSET = "PostConnectionOffset";
@@ -107,15 +107,12 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
     private float width = DEFAULT_WIDTH;
     private float height = DEFAULT_HEIGHT;
-    private float yPos = DEFAULT_Y;
+    private float yOffset = DEFAULT_Y_OFFSET;
     private EInsulatorType insulatorType = DEFAULT_INSULATOR_TYPE;
     private float catenaryHeight = DEFAULT_CATENARY_HEIGHT;
     private float postConnectionOffset = DEFAULT_POST_CONNECTION_OFFSET;
     private ECantileverMastConnection mastConnectionType = DEFAULT_MAST_CONNECTION_TYPE;
     private final List<SubCantileverSetting> subCanileverSettings = new ArrayList<>(MAX_CANTILEVERS);
-    {
-        //subCanileverSettings.add(SubCantileverSetting.EMPTY);
-    }
 
     private boolean doNotUpdate = false;
 
@@ -128,7 +125,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         super.saveAdditional(nbt);
         nbt.putFloat(NBT_WIDTH, width);
         nbt.putFloat(NBT_HEIGHT, height);
-        nbt.putFloat(NBT_Y, yPos);
+        nbt.putFloat(NBT_Y_OFFSET, yOffset);
         nbt.putFloat(NBT_INSULATOR_TYPE, insulatorType.ordinal());
         nbt.putFloat(NBT_CATENARY_HEIGHT, catenaryHeight);
         nbt.putFloat(NBT_POST_CONNECTION_OFFSET, postConnectionOffset);
@@ -146,7 +143,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         super.load(nbt);
         this.width = nbt.getFloat(NBT_WIDTH);
         this.height = nbt.getFloat(NBT_HEIGHT);
-        this.yPos = nbt.getFloat(NBT_Y);
+        this.yOffset = nbt.getFloat(NBT_Y_OFFSET);
         this.insulatorType = EInsulatorType.values()[nbt.getInt(NBT_INSULATOR_TYPE)];
         this.catenaryHeight = nbt.getFloat(NBT_CATENARY_HEIGHT);
         this.postConnectionOffset = nbt.getFloat(NBT_POST_CONNECTION_OFFSET);
@@ -183,11 +180,11 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
         public static final CantileverData EMPTY = of(SubCantileverSetting.EMPTY);
 
         public static CantileverData of(SubCantileverSetting settings) {
-            return new CantileverData(0, DEFAULT_Y, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, DEFAULT_CATENARY_HEIGHT, 0, settings);
+            return new CantileverData(0, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, DEFAULT_CATENARY_HEIGHT, 0, settings);
         }
 
-        public static CantileverData simple(float y, float width, float height, float catenaryHeight, SubCantileverSetting settings) {
-            return new CantileverData(0, y, 0, width, height, 0, catenaryHeight, 0, settings);
+        public static CantileverData simple(float yOffset, float width, float height, float catenaryHeight, SubCantileverSetting settings) {
+            return new CantileverData(0, yOffset, 0, width, height, 0, catenaryHeight, 0, settings);
         }
     }
 
@@ -243,7 +240,7 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
             dataArray[i] = new CantileverData(
                     DragonLib.BLOCK_PIXEL * ((16f - getPostConnectionOffset()) / 2),
-                    DEFAULT_Y,
+                    yOffset,
                     z,
                     w,
                     getHeight(),
@@ -278,9 +275,9 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
 
         float size = cantilever.width();
         float z = -cantilever.x();
-        float y = cantilever.y();
+        float y = Y_POS - cantilever.y();
         float yFront = y + cantilever.frontYOffset();
-        float height = cantilever.height() - 0.5f;
+        float height = cantilever.height() - 0.5f + cantilever.y();
         float xOffset = cantilever.z();
         Vector3f a = new Vector3f(xOffset - 0.5f, y, 0.5f - z);
         Vector3f b = new Vector3f(xOffset - 0.5f, yFront, 0.5f - size);
@@ -379,6 +376,10 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     public void setPostConnectionOffset(float postConnectionOffset) {
         this.postConnectionOffset = postConnectionOffset;
         update();
+    }
+
+    public float getYOffset() {
+        return yOffset;
     }
 
     public List<SubCantileverSetting> getSubCantileverSettings() {
