@@ -55,15 +55,15 @@ public class CantileverModel extends DLModel {
                 Mesh cantilever = createCantilever(
                     random,
                     data.x(),
-                    data.y(),
+                    CantileverBlockEntity.Y_POS - data.y(),
                     data.z(),
                     data.width(),
-                    data.height(),
+                    data.height() + data.y(),
                     (state.getBlock() instanceof CantileverBlock block ? block.getInsulatorType() : EInsulatorType.BROWN),
                     data.settings().insulatorPlacement(),
                     data.frontYOffset(),
                     data.settings().registrationArm(),
-                    data.catenaryHeight(),
+                    data.catenaryHeight() + data.y(),
                     (data.settings().registrationArm() == ECantileverRegistrationArmType.CENTER) ?
                             ((data.catenaryHeight() == 1f && data.height() == 1.5f && data.width() <= 1.5f) ? 15 : 6)
                             : 3,
@@ -84,24 +84,24 @@ public class CantileverModel extends DLModel {
 
                 if (cantileversCount <= 1 && mastConnection == ECantileverMastConnection.HINGE) {
                     Vector3f size = new Vector3f(DragonLib.BLOCK_PIXEL * 3, DragonLib.BLOCK_PIXEL * 3, DragonLib.BLOCK_PIXEL * 4);
-                    mastBracketTop = new CubeMesh(new Vector3f(-data.x() - DragonLib.BLOCK_PIXEL * 2, data.y() - DragonLib.BLOCK_PIXEL, 0.5f - DragonLib.BLOCK_PIXEL * 2), size);
+                    mastBracketTop = new CubeMesh(new Vector3f(-data.x() - DragonLib.BLOCK_PIXEL * 2, CantileverBlockEntity.Y_POS - data.y() - DragonLib.BLOCK_PIXEL, 0.5f - DragonLib.BLOCK_PIXEL * 2), size);
                     mastBracketTop.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();
                     });
-                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x() - DragonLib.BLOCK_PIXEL * 2, -data.height(), 0.5f - DragonLib.BLOCK_PIXEL * 2), size);
+                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x() - DragonLib.BLOCK_PIXEL * 2, -data.height() - data.y(), 0.5f - DragonLib.BLOCK_PIXEL * 2), size);
                     mastBracketBottom.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();
                     });
                 } else {
                     Vector3f size = new Vector3f(DragonLib.BLOCK_PIXEL * 1, DragonLib.BLOCK_PIXEL * 3, w + DragonLib.BLOCK_PIXEL * 6);
-                    mastBracketTop = new CubeMesh(new Vector3f(-data.x(), data.y() - DragonLib.BLOCK_PIXEL, 0.5f - (w / 2f) - DragonLib.BLOCK_PIXEL * 3), size);
+                    mastBracketTop = new CubeMesh(new Vector3f(-data.x(), CantileverBlockEntity.Y_POS - data.y() - DragonLib.BLOCK_PIXEL, 0.5f - (w / 2f) - DragonLib.BLOCK_PIXEL * 3), size);
                     mastBracketTop.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();
                     });
-                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x(), -data.height(), 0.5f - (w / 2f) - DragonLib.BLOCK_PIXEL * 3), size);
+                    mastBracketBottom = new CubeMesh(new Vector3f(-data.x(), -data.height() - data.y(), 0.5f - (w / 2f) - DragonLib.BLOCK_PIXEL * 3), size);
                     mastBracketBottom.getFaces().forEach(x -> {
                         x.setTexture(METAL);
                         x.autoUV();

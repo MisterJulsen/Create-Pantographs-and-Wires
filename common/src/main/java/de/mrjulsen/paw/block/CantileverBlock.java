@@ -60,7 +60,7 @@ public class CantileverBlock extends AbstractCantileverBlock {
             CantileverData data = be.getCantileverData()[idx];
             int count = be.getSubCantileverSettings().size();
             float size = data.width();
-            float height = data.catenaryHeight();
+            float height = data.catenaryHeight() + be.getYOffset();
             float xOffset = data.z();
             float z = 0.5f - size;
 
@@ -83,17 +83,9 @@ public class CantileverBlock extends AbstractCantileverBlock {
 
             CantileverData data = be.getCantileverData()[idx];
             float size = data.width();
-            float height = DragonLib.BLOCK_PIXEL * 11f + data.frontYOffset();
+            float height = CantileverBlockEntity.Y_POS + DragonLib.BLOCK_PIXEL + data.frontYOffset() - be.getYOffset();
             float xOffset = data.z();
             return new Vec3(xOffset - 0.5f, height, 0.5f - size);
-            /*
-            return switch (be.getRegistrationArmType()) {
-                case OUTER -> new Vec3(xOffset - 0.5f, height, 0.5f - size);
-                case INNER -> new Vec3(xOffset - 0.5f, height, 0.5f - size);
-                default ->    new Vec3(xOffset - 0.5f, height, 0.5f - size);
-            };
-
-             */
         }
         return Vec3.ZERO;
         

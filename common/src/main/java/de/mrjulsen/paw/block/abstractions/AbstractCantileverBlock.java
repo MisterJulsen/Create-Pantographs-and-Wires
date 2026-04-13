@@ -42,6 +42,8 @@ public abstract class AbstractCantileverBlock extends AbstractSupportedRotatable
     public static final float MAX_WIDTH = 6.5f;
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 3f;
+    public static final float MIN_Y_OFFSET = 0f;
+    public static final float MAX_Y_OFFSET = 0.5f;
     public static final byte MAX_CANTILEVERS = 3;
 
     public record SliderConstraints(float min, float max, float step) {}

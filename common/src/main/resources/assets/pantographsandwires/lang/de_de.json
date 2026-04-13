@@ -126,6 +126,7 @@
     "gui.pantographsandwires.cantilever_settings.width": "Breite",
     "gui.pantographsandwires.cantilever_settings.height": "Höhe",
     "gui.pantographsandwires.cantilever_settings.catenary_height": "Oberleitungshöhe",
+    "gui.pantographsandwires.cantilever_settings.y_offset": "Y-Verschiebung",
     "gui.pantographsandwires.cantilever_settings.advanced_settings_option": "Erweitere Optionen anzeigen",
     
     "enum.pantographsandwires.cantilever_registration_arm": "Seitenhalter",
