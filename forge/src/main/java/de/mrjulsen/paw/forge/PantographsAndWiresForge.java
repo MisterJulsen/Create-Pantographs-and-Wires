@@ -18,11 +18,6 @@ public class PantographsAndWiresForge {
         EventBuses.registerModEventBus(PantographsAndWires.MOD_ID, eventBus);
         PantographsAndWires.load();
         PantographsAndWires.REGISTRATE.registerEventListeners(eventBus);
-        eventBus.addListener(this::gatherData);
         PantographsAndWires.init();
-    }
-
-    private void gatherData(GatherDataEvent event) {
-        //PantographsAndWires.REGISTRATE.addDataGenerator(event.getGenerator(), event.getExistingFileHelper().);
     }
 }

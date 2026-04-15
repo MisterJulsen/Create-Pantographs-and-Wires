@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WireTypeRegistry;
