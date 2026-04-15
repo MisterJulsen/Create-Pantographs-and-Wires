@@ -9,7 +9,7 @@ loom {
 sourceSets {
     main {
         resources.srcDir file("src/generated/resources")
-        resources.srcDir file("src/main/resources")
+        //resources.srcDir file("src/main/resources")
     }
 }
 
