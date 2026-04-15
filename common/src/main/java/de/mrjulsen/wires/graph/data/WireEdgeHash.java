@@ -20,7 +20,15 @@ public class WireEdgeHash {
     private final int hash;
 
     public WireEdgeHash(CustomData customData, NodeData nodeA, NodeData nodeB) {
-        this.data = compressStringToGzipBytes(customData.nbt(), nodeA.serializeNbt(), nodeB.serializeNbt());
+        CompoundTag pointA = new CompoundTag();
+        pointA.put("Data", nodeA.serializeNbt());
+        pointA.put("CustomData", customData.getCustomDataForPoint(0));
+
+        CompoundTag pointB = new CompoundTag();
+        pointB.put("Data", nodeB.serializeNbt());
+        pointB.put("CustomData", customData.getCustomDataForPoint(1));
+
+        this.data = compressStringToGzipBytes(customData.getCommonData(), pointA, pointB);
         this.hash = Arrays.hashCode(data);
     }
 
@@ -47,6 +55,7 @@ public class WireEdgeHash {
         }
         Collections.sort(parts);
         String s = String.join("", parts);
+        System.out.println(s);
         return s.getBytes(StandardCharsets.UTF_8);
     }
 

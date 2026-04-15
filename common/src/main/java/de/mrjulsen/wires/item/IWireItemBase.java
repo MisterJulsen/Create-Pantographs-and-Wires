@@ -4,8 +4,6 @@ import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.VerticalPlaneOutline;
 import de.mrjulsen.wires.graph.*;
 import de.mrjulsen.wires.graph.WireGraph.CreateEdgeResult;
-import de.mrjulsen.wires.graph.data.node.BlockConnectorNodeData;
-import de.mrjulsen.wires.graph.data.node.GenericBlockNodeData;
 import de.mrjulsen.wires.graph.data.node.NodeData;
 import de.mrjulsen.wires.IWireType;
 import de.mrjulsen.wires.WiresApi;
@@ -22,7 +20,6 @@ import net.createmod.catnip.theme.Color;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.data.DLStatus;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
@@ -153,6 +150,7 @@ public interface IWireItemBase extends IWireInteractableItem {
 
         MutableInt idx = new MutableInt();
         CreateEdgeResult result = graph.createEdge(getWireType(stack), new CustomData(metaCollection), deserializedData.get(0), deserializedData.get(1), idx, true);
+
         if (!result.success()) {
             String key = switch (result.code()) {
                 case CreateEdgeResult.CONNECTION_EXISTS -> "item." + WiresApi.MOD_ID + ".wire.connection_already_exists";
