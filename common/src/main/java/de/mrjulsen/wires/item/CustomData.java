@@ -4,8 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 
 public record CustomData(CompoundTag nbt) {
     
-    private static final String NBT_POINTS = "CustomPointData";
-    private static final String NBT_CUSTOM_DATA = "CustomData";
+    public static final String NBT_POINTS = "CustomPointData";
+    public static final String NBT_CUSTOM_DATA = "CustomData";
 
     public CompoundTag getCustomDataForPoint(int index) {
         if (nbt().contains(NBT_POINTS)) {
