@@ -53,7 +53,11 @@ public class RegistrationArmBlock extends Block {
     public static final BooleanProperty MIRRORED = BooleanProperty.create("mirrored");
     
     public RegistrationArmBlock(Properties p) {
-        super(p);
+        super(p
+                .noCollission()
+                .noOcclusion()
+                .noLootTable()
+        );
 
         this.registerDefaultState(defaultBlockState()
             .setValue(REGISTRATION_ARM, State.NORMAL)

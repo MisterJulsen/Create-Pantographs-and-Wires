@@ -60,6 +60,10 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
+        if (!(context.getItemInHand().getItem() instanceof CantileverBlockItem item)) {
+            return false;
+        }
+        getNbt(context.getItemInHand()); // To init the nbt data
 
         if (level.getBlockEntity(context.getClickedPos()) instanceof CantileverBlockEntity be) {
             byte allowedCount = AbstractCantileverBlock.additionalCantileversCheck(be.getWidth(), be.getHeight(), be.getCatenaryHeight());
@@ -99,26 +103,27 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
             nbt.putFloat(CantileverBlockEntity.NBT_HEIGHT, MathUtils.clamp(nbt.getFloat(CantileverBlockEntity.NBT_HEIGHT), AbstractCantileverBlock.MIN_HEIGHT, AbstractCantileverBlock.MAX_HEIGHT));
         }
 
+        if (!nbt.contains(CantileverBlockEntity.NBT_Y_OFFSET)) {
+            nbt.putFloat(CantileverBlockEntity.NBT_Y_OFFSET, CantileverBlockEntity.DEFAULT_Y_OFFSET);
+        } else {
+            nbt.putFloat(CantileverBlockEntity.NBT_Y_OFFSET, MathUtils.clamp(nbt.getFloat(CantileverBlockEntity.NBT_Y_OFFSET), AbstractCantileverBlock.MIN_Y_OFFSET, AbstractCantileverBlock.MAX_HEIGHT));
+        }
+
         if (!nbt.contains(CantileverBlockEntity.NBT_CATENARY_HEIGHT)) {
             nbt.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, CantileverBlockEntity.DEFAULT_CATENARY_HEIGHT);
         } else {            
             nbt.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, MathUtils.clamp(nbt.getFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT), AbstractCantileverBlock.MIN_HEIGHT, AbstractCantileverBlock.MAX_HEIGHT));
         }
 
-        /*
-        if (!nbt.contains(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE)) {
-            nbt.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, CantileverBlockEntity.DEFAULT_REGISTRATION_ARM_TYPE.ordinal());
-        } else {
-            nbt.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, MathUtils.clamp(nbt.getInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE), 0, ECantileverRegistrationArmType.values().length - 1));
+        if (!nbt.contains(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS) || nbt.getTagType(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS) != Tag.TAG_LIST || nbt.getList(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, Tag.TAG_COMPOUND).size() <= 0) {
+            ListTag list = new ListTag();
+            list.add(new SubCantileverSetting(
+                    CantileverBlockEntity.DEFAULT_REGISTRATION_ARM_TYPE,
+                    CantileverBlockEntity.DEFAULT_INSULATOR_PLACEMENT,
+                    CantileverBlockEntity.DEFAULT_SHOW_BRACING
+            ).toNbt());
+            nbt.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
         }
-
-        if (!nbt.contains(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT)) {
-            nbt.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, CantileverBlockEntity.DEFAULT_INSULATOR_PLACEMENT.ordinal());
-        } else {
-            nbt.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, MathUtils.clamp(nbt.getInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT), 0, ECantileverInsulatorsPlacement.values().length - 1));
-        }
-
-         */
 
         return nbt;
     }
@@ -126,7 +131,6 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
     public static boolean setNbt(ItemStack stack, de.mrjulsen.paw.data.CantileverSettingsData data) {
         if (stack.getItem() instanceof CantileverBlockItem) {
             CompoundTag nbt = getNbt(stack);
-            nbt.putFloat(CantileverBlockEntity.NBT_WIDTH, data.width());
             nbt.putFloat(CantileverBlockEntity.NBT_WIDTH, data.width());
             nbt.putFloat(CantileverBlockEntity.NBT_Y_OFFSET, data.yOffset());
             nbt.putFloat(CantileverBlockEntity.NBT_HEIGHT, data.height());
