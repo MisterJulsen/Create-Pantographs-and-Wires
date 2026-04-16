@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:power_line_bracket_exposed"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "item": "pantographsandwires:waxed_power_line_bracket_exposed",
+    "count": 1
+  }
+}
