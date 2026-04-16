@@ -14,6 +14,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import de.mrjulsen.paw.item.CatenaryWireItem;
+import de.mrjulsen.wires.item.IWireItemBase;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -720,20 +722,15 @@ public class WireGraph extends SavedData implements IWireGraph {
 
                 int cantileverAIndex = customDataNbt.getBoolean("ClickedRight1") ? 1 : 0;
                 int cantileverBIndex = customDataNbt.getBoolean("ClickedRight2") ? 1 : 0;
-                if (cantileverAIndex > 0 || cantileverBIndex > 0) {
-                    CompoundTag customPointData = new CompoundTag();
-                    if (cantileverAIndex > 0) {
-                        CompoundTag pointNbt = new CompoundTag();
-                        pointNbt.putInt("CantileverIndex", cantileverAIndex);
-                        customPointData.put("0", pointNbt);
-                    }
-                    if (cantileverBIndex > 0) {
-                        CompoundTag pointNbt = new CompoundTag();
-                        pointNbt.putInt("CantileverIndex", cantileverBIndex);
-                        customPointData.put("1", pointNbt);
-                    }
-                    customData.put("CustomPointData", customPointData);
-                }
+                CompoundTag customPointData = new CompoundTag();
+                CompoundTag pointANbt = new CompoundTag();
+                pointANbt.putInt(CatenaryWireItem.NBT_CANTILEVER_INDEX, cantileverAIndex);
+                customPointData.put("0", pointANbt);
+                CompoundTag pointBNbt = new CompoundTag();
+                pointBNbt.putInt(CatenaryWireItem.NBT_CANTILEVER_INDEX, cantileverBIndex);
+                customPointData.put("1", pointBNbt);
+                customData.put(CustomData.NBT_POINTS, customPointData);
+                customData.putInt(IWireItemBase.NBT_TOTAL_POINTS_COUNT, 2);
             }
             BlockPos nodeAPos = Utils.getNbtBlockPos(connection, "PosA");
             BlockPos nodeBPos = Utils.getNbtBlockPos(connection, "PosB");
