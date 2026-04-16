@@ -1,18 +1,17 @@
 package de.mrjulsen.paw.registry;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableMap;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.api.behaviour.interaction.MovingInteractionBehaviour;
 import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.data.*;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
@@ -222,6 +221,7 @@ public class ModBlocks {
 			builder -> builder
 					.initialProperties(SharedProperties::softMetal)
 					.transform(TagGen.pickaxeOnly())
+					.loot((lt, block) -> lt.dropOther(block, Objects.requireNonNull(CANTILEVER_BRACKET.get(new OxidizingKey(block.getWeatheringData().ageState(), block.getWeatheringData().isWaxed()))).get()))
 	);
 	public static final ImmutableMap<OxidizingKey, BlockEntry<CantileverBracketPostConnectionBlock>> CANTILEVER_BRACKET_AT_POST = registerOxidizingBlock(
 			"cantilever_bracket_at_post",
@@ -234,6 +234,7 @@ public class ModBlocks {
 			builder -> builder
 					.initialProperties(SharedProperties::softMetal)
 					.transform(TagGen.pickaxeOnly())
+					.loot((lt, block) -> lt.dropOther(block, Objects.requireNonNull(CANTILEVER_BRACKET.get(new OxidizingKey(block.getWeatheringData().ageState(), block.getWeatheringData().isWaxed()))).get()))
 	);
 
 	public static final ImmutableMap<OxidizingKey, BlockEntry<PowerLineBracketBlock>> POWER_LINE_BRACKET = registerOxidizingBlock(
