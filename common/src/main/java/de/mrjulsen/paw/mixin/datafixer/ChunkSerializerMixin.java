@@ -8,8 +8,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.world.level.chunk.ProtoChunk;
-import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -52,7 +50,7 @@ public abstract class ChunkSerializerMixin {
     }
 
     @Inject(method = "read", at = @At(value = "HEAD"))
-    private static void paw$read(ServerLevel level, PoiManager poiManager, RegionStorageInfo regionStorageInfo, ChunkPos pos, CompoundTag tag, CallbackInfoReturnable<ProtoChunk> cir) {
+    private static void paw$read(ServerLevel level, PoiManager poiManager, ChunkPos chunkPos, CompoundTag tag, CallbackInfoReturnable<?> cir) {
         if (tag.getInt(PantographsAndWires.NBT_DATA_FIXER) >= PantographsAndWires.DATA_FIXER_VERSION) {
             return;
         }
@@ -158,7 +156,7 @@ public abstract class ChunkSerializerMixin {
 
             for (Map.Entry<BlockPos, CompoundTag> entry : foundBlocks.entrySet()) {
                 try {
-                    BlockPos ppos = entry.getKey();
+                    BlockPos pos = entry.getKey();
                     CompoundTag state = entry.getValue();
 
                     String name = state.getString("Name");
@@ -169,14 +167,38 @@ public abstract class ChunkSerializerMixin {
                     byte cantileverCount = (byte)(name.contains("double") ? 2 : 1);
 
                     ECantileverInsulatorsPlacement insulatorPlacement = ECantileverInsulatorsPlacement.getByName(((CompoundTag)state.get("Properties")).getString("insulator_placement").replace("\"", ""));
-                    int registrationArmType = ECantileverRegistrationArmType.getByName(((CompoundTag)state.get("Properties")).getString("registration_arm").replace("\"", "")).ordinal();
+                    ECantileverRegistrationArmType registrationArmType = ECantileverRegistrationArmType.getByName(((CompoundTag)state.get("Properties")).getString("registration_arm").replace("\"", ""));
                     int postConnectionOffset = ECantileverConnectionType.getByName(((CompoundTag)state.get("Properties")).getString("connection").replace("\"", "")).getIndex();
                     float height = 0.5f * rawWidth - DragonLib.BLOCK_PIXEL * 2;
                     float catenaryHeight = width < 5 ? 1 : 2;
                     boolean showBracing = width >= 4;
 
-                    CompoundTag existing = blockEntitiesByPos.get(ppos);
+                    CompoundTag existing = blockEntitiesByPos.get(pos);
                     if (existing != null) {
+                        existing.putFloat(CantileverBlockEntity.NBT_WIDTH, width);
+                        existing.putFloat(CantileverBlockEntity.NBT_HEIGHT, height);
+                        existing.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, catenaryHeight);
+                        existing.putInt(CantileverBlockEntity.NBT_POST_CONNECTION_OFFSET, postConnectionOffset);
+                        existing.putInt(CantileverBlockEntity.NBT_INSULATOR_TYPE, insulatorType);
+
+                        ListTag list = new ListTag();
+                        if (cantileverCount > 1) {
+                            if (registrationArmType == ECantileverRegistrationArmType.CENTER) {
+                                list.add(new SubCantileverSetting(ECantileverRegistrationArmType.INNER, insulatorPlacement, showBracing).toNbt());
+                                list.add(new SubCantileverSetting(ECantileverRegistrationArmType.OUTER, insulatorPlacement, showBracing).toNbt());
+                            } else {
+                                list.add(new SubCantileverSetting(registrationArmType, insulatorPlacement, showBracing).toNbt());
+                                list.add(new SubCantileverSetting(ECantileverRegistrationArmType.CENTER, insulatorPlacement, showBracing).toNbt());
+                            }
+                        } else {
+                            list.add(new SubCantileverSetting(registrationArmType, insulatorPlacement, showBracing).toNbt());
+                        }
+                        existing.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
+                        blockEntitiesByPos.put(pos, existing);
+
+
+                        /*
+                        // ------------------------------------------------------------------------
                         existing.putFloat(CantileverBlockEntity.NBT_WIDTH, width);
                         //existing.putInt(CantileverBlockEntity.NBT_INSULATOR_PLACEMENT, insulatorPlacement);
                         existing.putFloat(CantileverBlockEntity.NBT_HEIGHT, height);
@@ -191,27 +213,36 @@ public abstract class ChunkSerializerMixin {
                         } else {
                             //existing.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
                         }
-                        blockEntitiesByPos.put(ppos, existing);
+                        blockEntitiesByPos.put(pos, existing);
+                        // ------------------------------------------------------------------------
+                         */
                     } else {
                         CompoundTag newEntity = new CompoundTag();
-                        newEntity.putInt("x", ppos.getX());
-                        newEntity.putInt("y", ppos.getY());
-                        newEntity.putInt("z", ppos.getZ());
+                        newEntity.putInt("x", pos.getX());
+                        newEntity.putInt("y", pos.getY());
+                        newEntity.putInt("z", pos.getZ());
                         newEntity.putString("id", PantographsAndWires.MOD_ID + ":" + "cantilever_block_entity");
                         newEntity.putFloat(CantileverBlockEntity.NBT_WIDTH, width);
                         newEntity.putFloat(CantileverBlockEntity.NBT_HEIGHT, height);
                         newEntity.putFloat(CantileverBlockEntity.NBT_CATENARY_HEIGHT, catenaryHeight);
                         newEntity.putInt(CantileverBlockEntity.NBT_POST_CONNECTION_OFFSET, postConnectionOffset);
                         newEntity.putInt(CantileverBlockEntity.NBT_INSULATOR_TYPE, insulatorType);
-                        if (cantileverCount > 1 && registrationArmType == ECantileverRegistrationArmType.CENTER.ordinal()) {
-                            //newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, ECantileverRegistrationArmType.INNER.ordinal());
-                            ListTag list = new ListTag();
-                            list.add(new SubCantileverSetting(ECantileverRegistrationArmType.OUTER, insulatorPlacement, showBracing).toNbt());
-                            newEntity.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
+
+                        ListTag list = new ListTag();
+                        if (cantileverCount > 1) {
+                            if (registrationArmType == ECantileverRegistrationArmType.CENTER) {
+                                list.add(new SubCantileverSetting(ECantileverRegistrationArmType.INNER, insulatorPlacement, showBracing).toNbt());
+                                list.add(new SubCantileverSetting(ECantileverRegistrationArmType.OUTER, insulatorPlacement, showBracing).toNbt());
+                            } else {
+                                list.add(new SubCantileverSetting(registrationArmType, insulatorPlacement, showBracing).toNbt());
+                                list.add(new SubCantileverSetting(ECantileverRegistrationArmType.CENTER, insulatorPlacement, showBracing).toNbt());
+                            }
                         } else {
-                            //newEntity.putInt(CantileverBlockEntity.NBT_REGISTRATION_ARM_TYPE, registrationArmType);
+                            list.add(new SubCantileverSetting(registrationArmType, insulatorPlacement, showBracing).toNbt());
                         }
-                        blockEntitiesByPos.put(ppos, newEntity);
+                        newEntity.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
+
+                        blockEntitiesByPos.put(pos, newEntity);
                     }
                 } catch (Exception e) {
                     PantographsAndWires.LOGGER.error("Unable to convert cantilever.", e);
