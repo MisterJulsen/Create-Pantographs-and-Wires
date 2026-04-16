@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:flat_lattice_mast_diagonal_oxidized"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "item": "pantographsandwires:waxed_flat_lattice_mast_diagonal_oxidized",
+    "count": 1
+  }
+}
