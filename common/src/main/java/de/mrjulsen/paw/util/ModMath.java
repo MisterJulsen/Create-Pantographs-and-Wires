@@ -112,14 +112,6 @@ public class ModMath {
         return Shapes.or(Shapes.empty(), shapes);
     }
 
-    /**
-     * Scales the AABB along an axis by a factor with an optional pivot.
-     *
-     * @param axis The axis along which scaling occurs.
-     * @param factor The scaling factor (1.0 = no change, >1.0 = increase in size, <1.0 = decrease in size).
-     * @param pivot The pivot point (default = 0.5 = center).
-     * @return The scaled AABB.
-     */
     public static AABB scaleAABB(AABB aabb, Axis axis, double factor, double pivot) {
         double min, max;
         switch (axis) {
@@ -162,14 +154,6 @@ public class ModMath {
         return Shapes.or(Shapes.empty(), shapes);
     }
 
-     /**
-     * Scales the AABB along an axis, keeping one side fixed.
-     *
-     * @param axis The axis to scale along.
-     * @param factor The scaling factor (>1.0 = increase, <1.0 = decrease).
-     * @param direction The direction that remains fixed.
-     * @return The rescaled AABB.
-     */
     public static AABB scaleAABBOneSide(AABB aabb, Axis axis, double factor, AxisDirection direction) {
         double min, max;
         switch (axis) {
