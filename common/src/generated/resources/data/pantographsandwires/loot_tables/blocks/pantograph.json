@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "pantographsandwires:mod_icon"
+          "name": "pantographsandwires:pantograph"
         }
       ],
       "rolls": 1.0
