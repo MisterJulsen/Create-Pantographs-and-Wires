@@ -9,7 +9,6 @@ pluginManagement {
 }
 
 include("common")
-//include("fabric")
 include("neoforge")
 
 rootProject.name = "Create Pantographs And Wires 1.21.1 DL3 C6"
