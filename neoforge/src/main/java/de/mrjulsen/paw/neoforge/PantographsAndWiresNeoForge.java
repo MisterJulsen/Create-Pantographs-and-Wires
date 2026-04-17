@@ -12,7 +12,6 @@ public class PantographsAndWiresNeoForge {
 
     public PantographsAndWiresNeoForge(ModContainer container) {
         modContainer = container;
-        PantographsAndWires.load();
         PantographsAndWires.REGISTRATE.registerEventListeners(ModLoadingContext.get().getActiveContainer().getEventBus());
         PantographsAndWires.init();
     }
