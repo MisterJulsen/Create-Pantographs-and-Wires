@@ -58,7 +58,7 @@ dependencies {
     implementation("com.tterrag.registrate:Registrate:${registrate_neoforge_version}")
 
     compileOnly("org.embeddedt:embeddium-${rootProject.minecraft_version}:${rootProject.embeddium_version}")
-    //modRuntimeOnly("org.embeddedt:embeddium-${rootProject.minecraft_version}:${rootProject.embeddium_version}")
+    modRuntimeOnly("org.embeddedt:embeddium-${rootProject.minecraft_version}:${rootProject.embeddium_version}")
 
     modImplementation(include("software.bernie.geckolib:geckolib-neoforge-${rootProject.geckolib_minecraft_version}:${rootProject.geckolib_neoforge_version}"))
     modImplementation(include(forgeRuntimeLibrary("com.eliotlash.mclib:mclib:20")))

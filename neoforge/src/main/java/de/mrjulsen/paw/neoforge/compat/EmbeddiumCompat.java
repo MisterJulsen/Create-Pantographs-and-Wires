@@ -17,7 +17,7 @@ public class EmbeddiumCompat {
         for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
             if (graph.hasConnectionsInSection(event.getSectionOrigin())) {
                 event.addMeshAppender(c -> {
-                    //WireRenderer.renderConnectionsInSection(c.vertexConsumerProvider(), c.sodiumBuildBuffers(), c.blockRenderView(), c.sectionOrigin());
+                    WireRenderer.renderSodiumConnectionsInSection(c.vertexConsumerProvider(), c.blockRenderView(), c.sectionOrigin());
                 });
                 break;
             }            

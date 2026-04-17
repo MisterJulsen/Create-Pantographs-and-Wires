@@ -87,7 +87,7 @@ public class WireRenderer implements ResourceManagerReloadListener {
 
 	 */
 
-	public static void renderSodiumConnectionsInSection(Function<RenderType, VertexConsumer> layers, me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildBuffers buffers, BlockAndTintGetter region, SectionPos section) {
+	public static void renderSodiumConnectionsInSection(Function<RenderType, VertexConsumer> layers, BlockAndTintGetter region, SectionPos section) {
 		for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
 			if (!graph.hasConnectionsInSection(section)) continue;
 
