@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
@@ -65,7 +66,7 @@ public class AxeItemMixin {
         level.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(player, newState));
 
         if (player != null) {
-            itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
+            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
         }
 
         cir.setReturnValue(InteractionResult.sidedSuccess(level.isClientSide));

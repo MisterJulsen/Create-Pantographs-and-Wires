@@ -147,8 +147,8 @@ public class WireDebugRenderer {
             dz /= length;
         }
 
-        consumer.vertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).color(r, g, b, a).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
-        consumer.vertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).color(r, g, b, a).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
+        consumer.addVertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).setColor(r, g, b, a).setNormal((float)dx, (float)dy, (float)dz);
+        consumer.addVertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).setColor(r, g, b, a).setNormal((float)dx, (float)dy, (float)dz);
     }
     
     public static void renderDebugLineGradient(PoseStack poseStack, VertexConsumer consumer, Vector3d from, Vector3d to, float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
@@ -166,8 +166,8 @@ public class WireDebugRenderer {
             dz /= length;
         }
 
-        consumer.vertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).color(r1, g1, b1, a1).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
-        consumer.vertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).color(r2, g2, b2, a2).normal(matrix3f, (float)dx, (float)dy, (float)dz).endVertex();
+        consumer.addVertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).setColor(r1, g1, b1, a1).setNormal((float)dx, (float)dy, (float)dz);
+        consumer.addVertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).setColor(r2, g2, b2, a2).setNormal((float)dx, (float)dy, (float)dz);
     }
 
     protected static void renderNameTag(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Vector3d pos, float yOffset, List<Component> text) {

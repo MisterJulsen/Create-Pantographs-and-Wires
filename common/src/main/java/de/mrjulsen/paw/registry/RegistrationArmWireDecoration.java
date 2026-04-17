@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import net.minecraft.core.RegistryAccess;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -107,7 +108,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
     @Override
     public CompoundTag serializeNbt() {
         CompoundTag nbt = new CompoundTag();
-        nbt.put(NBT_ITEM, stack.save(new CompoundTag()));
+        nbt.put(NBT_ITEM, stack.save(RegistryAccess.EMPTY));
         nbt.putBoolean(NBT_MIRRORED, mirrored);
         nbt.putByte(NBT_VARIANT, variant == null ? 0 : variant.getId());
         nbt.putUUID(NBT_DROPPER_ID, dropperId);
@@ -116,7 +117,7 @@ public class RegistrationArmWireDecoration implements IWireDecoration<Registrati
 
     @Override
     public void deserializeNbt(CompoundTag nbt) {
-        this.stack = ItemStack.of(nbt.getCompound(NBT_ITEM));
+        this.stack = ItemStack.parseOptional(RegistryAccess.EMPTY, nbt.getCompound(NBT_ITEM));
         this.mirrored = nbt.getBoolean(NBT_MIRRORED);
         this.variant = RegistrationArmBlock.State.getById(nbt.getByte(NBT_VARIANT));
         this.dropperId = nbt.getUUID(NBT_DROPPER_ID);

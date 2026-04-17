@@ -1,6 +1,8 @@
 package de.mrjulsen.paw.neoforge;
 
 import de.mrjulsen.paw.PantographsAndWires;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
 

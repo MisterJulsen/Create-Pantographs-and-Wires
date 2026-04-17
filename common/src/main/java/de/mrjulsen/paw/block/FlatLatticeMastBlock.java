@@ -79,11 +79,13 @@ public class FlatLatticeMastBlock extends AbstractMultipartPostBlock implements 
         return direction.getAxis() == state.getValue(FACING).getAxis();
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         this.changeOverTime(state, level, pos, random);
     }
 
-    public boolean isRandomlyTicking(BlockState state) {
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
         return getNext().isPresent();
     }
 

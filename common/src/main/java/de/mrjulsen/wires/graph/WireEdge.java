@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import org.joml.Vector3d;
 
 import de.mrjulsen.wires.IWireType;
@@ -105,7 +106,7 @@ public class WireEdge {
             WireEdge edge = new WireEdge(
                 graph,
                 nbt.getUUID(NBT_ID),
-                WireTypeRegistry.get(new ResourceLocation(nbt.getString(NBT_WIRE_TYPE))),
+                WireTypeRegistry.get(DLUtils.resourceLocation(nbt.getString(NBT_WIRE_TYPE))),
                 customData,
                 nodeAId,
                 nodeBId,

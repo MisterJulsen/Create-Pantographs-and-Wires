@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:flat_lattice_mast_diagonal_exposed"
+    }
+  ],
+  "result": {
+    "id": "pantographsandwires:flat_lattice_mast_exposed",
+    "count": 1
+  }
+}

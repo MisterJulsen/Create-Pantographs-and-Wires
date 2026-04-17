@@ -44,11 +44,13 @@ public class LatticeMastBlock extends AbstractMultipartPostBlock implements IWea
         return EPostType.LATTICE;
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         this.changeOverTime(state, level, pos, random);
     }
 
-    public boolean isRandomlyTicking(BlockState state) {
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
         return getNext().isPresent();
     }
 

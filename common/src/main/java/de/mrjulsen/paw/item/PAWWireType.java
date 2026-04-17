@@ -2,6 +2,8 @@ package de.mrjulsen.paw.item;
 
 import java.util.Optional;
 
+import de.mrjulsen.paw.components.WireAmountComponent;
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import org.joml.Vector3d;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
@@ -34,7 +36,7 @@ public abstract class PAWWireType extends AbstractWireType {
 			}
 			return enableDrops;
 		}).orElse(enableDrops)) {
-			float scaleFactor = (float)IPawWireItemBase.WIRE_LENGTH / 8;
+			float scaleFactor = (float) WireAmountComponent.MAX_WIRE / 8;
 			int x = (int)Math.floor(length / scaleFactor);
 			float chance = 1.0f;
 			if (x < 1) {
@@ -48,10 +50,10 @@ public abstract class PAWWireType extends AbstractWireType {
 				level.addFreshEntity(itementity);
 			}
 		}
-    }	
+    }
 
 	@Override
-	public GraphId getGraphId(CompoundTag itemData) {
+	public GraphId getGraphId(WireConnectionDataComponent itemData) {
 		return WiresApi.PAW_CATENARY_WIRES;
 	}
 

@@ -1,8 +1,10 @@
 {
   "type": "minecraft:stonecutting",
-  "count": 2,
   "ingredient": {
     "item": "pantographsandwires:waxed_h_beam_mast_exposed"
   },
-  "result": "pantographsandwires:waxed_power_line_bracket_exposed"
+  "result": {
+    "id": "pantographsandwires:waxed_power_line_bracket_exposed",
+    "count": 2
+  }
 }

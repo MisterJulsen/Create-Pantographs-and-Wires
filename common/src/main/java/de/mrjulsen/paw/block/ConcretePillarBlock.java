@@ -56,11 +56,13 @@ public class ConcretePillarBlock extends AbstractMultipartPostBlock implements I
         return thick ? EPostType.WALL : EPostType.FENCE;
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         this.changeOverTime(state, level, pos, random);
     }
 
-    public boolean isRandomlyTicking(BlockState state) {
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
         return getNext().isPresent();
     }
 

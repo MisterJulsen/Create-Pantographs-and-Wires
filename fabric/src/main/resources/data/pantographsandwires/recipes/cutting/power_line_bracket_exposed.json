@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 2,
-  "ingredient": {
-    "item": "pantographsandwires:h_beam_mast_exposed"
-  },
-  "result": "pantographsandwires:power_line_bracket_exposed"
-}

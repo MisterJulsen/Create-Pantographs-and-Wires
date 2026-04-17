@@ -37,7 +37,7 @@ public abstract class AbstractSupportedRotatableWireConnectorBlock<T extends Wir
             targetDir         = direction;
             targetRotationIdx = clickedState.getValue(ROTATION);
         } else if (direction.getAxis() != Axis.Y
-                && canBePlacedAt(level, clickPos, clickedState, ctxExt.getPlacedOnPos(), ctxExt.getPlacedOnState(), context.getClickedFace())) {
+                && canBePlacedAt(level, clickPos, clickedState, ctxExt.paw$getPlacedOnPos(), ctxExt.paw$getPlacedOnState(), context.getClickedFace())) {
             targetDir         = context.getClickedFace();
             targetRotationIdx = PROPERTY_BASE_ROTATION_INDEX;
         } else {

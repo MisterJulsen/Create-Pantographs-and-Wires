@@ -93,48 +93,48 @@ public class WireSegmentRenderData {
 
             Vector3d vertex;
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = lastVertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             
             vertex = vertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = vertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
 
             // Opposite side
             vertex = lastVertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             
             vertex = vertices.vertex(VertexCorner.BOTTOM_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = vertices.vertex(VertexCorner.TOP_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
 
 
             
             vertex = lastVertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             
             vertex = vertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = vertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             
             // Opposite side
             vertex = lastVertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = lastVertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u0, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             
             vertex = vertices.vertex(VertexCorner.TOP_LEFT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v1).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
             vertex = vertices.vertex(VertexCorner.BOTTOM_RIGHT);
-            vertexConsumer.addVertex(vertex.x(), vertex.y(), vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
+            vertexConsumer.addVertex((float)vertex.x(), (float)vertex.y(), (float)vertex.z()).setColor(color).setUv(u1, v0).setLight(light).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 0, 0);
 
             lastVertices = vertices;
         }

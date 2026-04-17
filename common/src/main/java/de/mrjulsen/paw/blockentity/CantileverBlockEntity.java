@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.HolderLookup;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -121,8 +122,8 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putFloat(NBT_WIDTH, width);
         nbt.putFloat(NBT_HEIGHT, height);
         nbt.putFloat(NBT_Y_OFFSET, yOffset);
@@ -139,8 +140,8 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.width = nbt.getFloat(NBT_WIDTH);
         this.height = nbt.getFloat(NBT_HEIGHT);
         this.yOffset = nbt.getFloat(NBT_Y_OFFSET);

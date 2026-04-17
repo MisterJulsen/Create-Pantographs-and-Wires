@@ -216,11 +216,13 @@ public class PowerLineBracketBlock extends AbstractRotatedConnectableBlock imple
         return super.onPlaceOnOtherRotatedBlock(currentModification, context, clickedState, clickedBlockPos);
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         this.changeOverTime(state, level, pos, random);
     }
 
-    public boolean isRandomlyTicking(BlockState state) {
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
         return getNext().isPresent();
     }
 

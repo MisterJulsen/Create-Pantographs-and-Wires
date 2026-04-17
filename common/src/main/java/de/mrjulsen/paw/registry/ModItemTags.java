@@ -2,6 +2,7 @@ package de.mrjulsen.paw.registry;
 
 import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.datagen.DataGen;
 import de.mrjulsen.paw.datagen.ITagAppender;
@@ -28,13 +29,13 @@ public final class ModItemTags {
     }
 
     private static TagKey<Item> tag(String name, Consumer<ITagAppender<Item>> populator) {
-        TagKey<Item> key = TagKey.create(Registries.ITEM, new ResourceLocation(PantographsAndWires.MOD_ID, name));
+        TagKey<Item> key = TagKey.create(Registries.ITEM, DLUtils.resourceLocation(PantographsAndWires.MOD_ID, name));
         REGISTRY.add(new TagEntry<>(key, populator));
         return key;
     }
 
 
-    public static final TagKey<Item> WRENCHES = TagKey.create(Registries.ITEM, new ResourceLocation(Platform.isFabric() ? "c:wrenches" : "forge:tools/wrench"));
+    public static final TagKey<Item> WRENCHES = TagKey.create(Registries.ITEM, DLUtils.resourceLocation("c:tools/wrench"));
     public static final TagKey<Item> CANTILEVERS = tag("cantilevers");
     public static final TagKey<Item> INSULATORS = tag("insulators");
 

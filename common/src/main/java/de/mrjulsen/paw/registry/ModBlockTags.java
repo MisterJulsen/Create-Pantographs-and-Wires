@@ -2,6 +2,7 @@ package de.mrjulsen.paw.registry;
 
 import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.datagen.DataGen;
 import de.mrjulsen.paw.datagen.ITagAppender;
@@ -27,7 +28,7 @@ public final class ModBlockTags {
     }
 
     private static TagKey<Block> tag(String name, Consumer<ITagAppender<Block>> populator) {
-        TagKey<Block> key = TagKey.create(Registries.BLOCK, new ResourceLocation(PantographsAndWires.MOD_ID, name));
+        TagKey<Block> key = TagKey.create(Registries.BLOCK, DLUtils.resourceLocation(PantographsAndWires.MOD_ID, name));
         REGISTRY.add(new TagEntry<>(key, populator));
         return key;
     }

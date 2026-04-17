@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 2,
-  "ingredient": {
-    "item": "pantographsandwires:waxed_h_beam_mast_oxidized"
-  },
-  "result": "pantographsandwires:waxed_power_line_bracket_oxidized"
-}

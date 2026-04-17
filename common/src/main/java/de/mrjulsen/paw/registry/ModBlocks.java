@@ -79,13 +79,14 @@ import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 public class ModBlocks {
 
 	private static TagKey<Block> createTag(String name) {
-		return TagKey.create(Registries.BLOCK, new ResourceLocation(PantographsAndWires.MOD_ID, name));
+		return TagKey.create(Registries.BLOCK, DLUtils.resourceLocation(PantographsAndWires.MOD_ID, name));
 	}
 
 	public record OxidizingKey(WeatherState weatherState, boolean isWaxed) {}
 
 	private static final int CANTILEVER_CONNECTION_PIXELS = 16;
 	private static final List<TagKey<Block>> cantileverConnectableTags = new ArrayList<>();
+	public static final Collection<NonNullSupplier<? extends Block>> WIRE_CONNECTORS = new ArrayList<>();
 	static {
 		for (int i = 1; i <= CANTILEVER_CONNECTION_PIXELS; i++) {
 			cantileverConnectableTags.add(createTag("cantilever_connectable_" + i + "px"));
@@ -345,7 +346,7 @@ public class ModBlocks {
 			.build()
 			.register();
 
-	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("v_insulator_brown", VInsulatorBlock::new)
+	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_BROWN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("v_insulator_brown", VInsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
 			.lang("V-Shaped Insulator")
@@ -356,8 +357,8 @@ public class ModBlocks {
 			.model((c, p) -> DataGen.itemModel(c, p, "block/insulator/v_insulator_brown"))
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.build()
-			.register();
-	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_GREEN = PantographsAndWires.REGISTRATE.block("v_insulator_green", VInsulatorBlock::new)
+			.register());
+	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_GREEN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("v_insulator_green", VInsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
 			.lang("V-Shaped Insulator")
@@ -369,9 +370,9 @@ public class ModBlocks {
 			.model((c, p) -> DataGen.itemModel(c, p, "block/insulator/v_insulator_green"))
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.build()
-			.register();
+			.register());
 
-	public static final BlockEntry<InsulatorBlock> INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("insulator_brown", InsulatorBlock::new)
+	public static final BlockEntry<InsulatorBlock> INSULATOR_BROWN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("insulator_brown", InsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
 			.lang("Insulator")
@@ -383,8 +384,8 @@ public class ModBlocks {
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.tag(ModItemTags.INSULATORS)
 			.build()
-			.register();
-	public static final BlockEntry<InsulatorBlock> INSULATOR_GREEN = PantographsAndWires.REGISTRATE.block("insulator_green", InsulatorBlock::new)
+			.register());
+	public static final BlockEntry<InsulatorBlock> INSULATOR_GREEN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("insulator_green", InsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
 			.lang("Insulator")
@@ -397,9 +398,9 @@ public class ModBlocks {
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.tag(ModItemTags.INSULATORS)
 			.build()
-			.register();
+			.register());
 
-	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_GREEN = PantographsAndWires.REGISTRATE.block("u_insulator_green", UInsulatorBlock::new)
+	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_GREEN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("u_insulator_green", UInsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
 			.lang("U-Shaped Insulator")
@@ -411,8 +412,8 @@ public class ModBlocks {
 			.model((c, p) -> DataGen.itemModel(c, p, "block/insulator/u_insulator_green"))
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.build()
-			.register();
-	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_BROWN = PantographsAndWires.REGISTRATE.block("u_insulator_brown", UInsulatorBlock::new)
+			.register());
+	public static final BlockEntry<UInsulatorBlock> U_INSULATOR_BROWN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("u_insulator_brown", UInsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
 			.transform(TagGen.pickaxeOnly())
 			.lang("U-Shaped Insulator")
@@ -423,7 +424,7 @@ public class ModBlocks {
 			.model((c, p) -> DataGen.itemModel(c, p, "block/insulator/u_insulator_brown"))
 			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
 			.build()
-			.register();
+			.register());
 
 	public static final BlockEntry<RegistrationArmBlock> REGISTRATION_ARM = PantographsAndWires.REGISTRATE.block("registration_arm", RegistrationArmBlock::new)
 			.blockstate((ctx, p) -> DataGen.registrationArm(ctx, p, "block/registration_arm"))
@@ -468,6 +469,12 @@ public class ModBlocks {
 				CANTILEVER_ITEMS.put(type, item);
 			});
 		}
+	}
+
+
+	private static <T extends Block> BlockEntry<T> registerWireConnectors(BlockEntry<T> block) {
+		WIRE_CONNECTORS.add(block);
+		return block;
 	}
 
 	@FunctionalInterface

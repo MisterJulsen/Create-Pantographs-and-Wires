@@ -3,6 +3,8 @@ package de.mrjulsen.paw.registry;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.Tag;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -36,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDecoration> {
 
     public static final float RADIUS = 0.35f;
+    private static final String NBT_ITEM = "Item";
 
     private final Renderer renderer;
 
@@ -76,13 +79,16 @@ public class InsulatorWireDecoration implements IWireDecoration<InsulatorWireDec
     @Override
     public CompoundTag serializeNbt() {
         CompoundTag nbt = new CompoundTag();
-        stack.save(nbt);
+        if (stack != null && stack != ItemStack.EMPTY) {
+            Tag tag = stack.save(RegistryAccess.EMPTY);
+            nbt.put(NBT_ITEM, tag);
+        }
         return nbt;
     }
 
     @Override
     public void deserializeNbt(CompoundTag nbt) {
-        this.stack = ItemStack.of(nbt);
+        this.stack = ItemStack.parseOptional(RegistryAccess.EMPTY, nbt.getCompound(NBT_ITEM));
     }
     
     @Override

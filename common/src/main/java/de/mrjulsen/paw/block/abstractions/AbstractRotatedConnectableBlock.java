@@ -75,10 +75,10 @@ public abstract class AbstractRotatedConnectableBlock extends AbstractRotatableB
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPlaceContextExtension ctxExt      = (BlockPlaceContextExtension)(Object) context;
         BlockState                 state        = super.getStateForPlacement(context);
-        BlockState                 clickedOnState = ctxExt.getPlacedOnState();
+        BlockState                 clickedOnState = ctxExt.paw$getPlacedOnState();
         Direction                  clickedFace  = context.getClickedFace();
 
-        if (canConnect(context.getLevel(), state, context.getClickedPos(), clickedOnState, ctxExt.getPlacedOnPos())
+        if (canConnect(context.getLevel(), state, context.getClickedPos(), clickedOnState, ctxExt.paw$getPlacedOnPos())
                 && clickedOnState.getValue(FACING).getAxis() == clickedFace.getAxis()) {
             int rotationIndex = maxSegments(clickedOnState);
             state = state

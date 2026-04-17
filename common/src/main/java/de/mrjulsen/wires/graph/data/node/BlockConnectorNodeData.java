@@ -3,6 +3,7 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -119,7 +120,7 @@ public class BlockConnectorNodeData extends NodeData {
     }
 
     @Override
-    public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
+    public boolean validate(WireGraph graph, WireConnectionDataComponent currentItemData, int pointIndex) {
         return pending || !graph.getLevel().isLoaded(getPos()) || (graph.getLevel().getBlockEntity(getPos()) instanceof WireConnectorBlockEntity);
     }
 

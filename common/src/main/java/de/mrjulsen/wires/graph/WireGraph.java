@@ -14,8 +14,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
 import de.mrjulsen.paw.item.CatenaryWireItem;
 import de.mrjulsen.wires.item.IWireItemBase;
+import net.minecraft.core.HolderLookup;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -126,9 +128,8 @@ public class WireGraph extends SavedData implements IWireGraph {
         ));
     }
 
-
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
         ListTag nodes = new ListTag();
         for (WireNode node : this.nodes.values()) {
             nodes.add(node.toNbt());
@@ -644,7 +645,7 @@ public class WireGraph extends SavedData implements IWireGraph {
                 WireNode node = updateNodeData(getNode(nodeId));
                 if (ModCommonConfig.WIRE_CONVERTER_LOGGING.get()) PantographsAndWires.LOGGER.info("[GRAPH CONVERTER/UPDATER] - NODE " + nodeId + ": " + node.getPos().x + ", " + node.getPos().y + ", " + node.getPos().z);
 
-                if (!node.getData().validate(this, new CompoundTag(), 0)) {
+                if (!node.getData().validate(this, WireConnectionDataComponent.empty(), 0)) {
                     removeNode(nodeId, null, null);
                     PantographsAndWires.LOGGER.warn("Removed wire node with id {} and type {} at {}, because it is no longer valid.", node.getId(), node.getData().getClass().getSimpleName(), node.getPos());
                     continue;

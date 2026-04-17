@@ -6,10 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
-import de.mrjulsen.mcdragonlib.util.Cache;
-import de.mrjulsen.mcdragonlib.util.DataCache;
-import de.mrjulsen.mcdragonlib.util.Holder;
-import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.*;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.block.abstractions.AbstractCantileverBlock;
 import de.mrjulsen.paw.block.model.CantileverModel;
@@ -40,7 +37,7 @@ import net.minecraft.world.phys.HitResult;
 
 public final class ModClientEvents {
 
-    public static final ResourceLocation WIRE_TEXTURE = new ResourceLocation(PantographsAndWires.MOD_ID, "textures/block/wire.png");
+    public static final ResourceLocation WIRE_TEXTURE = DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/block/wire.png");
 
     private ModClientEvents() {}
 

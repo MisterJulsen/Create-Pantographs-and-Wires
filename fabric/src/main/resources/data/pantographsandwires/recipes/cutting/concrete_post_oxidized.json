@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 2,
-  "ingredient": {
-    "item": "pantographsandwires:concrete_pillar_oxidized"
-  },
-  "result": "pantographsandwires:concrete_post_oxidized"
-}

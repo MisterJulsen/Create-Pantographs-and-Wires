@@ -55,7 +55,6 @@ public class WireEdgeHash {
         }
         Collections.sort(parts);
         String s = String.join("", parts);
-        System.out.println(s);
         return s.getBytes(StandardCharsets.UTF_8);
     }
 
