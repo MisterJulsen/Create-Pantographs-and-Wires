@@ -42,10 +42,8 @@ public abstract class SectionCompilerMixin {
             SectionBufferBuilderPack buffer,
             List<AddSectionGeometryEvent.AdditionalSectionRenderer> additionalRenderers,
             CallbackInfoReturnable<SectionCompiler.Results> cir,
-            @Local(name = "sectioncompiler$results")  SectionCompiler.Results results,
-            @Local(name = "posestack") PoseStack posestack,
             @Local(name = "map") Map<RenderType, BufferBuilder> map
     ) {
-        WireRenderer.renderConnectionsInSection(results, section, type -> getOrBeginLayer(map, buffer, type), region, posestack);
+        WireRenderer.renderConnectionsInSection(renderType -> getOrBeginLayer(map, buffer, renderType), region, section);
     }
 }

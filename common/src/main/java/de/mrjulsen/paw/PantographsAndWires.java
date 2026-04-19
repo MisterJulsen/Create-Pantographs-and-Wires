@@ -66,10 +66,6 @@ public final class PantographsAndWires {
     }
 
     public static boolean isSodiumLoaded() {
-        return Platform.isFabric() && Platform.isModLoaded("sodium");
-    }
-
-    public static boolean isIndiumLoaded() {
-        return Platform.isFabric() && Platform.isModLoaded("indium");
+        return Platform.isModLoaded("sodium");
     }
 }

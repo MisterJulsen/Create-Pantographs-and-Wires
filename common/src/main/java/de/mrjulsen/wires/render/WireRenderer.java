@@ -40,16 +40,16 @@ public class WireRenderer implements ResourceManagerReloadListener {
 		WIRE_TEXTURE.clear();
 	}
 
-	public static void renderConnectionsInSection(SectionCompiler.Results compileResults, SectionPos chunkSection, Function<RenderType, BufferBuilder> buffers, RenderChunkRegion region, PoseStack transformation) {
+	public static void renderConnectionsInSection(Function<RenderType, VertexConsumer> buffers, BlockAndTintGetter region, SectionPos section) {
 		for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
-			if (!graph.hasConnectionsInSection(chunkSection)) continue;
+			if (!graph.hasConnectionsInSection(section)) continue;
 
 			RenderType renderType = RenderType.cutout();
-			BufferBuilder builder = buffers.apply(renderType);
+			VertexConsumer builder = buffers.apply(renderType);
 
-			renderConnectionsInternal(graph, builder, region, chunkSection, new PoseStack());
+			renderConnectionsInternal(graph, builder, region, section);
 
-			Collection<WireSegmentRenderDataBatch> connections = graph.connectionsInSection(chunkSection);
+			Collection<WireSegmentRenderDataBatch> connections = graph.connectionsInSection(section);
 			for (WireSegmentRenderDataBatch connection : connections) {
 				connection.render(region, builder);
 			}
@@ -57,47 +57,18 @@ public class WireRenderer implements ResourceManagerReloadListener {
 	}
 
 	/*
-	public static void renderConnectionsInSection(Set<RenderType> layers, ChunkBufferBuilderPack buffers, BlockAndTintGetter region, RenderChunk renderChunk) {
-		BlockPos chunkOrigin = renderChunk.getOrigin();
-		SectionPos chunkSection = SectionPos.of(chunkOrigin);
-
-		for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
-			if (!graph.hasConnectionsInSection(chunkSection)) continue;
-
-			RenderType renderType = RenderType.cutout();
-			BufferBuilder builder = buffers.builder(renderType);
-			if (layers.add(renderType)) {
-				((RenderChunkAccess) renderChunk).invokeBeginLayer(builder);
-			}
-
-			renderConnectionsInternal(graph, builder, region, chunkSection, new PoseStack());
-
-			CompiledChunkExtension ext = (CompiledChunkExtension) renderChunk.compiled.get();
-			ext.setHasWires(true);
-			
-			Collection<WireSegmentRenderDataBatch> connections = graph.connectionsInSection(chunkSection);
-			if (layers.add(renderType)) {
-				((RenderChunkAccess) renderChunk).invokeBeginLayer(builder);
-			}
-			for (WireSegmentRenderDataBatch connection : connections) {
-				connection.render(region, builder);
-			}
-		}
-	}
-
-	 */
-
-	public static void renderSodiumConnectionsInSection(Function<RenderType, VertexConsumer> layers, BlockAndTintGetter region, SectionPos section) {
+	public static void renderConnectionsInSectionEmbeddium(Function<RenderType, VertexConsumer> layers, BlockAndTintGetter region, SectionPos section) {
 		for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
 			if (!graph.hasConnectionsInSection(section)) continue;
 
 			RenderType renderType = RenderType.cutout();
 			VertexConsumer vertexConsumer = layers.apply(renderType);
-			renderConnectionsInternal(graph, vertexConsumer, region, section, new PoseStack());
+			renderConnectionsInternal(graph, vertexConsumer, region, section);
 		}
 	}
+	 */
 
-	private static void renderConnectionsInternal(WireGraphClient graph, VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section, PoseStack poseStack) {
+	private static void renderConnectionsInternal(WireGraphClient graph, VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section) {
 		Collection<WireSegmentRenderDataBatch> connections = graph.connectionsInSection(section);
 		for (WireSegmentRenderDataBatch connection : connections) {
 			connection.render(region, vertexConsumer);

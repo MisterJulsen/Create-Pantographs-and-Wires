@@ -14,14 +14,6 @@ public class EmbeddiumCompat {
     }
 	
     static void meshAppendEvent(ChunkMeshEvent event) {
-        for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
-            if (graph.hasConnectionsInSection(event.getSectionOrigin())) {
-                event.addMeshAppender(c -> {
-                    WireRenderer.renderSodiumConnectionsInSection(c.vertexConsumerProvider(), c.blockRenderView(), c.sectionOrigin());
-                });
-                break;
-            }            
-        }
-        
+        event.addMeshAppender(c -> WireRenderer.renderConnectionsInSection(c.vertexConsumerProvider(), c.blockRenderView(), c.sectionOrigin()));
     }
 }
