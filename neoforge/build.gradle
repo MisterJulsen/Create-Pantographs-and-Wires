@@ -58,7 +58,11 @@ dependencies {
     implementation("com.tterrag.registrate:Registrate:${registrate_neoforge_version}")
 
     compileOnly("org.embeddedt:embeddium-${rootProject.minecraft_version}:${rootProject.embeddium_version}")
-    modRuntimeOnly("org.embeddedt:embeddium-${rootProject.minecraft_version}:${rootProject.embeddium_version}")
+    //modRuntimeOnly("org.embeddedt:embeddium-${rootProject.minecraft_version}:${rootProject.embeddium_version}")
+
+    modCompileOnly("maven.modrinth:sodium:mc${rootProject.minecraft_version}-${rootProject.sodium_version}-neoforge")
+    runtimeOnly("maven.modrinth:sodium:mc${rootProject.minecraft_version}-${rootProject.sodium_version}-neoforge")
+    // ^ Don't use modRuntimeOnly here otherwise you'll die! Trust me, I tried. I'm dead now.
 
     modImplementation(include("software.bernie.geckolib:geckolib-neoforge-${rootProject.geckolib_minecraft_version}:${rootProject.geckolib_neoforge_version}"))
     modImplementation(include(forgeRuntimeLibrary("com.eliotlash.mclib:mclib:20")))

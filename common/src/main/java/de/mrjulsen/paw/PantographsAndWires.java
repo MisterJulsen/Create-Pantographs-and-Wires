@@ -60,12 +60,4 @@ public final class PantographsAndWires {
     public static boolean useAdvancedLogging() {
         return Platform.isDevelopmentEnvironment();
     }
-
-    public static boolean isEmbeddiumLoaded() {
-        return Platform.isModLoaded("embeddium");
-    }
-
-    public static boolean isSodiumLoaded() {
-        return Platform.isModLoaded("sodium");
-    }
 }

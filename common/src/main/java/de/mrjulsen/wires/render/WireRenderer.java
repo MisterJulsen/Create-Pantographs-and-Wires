@@ -47,31 +47,10 @@ public class WireRenderer implements ResourceManagerReloadListener {
 			RenderType renderType = RenderType.cutout();
 			VertexConsumer builder = buffers.apply(renderType);
 
-			renderConnectionsInternal(graph, builder, region, section);
-
 			Collection<WireSegmentRenderDataBatch> connections = graph.connectionsInSection(section);
 			for (WireSegmentRenderDataBatch connection : connections) {
 				connection.render(region, builder);
 			}
-		}
-	}
-
-	/*
-	public static void renderConnectionsInSectionEmbeddium(Function<RenderType, VertexConsumer> layers, BlockAndTintGetter region, SectionPos section) {
-		for (WireGraphClient graph : WireGraphManager.getAllClient(ClientUtils.level())) {
-			if (!graph.hasConnectionsInSection(section)) continue;
-
-			RenderType renderType = RenderType.cutout();
-			VertexConsumer vertexConsumer = layers.apply(renderType);
-			renderConnectionsInternal(graph, vertexConsumer, region, section);
-		}
-	}
-	 */
-
-	private static void renderConnectionsInternal(WireGraphClient graph, VertexConsumer vertexConsumer, BlockAndTintGetter region, SectionPos section) {
-		Collection<WireSegmentRenderDataBatch> connections = graph.connectionsInSection(section);
-		for (WireSegmentRenderDataBatch connection : connections) {
-			connection.render(region, vertexConsumer);
 		}
 	}
 }

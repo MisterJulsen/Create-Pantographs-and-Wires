@@ -156,7 +156,7 @@ public class WireSegmentRenderData {
 		try {
             return LevelRenderer.getLightColor(level, pos);
         } catch (Exception e) {
-            return 0;
+            return LightTexture.FULL_BLOCK;
         }
 	}
 
