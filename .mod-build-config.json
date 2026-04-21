@@ -3,7 +3,7 @@
   "mod_release_title_format": "{MOD_ID}-{LOADER}-{FULL_VERSION}",
   "main_branch_pattern": "^mc[/-].+",
   "auto_port_branches": [
-    "mc/1.21.1"
+
   ],
   "modules": [
     "fabric",
@@ -28,7 +28,7 @@
     },
     {
       "inputs": ["updated", "update", "⬆️"],
-      "output": "⬆Updated"
+      "output": "Updated"
     }
   ],
   "release_channels": {
