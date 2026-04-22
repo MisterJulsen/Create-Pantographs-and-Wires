@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.world.level.Level;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -154,8 +157,12 @@ public class WireSegmentRenderData {
     private static int getLight(BlockPos pos, BlockAndTintGetter level) {
 		try {
             return LevelRenderer.getLightColor(level, pos);
-        } catch (Exception e) {
-            return 0;
+        } catch (Throwable e1) {
+            try {
+                return LevelRenderer.getLightColor(Minecraft.getInstance().level, pos);
+            } catch (Throwable e2) {
+                return LightTexture.FULL_BLOCK;
+            }
         }
 	}
 

@@ -58,11 +58,12 @@ dependencies {
     
     modImplementation("maven.modrinth:sodium:mc1.20.1-0.5.13-fabric")
     modImplementation("maven.modrinth:indium:1.0.36+mc1.20.1")
-    
+    modRuntimeOnly("maven.modrinth:copycats:3.0.7+mc.1.20.1-fabric")
+
     modCompileOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric-api:${rootProject.jei_version}")
     modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric:${rootProject.jei_version}")
     
-    modImplementation("com.simibubi.create:create-fabric-${rootProject.minecraft_version}:${rootProject.create_fabric_version}")
+    modImplementation("com.simibubi.create:create-fabric:${rootProject.create_fabric_version}")
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixin_extras_version}"))
     implementation("io.github.llamalad7:mixinextras-fabric:${rootProject.mixin_extras_version}")
 

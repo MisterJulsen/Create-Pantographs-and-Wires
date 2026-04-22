@@ -45,6 +45,7 @@ subprojects {
         maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
         maven { url = "https://maven.blamejared.com/" } // JEI
         maven { url = "https://modmaven.dev" } // JEI
+        maven { url = "https://maven.ithundxr.dev/snapshots" }
         maven { url = "https://cursemaven.com"
             content {
                 includeGroup "curse.maven"
