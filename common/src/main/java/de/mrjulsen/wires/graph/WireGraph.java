@@ -1,21 +1,14 @@
 package de.mrjulsen.wires.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import de.mrjulsen.paw.item.CatenaryWireItem;
+import de.mrjulsen.wires.WiresApi;
 import de.mrjulsen.wires.item.IWireItemBase;
+import de.mrjulsen.wires.util.BiMultimap;
+import net.minecraft.core.UUIDUtil;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -78,19 +71,19 @@ public class WireGraph extends SavedData implements IWireGraph {
     private final Map<UUID, WireEdge> edges = new HashMap<>();
     
     // --- Access ---
-    final Multimap<BlockPos, UUID> nodesByBlock = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
-    final Multimap<SectionPos, UUID> nodesBySection = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
-    final Multimap<ChunkPos, UUID> nodesByChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final BiMultimap<BlockPos, UUID> nodesByBlock = new BiMultimap<>();
+    final BiMultimap<SectionPos, UUID> nodesBySection = new BiMultimap<>();
+    final BiMultimap<ChunkPos, UUID> nodesByChunk = new BiMultimap<>();
     final Map<ResourceLocation, NodeAccessor<?>> nodesByType = new ConcurrentHashMap<>();
 
-    final Multimap<WireNode, WireEdge> edgesByNode = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final BiMultimap<WireNode, WireEdge> edgesByNode = new BiMultimap<>();
     final Map<WireEdgeHash, WireEdge> edgesByHash = new ConcurrentHashMap<>();
     
     // Collision
     final Map<UUID, NewWireCollision> collisionById = new ConcurrentHashMap<>();
-    final Multimap<BlockPos, NewWireCollision> collisionByBlock = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
-    final Multimap<ChunkPos, NewWireCollision> collisionByChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
-    final Multimap<SectionPos, NewWireCollision> collisionBySection = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final BiMultimap<BlockPos, NewWireCollision> collisionByBlock = new BiMultimap<>();
+    final BiMultimap<ChunkPos, NewWireCollision> collisionByChunk = new BiMultimap<>();
+    final BiMultimap<SectionPos, NewWireCollision> collisionBySection = new BiMultimap<>();
     
     // Chunk Loading
     private final Multimap<ChunkPos, UUID> playersWatchingChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
@@ -285,9 +278,9 @@ public class WireGraph extends SavedData implements IWireGraph {
 
         this.nodes.remove(id);        
         final Predicate<UUID> nodeIdTest = (x) -> x.equals(id);
-        this.nodesByBlock.values().removeIf(nodeIdTest);
-        this.nodesByChunk.values().removeIf(nodeIdTest);
-        this.nodesBySection.values().removeIf(nodeIdTest);
+        this.nodesByBlock.removeByValue(id);
+        this.nodesByChunk.removeByValue(id);
+        this.nodesBySection.removeByValue(id);
         this.nodesByType.get(node.getData().getRegistryType().id()).remove(node);
         setDirty();
     }
@@ -419,7 +412,7 @@ public class WireGraph extends SavedData implements IWireGraph {
 
         removeEdgeCollisionInternal(id);
         final Predicate<WireEdge> edgeTest = (x) -> x.getId().equals(edge.getId());
-        edgesByNode.values().removeIf(edgeTest);
+        edgesByNode.removeByValue(edge);
         edgesByHash.values().removeIf(edgeTest);
         removeEdgeFromNode(edge, edge.getNodeAId(), deleteEmptyNodes);
         removeEdgeFromNode(edge, edge.getNodeBId(), deleteEmptyNodes);
@@ -432,10 +425,9 @@ public class WireGraph extends SavedData implements IWireGraph {
         if (collision == null) {
             return;
         }
-        final Predicate<NewWireCollision> collisionTest = (x) -> x == collision;
-        collisionByChunk.values().removeIf(collisionTest);
-        collisionBySection.values().removeIf(collisionTest);
-        collisionByBlock.values().removeIf(collisionTest);
+        collisionByChunk.removeByValue(collision);
+        collisionBySection.removeByValue(collision);
+        collisionByBlock.removeByValue(collision);
     }
 
     protected void removeEdgeFromNode(WireEdge edge, UUID nodeId, boolean deleteEmptyNode) {
