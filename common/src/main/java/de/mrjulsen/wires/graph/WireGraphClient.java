@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import de.mrjulsen.wires.util.BiMultimap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -46,14 +47,14 @@ public class WireGraphClient implements IWireGraph {
     
     private final Map<ResourceLocation, NodeAccessor<?>> nodesByType = new ConcurrentHashMap<>();
 
-    private final Multimap<WireNode, WireEdge> edgesByNode = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    private final BiMultimap<WireNode, WireEdge> edgesByNode = new BiMultimap<>();
     private final Map<WireEdgeHash, WireEdge> edgesByHash = new ConcurrentHashMap<>();
     
     // Collision
     final Map<UUID, NewWireCollision> collisionById = new HashMap<>();
-    final Multimap<BlockPos, NewWireCollision> collisionByBlock = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
-    final Multimap<ChunkPos, NewWireCollision> collisionByChunk = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
-    final Multimap<SectionPos, NewWireCollision> collisionBySection = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
+    final BiMultimap<BlockPos, NewWireCollision> collisionByBlock = new BiMultimap<>();
+    final BiMultimap<ChunkPos, NewWireCollision> collisionByChunk = new BiMultimap<>();
+    final BiMultimap<SectionPos, NewWireCollision> collisionBySection = new BiMultimap<>();
     
     // Client Rendering
     final Multimap<UUID, WireSegmentRenderDataBatch> renderDataById = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), ConcurrentHashMap::newKeySet);
@@ -239,7 +240,7 @@ public class WireGraphClient implements IWireGraph {
         }
 
         final Predicate<WireEdge> edgeTest = (x) -> x.getId().equals(edge.getId());
-        edgesByNode.values().removeIf(edgeTest);
+        edgesByNode.removeByValue(edge);
         edgesByHash.values().removeIf(edgeTest);
         debugWireDataByEdge.removeAll(id);
 
@@ -260,10 +261,9 @@ public class WireGraphClient implements IWireGraph {
         if (collision == null) {
             return;
         }
-        final Predicate<NewWireCollision> collisionTest = (x) -> x == collision;
-        collisionByChunk.values().removeIf(collisionTest);
-        collisionBySection.values().removeIf(collisionTest);
-        collisionByBlock.values().removeIf(collisionTest);
+        collisionByChunk.removeByValue(collision);
+        collisionBySection.removeByValue(collision);
+        collisionByBlock.removeByValue(collision);
         
         for (WireSegmentRenderDataBatch batch : renderdata) {
             SectionPos section = batch.getSection();
