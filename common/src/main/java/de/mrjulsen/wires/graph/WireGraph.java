@@ -373,6 +373,7 @@ public class WireGraph extends SavedData implements IWireGraph {
         if (notifyClients) {
             sendEdgeToClient(edge, true);
         }
+        setDirty();
     }
     
     public void sendEdgeToClient(WireEdge edge, boolean force) {        
