@@ -1,16 +1,11 @@
 package de.mrjulsen.wires.render;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.world.level.Level;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -156,13 +151,9 @@ public class WireSegmentRenderData {
 
     private static int getLight(BlockPos pos, BlockAndTintGetter level) {
 		try {
-            return LevelRenderer.getLightColor(level, pos);
-        } catch (Throwable e1) {
-            try {
-                return LevelRenderer.getLightColor(Minecraft.getInstance().level, pos);
-            } catch (Throwable e2) {
-                return LightTexture.FULL_BLOCK;
-            }
+            return LevelRenderer.getLightColor(Objects.requireNonNullElse(Minecraft.getInstance().level, level), pos);
+        } catch (Exception e) {
+            return LightTexture.FULL_BLOCK;
         }
 	}
 
