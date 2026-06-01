@@ -29,7 +29,9 @@
     "LevelChunkMixin",
     "LevelMixin",
     "ServerLevelMixin",
-    "datafixer.ChunkSerializerMixin"
+    "datafixer.ChunkSerializerMixin",
+    "sodium.RenderSectionManagerMixin",
+    "sodium.WorldSliceMixin"
   ],
   "injectors": {
     "defaultRequire": 1

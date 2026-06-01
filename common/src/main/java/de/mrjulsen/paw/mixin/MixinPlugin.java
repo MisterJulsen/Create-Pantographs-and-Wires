@@ -10,6 +10,8 @@ import java.util.Set;
 
 public class MixinPlugin implements IMixinConfigPlugin {
 
+    private static final boolean SODIUM_LOADED = isSodiumPresent();
+
     @Override
     public void onLoad(String mixinPackage) {
     }
@@ -19,10 +21,19 @@ public class MixinPlugin implements IMixinConfigPlugin {
         return null;
     }
 
+    private static boolean isSodiumPresent() {
+        try {
+            Class.forName("net.caffeinemc.mods.sodium.client.SodiumClientMod", false, MixinPlugin.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("sodium")) {
-            return Platform.isFabric() && Platform.isModLoaded("sodium");
+            return SODIUM_LOADED;
         }
         return true;
     }
