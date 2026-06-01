@@ -104,3 +104,43 @@ components.java {
         skip()
     }
 }
+
+afterEvaluate {
+    if (!rootProject.hasProperty("lwjgl_version")) return
+
+    tasks.named("configureLaunch").configure { task ->
+        task.doLast {
+            def classpathFile = file(".gradle/loom-cache/forge_minecraft_classpath.txt")
+            if (!classpathFile.exists()) return
+
+            def targetVersion = rootProject.lwjgl_version
+            def lwjglPaths = [:]
+            configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts
+                    .findAll { it.moduleVersion.id.group == "org.lwjgl"
+                            && it.moduleVersion.id.name == "lwjgl-glfw"
+                            && it.moduleVersion.id.version == targetVersion }
+                    .each { a ->
+                        def key = a.moduleVersion.id.name + (a.classifier ? "-${a.classifier}" : "")
+                        lwjglPaths[key] = a.file.absolutePath
+                    }
+
+            def newContent = classpathFile.readLines().collect { line ->
+                def match = lwjglPaths.find { key, path ->
+                    def modName = key.replaceAll(/-(natives-.+)$/, "")
+                    def classifier = key == modName ? "" : key.substring(modName.length() + 1)
+                    if (classifier) {
+                        line.contains("org.lwjgl\\${modName}\\") && line.contains("-${classifier}.jar")
+                    } else {
+                        line.matches(".*org\\.lwjgl\\\\${modName}\\\\[\\d.]+\\\\[a-f0-9]+\\\\${modName}-[\\d.]+\\.jar")
+                    }
+                }
+                match ? match.value : line
+            }.join(System.lineSeparator())
+
+            if (newContent != classpathFile.text) {
+                classpathFile.text = newContent
+                println "✔ forge_minecraft_classpath.txt: LWJGL → ${targetVersion}"
+            }
+        }
+    }
+}

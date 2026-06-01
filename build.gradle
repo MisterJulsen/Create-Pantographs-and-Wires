@@ -23,8 +23,19 @@ subprojects {
         archivesName = "$rootProject.archives_name-$project.name"
     }
 
+    configurations.configureEach {
+        if (rootProject.hasProperty("lwjgl_version")) {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == "org.lwjgl") {
+                    details.useVersion rootProject.lwjgl_version
+                }
+            }
+        }
+    }
+
     repositories {
-        maven { url = "file://${System.getProperty('user.home')}/.m2/github/modsrepo/maven" } // Local
+        maven { url = file("${System.getProperty('user.home')}/.m2/github/modsrepo/maven/") } // Local
+        maven { url = "https://maven.mrjulsen.net" } // DragonLib
         maven { url = 'https://maven.neoforged.net/releases' } // NeoForge
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
@@ -59,7 +70,6 @@ subprojects {
         }
         maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
         maven { url = "https://maven.tterrag.com" } // Registrate
-        maven { url = "https://maven.mrjulsen.net" } // DragonLib
     }
 
     dependencies {
