@@ -73,7 +73,6 @@ public class ClientWrapper {
             return;
         }
 
-        Thread.dumpStack();
         DLGraphics g = new DLGraphics(new PoseStack(), buffer, combinedLight, combinedOverlay, graphics.partialTick());
         RenderUtils.renderTexture(DLUtils.resourceLocation("minecraft", "textures/item/honeycomb.png"), g, new Vector3f(0, 8, 0), 8, 8, 0, 0, 1, 1, Direction.NORTH, DLColor.WHITE, LightTexture.FULL_BRIGHT, false);
 

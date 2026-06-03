@@ -1,5 +1,6 @@
 package de.mrjulsen.paw.mixin;
 
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 
 import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
@@ -8,27 +9,19 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(BlockPlaceContext.class)
-public class BlockPlaceContextMixin implements BlockPlaceContextExtension { 
-    private BlockPos placedOnPos;
-    private BlockState placedOnState;
+public class BlockPlaceContextMixin implements BlockPlaceContextExtension {
 
     @Override
-    public void setPlacedOnPos(BlockPos placedOnPos) {
-        this.placedOnPos = placedOnPos;
+    public BlockPos paw$getPlacedOnPos() {
+        BlockPlaceContext self = (BlockPlaceContext)(Object)this;
+        return self.getClickedPos().relative(self.getClickedFace().getOpposite());
     }
 
     @Override
-    public void setPlacedOnState(BlockState placedOnState) {
-        this.placedOnState = placedOnState;
-    }
-
-    @Override
-    public BlockPos getPlacedOnPos() {
-        return placedOnPos;
-    }
-
-    @Override
-    public BlockState getPlacedOnState() {
-        return placedOnState;
+    public BlockState paw$getPlacedOnState() {
+        BlockPlaceContext self = (BlockPlaceContext)(Object)this;
+        Level level = self.getLevel();
+        BlockPos clickedBlockPos = self.getClickedPos().relative(self.getClickedFace().getOpposite());
+        return level.getBlockState(clickedBlockPos);
     }    
 }

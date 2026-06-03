@@ -83,8 +83,8 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {   
-        BlockPlaceContextExtension ext = (BlockPlaceContextExtension)context;  
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockPlaceContextExtension ext = (BlockPlaceContextExtension)context;
         Level level = context.getLevel();        
         MutableBlockPos refPos = new MutableBlockPos(ext.getPlacedOnPos().getX(), ext.getPlacedOnPos().getY(), ext.getPlacedOnPos().getZ());
 

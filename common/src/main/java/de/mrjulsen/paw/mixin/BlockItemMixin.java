@@ -1,13 +1,13 @@
 package de.mrjulsen.paw.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import de.mrjulsen.paw.block.abstractions.IRotatableBlock;
-import de.mrjulsen.paw.block.extended.BlockPlaceContextExtension;
 import de.mrjulsen.paw.data.BlockModificationData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,55 +21,53 @@ import net.minecraft.world.level.block.state.BlockState;
 @Mixin(BlockItem.class)
 public class BlockItemMixin {
     
-    boolean canModifyPos;
-    Direction direction;
-    BlockPos newPos;
+    @Unique boolean paw$canModifyPos;
+    @Unique Direction paw$direction;
+    @Unique BlockPos paw$newPos;
 
-    private BlockItem self() {
+    @Unique
+    private BlockItem paw$self() {
         return (BlockItem)(Object)this;
     }
     
     @Inject(method = "place", at = @At(value = "HEAD"), cancellable = true)
-    private void onPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
-        BlockPlaceContextExtension contextExtension = (BlockPlaceContextExtension)(Object)context;
+    private void paw$onPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
         Level level = context.getLevel();
         BlockPos clickedBlockPos = context.getClickedPos().relative(context.getClickedFace().getOpposite());
         BlockState clickedState = level.getBlockState(clickedBlockPos);
-        Block thisBlock = self().getBlock();
+        Block thisBlock = paw$self().getBlock();
 
-        contextExtension.setPlacedOnPos(clickedBlockPos);
-        contextExtension.setPlacedOnState(clickedState);
-        canModifyPos = context.getClickedFace().getAxis().isHorizontal() && clickedState.getBlock() instanceof IRotatableBlock;
-        if (canModifyPos) {
+        paw$canModifyPos = context.getClickedFace().getAxis().isHorizontal() && clickedState.getBlock() instanceof IRotatableBlock;
+        if (paw$canModifyPos) {
             IRotatableBlock supportRot = (IRotatableBlock)clickedState.getBlock();
             BlockModificationData value = supportRot.onPlaceOnRotatedBlock(context, clickedState, clickedBlockPos);
             if (thisBlock instanceof IRotatableBlock selfRot) {
                 value = selfRot.onPlaceOnOtherRotatedBlock(value, context, clickedState, clickedBlockPos);
             }
             if (value != null) {
-                newPos = value.newPos();
-                direction = value.newDirection();    
-                if (!level.getBlockState(newPos).canBeReplaced(context)) {
+                paw$newPos = value.newPos();
+                paw$direction = value.newDirection();
+                if (!level.getBlockState(paw$newPos).canBeReplaced(context)) {
                     cir.setReturnValue(InteractionResult.FAIL);
                 }
             } else {
-                canModifyPos = false;
+                paw$canModifyPos = false;
             }
         }
     }
 
     @ModifyVariable(method = "place", at = @At(value = "STORE"))
-    private BlockPos modifyPlacementPos(BlockPos pos) {
-        if (canModifyPos && direction != null) {
-            pos = pos.relative(direction.getCounterClockWise());
+    private BlockPos paw$modifyPlacementPos(BlockPos pos) {
+        if (paw$canModifyPos && paw$direction != null) {
+            pos = pos.relative(paw$direction.getCounterClockWise());
         }
         return pos;
     }
         
     @Inject(method = "placeBlock", at = @At(value = "HEAD"), cancellable = true)
-    private void onPlace(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
-        if (canModifyPos) {
-            cir.setReturnValue(context.getLevel().setBlock(newPos, state, 11));
+    private void paw$onPlace(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
+        if (paw$canModifyPos) {
+            cir.setReturnValue(context.getLevel().setBlock(paw$newPos, state, 11));
         }
     }
 }
