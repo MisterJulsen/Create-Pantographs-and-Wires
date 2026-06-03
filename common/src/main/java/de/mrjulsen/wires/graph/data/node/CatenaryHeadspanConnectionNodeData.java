@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import de.mrjulsen.mcdragonlib.util.Cache;
 import de.mrjulsen.mcdragonlib.util.DataCache;
+import de.mrjulsen.paw.PantographsAndWires;
 import net.minecraft.nbt.Tag;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -159,13 +160,18 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
             return new Vector3d();
         }
 
-        Map<UUID, CatenaryHeadspanWireType.Dropper> droppers = edge.getWireConnectionData().customData().getCommonData().getList(CatenaryHeadspanWireType.NBT_DROPPERS, Tag.TAG_COMPOUND).stream().map(x -> CatenaryHeadspanWireType.Dropper.fromNbt((CompoundTag)x)).collect(Collectors.toMap(x -> x.id(), x -> x));
-        WireNode a = graph.getNode(edge.getNodeAId());
-        WireNode b = graph.getNode(edge.getNodeBId());
-        Vector3d dir = new Vector3d(b.getPos()).sub(a.getPos()).mul(droppers.get(CatenaryHeadspanWireType.toDropperId(wireId.name()).orElse(null)).pos());
-        Vector3d p = new Vector3d(a.getPos()).add(dir);
-        //Vector3d pos = collision.getWirePointsOf(wireId.name()).vertices()[0];
-        return p;
+        try {
+            Map<UUID, CatenaryHeadspanWireType.Dropper> droppers = edge.getWireConnectionData().customData().getCommonData().getList(CatenaryHeadspanWireType.NBT_DROPPERS, Tag.TAG_COMPOUND).stream().map(x -> CatenaryHeadspanWireType.Dropper.fromNbt((CompoundTag)x)).collect(Collectors.toMap(x -> x.id(), x -> x));
+            WireNode a = graph.getNode(edge.getNodeAId());
+            WireNode b = graph.getNode(edge.getNodeBId());
+            Vector3d dir = new Vector3d(b.getPos()).sub(a.getPos()).mul(droppers.get(CatenaryHeadspanWireType.toDropperId(wireId.name()).orElseThrow()).pos());
+            Vector3d p = new Vector3d(a.getPos()).add(dir);
+            //Vector3d pos = collision.getWirePointsOf(wireId.name()).vertices()[0];
+            return p;
+        } catch (Exception e) {
+            PantographsAndWires.LOGGER.error("{}; {}", wireId, e.getMessage(), e);
+            return new Vector3d();
+        }
     }
 
     @Override
