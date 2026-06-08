@@ -61,7 +61,7 @@ public interface IPawWireItemBase extends IWireItemBase, IStaticRegisterable<IPa
         if (!points.isEmpty()) {
             NodeData previousNode = WiresApi.NODE_DATA_REGISTRY.load(points.get(points.size() - 1));
             int distance = (int)previousNode.toWorldPos(graph).distance(nodeData.toWorldPos(graph));
-            if (getWireType(stack) instanceof PAWWireType paw &&  paw.getWireConsumptionMultiplier(distance) > getRemainingWire(stack)) {
+            if (getWireType(stack) instanceof PAWWireType paw && (double)distance * paw.getWireConsumptionMultiplier(distance) > getRemainingWire(stack)) {
                 return new DLStatus(DLStatus.FLAG_ERROR, 0, "item." + PantographsAndWires.MOD_ID + ".wire.not_enough_wire");
             }
         }
