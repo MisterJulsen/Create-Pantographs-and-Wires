@@ -453,6 +453,7 @@ public class ModBlocks {
 					.lang("Cantilever")
 					.transform(TagGen.pickaxeOnly())
 					.addLayer(() -> () -> RenderType.translucent())
+					.tag(ModBlockTags.CANTILEVERS)
 					.register()
 			);
 			CANTILEVERS.put(t, cantileverBlock);
