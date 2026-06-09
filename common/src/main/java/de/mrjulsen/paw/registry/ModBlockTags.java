@@ -33,6 +33,7 @@ public final class ModBlockTags {
         return key;
     }
 
+    public static final TagKey<Block> CANTILEVERS = tag("cantilevers");
     public static final TagKey<Block> FLAT_LATTICE_MASTS = tag("flat_lattice_masts");
     public static final TagKey<Block> FLAT_DIAGONAL_LATTICE_MASTS = tag("flat_diagonal_lattice_masts");
     public static final TagKey<Block> LATTICE_MASTS = tag("lattice_masts");
