@@ -86,9 +86,9 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPlaceContextExtension ext = (BlockPlaceContextExtension)context;
         Level level = context.getLevel();        
-        MutableBlockPos refPos = new MutableBlockPos(ext.getPlacedOnPos().getX(), ext.getPlacedOnPos().getY(), ext.getPlacedOnPos().getZ());
+        MutableBlockPos refPos = new MutableBlockPos(ext.paw$getPlacedOnPos().getX(), ext.paw$getPlacedOnPos().getY(), ext.paw$getPlacedOnPos().getZ());
 
-        BlockState refState = ext.getPlacedOnState();
+        BlockState refState = ext.paw$getPlacedOnState();
         ECantileverConnectionType refConnectionType = ECantileverConnectionType.getFirstForState(refState).orElse(ECantileverConnectionType.PX16);
 
         for (int i = 1; i < HEIGHT; i++) {
@@ -105,7 +105,7 @@ public class TensioningDeviceBlock extends AbstractSupportedRotatableWireConnect
         }
 
         return super.getStateForPlacement(context)
-            .setValue(CONNECTION, ECantileverConnectionType.getFirstForState(ext.getPlacedOnState()).orElse(ECantileverConnectionType.PX16))
+            .setValue(CONNECTION, ECantileverConnectionType.getFirstForState(ext.paw$getPlacedOnState()).orElse(ECantileverConnectionType.PX16))
         ;
     }
 

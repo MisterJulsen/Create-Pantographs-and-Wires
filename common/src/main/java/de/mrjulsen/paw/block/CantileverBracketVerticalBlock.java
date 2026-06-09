@@ -62,7 +62,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
         BlockState state = super.getStateForPlacement(context);
-        BlockState clickedOnState = ctxExt.getPlacedOnState();
+        BlockState clickedOnState = ctxExt.paw$getPlacedOnState();
         Direction clickedFace = context.getClickedFace();
         
         if (clickedOnState.is(this) && clickedFace.getAxis().isVertical()) {

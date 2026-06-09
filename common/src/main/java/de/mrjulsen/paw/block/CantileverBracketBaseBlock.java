@@ -57,7 +57,7 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPlaceContextExtension ctxExt = (BlockPlaceContextExtension)(Object)context;
         BlockState state = super.getStateForPlacement(context);
-        BlockState clickedOnState = ctxExt.getPlacedOnState();
+        BlockState clickedOnState = ctxExt.paw$getPlacedOnState();
         Direction clickedFace = context.getClickedFace();
         
         if ((clickedOnState.getBlock() instanceof CantileverBracketBaseBlock || clickedOnState.getBlock() instanceof CantileverBracketVerticalBlock) && clickedFace.getAxis().isVertical()) {
