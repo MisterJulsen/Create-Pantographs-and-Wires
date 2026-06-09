@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:lattice_mast_oxidized",
+    "pantographsandwires:waxed_lattice_mast_oxidized",
+    "pantographsandwires:flat_lattice_mast_oxidized",
+    "pantographsandwires:waxed_flat_lattice_mast_oxidized",
+    "pantographsandwires:flat_lattice_mast_diagonal_oxidized",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_oxidized",
+    "pantographsandwires:h_beam_mast_oxidized",
+    "pantographsandwires:waxed_h_beam_mast_oxidized",
+    "pantographsandwires:cantilever_bracket_oxidized",
+    "pantographsandwires:waxed_cantilever_bracket_oxidized",
+    "pantographsandwires:cantilever_bracket_vertical_oxidized",
+    "pantographsandwires:waxed_cantilever_bracket_vertical_oxidized",
+    "pantographsandwires:cantilever_bracket_at_post_oxidized",
+    "pantographsandwires:waxed_cantilever_bracket_at_post_oxidized",
+    "pantographsandwires:power_line_bracket_oxidized",
+    "pantographsandwires:waxed_power_line_bracket_oxidized",
+    "pantographsandwires:concrete_post_oxidized",
+    "pantographsandwires:waxed_concrete_post_oxidized",
+    "pantographsandwires:concrete_pillar_oxidized",
+    "pantographsandwires:waxed_concrete_pillar_oxidized"
+  ]
+}

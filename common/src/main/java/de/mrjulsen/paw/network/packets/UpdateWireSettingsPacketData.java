@@ -40,8 +40,13 @@ public class UpdateWireSettingsPacketData extends NetworkPacketData {
     public static void handle(UpdateWireSettingsPacketData packet, NetworkPacketContext contextSupplier) {
         contextSupplier.queue(() -> {            
             Player player = contextSupplier.getPlayer();
+<<<<<<< HEAD
             if (!MultiWireItem.setNbt(player.getMainHandItem(), packet.data)) {
                 if (!MultiWireItem.setNbt(player.getOffhandItem(), packet.data)) {
+=======
+            if (!MultiWireItem.setSettings(player.getMainHandItem(), packet.data)) {
+                if (!MultiWireItem.setSettings(player.getOffhandItem(), packet.data)) {
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
                     PantographsAndWires.LOGGER.warn("Could not set NBT for 'mainhand=" + player.getMainHandItem() + ",offhand=" + player.getOffhandItem() + "'' because this item is not a MultiWireItem.");
                 }
             }

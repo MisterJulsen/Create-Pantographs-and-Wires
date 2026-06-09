@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "pantographsandwires:waxed_concrete_pillar"
+  },
+  "result": {
+    "id": "pantographsandwires:waxed_concrete_post",
+    "count": 2
+  }
+}

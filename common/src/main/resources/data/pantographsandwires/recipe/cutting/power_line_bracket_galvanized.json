@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "pantographsandwires:h_beam_mast_galvanized"
+  },
+  "result": {
+    "id": "pantographsandwires:power_line_bracket_galvanized",
+    "count": 2
+  }
+}

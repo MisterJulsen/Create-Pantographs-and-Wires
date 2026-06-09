@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:h_beam_mast_galvanized",
+    "pantographsandwires:h_beam_mast_oxidized",
+    "pantographsandwires:h_beam_mast_weathered",
+    "pantographsandwires:h_beam_mast_exposed",
+    "pantographsandwires:h_beam_mast",
+    "pantographsandwires:waxed_h_beam_mast_oxidized",
+    "pantographsandwires:waxed_h_beam_mast_weathered",
+    "pantographsandwires:waxed_h_beam_mast_exposed",
+    "pantographsandwires:waxed_h_beam_mast"
+  ]
+}

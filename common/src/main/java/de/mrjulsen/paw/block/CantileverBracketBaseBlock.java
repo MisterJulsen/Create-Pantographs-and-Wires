@@ -14,12 +14,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +41,11 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
     }
 
     @Override
+<<<<<<< HEAD
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+=======
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
         return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).get());
     }
 
@@ -86,10 +93,8 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
         return state.getValue(FACING).getAxis();
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        this.onRandomTick(state, level, pos, random);
-    }
 
+<<<<<<< HEAD
     public boolean isRandomlyTicking(BlockState state) {
         return getNext().isPresent();
     }
@@ -100,6 +105,24 @@ public abstract class CantileverBracketBaseBlock<T extends CantileverBracketBase
     }
 
     @Override
+=======
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        this.changeOverTime(state, level, pos, random);
+    }
+
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
+        return getNext().isPresent();
+    }
+
+    @Override
+    public @NotNull IWeatheringBlock.WeatherData<T> getWeatheringData() {
+        return weatheringData;
+    }
+
+    @Override
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
     public float getChanceModifier() {
         if (getWeatheringData().isWaxed()) return 0;
         return IWeatheringBlock.super.getChanceModifier();

@@ -6,13 +6,14 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import net.minecraft.resources.ResourceLocation;
 
 public class WireDecorationRegistry {
     private static final Map<ResourceLocation, Supplier<IWireDecoration<?>>> registeredTypes = new HashMap<>();
 
     public static <T extends IWireDecoration<T>> Supplier<T> register(String modid, String name, Function<ResourceLocation, T> type) {
-        ResourceLocation location = new ResourceLocation(modid, name);
+        ResourceLocation location = DLUtils.resourceLocation(modid, name);
         if (registeredTypes.containsKey(location)) {
             throw new IllegalArgumentException("A wire with ID '" + location.toString() + "' is already registered.");
         }

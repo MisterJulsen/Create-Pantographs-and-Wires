@@ -1,0 +1,56 @@
+modLoader = "javafml"
+loaderVersion = "[${neoforge_loader_version},)"
+issueTrackerURL = "${issues}"
+license = "${license}"
+
+[[mods]]
+modId = "${modid}"
+version = "${version}"
+displayName = "${display_name}"
+displayUrl="${homepage}"
+authors = "${authors}"
+credits = "Name suggested by Moritz Walter"
+description = '''${description}'''
+logoFile = "${icon}"
+
+[[dependencies.${modid}]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[${neoforge_dependency_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${modid}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version},${next_unsupported_minecraft_version})"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${modid}]]
+modId = "dragonlib"
+mandatory = true
+versionRange = "[${dragonlib_version},)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.${modid}]]
+modId = "create"
+mandatory = true
+<<<<<<< HEAD:forge/src/main/resources/META-INF/mods.toml
+versionRange = "[${create_forge_dependency_version},)"
+=======
+versionRange = "[${create_neoforge_dependency_version},)"
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d:neoforge/src/main/resources/META-INF/neoforge.mods.toml
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.${modid}]]
+modId = "geckolib"
+mandatory = true
+versionRange = "[${geckolib_neoforge_version},)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[mixins]]
+config = "${modid}.mixins.json"

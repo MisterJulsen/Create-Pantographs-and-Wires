@@ -10,8 +10,14 @@ import de.mrjulsen.paw.blockentity.CantileverBlockEntity.SubCantileverSetting;
 import de.mrjulsen.paw.event.ClientWrapper;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.mcdragonlib.util.math.MathUtils;
+<<<<<<< HEAD
+=======
+import de.mrjulsen.paw.registry.ModBlockEntities;
+import de.mrjulsen.paw.registry.ModDataComponents;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -22,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -80,15 +87,13 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
         return super.placeBlock(context, state);
     }
 
-    public static CompoundTag getNbt(ItemStack stack) {        
-        CompoundTag itemNbt = stack.getOrCreateTag();
-        CompoundTag nbt;
-        if (itemNbt.contains(BLOCK_ENTITY_TAG)) {
-            nbt = itemNbt.getCompound(BLOCK_ENTITY_TAG);
-        } else {
-            nbt = new CompoundTag();
-            itemNbt.put(BLOCK_ENTITY_TAG, nbt);
-        }
+    public static CompoundTag getNbt(ItemStack stack) {
+        boolean hasTag = ModDataComponents.hasComponent(stack, DataComponents.BLOCK_ENTITY_DATA);
+        CustomData blockEntityData = ModDataComponents.getComponent(stack, DataComponents.BLOCK_ENTITY_DATA, () -> CustomData.EMPTY);
+        CompoundTag nbt = blockEntityData.copyTag();
+
+        // Validate and init values
+        nbt.putString("id", ModBlockEntities.CANTILEVER_BLOCK_ENTITY.getId().toString());
 
         // Validate and init values
         if (!nbt.contains(CantileverBlockEntity.NBT_WIDTH)) {
@@ -123,8 +128,14 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
                     CantileverBlockEntity.DEFAULT_SHOW_BRACING
             ).toNbt());
             nbt.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
+<<<<<<< HEAD
+=======
         }
 
+        if (!hasTag) {
+            ModDataComponents.setComponent(stack, DataComponents.BLOCK_ENTITY_DATA, CustomData.of(nbt));
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
+        }
         return nbt;
     }
 
@@ -143,6 +154,10 @@ public class CantileverBlockItem<T extends AbstractCantileverBlock> extends Bloc
                     data.showBracing()
             ).toNbt());
             nbt.put(CantileverBlockEntity.NBT_SUB_CANTILEVER_SETTINGS, list);
+<<<<<<< HEAD
+=======
+            ModDataComponents.setComponent(stack, DataComponents.BLOCK_ENTITY_DATA, CustomData.of(nbt));
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
             return true;
         } 
         return false;

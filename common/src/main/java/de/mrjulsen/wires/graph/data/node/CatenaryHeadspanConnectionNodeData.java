@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 import de.mrjulsen.mcdragonlib.util.Cache;
 import de.mrjulsen.mcdragonlib.util.DataCache;
 import de.mrjulsen.paw.PantographsAndWires;
+<<<<<<< HEAD
+=======
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import net.minecraft.nbt.Tag;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -175,7 +179,7 @@ public class CatenaryHeadspanConnectionNodeData extends NodeData implements INod
     }
 
     @Override
-    public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
+    public boolean validate(WireGraph graph, WireConnectionDataComponent currentItemData, int pointIndex) {
         return graph.getCollisionById(wireId.id()).map(x -> x.hasWire(wireId.name())).orElse(false);
     }
 

@@ -8,9 +8,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import de.mrjulsen.wires.util.GraphId;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 
 public final class WireGraphManager {
     private WireGraphManager() {}
@@ -52,8 +55,8 @@ public final class WireGraphManager {
         for (Map.Entry<GraphId, GraphFactory> factory : graphFactories.entrySet()) {
             final GraphId id = factory.getKey();
             final WireGraph graph = factory.getValue().build(id, level);
-            graphs.computeIfAbsent(level.dimensionTypeId().location(), x -> new HashMap<>()).put(id, graph);
-            level.getDataStorage().computeIfAbsent((nbt) -> graph.load(level, nbt), () -> graph, graph.getFileId());
+            graphs.computeIfAbsent(level.dimension().location(), x -> new HashMap<>()).put(id, graph);
+            level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> graph, (nbt, provider) -> graph.load(level, nbt), DataFixTypes.SAVED_DATA_SCOREBOARD), graph.getFileId());
         }        
     }
 
@@ -68,25 +71,25 @@ public final class WireGraphManager {
     }
 
     public synchronized static WireGraph get(Level level, GraphId id) {
-        return graphs.get(level.dimensionTypeId().location()).get(id);
+        return graphs.get(level.dimension().location()).get(id);
     }
 
     public synchronized static WireGraphClient getClient(Level level, GraphId id) {
-        return clientGraphs.computeIfAbsent(level.dimensionTypeId().location(), x -> new HashMap<>()).computeIfAbsent(id, x -> createClientGraph(x, level));
+        return clientGraphs.computeIfAbsent(level.dimension().location(), x -> new HashMap<>()).computeIfAbsent(id, x -> createClientGraph(x, level));
     }
 
     public synchronized static Collection<WireGraph> getAll(Level level) {
-        if (!graphs.containsKey(level.dimensionTypeId().location())) {
+        if (!graphs.containsKey(level.dimension().location())) {
             return List.of();
         }
-        return Collections.unmodifiableCollection(graphs.get(level.dimensionTypeId().location()).values());
+        return Collections.unmodifiableCollection(graphs.get(level.dimension().location()).values());
     }
 
     public synchronized static Collection<WireGraphClient> getAllClient(Level level) {
-        if (!clientGraphs.containsKey(level.dimensionTypeId().location())) {
+        if (!clientGraphs.containsKey(level.dimension().location())) {
             return List.of();
         }
-        return Collections.unmodifiableCollection(clientGraphs.get(level.dimensionTypeId().location()).values());
+        return Collections.unmodifiableCollection(clientGraphs.get(level.dimension().location()).values());
     }
     
 }

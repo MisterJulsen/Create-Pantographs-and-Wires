@@ -6,6 +6,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+<<<<<<< HEAD
+=======
+import net.minecraft.world.phys.shapes.CollisionContext;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import org.joml.Vector3d;
 
 import java.util.HashSet;
@@ -26,7 +30,11 @@ public class RaycastUtils {
 
         Vec3 startVec = new Vec3(start.x(), start.y(), start.z());
         Vec3 endVec   = new Vec3(end.x(),   end.y(),   end.z());
+<<<<<<< HEAD
         BlockHitResult blockHit = level.clip(new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
+=======
+        BlockHitResult blockHit = level.clip(new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 
         double maxFreeDistance = (blockHit.getType() == HitResult.Type.BLOCK)
                 ? blockHit.getLocation().distanceTo(startVec)

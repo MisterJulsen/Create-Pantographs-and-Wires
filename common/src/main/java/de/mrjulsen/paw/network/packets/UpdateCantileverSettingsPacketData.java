@@ -35,7 +35,11 @@ public class UpdateCantileverSettingsPacketData extends NetworkPacketData {
     }
     
     public static void handle(UpdateCantileverSettingsPacketData packet, NetworkPacketContext contextSupplier) {
+<<<<<<< HEAD
         contextSupplier.queue(() -> {            
+=======
+        contextSupplier.queue(() -> {
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
             Player player = contextSupplier.getPlayer();
             if (!CantileverBlockItem.setNbt(player.getMainHandItem(), packet.data)) {
                 if (!CantileverBlockItem.setNbt(player.getOffhandItem(), packet.data)) {

@@ -9,15 +9,18 @@ import de.mrjulsen.paw.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -36,7 +39,11 @@ public class CantileverBracketBlock extends CantileverBracketBaseBlock<Cantileve
     }
 
     @Override
+<<<<<<< HEAD
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+=======
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
         return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).get());
     }
 

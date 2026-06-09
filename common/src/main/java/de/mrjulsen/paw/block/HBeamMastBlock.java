@@ -43,6 +43,7 @@ public class HBeamMastBlock extends AbstractSimplePostBlock implements IWeatheri
         return EPostType.WALL;
     }
 
+<<<<<<< HEAD
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         this.onRandomTick(state, level, pos, random);
     }
@@ -57,6 +58,24 @@ public class HBeamMastBlock extends AbstractSimplePostBlock implements IWeatheri
     }
 
     @Override
+=======
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        this.changeOverTime(state, level, pos, random);
+    }
+
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
+        return getNext().isPresent();
+    }
+
+    @Override
+    public @NotNull IWeatheringBlock.WeatherData<HBeamMastBlock> getWeatheringData() {
+        return weatheringData;
+    }
+
+    @Override
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
     public float getChanceModifier() {
         if (getWeatheringData().isWaxed()) return 0;
         return IWeatheringBlock.super.getChanceModifier();

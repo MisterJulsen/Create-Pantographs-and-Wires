@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "S": {
+        "tag": "c:rods/wooden"
+      },
+      "G": {
+        "tag": "c:ingots/graphite"
+      }
+    },
+    "pattern": [
+      "S",
+      "G"
+    ],
+    "result": {
+      "count": 1,
+      "id": "pantographsandwires:pencil"
+    }
+  }

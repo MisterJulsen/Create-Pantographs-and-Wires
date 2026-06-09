@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "item": "create:andesite_alloy"
+      },
+      "B": {
+        "tag": "minecraft:terracotta"
+      }
+    },
+    "pattern": [
+      "ABA"
+    ],
+    "result": {
+      "count": 2,
+      "id": "pantographsandwires:insulator_brown"
+    }
+  }

@@ -3,6 +3,7 @@ package de.mrjulsen.wires.network;
 import java.util.Collection;
 import java.util.UUID;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import org.joml.Vector3f;
 
 import de.mrjulsen.wires.block.IWireConnector;
@@ -85,7 +86,7 @@ public class WireConnectionSyncData {
             Utils.getNbtBlockPos(nbt, NBT_BLOCK_END), 
             Utils.getNbtVector3f(nbt, NBT_START), 
             Utils.getNbtVector3f(nbt, NBT_END), 
-            Utils.resLoc(nbt.getString(NBT_WIRE_TYPE)), 
+            DLUtils.resourceLocation(nbt.getString(NBT_WIRE_TYPE)),
             nbt.getCompound(NBT_CONNECTOR_A_DATA), 
             nbt.getCompound(NBT_CONNECTOR_B_DATA),
             nbt.getCompound(NBT_CREATION_DATA),

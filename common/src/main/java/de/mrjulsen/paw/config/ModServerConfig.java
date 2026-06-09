@@ -1,26 +1,26 @@
 package de.mrjulsen.paw.config;
 
 import de.mrjulsen.paw.PantographsAndWires;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ModServerConfig {
-    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec SPEC;
 
     private static final String WARN = "If in doubt, leave unchanged.";
     
-    public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_WIRE_MAX_LENGTH;
-    public static final ForgeConfigSpec.ConfigValue<Integer> ENERGY_WIRE_MAX_LENGTH;
-    public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_LENGTH;
-    public static final ForgeConfigSpec.ConfigValue<Integer> SUPPORT_WIRE_MAX_LENGTH;
-    public static final ForgeConfigSpec.ConfigValue<Double> WIRE_COLLISION_TRACER_STEP_SIZE;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> BLOCKS_BREAK_WIRES;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> WIRE_ENTITY_DAMAGE;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> USE_OXIDATION;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> DROP_WIRE_ITEMS_IN_CREATIVE;
-    public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MIN_UPPER_TENSION_WIRE;
-    public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_UPPER_TENSION_WIRE;
-    public static final ForgeConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE;
+    public static final ModConfigSpec.ConfigValue<Integer> CATENARY_WIRE_MAX_LENGTH;
+    public static final ModConfigSpec.ConfigValue<Integer> ENERGY_WIRE_MAX_LENGTH;
+    public static final ModConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_LENGTH;
+    public static final ModConfigSpec.ConfigValue<Integer> SUPPORT_WIRE_MAX_LENGTH;
+    public static final ModConfigSpec.ConfigValue<Double> WIRE_COLLISION_TRACER_STEP_SIZE;
+    public static final ModConfigSpec.ConfigValue<Boolean> BLOCKS_BREAK_WIRES;
+    public static final ModConfigSpec.ConfigValue<Boolean> WIRE_ENTITY_DAMAGE;
+    public static final ModConfigSpec.ConfigValue<Boolean> USE_OXIDATION;
+    public static final ModConfigSpec.ConfigValue<Boolean> DROP_WIRE_ITEMS_IN_CREATIVE;
+    public static final ModConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MIN_UPPER_TENSION_WIRE;
+    public static final ModConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_UPPER_TENSION_WIRE;
+    public static final ModConfigSpec.ConfigValue<Integer> CATENARY_HEADSPAN_MAX_TOP_SUPPORT_WIRE;
 
     static {
         BUILDER.push(PantographsAndWires.MOD_ID + "_common_config");

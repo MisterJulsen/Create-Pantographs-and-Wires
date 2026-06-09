@@ -23,16 +23,32 @@ subprojects {
         archivesName = "$rootProject.archives_name-$project.name"
     }
 
+    configurations.configureEach {
+        if (rootProject.hasProperty("lwjgl_version")) {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == "org.lwjgl") {
+                    details.useVersion rootProject.lwjgl_version
+                }
+            }
+        }
+    }
+
     repositories {
         maven { url = file("${System.getProperty('user.home')}/.m2/github/modsrepo/maven/") } // Local
         maven { url = "https://maven.mrjulsen.net" } // DragonLib
+        maven { url = 'https://maven.neoforged.net/releases' } // NeoForge
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
+<<<<<<< HEAD
+=======
+        maven { url = "https://maven.tterrag.com/" } // Flywheel, Registrate
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
         maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
         maven { url = "https://maven.blamejared.com/" } // JEI
         maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
         maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+<<<<<<< HEAD
         maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
         maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
         maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
@@ -40,6 +56,13 @@ subprojects {
         maven { url = "https://mvn.devos.one/snapshots/" } // Create, Porting Lib, Forge Tags, Milk Lib, Registrate
         maven { url = "https://mvn.devos.one/releases/" } // Porting Lib
         maven { url = "https://maven.tterrag.com/" } // Flywheel
+=======
+        maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+        maven { url = "https://mvn.devos.one/snapshots/" } // Create, Porting Lib, Forge Tags, Milk Lib, Registrate
+        maven { url = "https://mvn.devos.one/releases/" } // Porting Lib
+        maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
+        maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
         maven { url = "https://maven.blamejared.com" } // Embeddium
         maven { url = "https://api.modrinth.com/maven" } // Modrinth
         maven { url = "https://maven.blamejared.com/" } // JEI
@@ -70,6 +93,7 @@ subprojects {
 
     processResources {
         def expandProps = [
+<<<<<<< HEAD
                 "version": version,
                 "minecraft_version": rootProject.minecraft_version,
                 "issues": rootProject.issues,
@@ -97,8 +121,35 @@ subprojects {
                 "geckolib_minecraft_version": rootProject.geckolib_minecraft_version,
                 "geckolib_fabric_version": rootProject.geckolib_fabric_version,
                 "geckolib_forge_version": rootProject.geckolib_forge_version
+=======
+            "version": version,
+            "minecraft_version": rootProject.minecraft_version,
+            "issues": rootProject.issues,
+            "source": rootProject.source,
+            "license": rootProject.license,
+            "modid": rootProject.archives_name,
+            "display_name": rootProject.display_name,
+            "homepage": rootProject.homepage,
+            "authors": rootProject.authors,
+            "description": rootProject.description,
+            "icon": rootProject.icon,
+            "discord": rootProject.discord,
+            "next_unsupported_minecraft_version": rootProject.next_unsupported_minecraft_version,
+            "dragonlib_version": "$rootProject.minecraft_version-$rootProject.dragonlib_version",
+            "neoforge_dependency_version": rootProject.neoforge_dependency_version,
+            "neoforge_loader_version": rootProject.neoforge_loader_version,
+            "fabric_loader_version": rootProject.fabric_loader_version,
+            "java_version": rootProject.java_version,
+            "maven_group": rootProject.maven_group,
+            "create_neoforge_version": rootProject.create_neoforge_version,
+            "create_neoforge_dependency_version": rootProject.create_neoforge_dependency_version,
+            "main_class_name": rootProject.main_class_name,
+            "geckolib_minecraft_version": rootProject.geckolib_minecraft_version,
+            "geckolib_fabric_version": rootProject.geckolib_fabric_version,
+            "geckolib_neoforge_version": rootProject.geckolib_neoforge_version
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
         ]
-        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'pantographsandwires.mixins.json']) {
+        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/neoforge.mods.toml', 'pantographsandwires.mixins.json']) {
             expand expandProps
         }
         inputs.properties(expandProps)
@@ -109,12 +160,26 @@ subprojects {
         withSourcesJar()
         withJavadocJar()
 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     tasks.withType(JavaCompile).configureEach {
-        it.options.release = 17
+        it.options.release = 21
+    }
+
+    jar {
+        manifest {
+            attributes([
+                    "Specification-Title"     : "${rootProject.display_name}",
+                    "Specification-Vendor"    : "${rootProject.authors}",
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : project.jar.archiveVersion,
+                    "Implementation-Vendor"   : "${rootProject.authors}",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
+        }
     }
 
     publishing {
@@ -124,6 +189,27 @@ subprojects {
                 from components.java
             }
         }
+<<<<<<< HEAD
+=======
+    }
+}
+
+modBuildTools {
+    publish {
+        localRepoDir = "${System.getProperty('user.home')}/.m2/github/modsrepo/maven"
+        publishCommon = false
+    }
+    javadoc {
+        title = "Create Pantographs and Wires ${release_channel}-${mod_version}"
+        tags = [
+                "apiNote:a:API Note:",
+                "implNote:a:Impl Note:",
+                "implSpec:a:Impl Spec:",
+                "related:a:Related:",
+                "example:a:Examples:",
+                "side:a:Valid on side:"
+        ]
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
     }
 }
 

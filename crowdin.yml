@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "project_id_env": "CROWDIN_PROJECT_ID"
 "api_token_env": "CROWDIN_PERSONAL_TOKEN"
 "base_path": "."
@@ -10,3 +11,10 @@
     "translation": "%original_path%/%locale_with_underscore%.json"
   }
 ]
+=======
+preserve_hierarchy: true
+
+files:
+  - source: /**/assets/*/lang/en_us.json
+    translation: /%original_path%/%locale_with_underscore%.json
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d

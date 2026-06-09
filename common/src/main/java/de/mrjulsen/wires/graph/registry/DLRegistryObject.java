@@ -4,6 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.data.INBTSerializable;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -27,7 +28,7 @@ public final record DLRegistryObject<T extends INBTSerializable>(ResourceLocatio
     }
     
     public static <T extends INBTSerializable> T load(CompoundTag tag, Function<ResourceLocation, DLRegistryObject<T>> registryGetter) {
-        ResourceLocation typeId = new ResourceLocation(tag.getString(NBT_ID));
+        ResourceLocation typeId = DLUtils.resourceLocation(tag.getString(NBT_ID));
         DLRegistryObject<T> type = registryGetter.apply(typeId);
         if (type == null) return null;
         return type.unwrap(tag);

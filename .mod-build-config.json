@@ -3,11 +3,18 @@
   "mod_release_title_format": "{MOD_ID}-{LOADER}-{FULL_VERSION}",
   "main_branch_pattern": "^mc[/-].+",
   "auto_port_branches": [
+<<<<<<< HEAD
 
   ],
   "modules": [
     "fabric",
     "forge"
+=======
+    "mc/1.20.1-C6-DL3"
+  ],
+  "modules": [
+    "neoforge"
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
   ],
   "changelog_categories": [
     {
@@ -28,7 +35,11 @@
     },
     {
       "inputs": ["updated", "update", "⬆️"],
+<<<<<<< HEAD
       "output": "Updated"
+=======
+      "output": "⬆Updated"
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
     }
   ],
   "release_channels": {

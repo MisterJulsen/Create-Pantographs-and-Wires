@@ -1,0 +1,66 @@
+{
+    "type": "create:sequenced_assembly",
+    "ingredient": {
+      "item": "pantographsandwires:iron_rod_bundle"
+    },
+    "loops": 2,
+    "results": [
+      {
+        "id": "pantographsandwires:cantilever_brown"
+      }
+    ],
+    "sequence": [
+      {
+        "type": "create:deploying",
+        "ingredients": [
+          {
+            "item": "pantographsandwires:cantilever_incomplete"
+          },
+          [
+            {
+              "item": "pantographsandwires:insulator_brown"
+            }
+          ]
+        ],
+        "results": [
+          {
+            "id": "pantographsandwires:cantilever_incomplete"
+          }
+        ]
+      },
+      {
+        "type": "create:deploying",
+        "ingredients": [
+          {
+            "item": "pantographsandwires:cantilever_incomplete"
+          },
+          [
+            {
+              "tag": "c:nuggets/zinc"
+            }
+          ]
+        ],
+        "results": [
+          {
+            "id": "pantographsandwires:cantilever_incomplete"
+          }
+        ]
+      },
+      {
+        "type": "create:pressing",
+        "ingredients": [
+          {
+            "item": "pantographsandwires:cantilever_incomplete"
+          }
+        ],
+        "results": [
+          {
+            "id": "pantographsandwires:cantilever_incomplete"
+          }
+        ]
+      }
+    ],
+    "transitional_item": {
+      "id": "pantographsandwires:cantilever_incomplete"
+    }
+  }

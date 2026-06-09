@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -45,10 +47,17 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
             .setValue(DIRECTION, Direction.DOWN)
         );
 
+<<<<<<< HEAD
     }    
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+=======
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
         return new ItemStack(ModBlocks.CANTILEVER_BRACKET.get(new ModBlocks.OxidizingKey(getWeatheringData().ageState(), getWeatheringData().isWaxed())).get());
     }
     
@@ -116,7 +125,7 @@ public class CantileverBracketVerticalBlock extends AbstractRotatableBlock imple
     }
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        this.onRandomTick(state, level, pos, random);
+        this.changeOverTime(state, level, pos, random);
     }
 
     public boolean isRandomlyTicking(BlockState state) {

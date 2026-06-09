@@ -7,6 +7,7 @@ import de.mrjulsen.paw.block.abstractions.IMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,16 +61,16 @@ public class MultiblockWireConnectorBlockEntity extends WireConnectorBlockEntity
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putInt(NBT_X_SIZE, xOffset);
         nbt.putInt(NBT_Y_SIZE, yOffset);
         nbt.putInt(NBT_Z_SIZE, zOffset);
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         xOffset = MathUtils.clamp(nbt.getInt(NBT_X_SIZE), 0, maxXSize - 1);
         yOffset = MathUtils.clamp(nbt.getInt(NBT_Y_SIZE), 0, maxYSize - 1);
         zOffset = MathUtils.clamp(nbt.getInt(NBT_Z_SIZE), 0, maxZSize - 1);

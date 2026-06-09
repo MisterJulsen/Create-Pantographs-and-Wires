@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
@@ -109,17 +110,19 @@ public class CreateDynamicWidgets {
 
     public static void renderContainerBackground(DLGuiGraphics graphics, int x, int y, int w, int h, ContainerColor color) {        
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, color.res);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 2f;
-        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(x, y + (double)h, 0.0).uv(0.0F, (float)h / f).color(1f, 1f, 1f, 1f).endVertex();
-        bufferbuilder.vertex(x + (double)w, y + (double)h, 0.0).uv((float)w / f, (float)h / f).color(1f, 1f, 1f, 1f).endVertex();
-        bufferbuilder.vertex(x + (double)w, y, 0.0).uv((float)w / f, 0).color(1f, 1f, 1f, 1f).endVertex();
-        bufferbuilder.vertex(x, y, 0.0).uv(0.0F, 0).color(1f, 1f, 1f, 1f).endVertex();
-        tesselator.end();
+        /*
+        BufferBuilder bufferbuilder = tesselator.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferbuilder.addVertex(x, y + (double)h, 0.0).uv(0.0F, (float)h / f).color(1f, 1f, 1f, 1f).endVertex();
+        bufferbuilder.addVertex(x + (double)w, y + (double)h, 0.0).uv((float)w / f, (float)h / f).color(1f, 1f, 1f, 1f).endVertex();
+        bufferbuilder.addVertex(x + (double)w, y, 0.0).uv((float)w / f, 0).color(1f, 1f, 1f, 1f).endVertex();
+        bufferbuilder.addVertex(x, y, 0.0).uv(0.0F, 0).color(1f, 1f, 1f, 1f).endVertex();
+        bufferbuilder.build();
+        
+         */
     }
 
     protected static void renderNineSliced(DLGuiGraphics graphics, int x, int y, int w, int h, int u, int v, int textureWidth, int textureHeight, int cornerSliceSize, ResourceLocation location, boolean renderCenter) {
@@ -162,7 +165,11 @@ public class CreateDynamicWidgets {
     }
 
     public static void renderShadow(DLGuiGraphics graphics, int x, int y, int w, int h) {
+<<<<<<< HEAD
         renderNineSliced(graphics, x - 5, y - 5, w + 10, h + 10, 0, 0, 11, 11, 5, new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/shadow.png"), true);
+=======
+        renderNineSliced(graphics, x - 5, y - 5, w + 10, h + 10, 0, 0, 11, 11, 5, DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/gui/shadow.png"), true);
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
     }
 
     public static void renderTextHighlighted(DLGuiGraphics graphics, int x, int y, Font font, Component text, DLColor color) {
@@ -205,10 +212,10 @@ public class CreateDynamicWidgets {
 
     
     public static enum ContainerColor {
-        GRAY(new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_gray.png")),
-        PURPLE(new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_purple.png")),
-        BLUE(new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_blue.png")),
-        GOLD(new ResourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_gold.png"));
+        GRAY(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_gray.png")),
+        PURPLE(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_purple.png")),
+        BLUE(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_blue.png")),
+        GOLD(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "textures/gui/container_gold.png"));
 
         private final ResourceLocation res;
 

@@ -1,6 +1,6 @@
 package de.mrjulsen.wires.util;
 
 public interface CompiledChunkExtension {
-    boolean hasWires();
-    void setHasWires(boolean b);
+    boolean paw$hasWires();
+    void paw$setHasWires(boolean b);
 }

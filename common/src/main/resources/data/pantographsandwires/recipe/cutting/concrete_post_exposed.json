@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "pantographsandwires:concrete_pillar_exposed"
+  },
+  "result": {
+    "id": "pantographsandwires:concrete_post_exposed",
+    "count": 2
+  }
+}

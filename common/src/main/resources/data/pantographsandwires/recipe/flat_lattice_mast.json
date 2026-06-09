@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "item": "pantographsandwires:iron_strip"
+      }
+    },
+    "pattern": [
+      "AA",
+      "AA",
+      "AA"
+    ],
+    "result": {
+      "count": 6,
+      "id": "pantographsandwires:flat_lattice_mast"
+    }
+  }

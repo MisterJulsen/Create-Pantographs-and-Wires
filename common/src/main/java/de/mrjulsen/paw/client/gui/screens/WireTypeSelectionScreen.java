@@ -19,15 +19,22 @@ import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.client.gui.widgets.CreateButton;
 import de.mrjulsen.paw.client.gui.widgets.CreateListSlider;
+import de.mrjulsen.paw.components.WireSubtypeComponent;
 import de.mrjulsen.paw.data.WireSettingsData;
 import de.mrjulsen.paw.network.ModNetworkManager;
 import de.mrjulsen.paw.network.packets.UpdateWireSettingsPacketData;
+<<<<<<< HEAD
+=======
+import de.mrjulsen.paw.registry.ModDataComponents;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import de.mrjulsen.paw.registry.ModWireRegistry;
 import de.mrjulsen.wires.item.IPawWireItemBase;
 import de.mrjulsen.wires.item.MultiWireItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Optional;
 
 public class WireTypeSelectionScreen extends DLWindow {
     
@@ -53,8 +60,12 @@ public class WireTypeSelectionScreen extends DLWindow {
 
         addEventListener(DLGuiStandardEvents.CloseEvent.class, (s, e) -> {
             WireSettingsData data = new WireSettingsData(selectedType);
+<<<<<<< HEAD
             MultiWireItem.setNbt(stack, data);   
         
+=======
+            ModDataComponents.setComponent(stack, ModDataComponents.WIRE_SUBTYPE, new WireSubtypeComponent(Optional.of(data.selectedType().getRegistryType().id())));
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
             ModNetworkManager.UPDATE_WIRE_SETTINGS.send(NetworkDirection.toServer(), new UpdateWireSettingsPacketData(data));
             return false;
         });

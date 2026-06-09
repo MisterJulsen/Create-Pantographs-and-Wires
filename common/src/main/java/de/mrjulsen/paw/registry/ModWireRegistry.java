@@ -1,6 +1,7 @@
 package de.mrjulsen.paw.registry;
 
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.paw.PantographsAndWires;
 import de.mrjulsen.paw.item.CatenaryWireType;
 import de.mrjulsen.paw.item.SupportWireItem;
@@ -27,14 +28,14 @@ public class ModWireRegistry {
     public static final SupportWireType SUPPORT_WIRE = WireTypeRegistry.register(PantographsAndWires.MOD_ID, "support_wire", SupportWireType::new);
 
     public static final DLRegistry<IWireDecoration<?>> DECORATION_REGISTRY = new DLRegistry<>();
-    public static final DLRegistryObject<InsulatorWireDecoration> INSULATOR_DECORATION = DECORATION_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "insulator_decoration"), InsulatorWireDecoration::new);
-    public static final DLRegistryObject<RegistrationArmWireDecoration> CATENARY_HEADSPAN_REGISTRATION_ARM = DECORATION_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan_registration_arm"), RegistrationArmWireDecoration::new);
+    public static final DLRegistryObject<InsulatorWireDecoration> INSULATOR_DECORATION = DECORATION_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "insulator_decoration"), InsulatorWireDecoration::new);
+    public static final DLRegistryObject<RegistrationArmWireDecoration> CATENARY_HEADSPAN_REGISTRATION_ARM = DECORATION_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan_registration_arm"), RegistrationArmWireDecoration::new);
     
     public static final DLStaticRegistry<IPawWireItemBase> WIRE_SUBTYPES_REGISTRY = new DLStaticRegistry<>();
-    public static final DLStaticRegistryObject<FeederWireItem> ENERGY_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "energy_wire"), FeederWireItem::new);
-    public static final DLStaticRegistryObject<CatenaryWireItem> CATENARY_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_wire"), CatenaryWireItem::new);
-    public static final DLStaticRegistryObject<CatenaryHeadspanWireItem> CATENARY_HEADSPAN_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanWireItem::new);
-    public static final DLStaticRegistryObject<SupportWireItem> SUPPORT_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "support_wire"), SupportWireItem::new);
+    public static final DLStaticRegistryObject<FeederWireItem> ENERGY_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "energy_wire"), FeederWireItem::new);
+    public static final DLStaticRegistryObject<CatenaryWireItem> CATENARY_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "catenary_wire"), CatenaryWireItem::new);
+    public static final DLStaticRegistryObject<CatenaryHeadspanWireItem> CATENARY_HEADSPAN_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanWireItem::new);
+    public static final DLStaticRegistryObject<SupportWireItem> SUPPORT_WIRE_ITEM_SUBTYPE = WIRE_SUBTYPES_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "support_wire"), SupportWireItem::new);
 
     public static void init() {}
 }

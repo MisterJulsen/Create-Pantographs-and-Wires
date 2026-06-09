@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:blasting",
-  "ingredient": {
-    "tag": "minecraft:coals"
-  },
-  "result": "pantographsandwires:coal_coke",
-  "experience": 0.1,
-  "cookingtime": 1200
-}

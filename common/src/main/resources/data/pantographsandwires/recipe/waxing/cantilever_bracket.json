@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:cantilever_bracket"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "id": "pantographsandwires:waxed_cantilever_bracket",
+    "count": 1
+  }
+}

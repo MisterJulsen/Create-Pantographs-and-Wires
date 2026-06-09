@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:lattice_mast_weathered",
+    "pantographsandwires:waxed_lattice_mast_weathered",
+    "pantographsandwires:flat_lattice_mast_weathered",
+    "pantographsandwires:waxed_flat_lattice_mast_weathered",
+    "pantographsandwires:flat_lattice_mast_diagonal_weathered",
+    "pantographsandwires:waxed_flat_lattice_mast_diagonal_weathered",
+    "pantographsandwires:h_beam_mast_weathered",
+    "pantographsandwires:waxed_h_beam_mast_weathered",
+    "pantographsandwires:cantilever_bracket_weathered",
+    "pantographsandwires:waxed_cantilever_bracket_weathered",
+    "pantographsandwires:cantilever_bracket_vertical_weathered",
+    "pantographsandwires:waxed_cantilever_bracket_vertical_weathered",
+    "pantographsandwires:cantilever_bracket_at_post_weathered",
+    "pantographsandwires:waxed_cantilever_bracket_at_post_weathered",
+    "pantographsandwires:power_line_bracket_weathered",
+    "pantographsandwires:waxed_power_line_bracket_weathered",
+    "pantographsandwires:concrete_post_weathered",
+    "pantographsandwires:waxed_concrete_post_weathered",
+    "pantographsandwires:concrete_pillar_weathered",
+    "pantographsandwires:waxed_concrete_pillar_weathered"
+  ]
+}

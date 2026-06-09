@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+      "A": {
+        "tag": "c:wires/copper"
+      },
+      "B": {
+        "item": "pantographsandwires:empty_wire_coil"
+      }
+    },
+    "pattern": [
+      "AAA",
+      "ABA",
+      "AAA"
+    ],
+    "result": {
+      "count": 1,
+      "id": "pantographsandwires:wire_coil"
+    }
+  }

@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.wires.graph.IWireGraph;
 import de.mrjulsen.wires.graph.data.accessor.NodeAccessor;
 import de.mrjulsen.wires.graph.data.node.NodeData;
@@ -29,7 +30,7 @@ public final record NodeDataRegistryObject<T extends NodeData, A extends NodeAcc
     }
     
     public static <T extends NodeData> T load(CompoundTag tag, Function<ResourceLocation, NodeDataRegistryObject<T, ?>> registryGetter) {
-        ResourceLocation typeId = new ResourceLocation(tag.getString(NBT_ID));
+        ResourceLocation typeId = DLUtils.resourceLocation(tag.getString(NBT_ID));
         NodeDataRegistryObject<T, ?> type = registryGetter.apply(typeId);
         if (type == null) return null;
         return type.unwrap(tag);

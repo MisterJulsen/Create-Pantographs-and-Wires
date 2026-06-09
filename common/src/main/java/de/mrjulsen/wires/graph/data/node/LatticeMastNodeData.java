@@ -3,6 +3,10 @@ package de.mrjulsen.wires.graph.data.node;
 import java.util.Objects;
 import java.util.Optional;
 
+<<<<<<< HEAD
+=======
+import de.mrjulsen.paw.components.WireConnectionDataComponent;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import de.mrjulsen.paw.registry.ModBlockTags;
 import org.joml.Vector3d;
 
@@ -70,7 +74,11 @@ public class LatticeMastNodeData extends NodeData implements INodeDataBlock {
     }
 
     @Override
+<<<<<<< HEAD
     public boolean validate(WireGraph graph, CompoundTag currentItemData, int pointIndex) {
+=======
+    public boolean validate(WireGraph graph, WireConnectionDataComponent currentItemData, int pointIndex) {
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
         return !graph.getLevel().isLoaded(pos) || graph.getLevel().getBlockState(pos).getTags().anyMatch(x -> x.equals(ModBlockTags.CATENARY_HEADSPAN_CONNECTABLE));
     }
 

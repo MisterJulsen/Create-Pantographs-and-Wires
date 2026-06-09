@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:waxed_flat_lattice_mast_weathered"
+    }
+  ],
+  "result": {
+    "id": "pantographsandwires:waxed_flat_lattice_mast_diagonal_weathered",
+    "count": 1
+  }
+}

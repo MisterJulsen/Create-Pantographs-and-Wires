@@ -1,0 +1,22 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "tag": "c:dusts/coal_coke"
+    },
+    {
+      "tag": "c:dusts/coal_coke"
+    },
+    {
+      "tag": "c:dusts/coal_coke"
+    },
+    {
+      "tag": "c:dusts/coal_coke"
+    }
+  ],
+  "results": [
+    {
+      "id": "pantographsandwires:graphite_ingot"
+    }
+  ]
+}

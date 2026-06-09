@@ -10,6 +10,10 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
+<<<<<<< HEAD
+=======
+import de.mrjulsen.mcdragonlib.util.DLUtils;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -91,7 +95,7 @@ public class WireConnection {
     }
 
     public static Optional<WireConnection> fromNbt(CompoundTag nbt) {
-        ResourceLocation wireTypeId = Utils.resLoc(nbt.getString(NBT_WIRE_TYPE));
+        ResourceLocation wireTypeId = DLUtils.resourceLocation(nbt.getString(NBT_WIRE_TYPE));
         if (WireTypeRegistry.has(wireTypeId)) {
             WireConnection connection = new WireConnection(
                 nbt.getUUID(NBT_ID),

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "pantographsandwires:h_beam_mast_exposed"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "id": "pantographsandwires:waxed_h_beam_mast_exposed",
+    "count": 1
+  }
+}

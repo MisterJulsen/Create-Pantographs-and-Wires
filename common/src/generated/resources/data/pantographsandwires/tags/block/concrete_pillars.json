@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "pantographsandwires:concrete_pillar_oxidized",
+    "pantographsandwires:concrete_pillar_weathered",
+    "pantographsandwires:concrete_pillar_exposed",
+    "pantographsandwires:concrete_pillar",
+    "pantographsandwires:waxed_concrete_pillar_oxidized",
+    "pantographsandwires:waxed_concrete_pillar_weathered",
+    "pantographsandwires:waxed_concrete_pillar_exposed",
+    "pantographsandwires:waxed_concrete_pillar"
+  ]
+}

@@ -3,6 +3,7 @@ package de.mrjulsen.wires.graph.registry;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -25,6 +26,13 @@ public class DLStaticRegistry<T extends IStaticRegisterable<T>> {
 
     public T load(CompoundTag tag) {
         return DLStaticRegistryObject.load(tag, this::get);
+    }
+
+    public Optional<T> getById(ResourceLocation id) {
+        if (!TYPES.containsKey(id)) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(get(id).get());
     }
 
     public List<T> getAll() {

@@ -1,5 +1,9 @@
 package de.mrjulsen.wires;
 
+<<<<<<< HEAD
+=======
+import de.mrjulsen.mcdragonlib.util.DLUtils;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import org.joml.Vector3d;
 import org.slf4j.Logger;
 
@@ -38,16 +42,22 @@ public class WiresApi {
     public static final DLRegistry<ConnectorDataProvider> CONNECTOR_DATA_PROVIDER_REGISTRY = new DLRegistry<>();
     public static final NodeDataRegistry NODE_DATA_REGISTRY = new NodeDataRegistry();
     
-    public static final NodeDataRegistryObject<GenericBlockNodeData, GenericBlockNodeAccessor<GenericBlockNodeData>> GENERIC_BLOCK = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "generic_block"), GenericBlockNodeData::new, GenericBlockNodeAccessor::new);
-    public static final NodeDataRegistryObject<BlockConnectorNodeData, BlockConnectorNodeAccessor> BLOCK_CONNECTOR = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "block_connector"), BlockConnectorNodeData::new, BlockConnectorNodeAccessor::new);
-    public static final NodeDataRegistryObject<CatenaryWireConnectorNodeData, WireConnectorNodeAccessor> WIRE_CONNECTOR = NODE_DATA_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "wire_connector"), CatenaryWireConnectorNodeData::new, WireConnectorNodeAccessor::new);
-    public static final NodeDataRegistryObject<LatticeMastNodeData, GenericBlockNodeAccessor<LatticeMastNodeData>> LATTICE_MAST = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "lattice_mast"), LatticeMastNodeData::new, GenericBlockNodeAccessor::new);
-    public static final NodeDataRegistryObject<MastNodeData, GenericBlockNodeAccessor<MastNodeData>> MAST = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "mast"), MastNodeData::new, GenericBlockNodeAccessor::new);
-    public static final NodeDataRegistryObject<CatenaryHeadspanConnectionNodeData, GenericWireNodeAccessor<CatenaryHeadspanConnectionNodeData>> CATENARY_HEADSPAN = NODE_DATA_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanConnectionNodeData::new, GenericWireNodeAccessor::new);
+    public static final NodeDataRegistryObject<GenericBlockNodeData, GenericBlockNodeAccessor<GenericBlockNodeData>> GENERIC_BLOCK = NODE_DATA_REGISTRY.register(DLUtils.resourceLocation(WiresApi.MOD_ID, "generic_block"), GenericBlockNodeData::new, GenericBlockNodeAccessor::new);
+    public static final NodeDataRegistryObject<BlockConnectorNodeData, BlockConnectorNodeAccessor> BLOCK_CONNECTOR = NODE_DATA_REGISTRY.register(DLUtils.resourceLocation(WiresApi.MOD_ID, "block_connector"), BlockConnectorNodeData::new, BlockConnectorNodeAccessor::new);
+    public static final NodeDataRegistryObject<CatenaryWireConnectorNodeData, WireConnectorNodeAccessor> WIRE_CONNECTOR = NODE_DATA_REGISTRY.register(DLUtils.resourceLocation(WiresApi.MOD_ID, "wire_connector"), CatenaryWireConnectorNodeData::new, WireConnectorNodeAccessor::new);
+    public static final NodeDataRegistryObject<LatticeMastNodeData, GenericBlockNodeAccessor<LatticeMastNodeData>> LATTICE_MAST = NODE_DATA_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "lattice_mast"), LatticeMastNodeData::new, GenericBlockNodeAccessor::new);
+    public static final NodeDataRegistryObject<MastNodeData, GenericBlockNodeAccessor<MastNodeData>> MAST = NODE_DATA_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "mast"), MastNodeData::new, GenericBlockNodeAccessor::new);
+    public static final NodeDataRegistryObject<CatenaryHeadspanConnectionNodeData, GenericWireNodeAccessor<CatenaryHeadspanConnectionNodeData>> CATENARY_HEADSPAN = NODE_DATA_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "catenary_headspan"), CatenaryHeadspanConnectionNodeData::new, GenericWireNodeAccessor::new);
 
+<<<<<<< HEAD
     public static final DLRegistryObject<BasicConnectorDataProvider.Empty> EMPTY_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(WiresApi.MOD_ID, "empty_wire_connector"), ConnectorDataProvider.Empty::new);
     public static final DLRegistryObject<BasicConnectorDataProvider> BASIC_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "basic_wire_connector"), () -> new BasicConnectorDataProvider((Vector3d) null));
     public static final DLRegistryObject<CantileverConnectorDataProvider> CANTILEVER_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(new ResourceLocation(PantographsAndWires.MOD_ID, "cantilever_wire_connector"), () -> new CantileverConnectorDataProvider((Vector3d)null, (Vector3d)null));
+=======
+    public static final DLRegistryObject<BasicConnectorDataProvider.Empty> EMPTY_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(DLUtils.resourceLocation(WiresApi.MOD_ID, "empty_wire_connector"), ConnectorDataProvider.Empty::new);
+    public static final DLRegistryObject<BasicConnectorDataProvider> BASIC_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "basic_wire_connector"), () -> new BasicConnectorDataProvider((Vector3d) null));
+    public static final DLRegistryObject<CantileverConnectorDataProvider> CANTILEVER_WIRE_CONNECTOR = CONNECTOR_DATA_PROVIDER_REGISTRY.register(DLUtils.resourceLocation(PantographsAndWires.MOD_ID, "cantilever_wire_connector"), () -> new CantileverConnectorDataProvider((Vector3d)null, (Vector3d)null));
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 
     public static final GraphId PAW_CATENARY_WIRES = WireGraphManager.register("paw_catenary", WireGraph::new, WireGraphClient::new);
 

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:nuggets/iron"
+    },
+    "I": {
+      "item": "pantographsandwires:insulator_brown"
+    },
+    "R": {
+      "tag": "c:rods/iron"
+    }
+  },
+  "pattern": [
+    "A A",
+    "IRI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "pantographsandwires:u_insulator_brown"
+  }
+}

@@ -29,10 +29,17 @@ public class ClearWireConnectionPacketData extends NetworkPacketData {
     public static void handle(ClearWireConnectionPacketData packet, NetworkPacketContext contextSupplier) {
         contextSupplier.queue(() -> {
             Player player = contextSupplier.getPlayer();
+<<<<<<< HEAD
             if (player.getMainHandItem().getItem() instanceof MultiWireItem) {
                 IWireItemBase.clear(player, player.getMainHandItem());
             } else if (player.getOffhandItem().getItem() instanceof MultiWireItem) {
                 IWireItemBase.clear(player, player.getOffhandItem());
+=======
+            if (player.getMainHandItem().getItem() instanceof MultiWireItem itm) {
+                itm.clear(player.getMainHandItem());
+            } else if (player.getOffhandItem().getItem() instanceof MultiWireItem itm) {
+                itm.clear(player.getOffhandItem());
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
             }
         });
     }

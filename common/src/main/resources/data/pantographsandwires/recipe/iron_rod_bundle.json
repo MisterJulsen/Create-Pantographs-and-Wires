@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "tag": "c:rods/iron"
+      },
+      {
+        "tag": "c:rods/iron"
+      },
+      {
+        "tag": "c:rods/iron"
+      },
+      {
+        "tag": "c:rods/iron"
+      }
+    ],
+    "result": {
+      "id": "pantographsandwires:iron_rod_bundle",
+      "count": 1
+    }
+  }

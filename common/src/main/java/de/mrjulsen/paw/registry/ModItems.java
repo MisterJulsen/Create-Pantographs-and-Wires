@@ -78,13 +78,21 @@ public class ModItems {
             .register();
 
     public static final ItemEntry<PantographItem> MOD_ICON = PantographsAndWires.REGISTRATE.item("mod_icon", p -> PantographItem.create(ModBlocks.PANTOGRAPH.get(), p, true))
+<<<<<<< HEAD
             .removeTab(CreativeModeTabs.SEARCH)
+=======
+            .removeTab(ModCreativeModeTab.MAIN_TAB.getKey())
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
             .model((c, p) -> DataGen.existingItemModel(c, p, "item/mod_icon"))
             .lang("Pantograph")
             .register();
 
     public static final ItemEntry<SequencedAssemblyItem> CANTILEVER_GREEN_INCOMPLETE = PantographsAndWires.REGISTRATE.item("cantilever_incomplete", SequencedAssemblyItem::new)
+<<<<<<< HEAD
             .removeTab(CreativeModeTabs.SEARCH)
+=======
+            .removeTab(ModCreativeModeTab.MAIN_TAB.getKey())
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
             .lang("Incomplete Cantilever")
             .register();
 

@@ -11,7 +11,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 public class ClientUtils {
     public static void renderDebugLine(PoseStack poseStack, VertexConsumer consumer, Vector3f from, Vector3f to, float r, float g, float b, float a) {
         Matrix4f matrix4f = poseStack.last().pose();
-        Matrix3f matrix3f = poseStack.last().normal();
 
         float dx = to.x() - from.x();
         float dy = to.y() - from.y();
@@ -24,8 +23,8 @@ public class ClientUtils {
             dz /= length;
         }
 
-        consumer.vertex(matrix4f, (float) from.x(), (float) from.y(), (float) from.z()).color(r, g, b, a).normal(matrix3f, dx, dy, dz).endVertex();
-        consumer.vertex(matrix4f, (float) to.x(), (float) to.y(), (float) to.z()).color(r, g, b, a).normal(matrix3f, dx, dy, dz).endVertex();
+        consumer.addVertex(matrix4f, from.x(), from.y(), from.z()).setColor(r, g, b, a).setNormal(poseStack.last(), dx, dy, dz);
+        consumer.addVertex(matrix4f, to.x(), to.y(), to.z()).setColor(r, g, b, a).setNormal(poseStack.last(), dx, dy, dz);
     }
 
     public static void resetTranslation(PoseStack poseStack) {

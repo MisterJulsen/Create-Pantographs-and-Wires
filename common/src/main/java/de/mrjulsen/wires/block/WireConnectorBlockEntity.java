@@ -6,6 +6,10 @@ import de.mrjulsen.wires.util.NodeId;
 
 import java.util.Optional;
 
+<<<<<<< HEAD
+=======
+import net.minecraft.core.HolderLookup;
+>>>>>>> 8df5b91ab8296faa4d4b83d29b46cba3751d2e5d
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -26,17 +30,17 @@ public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBloc
     public WireConnectorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
-    
+
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         if (nodeId != null) tag.put(NBT_NODE_ID, nodeId.toNbt());
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if (tag.contains(NBT_NODE_ID)) this.nodeId = NodeId.fromNbt(tag.getCompound(NBT_NODE_ID));
     }
 
