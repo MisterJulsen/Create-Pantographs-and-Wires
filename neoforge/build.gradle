@@ -66,6 +66,8 @@ dependencies {
     runtimeOnly("maven.modrinth:sodium:mc${rootProject.minecraft_version}-${rootProject.sodium_version}-neoforge")
     // ^ Don't use modRuntimeOnly here otherwise you'll die! Trust me, I tried. I'm dead now.
 
+    runtimeOnly("maven.modrinth:copycats:3.0.4+mc.1.21.1-neoforge-neoforge")
+
     modImplementation(include("software.bernie.geckolib:geckolib-neoforge-${rootProject.geckolib_minecraft_version}:${rootProject.geckolib_neoforge_version}"))
     modImplementation(include(forgeRuntimeLibrary("com.eliotlash.mclib:mclib:20")))
     

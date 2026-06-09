@@ -111,6 +111,8 @@ public final class ModClientEvents {
                     if (text != null) {
                         break;
                     }
+                } else {
+                    wireHudText.set(null);
                 }
             }
         });
