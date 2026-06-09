@@ -309,9 +309,9 @@ public class CantileverBlockEntity extends WireConnectorBlockEntity implements I
                 .with(PROPERTY_SUB_CANTILEVER_SETTINGS, cantileverDataCache.get())
                 .build();
     }
-    
+
     @Override
-    public void onBlockEntityLoad() {
+    public void dragonlib$onBlockEntityLoad() {
         if (getLevel() != null && getLevel().getBlockState(getBlockPos()).getBlock() instanceof AbstractCantileverBlock cantilever) {
             BlockState support = getLevel().getBlockState(cantilever.getSupportingBlockPos(getBlockState(), level, getBlockPos()));
             setPostConnectionOffset(ModBlocks.getFirstCantileverConnectionTagForState(support));

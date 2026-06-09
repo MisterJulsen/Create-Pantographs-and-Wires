@@ -1,5 +1,6 @@
 package de.mrjulsen.wires.block;
 
+import de.mrjulsen.mcdragonlib.block.IBlockEntityExtension;
 import de.mrjulsen.wires.graph.WireGraphManager;
 import de.mrjulsen.wires.util.NodeId;
 
@@ -45,13 +46,12 @@ public class WireConnectorBlockEntity extends SyncedBlockEntity implements IBloc
     }
 
     @Override
-    public void onChunkUnloaded() {
+    public void dragonlib$onChunkUnloaded() {
         wasUnloaded = true;
     }
 
     @Override
-    public void onBlockEntityLoad() {
-        super.onLoad();
+    public void dragonlib$onBlockEntityLoad() {
         wasUnloaded = false;
     }
 
