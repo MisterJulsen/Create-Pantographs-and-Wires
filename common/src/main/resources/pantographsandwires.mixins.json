@@ -32,7 +32,6 @@
     "DimensionDataStorageAccessor",
     "HitResultTypesMixin",
     "HoneycombItemMixin",
-    "LevelChunkMixin",
     "LevelMixin",
     "ServerLevelMixin",
     "datafixer.ChunkSerializerMixin"
