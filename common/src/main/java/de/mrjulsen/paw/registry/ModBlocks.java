@@ -28,6 +28,7 @@ import de.mrjulsen.paw.block.CantileverBracketBlock;
 import de.mrjulsen.paw.block.CantileverBracketPostConnectionBlock;
 import de.mrjulsen.paw.block.CantileverBracketVerticalBlock;
 import de.mrjulsen.paw.block.ConcretePillarBlock;
+import de.mrjulsen.paw.block.ConnectorBlock;
 import de.mrjulsen.paw.block.FlatLatticeMastBlock;
 import de.mrjulsen.paw.block.HBeamMastBlock;
 import de.mrjulsen.paw.block.InsulatorBlock;
@@ -345,6 +346,19 @@ public class ModBlocks {
 			.properties(p -> p.stacksTo(16))
 			.build()
 			.register();
+
+	public static final BlockEntry<ConnectorBlock> CONNECTOR = registerWireConnectors(PantographsAndWires.REGISTRATE.block("connector", ConnectorBlock::new)
+			.initialProperties(SharedProperties::softMetal)
+			.transform(TagGen.pickaxeOnly())
+			.lang("Connector")
+			.tag(ModBlockTags.I_SHAPED_INSULATORS, ModBlockTags.BROWN_INSULATOR)
+			.blockstate((c, p) -> DataGen.insulatorBlock(c, p, "block/insulator", "i_insulator_connector"))
+			.onRegister(CreateRegistrate.blockModel(() -> RotatedBlockModel::new))
+			.item()
+			.model((c, p) -> DataGen.itemModel(c, p, "block/insulator/base/connector"))
+			.tab(ModCreativeModeTab.MAIN_TAB.getKey())
+			.build()
+			.register());
 
 	public static final BlockEntry<VInsulatorBlock> V_INSULATOR_BROWN = registerWireConnectors(PantographsAndWires.REGISTRATE.block("v_insulator_brown", VInsulatorBlock::new)
 			.initialProperties(SharedProperties::softMetal)
