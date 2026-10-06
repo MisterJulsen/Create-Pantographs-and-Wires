@@ -86,7 +86,7 @@ public final class WireGraphManager {
     }
 
     public synchronized static Collection<WireGraphClient> getAllClient(Level level) {
-        if (!clientGraphs.containsKey(level.dimension().location())) {
+        if (level == null || !clientGraphs.containsKey(level.dimension().location())) {
             return List.of();
         }
         return Collections.unmodifiableCollection(clientGraphs.get(level.dimension().location()).values());
